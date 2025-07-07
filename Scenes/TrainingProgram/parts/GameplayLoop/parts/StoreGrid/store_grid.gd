@@ -42,15 +42,30 @@ func setup_gridselect() -> void:
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
 		{
-			"title": "FACILITY",
+			"title": "RESOURCE",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.STANDARD, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.RESOURCES, room_unlock_level, start_at, end_at),
+		},
+		{
+			"title": "RECRUITMENT",
+			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.RECRUITMENT, room_unlock_level, start_at, end_at),
+		},
+		{
+			"title": "ENERGY",
+			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, room_unlock_level, start_at, end_at),
 		},
 		{
 			"title": "CONTAINMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
 				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, room_unlock_level, start_at, end_at),
-		}
+		},
+		{
+			"title": "UTILITY",
+			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, room_unlock_level, start_at, end_at),
+		},		
 	]
 	
 	GridSelect.onModeTab = func() -> void:

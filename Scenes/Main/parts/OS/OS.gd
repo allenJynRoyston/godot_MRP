@@ -12,8 +12,8 @@ class_name Layout
 
 @onready var OptionsMenu:Control = $OptionsMenu
 
-@onready var LogoPanel:PanelContainer = $LogoControl/PanelContainer
-@onready var LogoMargin:MarginContainer = $LogoControl/PanelContainer/MarginContainer
+@onready var LoginPanel:PanelContainer = $LoginControl/PanelContainer
+@onready var LoginMargin:MarginContainer = $LoginControl/PanelContainer/MarginContainer
 
 @onready var DesktopGrid:Control =  $Desktop/MarginContainer/DesktopGrid
 @onready var LoginContainer:PanelContainer = $NodeControl/LoginContainer
@@ -417,11 +417,11 @@ func start() -> void:
 	
 	await U.tick()
 	
-	control_pos[LogoPanel] = {
+	control_pos[LoginPanel] = {
 		"show": 0,
-		"hide": -LogoMargin.size.y
+		"hide": -LoginMargin.size.y
 	}
-	LogoPanel.position.y = control_pos[LogoPanel].hide
+	LoginPanel.position.y = control_pos[LoginPanel].hide
 	
 	await U.set_timeout(1.0 if !skip_boot else 0)
 	
@@ -455,7 +455,7 @@ func return_to_app(ref:int) -> void:
 
 # -----------------------------------	
 func reveal_logo(state:bool, delay:float = 0.0) -> void:
-	await U.tween_node_property(LogoPanel, 'position:y', control_pos[LogoPanel].show if state else control_pos[LogoPanel].hide, 0.7, delay)
+	await U.tween_node_property(LoginPanel, 'position:y', control_pos[LoginPanel].show if state else control_pos[LoginPanel].hide, 0.7, delay)
 # -----------------------------------	
 
 # -----------------------------------	
@@ -519,7 +519,7 @@ func check_graphics_settings(instant:bool = false) -> void:
 
 func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
-	GBL.update_and_save_user_profile(GBL.active_user_profile)
+	GBL.update_and_save_user_profile()
 	
 	await simulate_wait(duration)
 
@@ -596,6 +596,8 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 func force_close_app(ref:int) -> void:
 	var filtered:Array = running_apps_list.filter(func(item): return item.ref == ref)
 	if !filtered.is_empty():
+		if "force_save_and_quit" in filtered[0].node:
+			filtered[0].node.force_save_and_quit.call()
 		# quit node
 		filtered[0].node.queue_free()
 		# remove from taskbar

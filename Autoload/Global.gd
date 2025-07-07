@@ -1,22 +1,33 @@
 @tool
 extends Node
 
-enum PLACEMENT {LEFT, RIGHT, TOP, BOTTOM}
-
 # ------------------------------------------------------------------------------
 var active_user_profile:Dictionary = {}
 var loaded_gameplay_data:Dictionary = {}
 
-func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
+func get_current_chapter() -> int:
+	return active_user_profile.story_progress.on_chapter
+	
+func mark_messages_played(on_chapter:int) -> void:
+	if on_chapter not in active_user_profile.story_progress.messages_played:
+		active_user_profile.story_progress.messages_played.push_back(on_chapter)
+	update_and_save_user_profile()
+	
+func has_message_been_played(on_chapter:int) -> bool:
+	if "story_message" not in STORY.chapters[on_chapter]:
+		return true
+	print(active_user_profile.story_progress.messages_played)
+	return on_chapter in active_user_profile.story_progress.messages_played
+
+func update_and_save_user_profile(_active_user_profile:Dictionary = active_user_profile) -> void:
 	# save file...
-	FS.save_file(FS.FILE.USER_PROFILE, user_profile_data)	
+	FS.save_file(FS.FILE.USER_PROFILE, _active_user_profile)	
 	# then push to global space
-	active_user_profile = user_profile_data
+	active_user_profile = _active_user_profile
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 var animation_queue:Array = []
-
 func add_to_animation_queue(node:Node) -> void:
 	if node not in animation_queue:
 		animation_queue.push_back(node)

@@ -106,7 +106,7 @@ func return_data_with_uid(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 func generate_researcher(assign_spec:int = 1) -> Array:
 	var uid:String = U.generate_uid()
-	var lname:int =  U.generate_rand(0, 5)
+	var lname:int =  U.generate_rand(0, 100)
 	
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
@@ -130,7 +130,7 @@ func generate_researcher(assign_spec:int = 1) -> Array:
 		0, 																			# 8 EXP
 		1, 																			# 9 LVL
 		{"clone_iteration": 0, "original_uid": null}, 								# 10 CLONE TRACKER
-		{"assigned_to_room": {}},													# 11 ASSIGNED TO ROOM
+		{"assigned_to_room": {}, "slot": 0},											# 11 ASSIGNED TO ROOM
 		
 	]
 # ------------------------------------------------------------------------------
@@ -149,9 +149,10 @@ func get_user_object(val:Array) -> Dictionary:
 	var level:int = val[9]
 	var clone_props:Dictionary = val[10]
 	var props:Dictionary = val[11]
-	
+	var gender_val:int = int(uid_val.right(2))
+
 	# images
-	var img_src:String = "res://Media/images/researcher_female_02.jpg"
+	var img_src:String = "res://Media/images/ProfilePics/researcher_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/researcher_female_01.jpg"
 	
 	# get name
 	var lname:String = get_lname(name_val)
@@ -199,14 +200,108 @@ func get_user_object(val:Array) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_lname(i:int) -> String:
+func get_lname(i: int) -> String:
 	match i:
-		0: return 'RYAN'
-		1: return 'MARTIN'
-		2: return 'OYAS'
-		3: return 'SINCLAIRE'
-		4: return 'WOODS'
-		5: return 'VIAJAR'
+		0: return 'ADAMS'
+		1: return 'ALEXANDER'
+		2: return 'ARNOLD'
+		3: return 'BAILEY'
+		4: return 'BARNES'
+		5: return 'BELL'
+		6: return 'BENNETT'
+		7: return 'BOONE'
+		8: return 'BOWMAN'
+		9: return 'BRYANT'
+		10: return 'BROOKS'
+		11: return 'BURNS'
+		12: return 'BUTLER'
+		13: return 'CARTER'
+		14: return 'CASEY'
+		15: return 'COLE'
+		16: return 'COLEMAN'
+		17: return 'COX'
+		18: return 'DAVIS'
+		19: return 'DIAZ'
+		20: return 'DOUGLAS'
+		21: return 'FLEMING'
+		22: return 'FORD'
+		23: return 'FOSTER'
+		24: return 'GARCIA'
+		25: return 'GIBBS'
+		26: return 'GONZALEZ'
+		27: return 'GRAHAM'
+		28: return 'GRIFFIN'
+		29: return 'HAMILTON'
+		30: return 'HAYES'
+		31: return 'HENDERSON'
+		32: return 'HERNANDEZ'
+		33: return 'HOLLAND'
+		34: return 'HOUSTON'
+		35: return 'HOWARD'
+		36: return 'JENKINS'
+		37: return 'JOHNSON'
+		38: return 'KIM'
+		39: return 'KNIGHT'
+		40: return 'LEE'
+		41: return 'MARTIN'
+		42: return 'MCCOY'
+		43: return 'MORALES'
+		44: return 'MYERS'
+		45: return 'NELSON'
+		46: return 'OYAS'
+		47: return 'PARKER'
+		48: return 'PAUL'
+		49: return 'PEARSON'
+		50: return 'PERRY'
+		51: return 'PRICE'
+		52: return 'RAMOS'
+		53: return 'REED'
+		54: return 'RIVERA'
+		55: return 'ROSS'
+		56: return 'RUSSELL'
+		57: return 'RYAN'
+		58: return 'SANDERS'
+		59: return 'SINCLAIRE'
+		60: return 'SPENCER'
+		61: return 'STEPHENS'
+		62: return 'SULLIVAN'
+		63: return 'VIAJAR'
+		64: return 'WALLACE'
+		65: return 'WATSON'
+		66: return 'WEST'
+		67: return 'WOOD'
+		68: return 'WOODS'
+		69: return 'SMITH'
+		70: return 'ALLEN'
+		71: return 'BANKS'
+		72: return 'BLAKE'
+		73: return 'BURTON'
+		74: return 'CHAVEZ'
+		75: return 'CLARK'
+		76: return 'CRUZ'
+		77: return 'DUNN'
+		78: return 'ELLIOTT'
+		79: return 'EVANS'
+		80: return 'FISHER'
+		81: return 'FRANKLIN'
+		82: return 'GARRETT'
+		83: return 'GEORGE'
+		84: return 'GIBSON'
+		85: return 'GRAVES'
+		86: return 'GREEN'
+		87: return 'HARRIS'
+		88: return 'HUNTER'
+		89: return 'JACKSON'
+		90: return 'JAMES'
+		91: return 'JORDAN'
+		92: return 'KENNEDY'
+		93: return 'LARSON'
+		94: return 'LAWSON'
+		95: return 'MORGAN'
+		96: return 'MURPHY'
+		97: return 'REYNOLDS'
+		98: return 'SHAW'
+		99: return 'WELLS'
 	return 'SMITH'
 # ------------------------------------------------------------------------------
 
@@ -334,6 +429,7 @@ func clone_researcher(uid:String) -> void:
 	cloned_researcher[10].clone_iteration += 1
 	cloned_researcher[10].original_uid = uid if is_original else cloned_researcher[10].original_uid
 	cloned_researcher[11].assigned_to_room = {}
+	cloned_researcher[11].slot = 0
 	
 	hired_lead_researchers_arr.push_back(cloned_researcher)
 	
@@ -375,6 +471,7 @@ func change_status_to_kia(uid:String) -> Dictionary:
 			if i[6].current <= 0:
 				i[5] = RESEARCHER.STATUS.KIA
 				i[11].assigned_to_room = {}
+				i[11].slot = 0
 		return i
 	)
 	

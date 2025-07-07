@@ -1,9 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://ddkvohnxbwq22"]
+[gd_scene load_steps=18 format=3 uid="uid://ddkvohnxbwq22"]
 
-[ext_resource type="Script" uid="uid://b3atfi3xe6ern" path="res://Scenes/DoorScene/door_scene.gd" id="1_enmig"]
+[ext_resource type="Script" uid="uid://b3atfi3xe6ern" path="res://Scenes/CellScene/cell_scene.gd" id="1_enmig"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_fu8yw"]
-[ext_resource type="PackedScene" uid="uid://bbo8dutfowpc6" path="res://Scenes/DoorScene/parts/StoryNarration.tscn" id="3_y10y4"]
-[ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="4_y10y4"]
+[ext_resource type="PackedScene" uid="uid://bbo8dutfowpc6" path="res://Scenes/CellScene/parts/StoryNarration.tscn" id="3_y10y4"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y10y4"]
 
@@ -207,7 +206,7 @@ size = Vector2(15, 3)
 [sub_resource type="BoxMesh" id="BoxMesh_t1p0s"]
 size = Vector3(1, 2, 0.1)
 
-[node name="DoorScene" type="PanelContainer"]
+[node name="CellScene" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -314,12 +313,14 @@ skeleton = NodePath("OmniLight3D")
 [node name="OmniLight3D" type="OmniLight3D" parent="RenderSubviewport/Node3D/Desk/Screen"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00289717, 0.0292223, 0.254119)
 light_color = Color(0.809196, 0.996359, 0.884591, 1)
-light_energy = 0.461
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.0
+light_energy = 1.461
+light_indirect_energy = 7.667
+light_volumetric_fog_energy = 3.111
 light_specular = 0.0
 shadow_enabled = true
-omni_range = 0.52
+omni_range = 0.472
+omni_attenuation = 1.139
+omni_shadow_mode = 0
 
 [node name="Sprite3D" type="Sprite3D" parent="RenderSubviewport/Node3D/Desk/Screen"]
 transform = Transform3D(1.16184, 0, 0, 0, 1, 0, 0, 0, 1.05997, 0, 0, 0.00720161)
@@ -331,7 +332,6 @@ texture = SubResource("ViewportTexture_t1p0s")
 size = Vector2i(640, 480)
 
 [node name="TextureRect" type="TextureRect" parent="RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport"]
-material = ExtResource("4_y10y4")
 offset_right = 640.0
 offset_bottom = 480.0
 expand_mode = 1
@@ -380,6 +380,6 @@ fov = 122.9
 [node name="Camera3D" type="Camera3D" parent="RenderSubviewport/Node3D"]
 transform = Transform3D(0.927184, 0, 0.374606, 0, 1, 0, -0.374606, 0, 0.927184, 0.085, 0, 0)
 current = true
-fov = 25.5
+fov = 20.0
 size = 3.105
 far = 89.32

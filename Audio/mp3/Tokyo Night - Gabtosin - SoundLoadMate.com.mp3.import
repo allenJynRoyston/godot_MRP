@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d7v4j5b76b8f"
+path="res://.godot/imported/Tokyo Night - Gabtosin - SoundLoadMate.com.mp3-5dc2c26d14a3be92eca5ce26a28f1fff.mp3str"
+
+[deps]
+
+source_file="res://Audio/mp3/Tokyo Night - Gabtosin - SoundLoadMate.com.mp3"
+dest_files=["res://.godot/imported/Tokyo Night - Gabtosin - SoundLoadMate.com.mp3-5dc2c26d14a3be92eca5ce26a28f1fff.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

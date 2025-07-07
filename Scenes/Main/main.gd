@@ -4,7 +4,7 @@ extends PanelContainer
 @onready var Output:TextureRect = $FinalOutput/Output
 @onready var Gamelayer:SubViewport = $GameLayer
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
-@onready var DoorScene:PanelContainer = $GameLayer/DoorScene
+@onready var CellScene:PanelContainer = $GameLayer/CellScene
 @onready var OSViewport:SubViewport = $OS
 @onready var OSNode:PanelContainer = $OS/OSPanel
 @onready var OSTexture:TextureRect = $GameLayer/OSTexture
@@ -26,7 +26,7 @@ extends PanelContainer
 @onready var MusicShaderTexture:TextureRect = $MusicShader/MusicShaderTexture
 
 # ENUMS
-enum LAYER {DOOR_LAYER, OS_lAYER, GAMEPLAY_LAYER}
+enum LAYER {CELLBLOCK_LAYER, OS_lAYER, GAMEPLAY_LAYER}
 enum SHADER_PROFILE {NONE, ALL}
 
 # CONSTS
@@ -187,6 +187,7 @@ var default_save_profiles:Dictionary = {
 var user_profile_schema:Dictionary = {
 	"story_progress": {
 		"on_chapter": skip_to_chapter if debug_story_progress else 0,
+		"messages_played": [],
 		"completed_chapters": []
 	},
 	"graphics": {
@@ -249,11 +250,11 @@ func _ready() -> void:
 	assign_debugs()
 
 	# assign functions
-	DoorScene.onLogin = func() -> void:
+	CellScene.onLogin = func() -> void:
 		start_os_layer()
 	
 	OSNode.onBack = func() -> void:
-		current_layer = LAYER.DOOR_LAYER
+		current_layer = LAYER.CELLBLOCK_LAYER
 		
 	# get default parameters
 	duplicate_shader_defaults()
@@ -292,7 +293,10 @@ func assign_debugs() -> void:
 	# skips
 	DEBUG.assign(DEBUG.SKIP_SPLASH, skip_splash)	
 	DEBUG.assign(DEBUG.SKIP_INTRO, skip_intro)
+	
+	# office
 	DEBUG.assign(DEBUG.SKIP_OFFICE_INTRO, skip_office_intro)
+	DEBUG.assign(DEBUG.OFFICE_SKIP_ANIMATION, office_skip_animation)
 	
 	# intro
 	DEBUG.assign(DEBUG.INTRO_SKIP_LOGO, intro_skip_logo)
@@ -361,17 +365,15 @@ func start() -> void:
 		IntroAndTitleScreen.start()
 		await IntroAndTitleScreen.on_complete
 
-	current_layer = LAYER.DOOR_LAYER	
+	current_layer = LAYER.CELLBLOCK_LAYER	
 	await U.tick()
 	
-	
-	if !DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
-		DoorScene.start()
-	else:
-		DoorScene.fastfoward()
-	
 	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
-		DoorScene.skip_to_login()
+		CellScene.skip_to_login()
+		return
+		
+	# apply fast forward
+	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )		
 # -----------------------------------			
 
 # -----------------------------------		
@@ -446,7 +448,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_node:Control) -> void:
-	for node in [DoorScene, OSNode]:
+	for node in [CellScene, OSNode]:
 		if node == use_node:
 			node.z_index = 1
 			node.show()
@@ -456,7 +458,7 @@ func switch_to_node(use_node:Control) -> void:
 				node.switch_to()
 		else: 
 			node.z_index = -1
-			if node == DoorScene:
+			if node == CellScene:
 				node.hide()
 			node.set_process(false)
 			node.set_physics_process(false)
@@ -464,7 +466,7 @@ func switch_to_node(use_node:Control) -> void:
 	TransitionScreen.start(0.7, true)
 	
 	match use_node:
-		DoorScene:
+		CellScene:
 			shader_profile = SHADER_PROFILE.NONE
 				
 		OSNode:
@@ -479,8 +481,8 @@ func on_current_layer_update() -> void:
 
 	match current_layer:
 		# -----------
-		LAYER.DOOR_LAYER:
-			switch_to_node(DoorScene)
+		LAYER.CELLBLOCK_LAYER:
+			switch_to_node(CellScene)
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
 	

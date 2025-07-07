@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://bbo8dutfowpc6"]
 
-[ext_resource type="Script" uid="uid://cehjigucmd63m" path="res://Scenes/DoorScene/parts/story_narration.gd" id="1_nskse"]
+[ext_resource type="Script" uid="uid://cehjigucmd63m" path="res://Scenes/CellScene/parts/story_narration.gd" id="1_nskse"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_2i2yr"]
 [ext_resource type="Texture2D" uid="uid://c0w62ba8jtw6e" path="res://Media/images/researcher_girl_01.jpg" id="2_gfp2v"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_nskse"]

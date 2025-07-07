@@ -1,7 +1,6 @@
-[gd_scene load_steps=28 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=29 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_f7wb2"]
 [ext_resource type="Script" uid="uid://cbyqr6lnfrevh" path="res://Scenes/IntroAndTitleScreen/camera_3d.gd" id="2_r577g"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
@@ -10,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://d26ruk5g28ttk" path="res://Scenes/IntroSplash/IntroSplash.tscn" id="4_6bd6i"]
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_yi28m"]
 [ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="8_6bd6i"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="9_bxtjv"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="11_6bd6i"]
@@ -74,15 +74,22 @@ size = Vector2(200, 200)
 viewport_path = NodePath("Title/RenderSubviewport")
 
 [sub_resource type="LabelSettings" id="LabelSettings_4urbo"]
-font = ExtResource("2_f7wb2")
-font_size = 256
-font_color = Color(0.54, 0.54, 0.54, 1)
+font = ExtResource("7_yi28m")
+font_size = 180
 outline_size = 6
-outline_color = Color(0.54, 0.54, 0.54, 1)
+outline_color = Color(0.695503, 0.695503, 0.695503, 1)
+shadow_offset = Vector2(5, 5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bxtjv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x2mjg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bp17p"]
+font = ExtResource("7_yi28m")
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.447059)
+shadow_color = Color(0, 0, 0, 0.490196)
+shadow_offset = Vector2(2, 2)
 
 [node name="IntroAndTitleScreen" type="PanelContainer"]
 z_index = 100
@@ -429,7 +436,7 @@ expand_mode = 1
 [node name="StartLabel" type="Label" parent="PressStart/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "PRESS ANY KEY TO BEGIN"
-label_settings = ExtResource("9_bxtjv")
+label_settings = SubResource("LabelSettings_bp17p")
 horizontal_alignment = 1
 vertical_alignment = 2
 
@@ -447,7 +454,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="PressStart/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
-text = "Version 0.1 (Beta - Internval Use Onlly)"
+text = "Version 0.1.1B  (Internal Use Only)"
 label_settings = ExtResource("11_6bd6i")
 horizontal_alignment = 1
 vertical_alignment = 2

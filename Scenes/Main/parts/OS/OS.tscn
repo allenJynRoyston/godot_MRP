@@ -1,11 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=24 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="Texture2D" uid="uid://j2sk54heuc2t" path="res://Media/images/OS/bg_0.png" id="2_25k47"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
 [ext_resource type="PackedScene" uid="uid://cyjoo87vkcy0s" path="res://Scenes/Main/parts/OS/Options/Options.tscn" id="3_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
-[ext_resource type="LabelSettings" uid="uid://cl0raoi8pa3g5" path="res://Fonts/game/label_small_black.tres" id="5_25k47"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_b50hp"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
@@ -14,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://Scenes/Main/parts/OS/Notification/Notification.tscn" id="7_mdufi"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="8_13atc"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_tw6u7"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="9_jsaqf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
@@ -63,16 +63,19 @@ shader_parameter/step_count = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25k47"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jsaqf"]
-bg_color = Color(0, 0, 0, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+bg_color = Color(0.0941176, 0.0941176, 0.0941176, 0.878431)
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_fxpyd"]
+font = ExtResource("9_jsaqf")
+font_size = 8
+outline_size = 2
+outline_color = Color(0.67451, 0.67451, 0.67451, 0.345098)
+shadow_size = 0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6u7"]
 
@@ -145,11 +148,11 @@ layout_mode = 2
 [node name="TransitionScreen" parent="." instance=ExtResource("5_b50hp")]
 layout_mode = 2
 
-[node name="LogoControl" type="Control" parent="."]
+[node name="LoginControl" type="Control" parent="."]
 z_index = 10
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="LogoControl"]
+[node name="PanelContainer" type="PanelContainer" parent="LoginControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -158,7 +161,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_25k47")
 
-[node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="LoginControl/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -167,32 +170,33 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 35
 
-[node name="PanelContainer" type="PanelContainer" parent="LogoControl/PanelContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="LoginControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jsaqf")
 
-[node name="MarginContainer" type="MarginContainer" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="LoginControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="LoginControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="IconBtn" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("5_jsaqf")]
+[node name="IconBtn" parent="LoginControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("5_jsaqf")]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 3
 static_color = Color(0, 0.721569, 0, 1)
 is_hoverable = false
 
-[node name="Label" type="Label" parent="LogoControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="LoginControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "LOGGED IN AS SITE DIRECTOR"
-label_settings = ExtResource("5_25k47")
+label_settings = SubResource("LabelSettings_fxpyd")
 vertical_alignment = 1
 
 [node name="NodeControl" type="Control" parent="."]

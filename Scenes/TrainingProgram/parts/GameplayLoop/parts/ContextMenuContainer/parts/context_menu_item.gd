@@ -45,16 +45,16 @@ func on_data_update() -> void:
 	if "placement" in menu_data and !previous_node_data.is_empty():
 		context_menu_position = previous_node_data.global_pos
 		
-		match menu_data.placement:
-			GBL.PLACEMENT.TOP:
-				context_menu_position += Vector2(0, -previous_node_data.size.y - spacing)
-			GBL.PLACEMENT.BOTTOM:
-				context_menu_position += Vector2(0, previous_node_data.size.y + spacing)
-			GBL.PLACEMENT.RIGHT:
-				context_menu_position += Vector2(previous_node_data.size.x + spacing, 0)
-			GBL.PLACEMENT.LEFT:
-				context_menu_position += Vector2(-previous_node_data.size.x - spacing, 0)
-	
+		#match menu_data.placement:
+			#GBL.PLACEMENT.TOP:
+				#context_menu_position += Vector2(0, -previous_node_data.size.y - spacing)
+			#GBL.PLACEMENT.BOTTOM:
+				#context_menu_position += Vector2(0, previous_node_data.size.y + spacing)
+			#GBL.PLACEMENT.RIGHT:
+				#context_menu_position += Vector2(previous_node_data.size.x + spacing, 0)
+			#GBL.PLACEMENT.LEFT:
+				#context_menu_position += Vector2(-previous_node_data.size.x - spacing, 0)
+	#
 	
 	
 	# menu content position

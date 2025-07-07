@@ -122,7 +122,7 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(LogoTextureRect, 'scale:y', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
 				await U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 1), 1.0, 0.3)
 				
-				await U.set_timeout(1.0)
+				await U.set_timeout(2.0)
 				# fade out
 				U.tween_node_property(LogoTextureRect, 'scale:x', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
 				U.tween_node_property(LogoTextureRect, 'scale:y', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
@@ -160,9 +160,9 @@ func on_current_mode_update() -> void:
 					U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 1), 0.3)
 					U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 1), 0.3)
 					
-					await U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show, 0.3, Tween.TRANS_LINEAR)
+					await U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show + 5, 0.3, Tween.TRANS_LINEAR)
 					await U.set_timeout(item.wait)
-					U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show - 10, 0.3, Tween.TRANS_LINEAR)
+					U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show - 5, 0.3, Tween.TRANS_LINEAR)
 					await U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 0), 0.4)
 				
 				U.tween_node_property(SceneCamera, 'fov', 60, 4.0)
@@ -182,11 +182,11 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_STARTAT):
 
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].show)
-				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.3)
+				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
 				await user_input
 			
-				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide, 0.3)
-				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3, 0.3)
+				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide)
+				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
 				
 				GBL.find_node(REFS.AUDIO).fade_out(2.0)
 				await U.tween_node_property(SceneCamera, 'fov', 100, 2.0)

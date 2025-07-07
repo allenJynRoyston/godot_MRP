@@ -128,7 +128,6 @@ func check_if_have_enough(cost_arr:Array) -> bool:
 # ------------------------------------------------------------------------------
 func make_update_to_currency_amount(ref:RESOURCE.CURRENCY, amount:int) -> void:
 	resources_data[ref].amount = U.min_max(resources_data[ref].amount + amount, 0, resources_data[ref].capacity) 
-	print("update resources_data: ", resources_data)
 	SUBSCRIBE.resources_data = resources_data	
 # ------------------------------------------------------------------------------
 

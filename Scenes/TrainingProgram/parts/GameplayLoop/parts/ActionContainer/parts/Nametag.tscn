@@ -19,6 +19,7 @@ layout_mode = 2
 theme_override_constants/separation = -5
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_o1lms")
 

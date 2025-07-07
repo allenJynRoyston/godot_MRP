@@ -16,12 +16,6 @@ enum MODE {INIT, START, START_AT_SCREEN}
 var MAIN_NODE:Control
 var control_pos:Dictionary = {}
 
-var current_mode:MODE = MODE.INIT : 
-	set(val):
-		current_mode = val
-		on_current_mode_update()
-
-var is_ready:bool = false
 var onLogin:Callable = func():pass
 
 # new values
@@ -29,6 +23,9 @@ var story_progress:Dictionary = {}
 #var story_index:int
 var allow_replay:bool = true
 
+var original_fov:float
+var original_rotation_degrees:Vector3
+var fast_animation:bool = false
 
 signal on_finish
 signal wait_for_story
@@ -45,20 +42,17 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.DOOR_SCENE)
 
 func _ready() -> void:
-	MAIN_NODE = GBL.find_node(REFS.MAIN)
-	
-	on_current_mode_update()	
-	#on_play_sequence_update()
-	
+	for subviewport in [ RenderSubviewport]:
+		subviewport.set_process(false)
+
+	for node in [ColorBG, TextureRender]:
+		node.show()	
+
+	MAIN_NODE = GBL.find_node(REFS.MAIN)	
+
 	BtnControls.reveal(false)
 	
-	
-	#IntroAndTitleScreen.on_end = func() -> void:
-		#IntroSubviewport.set_process(false)
-		#IntroSubviewport.get_child(0).hide()
-	
 	BtnControls.onCBtn = func() -> void:
-		if !is_ready:return
 		await BtnControls.reveal(false)		
 		await play_current_story_sequence()
 		BtnControls.reveal(true)	
@@ -68,49 +62,84 @@ func _ready() -> void:
 	# 
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready() or !allow_replay:return
-		var story_progress:Dictionary = GBL.active_user_profile.story_progress
+		#var story_progress:Dictionary = GBL.active_user_profile.story_progress
 		#var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
 		
 		#pass
-		#match key:
-			#"A":
-				#story_index = U.min_max(story_index - 1, 0, max_story_val)
-			#"D":
-				#story_index = U.min_max(story_index + 1, 0, max_story_val)
+		match key:
+			"A":
+				print("look left")
+			"D":
+				print("look righta")
 		
 		check_btn_states()
 	
+	original_fov = SceneCamera.fov
+	original_rotation_degrees = SceneCamera.rotation_degrees
+# ---------------------------------------------
+
+# ---------------------------------------------
+func start(use_fast_animation:bool = false) -> void:
+	show()	
+	await U.tick()	
+	check_btn_states()	
+
+	RenderSubviewport.set_process(true)	
+	TextureRender.texture = RenderSubviewport.get_texture()
+
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.LOADING
+	}
+	
+	fast_animation = use_fast_animation
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
+		
+	SceneAnimationPlayer.active = true
+	SceneAnimationPlayer.play("LightsOn")
+	BtnControls.reveal(true)
+
+func end() -> void:
+	hide()
+	on_finish.emit()
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_current_story_sequence() -> void:	
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var on_chapter:int = GBL.active_user_profile.story_progress.on_chapter
+	var on_chapter:int = GBL.get_current_chapter()
 	
 	StoryNarration.text_list = STORY.chapters[on_chapter].story_message 
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
 
-	# update btn states, reveal buttons
-	check_btn_states(false)	
+	# modify on action so it skips
+	BtnControls.a_btn_title = "SKIP"
+		
+	BtnControls.onAction = func() -> void:
+		await BtnControls.reveal(false)		
+		wait_for_story.emit()
 		
 	await U.set_timeout(0.3)
 	wait_for_story.emit()
+
+	GBL.mark_messages_played(on_chapter)
+	check_btn_states()
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_next_sequence() -> void:
 	allow_replay = false
+	var on_chapter:int = GBL.get_current_chapter()
 
 	# update available buttons
 	await BtnControls.reveal(true)	
-	check_btn_states(true)
+	check_btn_states()
 	
 	# change the root node to show this scene...
 	MAIN_NODE.current_layer = MAIN_NODE.LAYER.DOOR_LAYER
-	
+
 	# wait for story sequence to complete
 	await wait_for_story
+	GBL.mark_messages_played(on_chapter)
 	
 	# ... then revert to os scene
 	MAIN_NODE.current_layer = MAIN_NODE.LAYER.OS_lAYER
@@ -121,23 +150,24 @@ func play_next_sequence() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func check_btn_states(use_for_skip:bool = false) -> void:	
+func check_btn_states() -> void:	
 	if allow_replay:
-		var on_chapter:int = GBL.active_user_profile.story_progress.on_chapter
-		var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]
-
+		var on_chapter:int = GBL.get_current_chapter()
+		var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]		
+		var message_has_been_played:bool = GBL.has_message_been_played(on_chapter)
+				
 		# c btn title
-		BtnControls.c_btn_title = "PLAY MESSAGE"
+		BtnControls.hide_c_btn = !has_story_message
+		BtnControls.c_btn_title = "PLAY MESSAGE" if on_chapter not in GBL.active_user_profile.story_progress.messages_played else "REPLAY MESSAGE"
 		
 		# modify on action so it skips
-		BtnControls.a_btn_title = "SKIP" if use_for_skip else "LOGIN"
+		BtnControls.hide_a_btn = !message_has_been_played
+		BtnControls.a_btn_title = "LOGIN"
 			
 		BtnControls.onAction = func() -> void:
-			await BtnControls.reveal(false)		
-			if use_for_skip:
-				wait_for_story.emit()
-			else:
-				onLogin.call()
+			BtnControls.reveal(false)		
+			await zoom_into_screen(false)
+			onLogin.call()
 	
 	else:
 		# modify on action so it skips
@@ -150,86 +180,25 @@ func check_btn_states(use_for_skip:bool = false) -> void:
 		
 # ---------------------------------------------
 
+# ---------------------------------------------
+func zoom_into_screen(state:bool, duration:float = 2.0) -> void:
+	if state:
+		U.tween_node_property(SceneCamera, "fov", 77, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
+		await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7 if !fast_animation else 0.3, duration/2)	
+	else:
+		U.tween_node_property(SceneCamera, "rotation_degrees:y", original_rotation_degrees.y, 1.0 if !fast_animation else 0.3)	
+		U.tween_node_property(SceneCamera, "fov", 23, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
+		await U.set_timeout(duration - 0.6)
+# ---------------------------------------------
 
 # ---------------------------------------------
-func start() -> void:
-	show()	
-	await U.tick()	
-	check_btn_states(false)	
-
-	current_mode = MODE.START
-
-func fastfoward() -> void:
-	await U.tick()	
-	current_mode = MODE.START_AT_SCREEN
-	show()	
-	
 func skip_to_login() -> void:
 	await BtnControls.reveal(false)		
 	onLogin.call()
 
-func end() -> void:
-	hide()
-	current_mode = MODE.INIT
-	on_finish.emit()
-
-func switch_to() -> void:
-	if current_mode == MODE.INIT:
-		return
-		
+func switch_to() -> void:		
 	ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture
 		
-	is_ready = false	
-	await BtnControls.reveal(true)
-	is_ready = true
+	await zoom_into_screen(true)	
+	BtnControls.reveal(true)
 # ---------------------------------------------
-
-# ---------------------------------------------
-func on_current_mode_update() -> void:
-	if !is_node_ready():return
-	match current_mode:
-		# ---------
-		MODE.INIT:
-			for subviewport in [ RenderSubviewport]:
-				subviewport.set_process(false)
-
-			for node in [ColorBG, TextureRender]:
-				node.show()
-
-			ColorBG.color = Color.BLACK	
-		# ---------
-		MODE.START:
-			SUBSCRIBE.music_data = {
-				"selected": MUSIC.TRACK.LOADING
-			}
-			
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
-
-			RenderSubviewport.set_process(true)
-
-			U.tween_node_property(SceneCamera, "fov", 77, 4.0, 0, Tween.TRANS_EXPO)
-			TextureRender.texture = RenderSubviewport.get_texture()
-			
-			await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7, 2.5)
-			SceneAnimationPlayer.active = true
-			SceneAnimationPlayer.play("LightsOn")			
-			BtnControls.reveal(true)
-
-		# ---------
-		MODE.START_AT_SCREEN:
-			U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0)
-
-			RenderSubviewport.set_process(true)
-			U.tween_node_property(SceneCamera, "fov", 77, 0)
-			TextureRender.texture = RenderSubviewport.get_texture()
-			
-			U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0)
-			SceneAnimationPlayer.active = true
-			SceneAnimationPlayer.play("LightsOn")			
-			
-			BtnControls.reveal(true)
-
-		# ---------
-	
-	is_ready = true
-# ---------------------------------------------	

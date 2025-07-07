@@ -49,5 +49,6 @@ func unpause() -> void:
 		TrainingProgram.unpause()
 	
 func force_save_and_quit() -> void:
+	await GBL.find_node(REFS.AUDIO).fade_out(0.5)
 	await TrainingProgram.force_save_and_quit()
 # ------------------------------------------------------------------------------

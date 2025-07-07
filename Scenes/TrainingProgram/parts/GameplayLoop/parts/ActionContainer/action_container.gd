@@ -426,8 +426,8 @@ func show_build_options() -> void:
 
 	for listitem in [
 			{
-				"title": 'FACILITY', 
-				"type": ROOM.CATEGORY.STANDARD,
+				"title": 'RESOURCES', 
+				"type": ROOM.CATEGORY.RESOURCES,
 				"is_disabled_func": func(x:Dictionary) -> bool:
 					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
 				"hint_func": func(x:Dictionary) -> Dictionary:
@@ -438,6 +438,45 @@ func show_build_options() -> void:
 						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
 					},
 			},
+			{
+				"title": 'RECRUITMENT', 
+				"type": ROOM.CATEGORY.RECRUITMENT,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = x.details.description
+					return {
+						"icon": SVGS.TYPE.MONEY,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},			
+			{
+				"title": 'ENERGY', 
+				"type": ROOM.CATEGORY.ENERGY,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = x.details.description
+					return {
+						"icon": SVGS.TYPE.MONEY,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},
+			{
+				"title": 'UTILITY', 
+				"type": ROOM.CATEGORY.UTILITY,
+				"is_disabled_func": func(x:Dictionary) -> bool:
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x:Dictionary) -> Dictionary:
+					var description:String = x.details.description
+					return {
+						"icon": SVGS.TYPE.MONEY,
+						"title": x.details.name,
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+					},
+			},			
 			{
 				"title": 'CONTAINMENT', 
 				"type": ROOM.CATEGORY.CONTAINMENT,
@@ -1018,7 +1057,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			DeconstructBtn.is_disabled = is_room_empty
 
 			if can_take_action:
-				AbilityBtn.is_disabled = !has_options or nuke_activated
+				AbilityBtn.is_disabled = false
 				DeconstructBtn.is_disabled = (true if is_room_empty else !room_extract.room.can_destroy) or nuke_activated
 			else:
 				AbilityBtn.is_disabled = true
@@ -1238,7 +1277,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					BtnControls.c_btn_title = "AUTO ASSIGN"
 					BtnControls.onCBtn = func() -> void:
 						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-						GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref)
+						GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
 						RoomDetailsControl.show()
 						RoomDetailsControl.researcher_uid = node.researcher.uid 
 

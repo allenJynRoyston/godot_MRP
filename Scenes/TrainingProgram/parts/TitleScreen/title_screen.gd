@@ -1,6 +1,7 @@
 extends PanelContainer
 
 @onready var BtnControls:Control = $BtnControl
+@onready var ContinuePanel:Control = $ContinuePanel
 
 @onready var MainPanel:PanelContainer = $MainControl/PanelContainer
 @onready var MainMargin:MarginContainer = $MainControl/PanelContainer/MarginContainer
@@ -13,10 +14,8 @@ extends PanelContainer
 @onready var ContinueFromQuicksave:BtnBase = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/ContinueQuicksave
 @onready var QuitBtn:Control = $MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList/QuitBtn
 
-@onready var ContinueDetails:PanelContainer = $ContinueControl/ContinueDetails
-@onready var DetailName:Label = $ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/DetailName
-@onready var DetailDay:Label = $ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/DetailDay
-@onready var DetailDate:Label = $ContinueControl/ContinueDetails/MarginContainer/VBoxContainer/DetailDate
+
+
 
 enum MODE {TITLE, SCENARIO}
 
@@ -43,7 +42,6 @@ var quicksave_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active
 var has_after_setup:bool = !after_setup_data.is_empty()
 var has_checkpoint_data:bool = !checkpoint_data.is_empty()
 var has_quicksave_data:bool = !quicksave_data.is_empty()
-
 
 signal wait_for_input
 
@@ -73,7 +71,7 @@ func _ready() -> void:
 					ContinueFromQuicksave:
 						update_continue_panel(quicksave_data, node)
 					_:
-						ContinueDetails.hide()
+						ContinuePanel.data = {}
 		
 		
 	BtnControls.onBack = func() -> void:
@@ -148,7 +146,7 @@ func start(fast_boot:bool = false) -> void:
 
 # ------------------------------------------
 func end(action:String, props:Dictionary = {}) -> void:
-	ContinueDetails.hide()	
+	ContinuePanel.data = {}
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].hide, 0.7)
 	hide()
 	wait_for_input.emit({"action": action, "props": props})
@@ -162,14 +160,8 @@ func on_freeze_inputs_update() -> void:
 # ------------------------------------------
 func update_continue_panel(save_data:Dictionary, node:Control) -> void:
 	if save_data.is_empty():
-		ContinueDetails.hide()
 		return
 
-	var modification_date:Dictionary = save_data.metadata.modification_date
-	
-	DetailDay.text = "DAY %s" % save_data.progress_data.day
-	DetailDate.text = "%s/%s/%s" % [modification_date.month, modification_date.day, modification_date.year]
-	ContinueDetails.position = node.global_position + node.size - Vector2(0, ContinueDetails.size.y) + Vector2(20, 0)
-	ContinueDetails.show()	
-	
+	ContinuePanel.position = node.global_position + node.size  - Vector2(0, 50) + Vector2(20, 0)
+	ContinuePanel.data = save_data
 # ------------------------------------------

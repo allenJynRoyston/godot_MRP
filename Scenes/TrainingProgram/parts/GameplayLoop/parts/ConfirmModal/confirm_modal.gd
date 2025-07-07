@@ -85,12 +85,12 @@ func activate(auto_start:bool = true) -> void:
 	
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"hide": -ContentMargin.size.x
+		"hide": -(ContentMargin.size.y + 100)
 	}
 	
 	control_pos[ResourcePanel] = {
 		"show": 0, 
-		"hide": ResourceMargin.size.y
+		"hide": (ResourceMargin.size.y + 100)
 	}	
 	
 	ResourcePanel.position.y = control_pos[ResourcePanel].hide

@@ -37,6 +37,7 @@ var previous_show_taskbar_state:bool
 # ------------------------------------------------------------------------------
 func assign_nodes() -> void:	
 	GameplayNode = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	
 	#ConfirmModal = GameplayNode.ConfirmModal
 	Structure3dContainer = GameplayNode.Structure3dContainer
 	ToastContainer = GameplayNode.ToastContainer
@@ -798,7 +799,7 @@ func hire_researcher(total_options:int) -> bool:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func auto_assign_staff(spec_ref:int, location_data:Dictionary = current_location) -> void:
+func auto_assign_staff(spec_ref:int, index:int, location_data:Dictionary = current_location) -> void:
 	var filter_for_spec:Array = [spec_ref]
 	var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)	
 	if available_researchers.is_empty():return
@@ -808,8 +809,10 @@ func auto_assign_staff(spec_ref:int, location_data:Dictionary = current_location
 		# add current users
 		if i[0] in uid:
 			i[11].assigned_to_room = location_data.duplicate()
+			i[11].slot = index
 		return i
 	)
+	
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr	
 # --------------------------------------------------------------------------------------------------	
 
@@ -1149,8 +1152,7 @@ func increament_story() -> void:
 	GBL.active_user_profile.story_progress.on_chapter = U.min_max(GBL.active_user_profile.story_progress.on_chapter + 1, 0, STORY.get_objectives().size() - 1)	
 	
 	# then update
-	print("GBL.active_user_profile.story_progress: ", GBL.active_user_profile.story_progress)
-	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+	GBL.update_and_save_user_profile()	
 # ------------------------------------------------------------------------------	
 
 

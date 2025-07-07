@@ -103,47 +103,38 @@ theme_override_constants/v_separation = 5
 columns = 3
 
 [node name="ShopMiniCard" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard2" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard3" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard4" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard5" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard6" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard7" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard8" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
 [node name="ShopMiniCard9" parent="MainControl/MainPanel/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/GridContainer" instance=ExtResource("5_08bo1")]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 ref = -1
 
@@ -195,7 +186,6 @@ no_bg = true
 title = "500"
 display_at_bottom = true
 icon_size = Vector2(50, 50)
-is_faded = false
 
 [node name="RoomMiniCard" parent="MiniCardControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("9_rlxop")]
 custom_minimum_size = Vector2(0, 400)

@@ -40,7 +40,6 @@ func on_data_update() -> void:
 					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
-						"track_list": data.music_track_list,
 						"selected": index,
 					},
 			})
@@ -56,7 +55,6 @@ func on_data_update() -> void:
 					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
 					GBL.music_data = {
-						"track_list": data.music_track_list,
 						"selected": index,
 					},
 			})

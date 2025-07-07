@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://drl5j6ar67y2m"]
 
-[ext_resource type="Shader" uid="uid://6lywykmyc01p" path="res://Shaders/blackWhiteInkPlasma.gdshader" id="1_pncsm"]
+[ext_resource type="Shader" uid="uid://6lywykmyc01p" path="res://CanvasShader/BlackWhite/blackWhiteInkPlasma.gdshader" id="1_pncsm"]
 
 [resource]
 shader = ExtResource("1_pncsm")

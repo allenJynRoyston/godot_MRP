@@ -35,6 +35,11 @@ func start() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var savedata:Dictionary = quicksave_data if !quicksave_data.is_empty() else {}
 
+	# play music
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.GAME_MAIN_MENU,
+	}	
+
 	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT QUICKSAVE, 
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):
 		if has_quicksave_data:
@@ -152,32 +157,36 @@ func on_game_over() -> void:
 
 func execute_action(action:String) -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
+	GBL.find_node(REFS.AUDIO).fade_out(2.0)
+	
 	
 	match action:
-		"START_NEW_GAME":
-			GBL.active_user_profile.story_progress.on_chapter = 0
-			GBL.update_and_save_user_profile(GBL.active_user_profile)
-			start_game({})
-			
-		"START_FROM_CHECKPOINT":
-			GBL.active_user_profile.story_progress.on_chapter = checkpoint_data.on_chapter
-			GBL.update_and_save_user_profile(GBL.active_user_profile)
-			start_game(checkpoint_data)
-			
-		"START_FROM_QUICKSAVE":
-			GBL.active_user_profile.story_progress.on_chapter = quicksave_data.on_chapter
-			GBL.update_and_save_user_profile(GBL.active_user_profile)
-			start_game(quicksave_data)
-			
-		"START_FROM_AFTER_SETUP":
-			GBL.active_user_profile.story_progress.on_chapter = after_setup_data.on_chapter
-			GBL.update_and_save_user_profile(GBL.active_user_profile)
-			start_game(after_setup_data)
-
 		"QUIT":
 			onQuit.call()		
 
 		"BACK_TO_TITLE": 
 			transition_node(FailState, false)		
 			await transition_node(TitleScreen, true)
+					
+		"START_NEW_GAME":
+			GBL.active_user_profile.story_progress.on_chapter = 0
+			GBL.update_and_save_user_profile()
+			start_game({})
+			
+		"START_FROM_AFTER_SETUP":
+			GBL.active_user_profile.story_progress.on_chapter = after_setup_data.on_chapter
+			GBL.update_and_save_user_profile()
+			start_game(after_setup_data)			
+			
+		"START_FROM_CHECKPOINT":
+			GBL.active_user_profile.story_progress.on_chapter = checkpoint_data.on_chapter
+			GBL.update_and_save_user_profile()
+			start_game(checkpoint_data)
+			
+		"START_FROM_QUICKSAVE":
+			GBL.active_user_profile.story_progress.on_chapter = quicksave_data.on_chapter
+			GBL.update_and_save_user_profile()
+			start_game(quicksave_data)
+
+
 		

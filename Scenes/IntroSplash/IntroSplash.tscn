@@ -1,9 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://d26ruk5g28ttk"]
+[gd_scene load_steps=8 format=3 uid="uid://d26ruk5g28ttk"]
 
 [ext_resource type="Script" uid="uid://bqjop57mc4ev2" path="res://Scenes/Main/title_splash.gd" id="1_rj601"]
+[ext_resource type="Material" uid="uid://drl5j6ar67y2m" path="res://CanvasShader/BlackWhite/BlackWhiteInkPlasma.tres" id="2_neclw"]
 [ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_rj601"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="3_sonds"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_rj601"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_rj601"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_neclw"]
+font = ExtResource("3_rj601")
+font_size = 32
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rj601"]
+font = ExtResource("3_rj601")
+font_size = 40
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(0, 0, 0, 1)
 
 [node name="TitleSplash" type="PanelContainer"]
 anchors_preset = 15
@@ -14,8 +26,13 @@ grow_vertical = 2
 script = ExtResource("1_rj601")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+material = ExtResource("2_neclw")
 layout_mode = 2
 color = Color(0.122252, 0.122252, 0.122252, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 0.917647)
 
 [node name="Splash" parent="." instance=ExtResource("2_rj601")]
 layout_mode = 2
@@ -24,32 +41,62 @@ v_offset = 200
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_vertical = 0
+text = "The following software has been classified as a"
+label_settings = SubResource("LabelSettings_neclw")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "SEVERE COGNITOHAZARD"
+label_settings = SubResource("LabelSettings_rj601")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label3" type="Label" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_vertical = 0
+text = "by containment authorities."
+label_settings = SubResource("LabelSettings_neclw")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
 alignment = 1
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="CenterContainer/HBoxContainer4"]
-modulate = Color(1, 1, 1, 0.831373)
-custom_minimum_size = Vector2(400, 0)
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("3_sonds")
-bbcode_enabled = true
-text = "[center]
-The following software has been classified as a SEVERE COGNITOHAZARD by containment authorities.
+text = "Continue at your"
+label_settings = SubResource("LabelSettings_neclw")
+horizontal_alignment = 1
 
-Visual, auditory, and conceptual exposure has been linked to irreversible cognitive degradation, identity fracturing, and high-risk behavioral anomalies.
-
-Do not proceed.
-Do not attempt to interact.
-Do not observe any further content.
-
-
-This is your final warning. Exposure beyond this point is considered self-terminating.
-
-[/center]"
-fit_content = true
+[node name="RiskLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "own risk."
+label_settings = SubResource("LabelSettings_neclw")
+horizontal_alignment = 1
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 modulate = Color(1, 1, 1, 0)

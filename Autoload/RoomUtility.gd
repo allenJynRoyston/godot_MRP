@@ -7,7 +7,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
-	"categories": [ROOM.CATEGORY.STANDARD],
+	"categories": [ROOM.CATEGORY.UTILITY],
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Room description.",
 	# ------------------------------------------
@@ -30,10 +30,9 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
-	#"requires_specialization": RESEARCHER.SPECIALIZATION.ANY,	
-	#"required_personnel": [
-		## RESOURCE.PERSONNEL.STAFF
-	#],	
+	"required_support": [
+		# RESOURCE.PERSONNEL.STAFF
+	],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -297,8 +296,9 @@ func owns_and_is_active(ref:int) -> bool:
 # ------------------------------------------------------------------------------
 func get_category(category:ROOM.CATEGORY, unlock_level:int, start_at:int, limit:int) -> Dictionary:
 	var filter:Callable = func(list:Array) -> Array:
-		return list.filter(func(i): return (category in i.details.categories) and (unlock_level >= i.details.unlock_level))
-	
+		return list.filter(func(i): 
+			return (category in i.details.categories) and (unlock_level >= i.details.unlock_level)
+		)
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 

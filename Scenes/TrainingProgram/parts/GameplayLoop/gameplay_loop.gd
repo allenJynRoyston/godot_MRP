@@ -382,8 +382,6 @@ func _ready() -> void:
 
 	await U.tick()
 	
-	# assign
-	GAME_UTIL.assign_nodes()	
 		
 	LineDrawContainer.show()
 	show_only([])
@@ -400,11 +398,14 @@ func exit_game() -> void:
 #region START GAME
 func start() -> void:
 	show()
+	
+	# assign
+	GAME_UTIL.assign_nodes()	
 		
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
-	
+		
 	await U.tick()
 	start_new_game()
 
@@ -502,7 +503,7 @@ func start_new_game() -> void:
 
 	# start game music
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.GAME_TRACK_ONE,
+		"selected": MUSIC.TRACK.GAME_TRACK_TWO,
 	}	
 	
 	# update phase and start game
@@ -529,7 +530,7 @@ func start_new_game() -> void:
 		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = {}
 		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = {}
 		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = {}
-		GBL.update_and_save_user_profile(GBL.active_user_profile)			
+		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.PLAYER
 		
@@ -1022,7 +1023,7 @@ func on_current_phase_update() -> void:
 			# also this checkpoint ONLY ONCE
 			if GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup.is_empty():
 				create_after_setup_restore_point()
-				print("create_after_setup_restore_point ")
+				
 			
 			# create a restore point
 			create_checkpoint()
@@ -1087,7 +1088,7 @@ func quicksave(skip_timeout:bool = false) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves = get_save_state()	
 
 	# update and save user profile
-	GBL.update_and_save_user_profile(GBL.active_user_profile)
+	GBL.update_and_save_user_profile()
 	
 	if !skip_timeout:
 		await U.set_timeout(1.0)
@@ -1101,7 +1102,7 @@ func create_after_setup_restore_point(skip_timeout:bool = false) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = get_save_state()
 	
 	# update and save user profile
-	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+	GBL.update_and_save_user_profile()	
 	
 	if !skip_timeout:
 		await U.set_timeout(1.0)
@@ -1114,7 +1115,7 @@ func create_checkpoint(skip_timeout:bool = false) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint = get_save_state()
 	
 	# update and save user profile
-	GBL.update_and_save_user_profile(GBL.active_user_profile)	
+	GBL.update_and_save_user_profile()	
 	
 	if !skip_timeout:
 		await U.set_timeout(1.0)
@@ -1483,7 +1484,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
 			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		).size()
-
+		
 		room_config.is_activated = assigned_to_room_count >= required_staffing.size() 
 
 

@@ -1,10 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://528j86gp5aj2"]
+[gd_scene load_steps=6 format=3 uid="uid://528j86gp5aj2"]
 
 [ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="2_0kr8o"]
 [ext_resource type="Texture2D" uid="uid://ciyxen7577ylg" path="res://Media/images/Defaults/orange_software.png" id="2_1rmxq"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_chhwg"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_1rmxq"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_1rmxq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5hsv"]
 bg_color = Color(0.12549, 0.129412, 0.141176, 1)
@@ -12,6 +10,12 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_hi8yv"]
+font = ExtResource("3_1rmxq")
+font_size = 32
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.607843)
 
 [node name="LoadingComponent" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 200)
@@ -34,11 +38,11 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 20
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(800, 500)
+custom_minimum_size = Vector2(600, 300)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -53,18 +57,5 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/LoadingVBox"]
 layout_mode = 2
 text = "TITLE"
-label_settings = ExtResource("3_1rmxq")
+label_settings = SubResource("LabelSettings_hi8yv")
 horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/LoadingVBox"]
-layout_mode = 2
-text = "Loading... please wait."
-label_settings = ExtResource("2_0kr8o")
-horizontal_alignment = 1
-
-[node name="IconBtn" parent="MarginContainer/VBoxContainer/LoadingVBox" instance=ExtResource("2_chhwg")]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-size_flags_stretch_ratio = 1.28
-icon = 18
-is_hoverable = false

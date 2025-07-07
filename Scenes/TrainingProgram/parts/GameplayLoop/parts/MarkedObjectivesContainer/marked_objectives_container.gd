@@ -77,13 +77,13 @@ func on_bookmarked_objectives_update(new_val:Array) -> void:
 	super.on_bookmarked_objectives_update(new_val)
 	if !is_node_ready():return
 	on_reset()
-	
 	for objective in new_val:
 		var new_btn:Control = ObjectiveItemPreload.instantiate()
 		new_btn.is_naked = true
 		new_btn.show_bookmark = false
 		new_btn.is_expired = false
 		new_btn.is_upcoming = false
+		new_btn.is_optional = objective.is_optional
 		new_btn.content = objective.title
 		new_btn.you_have = objective.count_str.call(objective.you_have.call())
 		new_btn.is_completed = objective.is_completed.call()

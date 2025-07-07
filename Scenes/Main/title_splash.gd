@@ -5,6 +5,7 @@ extends PanelContainer
 @onready var BtnControls:Control = $BtnControls
 @onready var FadeOut:ColorRect = $ColorRect2
 @onready var TransitionScreen:Control = $TransitionScreen
+@onready var RiskLabel:Label = $CenterContainer/VBoxContainer/HBoxContainer/RiskLabel
 
 @onready var TitleHeader:Control = $MarginContainer/VBoxContainer/KeyBtn/VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
 
@@ -26,11 +27,13 @@ func start() -> void:
 	await Splash.activate()
 	Splash.start(true, 0.5, 0.3)
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7, 0.5)
-	await U.set_timeout(2.0)
+	await U.set_timeout(1.0)
 	BtnControls.reveal(true)
 	
 func end() -> void:
 	BtnControls.reveal(false)
+	await U.tween_node_property(RiskLabel, 'modulate', Color(1, 0, 0, 1), 1.0)
+	await U.set_timeout(0.3)
 	await U.tween_node_property(FadeOut, "modulate", Color(1, 1, 1, 1), 0.7)
 	await U.set_timeout(1.0)
 	on_complete.emit()

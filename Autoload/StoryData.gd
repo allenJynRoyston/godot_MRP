@@ -40,6 +40,23 @@ var chapters:Array = [
 						{"title": "Step 3", "cost": 5},
 					]
 				},
+				{
+					"custom": {
+						"title": "Activate all rooms.",
+						"count_str": func(amount:int) -> String:
+							var activated_count:int = ROOM_UTIL.get_activated_count()
+							return "(Rooms activated: %s out of %s)" % [activated_count, amount],
+						"you_have": func() -> int: 
+							return purchased_facility_arr.size(),
+						"is_completed": func() -> bool:
+							var total_count:int = purchased_facility_arr.size()
+							var activated_count:int = ROOM_UTIL.get_activated_count()
+							return total_count > 0 and total_count == activated_count,
+						},
+					"hints": [
+						{"title": "Custom step A", "cost": 1},
+					]
+				},
 			],
 			"optional": [
 				# --------------------- OPTIONAL
@@ -83,24 +100,25 @@ var chapters:Array = [
 				{
 					"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
 					"val": {
-						"func": func() -> void:
-							ROOM_UTIL.add_to_unlocked_list(ROOM.REF.HR_DEPARTMENT)
-							# TICK REQUIRED FOR ANY FUNC
-							await U.tick(),
+						"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
-				}
-		],		
+				},
+				{
+					"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
+					"val": {
+						"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
+					},
+					"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
+				}				
+		],
 	},
 	# ----------------------------------------------------------------------------------------------
 	
 	# ----------------------------------------------------------------------------------------------
 	{
-		"story_message": [
-			"Story section 2"
-		],		
 		"objectives": {
-			"title": "STAFF UP",
+			"title": "STAFF UP STAFFING",
 			"complete_by_day": 7,
 			"required":[
 				# --------------------- CRITERIA BASED OBJECTIVES
@@ -137,6 +155,9 @@ var chapters:Array = [
 						{"title": "Step 1", "cost": 1},
 					]
 				},
+
+			],
+			"optional": [
 				{
 					"criteria": {
 						"action": HAVE_AT_LEAST,
@@ -149,29 +170,24 @@ var chapters:Array = [
 					]
 				},				
 			],
-			"optional": [
-				## --------------------- OPTIONAL
-				#{
-					#"custom": {
-						#"title": "Contain SCP-T-001",
-						#"count_str": func(amount:int) -> String:
-							## purposely don't want to render this
-							#return "",
-						#"you_have": func() -> int: 
-							#return 0,
-						#"is_completed": func() -> bool:
-							#for ref in scp_data:
-								#var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-								#if scp_details.name == "SCP-T-001":
-									#return true
-							#return false,
-						#},
-					#"hints": [
-						#{"title": "Step custom 1", "cost": 1},
-					#]
-				#},
-			],
 		},
+		"rewarded": func() -> Array:
+			return [
+				{
+					"title":  ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).name,
+					"val": {
+						"func": rewarded_room.bind(ROOM.REF.GEOTHERMAL_POWER),
+					},
+					"hint_description": ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).description
+				},
+				{
+					"title":  ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).name,
+					"val": {
+						"func": rewarded_room.bind(ROOM.REF.MINIERAL_MINING),
+					},
+					"hint_description": ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).description
+				}				
+		],
 	},
 	# ----------------------------------------------------------------------------------------------	
 	
@@ -179,15 +195,31 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"objectives": {
-			"title": "Collect resources.",
-			"complete_by_day": 10,
+			"title": "SETUP ECONOMY",
+			"complete_by_day": 14,
 			"required":[
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1000,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
+				},
 				{
 					"criteria": {
 						"action": HAVE_AT_LEAST,
 						"amount": 500,
 						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.MONEY
+						"ref": RESOURCE.CURRENCY.SCIENCE
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 250,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MATERIAL
 					},
 				},
 			],
@@ -195,6 +227,47 @@ var chapters:Array = [
 		},
 	},
 	# ----------------------------------------------------------------------------------------------		
+	
+	# ----------------------------------------------------------------------------------------------
+	{
+		"objectives": {
+			"title": "CONTAIN AN SCP",
+			"complete_by_day": 28,
+			"required":[
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 3,
+						"type": TYPE.BUILDING,
+						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 3,
+						"type": TYPE.SCP,
+					},
+				},
+				{
+					"custom": {
+						"title": "Survive for at least 28 days.",
+						"count_str": func(amount:int) -> String:
+							return "(Survive for %s more days." % [progress_data.day - amount],
+						"you_have": func() -> int: 
+							return progress_data.day,
+						"is_completed": func() -> bool:
+							return progress_data.day >= 28,
+						},
+					"hints": [
+						{"title": "Custom step A", "cost": 1},
+					]
+				},
+			],
+			
+		},
+	},
+	# ----------------------------------------------------------------------------------------------			
 ];
 
 
@@ -230,58 +303,68 @@ var chapters:Array = [
 	# ---------------------
 
 # ----------------------------------------------------------------------------------------------		
+func rewarded_room(room_ref:int) -> void:
+	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
+	await GAME_UTIL.create_modal("You've received %s!" % [room_details.name], "Available in the BUILD menu.", room_details.img_src)	
+	ROOM_UTIL.add_to_unlocked_list(room_ref)
+
+func check_for_criteria(criteria:Dictionary) -> bool:
+	var current_amount = check_for_current(criteria)
+	match criteria.action:
+		HAVE_AT_LEAST:
+			return current_amount >= criteria.amount
+		HAVE_MORE_THAN:
+			return current_amount > criteria.amount
+		HAVE_NO_MORE_THAN:
+			return current_amount <= criteria.amount
+		HAVE_LESS_THAN:
+			return current_amount < criteria.amount
+		HAVE_EXACTLY:
+			return current_amount == criteria.amount
+	return false
+	
+
 func get_action_str(val:int) -> String:
 	match val:
-		STORY.HAVE_AT_LEAST:
+		HAVE_AT_LEAST:
 			return "Have at least"	
-		STORY.HAVE_MORE_THAN:
+		HAVE_MORE_THAN:
 			return "have more than"	
-		STORY.HAVE_NO_MORE_THAN:
+		HAVE_NO_MORE_THAN:
 			return "Have no more than"
-		STORY.HAVE_LESS_THAN:
+		HAVE_LESS_THAN:
 			return "Have less than"
-		STORY.HAVE_EXACTLY:
+		HAVE_EXACTLY:
 			return "Have exactly"
 	return ""
 
 func get_type_str(val:int, ref:int) -> String:
 	match val:
 		# -------
-		STORY.TYPE.CURRENCY:
+		TYPE.CURRENCY:
 			return RESOURCE_UTIL.return_currency(ref).name
-		STORY.TYPE.BUILDING:
+		TYPE.BUILDING:
 			return ROOM_UTIL.return_data(ref).name
-		STORY.TYPE.PERSONNEL:
+		TYPE.PERSONNEL:
 			return RESEARCHER_UTIL.return_specialization_data(ref).name
+		TYPE.SCP:
+			return ""
+			
 		# -------
 	return "UNDEFINED"
 
-func check_for_criteria(criteria:Dictionary) -> bool:
-	var current_amount = check_for_current(criteria)
 
-	match criteria.action:
-		STORY.HAVE_AT_LEAST:
-			return current_amount >= criteria.amount
-		STORY.HAVE_MORE_THAN:
-			return current_amount > criteria.amount
-		STORY.HAVE_NO_MORE_THAN:
-			return current_amount <= criteria.amount
-		STORY.HAVE_LESS_THAN:
-			return current_amount < criteria.amount
-		STORY.HAVE_EXACTLY:
-			return current_amount == criteria.amount
-			
-	return false
-	
 func check_for_current(criteria:Dictionary) -> int:
 	match criteria.type:
 		# --------
-		STORY.TYPE.CURRENCY:
+		TYPE.CURRENCY:
 			return resources_data[criteria.ref].amount 
-		STORY.TYPE.BUILDING:
+		TYPE.BUILDING:
 			return ROOM_UTIL.build_count(criteria.ref)
-		STORY.TYPE.PERSONNEL:
+		TYPE.PERSONNEL:
 			return RESEARCHER_UTIL.get_spec_count(criteria.ref)
+		TYPE.SCP:
+			return -1
 			
 	return -1
 # ----------------------------------------------------------------------------------------------		
@@ -343,7 +426,7 @@ func get_objectives() -> Array:
 			# ------------------------------------------------------------------
 			if objective.has("criteria"):
 				var title:String = ""
-				var ref:int = objective.criteria.ref
+				var ref:int = objective.criteria.ref if objective.criteria.has("ref") else -1
 				
 				for key in objective.criteria:
 					var val = objective.criteria[key]

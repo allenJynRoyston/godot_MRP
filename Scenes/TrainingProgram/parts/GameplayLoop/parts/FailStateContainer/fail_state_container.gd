@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var BtnControls:Control = $BtnControls
 @onready var Splash:Control = $ContainmentBreachSplash
+@onready var ContinuePanel:Control = $ContinuePanel
 
 @onready var FailStateBtnContainer:VBoxContainer = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer
 @onready var RestartBeginningBtn:BtnBase = $Control/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/FailStateBtnContainer/RestartBeginningBtn
@@ -12,6 +13,13 @@ extends PanelContainer
 
 @export var is_win_state:bool = false
 
+var after_setup_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup
+var checkpoint_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.restore_checkpoint
+var quicksave_data:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.quicksaves	
+
+var has_after_setup:bool = !after_setup_data.is_empty()
+var has_checkpoint_data:bool = !checkpoint_data.is_empty()
+var has_quicksave_data:bool = !quicksave_data.is_empty()
 
 signal wait_for_response
 
@@ -24,6 +32,16 @@ func _ready() -> void:
 		for btn in FailStateBtnContainer.get_children():
 			btn.is_selected = btn == node
 			btn.panel_color = Color(0.337, 0.275, 1.0) if btn == node else Color.BLACK
+			if btn == node:
+				match node:
+					RestartAfterSetupBtn:
+						update_continue_panel(after_setup_data, node)
+					RestartFromCheckpointBtn:
+						update_continue_panel(checkpoint_data, node)
+					RestartFromQuicksaveBtn:
+						update_continue_panel(quicksave_data, node)
+					_:
+						ContinuePanel.data = {}
 	
 	BtnControls.onBack = func() -> void:
 		await BtnControls.reveal(false)
@@ -39,7 +57,7 @@ func _ready() -> void:
 		
 	RestartFromCheckpointBtn.onClick = func() -> void:
 		await BtnControls.reveal(false)
-		end("START_FROM_AFTER_SETUP")
+		end("START_FROM_CHECKPOINT")
 	
 	RestartFromQuicksaveBtn.onClick = func() -> void:
 		await BtnControls.reveal(false)
@@ -73,3 +91,13 @@ func start() -> void:
 func end(action:String) -> void:
 	await BtnControls.reveal(false)
 	wait_for_response.emit(action)
+
+
+# ------------------------------------------
+func update_continue_panel(save_data:Dictionary, node:Control) -> void:
+	if save_data.is_empty():
+		return
+
+	ContinuePanel.position = node.global_position + node.size  - Vector2(0, 50) + Vector2(20, 0)
+	ContinuePanel.data = save_data
+# ------------------------------------------

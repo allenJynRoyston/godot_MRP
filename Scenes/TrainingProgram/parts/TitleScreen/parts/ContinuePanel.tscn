@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://bi7xftrg6xgiu"]
+
+[ext_resource type="Script" uid="uid://csqixsa63an1o" path="res://Scenes/TrainingProgram/parts/TitleScreen/parts/continue_panel.gd" id="1_qc4t1"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_i85kr"]
+[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_m17wq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jjhif"]
+bg_color = Color(0.337255, 0.27451, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bj0m6"]
+font = ExtResource("2_i85kr")
+font_size = 8
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
+shadow_size = 0
+
+[node name="ContinueControl" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_qc4t1")
+
+[node name="ContinueDetails" type="PanelContainer" parent="."]
+layout_mode = 2
+offset_right = 132.0
+offset_bottom = 54.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jjhif")
+
+[node name="MarginContainer" type="MarginContainer" parent="ContinueDetails"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ContinueDetails/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DetailName" type="Label" parent="ContinueDetails/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCENARIO NAME"
+label_settings = SubResource("LabelSettings_bj0m6")
+
+[node name="DetailDay" type="Label" parent="ContinueDetails/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "DAY 1"
+label_settings = SubResource("LabelSettings_bj0m6")
+
+[node name="DetailDate" type="Label" parent="ContinueDetails/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "01/12/2024"
+label_settings = SubResource("LabelSettings_bj0m6")
+
+[node name="Control" type="Control" parent="ContinueDetails"]
+layout_mode = 2
+
+[node name="IconBtn" parent="ContinueDetails/Control" instance=ExtResource("3_m17wq")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = -23.0
+offset_top = 18.0
+offset_right = 17.0
+offset_bottom = 58.0
+icon = 28
+static_color = Color(0.337255, 0.27451, 1, 1)
+is_hoverable = false

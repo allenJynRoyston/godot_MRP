@@ -57,20 +57,20 @@ func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers
 
 	var filtered:Array = hired_lead_researchers.filter(func(x):
 		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x)
-		var assigned_room = researcher_data.props.assigned_to_room
-		var specialization_ref = researcher_data.specialization.ref
+		var assigned_room:Dictionary = researcher_data.props.assigned_to_room
+		var slot:int = researcher_data.props.slot
+		var specialization_ref:int = researcher_data.specialization.ref
 
-		var is_assigned_to_room = !assigned_room.is_empty()
-		var matches_location = assigned_room == use_location
-		var is_specialist_match = specialization_ref == required_slot.ref
+		var is_assigned_to_room:bool = !assigned_room.is_empty()
+		var matches_location:bool = assigned_room == use_location
+		var is_specialist_match:bool = specialization_ref == required_slot.ref
 
 		if required_slot.ref == RESEARCHER.SPECIALIZATION.ANY:
-			return is_assigned_to_room and matches_location
+			return (is_assigned_to_room and matches_location) and (slot == index)
 		
-		return is_assigned_to_room and matches_location and is_specialist_match
+		return  (is_assigned_to_room and matches_location) and (slot == index) and is_specialist_match
 	)
 	
-
 	researcher = RESEARCHER_UTIL.get_user_object(filtered[0]) if filtered.size() > 0 else {}
 
 func on_researcher_update() -> void:
