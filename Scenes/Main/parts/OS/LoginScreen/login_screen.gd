@@ -29,7 +29,11 @@ signal is_complete
 
 func start() -> void:
 	show()
-	await U.set_timeout(1.0)
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.OS_STARTUP_SFX,
+	}
+	
+	await U.set_timeout(1.5)
 
 	for i in login_arr.size():
 		var str:String = login_arr[i]
@@ -46,4 +50,6 @@ func start() -> void:
 		else:
 			await U.set_timeout(0.2)  # Short pause between lines
 
+
+	GBL.find_node(REFS.AUDIO).fade_out(3.0)
 	queue_free()

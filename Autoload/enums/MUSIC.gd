@@ -3,6 +3,7 @@ extends Node
 enum TRACK { 
 	INTRO, 
 	LOADING, 
+	OS_STARTUP_SFX,
 	
 	GAME_MAIN_MENU,
 	GAME_TRACK_ONE, 
@@ -35,6 +36,16 @@ var track_list:Array = [
 			return true,
 		"file": preload("res://Audio/mp3/DEMO - Minimalista Electrónico - Gianluca Faccilongo - SoundLoadMate.com.mp3")
 	},
+	{
+		"details": {
+			"name": "OS_STARTUP_SFX",
+			"author": "OS_STARTUP_SFX",
+			"ref": TRACK.OS_STARTUP_SFX,
+		},
+		"unlocked": func(data:Dictionary) -> bool:
+			return false,
+		"file": preload("res://Audio/fx/Computer Start Up - Premier Sound - SoundLoadMate.com.mp3")
+	},	
 	
 	# ---------------------------------------------------------------------------------------------- GAME TRACKS
 	{

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b5fpns7nep642"
+path="res://.godot/imported/Computer Start Up - Premier Sound - SoundLoadMate.com.mp3-4aef83c7912334df3d746c489003a180.mp3str"
+
+[deps]
+
+source_file="res://Audio/fx/Computer Start Up - Premier Sound - SoundLoadMate.com.mp3"
+dest_files=["res://.godot/imported/Computer Start Up - Premier Sound - SoundLoadMate.com.mp3-4aef83c7912334df3d746c489003a180.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
