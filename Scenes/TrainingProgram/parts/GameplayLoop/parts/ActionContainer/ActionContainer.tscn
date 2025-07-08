@@ -456,7 +456,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "UPGRADE"
 assigned_key = "E"
-icon = 46
+icon = 15
 panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
@@ -1037,6 +1037,7 @@ is_disabled = false
 layout_mode = 2
 
 [node name="FloorPreviewControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="FloorPreviewControl"]

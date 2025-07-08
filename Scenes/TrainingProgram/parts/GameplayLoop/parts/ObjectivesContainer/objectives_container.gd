@@ -58,7 +58,7 @@ func _ready() -> void:
 		if purchase_hint.is_empty():return
 		await BtnControls.reveal(false)
 		
-		var activation_requirements = [{"amount": purchase_hint.cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)}]
+		var activation_requirements = [{"amount": -(purchase_hint.cost), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)}]
 		var confirm:bool = await GAME_UTIL.create_modal("Purchase hint #%s" % (hint_index + 1), "", "", activation_requirements)
 		
 		if confirm:

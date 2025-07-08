@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=29 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -32,6 +32,80 @@ viewport_path = NodePath("CRTShader")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1d3xd"]
 viewport_path = NodePath("Screenbend")
+
+[sub_resource type="Shader" id="Shader_wgovn"]
+code = "shader_type canvas_item;
+
+// Horizontal (Y-based scanline) controls
+uniform bool enable_horizontal = true;
+uniform float amplitude_h : hint_range(0.0, 50.0) = 20.0;
+uniform float frequency_h : hint_range(0.0, 10.0) = 5.0;
+uniform float speed_h : hint_range(0.0, 10.0) = 1.0;
+uniform float opacity_h : hint_range(0.0, 1.0) = 1.0;
+uniform int step_count_h : hint_range(1, 128) = 8;
+
+// Vertical (X-based columnline) controls
+uniform bool enable_vertical = true;
+uniform float amplitude_v : hint_range(0.0, 50.0) = 20.0;
+uniform float frequency_v : hint_range(0.0, 10.0) = 5.0;
+uniform float speed_v : hint_range(0.0, 10.0) = 1.0;
+uniform float opacity_v : hint_range(0.0, 1.0) = 1.0;
+uniform int step_count_v : hint_range(1, 128) = 8;
+
+void fragment() {
+    float offset_x = 0.0;
+    float offset_y = 0.0;
+
+    // Horizontal distortion (Y-axis based)
+    if (enable_horizontal) {
+        float y_px = floor(FRAGCOORD.y);
+        float wave_h = sin(y_px * frequency_h * 0.01 + TIME * speed_h);
+        float stepped_wave_h = floor(wave_h * float(step_count_h)) / float(step_count_h);
+        offset_x = stepped_wave_h * (amplitude_h * SCREEN_PIXEL_SIZE.x);
+    }
+
+    // Vertical distortion (X-axis based)
+    if (enable_vertical) {
+        float x_px = floor(FRAGCOORD.x);
+        float wave_v = sin(x_px * frequency_v * 0.01 + TIME * speed_v);
+        float stepped_wave_v = floor(wave_v * float(step_count_v)) / float(step_count_v);
+        offset_y = stepped_wave_v * (amplitude_v * SCREEN_PIXEL_SIZE.y);
+    }
+
+    vec2 distorted_uv = UV + vec2(offset_x, offset_y);
+
+    vec4 tex_color = texture(TEXTURE, distorted_uv);
+
+    // Apply opacity blending
+    float final_opacity = 1.0;
+    if (enable_horizontal && enable_vertical) {
+        final_opacity = mix(opacity_h, opacity_v, 0.5);
+    } else if (enable_horizontal) {
+        final_opacity = opacity_h;
+    } else if (enable_vertical) {
+        final_opacity = opacity_v;
+    }
+
+    tex_color.a *= final_opacity;
+
+    COLOR = tex_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hkvnm"]
+shader = SubResource("Shader_wgovn")
+shader_parameter/enable_horizontal = true
+shader_parameter/amplitude_h = 7.243
+shader_parameter/frequency_h = 1.098
+shader_parameter/speed_h = 0.274
+shader_parameter/opacity_h = 1.0
+shader_parameter/step_count_h = 6
+shader_parameter/enable_vertical = false
+shader_parameter/amplitude_v = 25.387
+shader_parameter/frequency_v = 1.21
+shader_parameter/speed_v = 0.887
+shader_parameter/opacity_v = 1.0
+shader_parameter/step_count_v = 4
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_e7if0"]
 viewport_path = NodePath("Texture")
@@ -99,7 +173,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-audio_mute = true
+is_production_build = true
 skip_splash = true
 skip_intro = true
 intro_skip_logo = true
@@ -111,7 +185,6 @@ office_skip_animation = true
 os_skip_boot = true
 os_app_fast_load = true
 skip_setup_progress = true
-start_at_ring_level = true
 skip_objectives = true
 enable_scp_debug = true
 max_energy = false
@@ -149,6 +222,14 @@ material = ExtResource("9_xggvw")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_y3p8a")
+stretch_mode = 2
+
+[node name="MousePointer" type="TextureRect" parent="GlitchShader"]
+z_index = 10
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("7_qdkat")
+expand_mode = 1
 stretch_mode = 2
 
 [node name="CRTShader" type="SubViewport" parent="."]
@@ -244,8 +325,22 @@ stretch_mode = 2
 size = Vector2i(1920, 1080)
 
 [node name="TextureRect" type="TextureRect" parent="ColorDepthShader"]
-offset_right = 1920.0
-offset_bottom = 1080.0
+material = SubResource("ShaderMaterial_hkvnm")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_e7if0")
+stretch_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="ColorDepthShader"]
+modulate = Color(1, 1, 1, 0.854902)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = SubResource("ViewportTexture_e7if0")
 stretch_mode = 2
 
@@ -280,14 +375,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_linol")
-stretch_mode = 2
-
-[node name="MousePointer" type="TextureRect" parent="FinalComposition"]
-z_index = 10
-offset_right = 1920.0
-offset_bottom = 1080.0
-texture = ExtResource("7_qdkat")
-expand_mode = 1
 stretch_mode = 2
 
 [node name="ColorRectBG" type="ColorRect" parent="FinalComposition"]

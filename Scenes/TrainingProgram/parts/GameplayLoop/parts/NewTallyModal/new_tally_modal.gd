@@ -84,16 +84,15 @@ func end() -> void:
 	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
 	TextureRectUI.material = duplicate_material
 
-	await U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
+	U.tween_range(TextureRectUI.material.get_shader_parameter("blur_radius"), 0.0, 0.3, func(val:float) -> void:
 		TextureRectUI.material.set_shader_parameter("blur_radius", val)
 	).finished	
 	
 	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)	
+	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)	
 	
 	await U.tween_node_property(self, "modulate:a", 0)
 
-	await U.set_timeout(0.3)
 	
 	# update amount
 	for ref in differential:

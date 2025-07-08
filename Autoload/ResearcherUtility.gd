@@ -152,8 +152,12 @@ func get_user_object(val:Array) -> Dictionary:
 	var gender_val:int = int(uid_val.right(2))
 
 	# images
-	var img_src:String = "res://Media/images/ProfilePics/researcher_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/researcher_female_01.jpg"
-	
+	var img_src:String = ""
+	match spec_val: 
+		RESEARCHER.SPECIALIZATION.SECURITY:
+			img_src = "res://Media/images/ProfilePics/security_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/security_female_01.png"
+		_:
+			img_src = "res://Media/images/ProfilePics/researcher_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/researcher_female_01.jpg"			
 	# get name
 	var lname:String = get_lname(name_val)
 	
@@ -405,6 +409,17 @@ func get_paginated_list(spec:int, start_at:int, limit:int, sort_asc:bool = true)
 	}
 # ------------------------------------------------------------------------------		
 
+# ------------------------------------------------------------------------------		
+func remove_assigned_location(use_location:Dictionary) -> void:
+	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		# clear out prior researchers
+		if U.dictionaries_equal(i[11].assigned_to_room, use_location):
+			i[11].assigned_to_room = {}
+			i[11].slot = 0
+		return i
+	)
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+# ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------	
 func promote_researcher(uid:String) -> void:	

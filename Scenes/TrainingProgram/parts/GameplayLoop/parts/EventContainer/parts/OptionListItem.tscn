@@ -1,11 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=6 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_hvfea"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_hp3pi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvfea"]
 bg_color = Color(0.337255, 0.27451, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hvfea"]
+font = ExtResource("3_hp3pi")
+outline_size = 4
+outline_color = Color(0.992157, 0.992157, 0.992157, 0.266667)
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -43,12 +48,12 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Option A this can be quite long but it needs to wrap"
-label_settings = ExtResource("4_hvfea")
+label_settings = SubResource("LabelSettings_hvfea")
 autowrap_mode = 2
 
 [node name="PropertyLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "[MORALE] "
-label_settings = ExtResource("4_hvfea")
+label_settings = SubResource("LabelSettings_hvfea")
 horizontal_alignment = 2

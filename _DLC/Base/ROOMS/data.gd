@@ -14,7 +14,6 @@ var DEBUG_ROOM:Dictionary = {
 
 	# ------------------------------------------
 	"can_contain": false,
-	"can_destroy": true,
 	"can_assign_researchers": true,
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.ANY
@@ -100,6 +99,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 
 	# ------------------------------------------
 	"own_limit": 1,	
+	"can_destroy": false,
 	"requires_unlock": false,		
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.ADMIN
@@ -157,6 +157,7 @@ var HQ:Dictionary = {
 		
 	# ------------------------------------------
 	"own_limit": 1,	
+	"can_destroy": false,
 	"requires_unlock": false,		
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.ADMIN
@@ -269,9 +270,43 @@ var OPERATIONS_SUPPORT:Dictionary = {
 		],	
 	# ------------------------------------------	
 }
+
+var GENERATOR_SUBSTATION:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.GENERATOR_SUBSTATION,
+	"name": "GENERATOR_SUBSTATION",
+	"shortname": "GEN.SUBSTAITON",
+	"categories": [ROOM.CATEGORY.SPECIAL],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Can make adjustments to the power generator.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"own_limit": 1,	
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 0,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
 # ------------------------------------------------------------------------------ 
 #endregion
-
 
 #region RECRUITMENT
 # ------------------------------------------------------------------------------ RECRUITMENT
@@ -513,7 +548,6 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 # ------------------------------------------------------------------------------ 
 #endregion
 
-
 #region RESOURCES
 # ------------------------------------------------------------------------------ RESOURCES
 var AERD:Dictionary = {
@@ -675,7 +709,6 @@ var ENERGY_STORAGE:Dictionary = {
 # ------------------------------------------------------------------------------ 
 #endregion
 
-
 #region UTILITY
 # ------------------------------------------------------------------------------ UTILITY
 var UI_ASSIST:Dictionary = {
@@ -683,7 +716,7 @@ var UI_ASSIST:Dictionary = {
 	"ref": ROOM.REF.UI_ASSIST,
 	"name": "UI_ASSIST",
 	"shortname": "UI.ASSIST",
-	"categories": [ROOM.CATEGORY.UTILITY],
+	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Containment breaches are less likely to occur, however...",	
 	# ------------------------------------------
@@ -845,6 +878,7 @@ var list:Array[Dictionary] = [
 	HQ, 
 	HR_DEPARTMENT, OPERATIONS_SUPPORT, #--- S1
 	MINIERAL_MINING, GEOTHERMAL_POWER, #--- S2
+	GENERATOR_SUBSTATION, 
 	
 	# --------------- RECRUIT
 	PRISONER_BLOCK,

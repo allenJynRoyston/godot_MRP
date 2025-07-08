@@ -52,5 +52,5 @@ func start() -> void:
 			await U.set_timeout(0.2)  # Short pause between lines
 
 
-	GBL.find_node(REFS.AUDIO).fade_out(3.0)
+	#GBL.find_node(REFS.AUDIO).fade_out(3.0)
 	queue_free()

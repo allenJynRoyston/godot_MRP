@@ -1,9 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://btxy5mypwrlao"]
+[gd_scene load_steps=14 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" uid="uid://cytp5e5onlqj6" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_yu6nn"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_ym770"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_yu6nn"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_hm80f"]
 [ext_resource type="PackedScene" uid="uid://b2xiva1hpi0f4" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/EmailAttachment.tscn" id="5_mf5du"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_bd68s"]
 
@@ -11,10 +11,25 @@
 bg_color = Color(0.345946, 0.345946, 0.345946, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b51d8"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_urpie"]
+font = ExtResource("3_ym770")
+font_size = 32
+font_color = Color(1, 0.74902, 0.2, 1)
+outline_size = 8
+outline_color = Color(0.886275, 0.647059, 0, 0.337255)
+shadow_size = 2
+shadow_color = Color(1, 0.74902, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yu6nn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ym770"]
+font = ExtResource("3_ym770")
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.227451)
+shadow_size = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy1hf"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -68,7 +83,7 @@ theme_override_constants/separation = 15
 [node name="CategoryLabel" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "NETMAIL"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_urpie")
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -105,13 +120,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Subject:"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
 [node name="SubjectLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Label"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
@@ -120,13 +135,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "From:"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
 [node name="FromLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Label"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
@@ -134,13 +149,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "Date:"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
 [node name="DateLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "Label"
-label_settings = ExtResource("2_yu6nn")
+label_settings = SubResource("LabelSettings_ym770")
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
@@ -150,7 +165,9 @@ theme_override_styles/separator = SubResource("StyleBoxFlat_yy1hf")
 [node name="EmailContentRichText" type="RichTextLabel" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
-theme_override_fonts/normal_font = ExtResource("4_hm80f")
+theme_override_colors/font_outline_color = Color(0.41598, 0.41598, 0.41598, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/normal_font = ExtResource("3_ym770")
 bbcode_enabled = true
 text = "Lorem ipsum odor amet, consectetuer adipiscing elit."
 fit_content = true
@@ -165,6 +182,6 @@ layout_mode = 2
 
 [node name="BtnControl" parent="." instance=ExtResource("6_bd68s")]
 layout_mode = 2
-offset = Vector2(25, 5)
+offset = Vector2(15, 20)
 a_btn_title = "INSTALL"
 b_btn_title = "BACK TO DESKTOP"

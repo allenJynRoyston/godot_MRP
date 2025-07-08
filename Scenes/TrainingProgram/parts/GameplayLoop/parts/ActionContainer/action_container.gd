@@ -144,6 +144,8 @@ func _ready() -> void:
 		var new_node:Control = NametagPreload.instantiate()
 		new_node.index = index
 		NameControl.add_child(new_node)
+		
+	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -159,6 +161,7 @@ func activate() -> void:
 	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
 
 	update_control_pos(false)
+	check_action_btn_state()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -236,14 +239,20 @@ func start(start_at_ring_level:bool = false) -> void:
 
 	# -------------------------------------
 	GotoFloorBtn.onClick = func() -> void:
+		if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT:return
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
 	
 	GotoWingBtn.onClick = func() -> void:
+		if camera_settings.type == CAMERA.TYPE.WING_SELECT:return
 		camera_settings.type = CAMERA.TYPE.WING_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
-					
-	
+		
+	GotoGeneratorBtn.onClick = func() -> void:
+		if camera_settings.type == CAMERA.TYPE.GENERATOR:return
+		camera_settings.type = CAMERA.TYPE.GENERATOR
+		SUBSCRIBE.camera_settings = camera_settings	
+		
 	WingActionBtn.onClick = func() -> void:
 		GameplayNode.show_marked_objectives = false
 		GameplayNode.show_timeline = false
@@ -251,11 +260,6 @@ func start(start_at_ring_level:bool = false) -> void:
 		current_mode = MODE.INVESTIGATE	
 		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
-		
-		
-	GotoGeneratorBtn.onClick = func() -> void:
-		camera_settings.type = CAMERA.TYPE.GENERATOR
-		SUBSCRIBE.camera_settings = camera_settings	
 	# -------------------------------------
 	
 	# -------------------------------------
@@ -272,21 +276,21 @@ func start(start_at_ring_level:bool = false) -> void:
 	
 	# -------------------------------------
 	BuildBtn.onClick = func() -> void:
-		current_mode = MODE.BUILD			
+		current_mode = MODE.BUILD
 
 	AbilityBtn.onClick = func() -> void:
 		current_mode = MODE.ABILITY			
 		
 	DeconstructBtn.onClick = func() -> void:
 		investigate_wrapper(func():
-			await GAME_UTIL.reset_room()
+			await GAME_UTIL.reset_room(current_location)
 		)
 	# -------------------------------------
 	
 	# -------------------------------------
 	ObjectivesBtn.onClick = func() -> void:
 		reveal_notification(false)
-		await lock_actions(true)
+		lock_actions(true)
 		await GAME_UTIL.open_objectives()
 		reveal_notification(true)		
 		lock_actions(false)
@@ -387,7 +391,7 @@ func clear_lines() -> void:
 
 # --------------------------------------------------------------------------------------------------
 signal query_complete
-func query_items(query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
+func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
 	var query:Dictionary
 	var start_at:int = page * query_size
 	query = ROOM_UTIL.get_unlocked_category(category, start_at, query_size)	
@@ -401,22 +405,29 @@ func query_items(query_size:int, category:ROOM.CATEGORY, page:int, return_list:A
 			"ref": x.ref,
 			"details": x.details,
 			"action": func() -> void:
+				await ActiveMenuNode.lock()
 				# purchase and show tally
 				var room_details:Dictionary = ROOM_UTIL.return_data(x.details.ref)
-				GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -(room_details.costs.purchase)}, Color(1, 1, 1, 0) )
+				
+				var costs:Array = [{
+					"amount": -(room_details.costs.purchase), 
+					"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+				}] if room_details.costs.purchase > 0 else []
+				
+				var confirm:bool = await GAME_UTIL.create_modal("Construct %s here?" % room_details.name, "This room CANNOT be destroyed once placed.  Are you sure you want to continue?" if !room_details.can_destroy else "Continue?" , room_details.img_src, costs)
 				
 				# update
-				purchased_facility_arr.push_back({
-					"ref": x.details.ref,
-					"location": current_location.duplicate()
-				})
+				if confirm:
+					ROOM_UTIL.add_room(x.details.ref)
+					ActiveMenuNode.close()
+					return
 				
-				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr,
+				ActiveMenuNode.unlock(),
 		})
 	)	
 	
 	if query.has_more:
-		query_items(query_size, category, page + 1, return_list, is_disabled_func, hint_func)
+		query_items(ActiveMenuNode, query_size, category, page + 1, return_list, is_disabled_func, hint_func)
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
@@ -437,7 +448,7 @@ func show_build_options() -> void:
 					return {
 						"icon": SVGS.TYPE.MONEY,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
 					},
 			},
 			{
@@ -450,7 +461,7 @@ func show_build_options() -> void:
 					return {
 						"icon": SVGS.TYPE.MONEY,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
 					},
 			},			
 			{
@@ -463,7 +474,7 @@ func show_build_options() -> void:
 					return {
 						"icon": SVGS.TYPE.MONEY,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
 					},
 			},
 			{
@@ -496,7 +507,7 @@ func show_build_options() -> void:
 				"title": 'SPECIAL', 
 				"type": ROOM.CATEGORY.SPECIAL,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.CORE].amount or ROOM_UTIL.at_own_limit(x.ref),
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
 				"hint_func": func(x:Dictionary) -> Dictionary:
 					var description:String = x.details.description
 					return {
@@ -508,7 +519,7 @@ func show_build_options() -> void:
 		]:
 	
 			
-		query_items(query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
+		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
 		var query_results:Array = await query_complete
 		for index in query_results.size():
 			var items:Array = query_results[index]
@@ -518,30 +529,17 @@ func show_build_options() -> void:
 					"items": items,
 					"footer": "%s / %s" % [index + 1, items.size() ],
 				})		
-		
-	var onClose:Callable = func(skip_reveal:bool) -> void:
-		previous_designation = ""
-		on_current_location_update()	
-		if !skip_reveal:
-			await RoomDetailsControl.reveal(false)
-		current_mode = MODE.INVESTIGATE
+
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update card
 		RoomDetailsControl.room_ref = item.ref
+		RoomDetailsControl.reveal(true)		
 		
 		# disable/enable btn
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
 		ActiveMenuNode.hint_border_color = Color.RED if !can_afford else Color(0.337, 0.275, 1.0)
-
-		# update cost_val
-		ActiveMenuNode.cost_data = {
-			"title": "CONSTRUCTION COSTS",
-			"icon": SVGS.TYPE.MONEY,
-			"amount": item.details.costs.purchase,
-			"is_negative": !can_afford
-		} 
 
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
@@ -554,13 +552,14 @@ func show_build_options() -> void:
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
 		clear_lines()
-	
+		RoomDetailsControl.room_ref = -1		
+		RoomDetailsControl.reveal(false)				
+
 	ActiveMenuNode.onClose = func() -> void:
-		await onClose.call(false)
+		current_mode = MODE.INVESTIGATE
+		previous_designation = ""
+		on_current_location_update()	
 		
-		
-	ActiveMenuNode.onAction = func() -> void:
-		await ActiveMenuNode.close()
 		
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
@@ -569,60 +568,81 @@ func show_build_options() -> void:
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
 	ActiveMenuNode.open(true)	
-	
 
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func show_generator_updates() -> void:			
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	
+	var gen_level:int = base_states.floor[str(current_location.floor)].generator_level
+
 	var options:Array = [
 		{
-			"title": "GENERATOR ENHANCE",
+			"title": "GENERATOR ABILITIES",
 			"items": [
 				{
-					"title": "Powerup X",
-					"icon": SVGS.TYPE.CONVERSATION,
+					"title": "ENERGY CAPACITY (lvl %s)" % (gen_level + 1),
 					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "FULLSCREEN",
-						"description": "Supply power to FLOOR 0."
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "Increases the available energy for each wing."
 					},
 					"is_togglable": true,
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.upgrade_generator_level()
-						ActiveMenuNode.unlock(),
+				
+						var activation_cost:int = (base_states.floor[str(current_location.floor)].generator_level + 1) * 50
+
+						var costs:Array = [{
+							"amount": -(activation_cost), 
+							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)
+						}]
+						
+						var confirm:bool = await GAME_UTIL.create_modal( "Increase generator capacity for floor %s?" % current_location.floor, "Effects all wings equally." , "", costs)
+						
+						if confirm:
+							await ActiveMenuNode.lock()
+							await GAME_UTIL.upgrade_generator_level()							
+							ActiveMenuNode.close()
+							return
+							
+						ActiveMenuNode.unlock(),						
+						
+
 				},
 				{
-					"title": "Powerup Y",
-					"icon": SVGS.TYPE.CONVERSATION,
+					"title": "???",
 					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "FULLSCREEN",
-						"description": "Supply power to FLOOR 1."
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
 					},
-					"is_togglable": true,
+					"is_disabled": true,
 					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.upgrade_generator_level()
-						ActiveMenuNode.unlock(),
+						pass,
 				},
 				{
-					"title": "Powerup Z",
-					"icon": SVGS.TYPE.CONVERSATION,
+					"title": "???",
 					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "FULLSCREEN",
-						"description": "Supply power to FLOOR 2."
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
 					},
-					"is_togglable": true,
+					"is_disabled": true,
 					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.upgrade_generator_level()
-						ActiveMenuNode.unlock(),
+						pass,
 				},
+				{
+					"title": "???",
+					"hint": {
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
+					},
+					"is_disabled": true,
+					"action": func() -> void:
+						pass,
+				}
 			]
 		}
 	]
@@ -712,30 +732,87 @@ func show_events_debug() -> void:
 # --------------------------------------------------------------------------------------------------
 func show_facility_updates() -> void:			
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-
+	var is_powered:bool = base_states.floor[str(current_location.floor)].is_powered
+	
 	var options:Array = [
 		{
 			"title": "ENERGY SUPPLY",
 			"items": [
 				{
-					"title": "Supply Power",
-					"icon": SVGS.TYPE.CONVERSATION,
+					"title": "POWER" if !is_powered else "ALREADY POWERED",
 					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "FULLSCREEN",
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
 						"description": "Supply power to FLOOR %s." % [current_location.floor]
 					},
+					"is_disabled": is_powered,
+					"is_checked": is_powered,
 					"is_togglable": true,
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.activate_floor(current_location.floor)
+						var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25
+
+						var costs:Array = [{
+							"amount": -(activation_cost), 
+							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
+						}]
+						
+						var confirm:bool = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "" , "", costs)
+						
+						if confirm:
+							ActiveMenuNode.close()
+							camera_settings.type = CAMERA.TYPE.WING_SELECT
+							SUBSCRIBE.camera_settings = camera_settings	
+							await U.set_timeout(0.3)
+							GAME_UTIL.activate_floor(current_location.floor)
+							return
+							
 						ActiveMenuNode.unlock(),
-				}
+				},
+				{
+					"title": "???",
+					"hint": {
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
+					},
+					"is_disabled": true,
+					"action": func() -> void:
+						pass,
+				},
+				{
+					"title": "???",
+					"hint": {
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
+					},
+					"is_disabled": true,
+					"action": func() -> void:
+						pass,
+				},
+				{
+					"title": "???",
+					"hint": {
+						"icon": SVGS.TYPE.ENERGY,
+						"title": "HINT",
+						"description": "???"
+					},
+					"is_disabled": true,
+					"action": func() -> void:
+						pass,
+				}								
 			]
 		}
 	]
+	
+	GameplayNode.show_marked_objectives = false
+	GameplayNode.show_timeline = false	
 
 	ActiveMenuNode.onClose = func() -> void:	
+		GameplayNode.show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
+		GameplayNode.show_timeline = true
+		
 		set_backdrop_state(false)
 		await lock_actions(false)
 		on_camera_settings_update()
@@ -865,11 +942,6 @@ func show_settings() -> void:
 
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	
-	ActiveMenuNode.onBeforeAction = func(_item:Dictionary) -> void:
-		pass
-	
-	ActiveMenuNode.onAfterAction = func(_item:Dictionary) -> void:
-		pass
 	
 	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
@@ -925,8 +997,9 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty() or current_mode == MODE.NONE:return
 	
-	var btnlist:Array = [GotoFloorBtn, GotoWingBtn, GotoGeneratorBtn]
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
+	
+
 	
 	match camera_settings.type:
 		# ----------------------
@@ -940,9 +1013,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			else:
 				reveal_floorpreview(true)
 			
-			if !is_in_transition:
-				for btn in btnlist:
-					btn.is_disabled = btn == GotoFloorBtn
 					
 			for panel in actionpanels:
 				if panel == FacilityActionPanel:
@@ -963,10 +1033,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 				else:
 					panel.hide()
 			
-			if !is_in_transition:
-				for btn in btnlist:
-					btn.is_disabled = btn == GotoWingBtn
-			
 			#if GameplayNode.is_tutorial:
 				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.FLOORPLAN, 0.3)
 			
@@ -976,11 +1042,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			NameControl.hide()
 			ControllerOverlay.hide()			
 			ControllerOverlay.show_directional = false
-			
-			if !is_in_transition:
-				for btn in btnlist:
-					btn.is_disabled = btn == GotoGeneratorBtn
-					
+
 			for panel in actionpanels:
 				if panel == GenActionPanel:
 					panel.show()
@@ -1010,6 +1072,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
+	var can_deconstruct:bool = false if is_room_empty else room_extract.room.can_destroy 
 	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
 	
 	if !room_extract.is_empty():
@@ -1035,9 +1098,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		MODE.INVESTIGATE:
 			NameControl.hide()
 			ControllerOverlay.show_directional = false
-			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
 			
 			# update mouse
+			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size			
 			Input.warp_mouse(warp_to_pos)
 			
 			# set this flat first
@@ -1058,15 +1121,9 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			
 			# set button states
 			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated
-			DeconstructBtn.is_disabled = is_room_empty
-
-			if can_take_action:
-				AbilityBtn.is_disabled = false
-				DeconstructBtn.is_disabled = (true if is_room_empty else !room_extract.room.can_destroy) or nuke_activated
-			else:
-				AbilityBtn.is_disabled = true
-				DeconstructBtn.is_disabled = true
-						
+			DeconstructBtn.is_disabled = !can_deconstruct or nuke_activated
+			AbilityBtn.is_disabled = !can_take_action 
+	
 			# update line draw
 			var get_node_pos:Callable = func() -> Vector2: 
 				return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size			
@@ -1081,7 +1138,6 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomDetailsControl.show_room_card = true
 			RoomDetailsControl.show_scp_card = false
 			RoomDetailsControl.show_researcher_card = false	
-			RoomDetailsControl.reveal(true)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -1104,21 +1160,21 @@ func reveal_notification(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------	
 func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
 	if control_pos.is_empty():return
-	
-	if state:
-		FloorPreviewControl.show()
-		var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
-		PreviewTextureRect.texture = subviewport.get_texture()		
-	
-	await U.tween_node_property(FloorPreviewPanel, "position:x", control_pos[FloorPreviewPanel].show if state else control_pos[FloorPreviewPanel].hide , duration)
-	
-	if !state:
-		PreviewTextureRect.texture = null
-		FloorPreviewControl.hide()
+	pass
+	#if state:
+		#FloorPreviewControl.show()
+		#var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
+		#PreviewTextureRect.texture = subviewport.get_texture()		
+	#
+	#await U.tween_node_property(FloorPreviewPanel, "position:x", control_pos[FloorPreviewPanel].show if state else control_pos[FloorPreviewPanel].hide , duration)
+	#
+	#if !state:
+		#PreviewTextureRect.texture = null
+		#FloorPreviewControl.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
+func reveal_investigate_controls(state:bool, duration:float = 0.2) -> void:
 	if control_pos.is_empty():return
 	
 	is_in_transition = true
@@ -1127,7 +1183,7 @@ func reveal_investigate_controls(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_action_controls(state:bool, duration:float = 0.3) -> void:
+func reveal_action_controls(state:bool, duration:float = 0.2) -> void:
 	if control_pos.is_empty():return
 	
 	is_in_transition = true
@@ -1136,7 +1192,7 @@ func reveal_action_controls(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_cardminipanel(state:bool, duration:float = 0.3) -> void:
+func reveal_cardminipanel(state:bool, duration:float = 0.2) -> void:
 	await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show if state else control_pos[MiniCardPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
@@ -1163,7 +1219,13 @@ func lock_panel_btn_state(state:bool, panels:Array) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func lock_actions(state:bool, ignore_panel:bool = false) -> void:
+func check_action_btn_state() -> void:
+	var at_least_one_floor_available:bool = GAME_UTIL.get_activated_floor_count()	> 0
+	GotoWingBtn.is_disabled = !at_least_one_floor_available
+	GotoGeneratorBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)	
+	FacilityEndTurnBtn.is_disabled = !at_least_one_floor_available
+
+func lock_actions(state:bool) -> void:
 	if state:
 		freeze_inputs = true		
 		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
@@ -1173,6 +1235,9 @@ func lock_actions(state:bool, ignore_panel:bool = false) -> void:
 	if !state:
 		freeze_inputs = false
 		lock_panel_btn_state(false, [ActionPanel])
+		check_action_btn_state()
+		
+				
 		
 func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 	if state:
@@ -1190,6 +1255,7 @@ func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
 	var duration:float = 0.0 if skip_animation else 0.3
+	
 	
 	match current_mode:
 		MODE.NONE:
@@ -1216,12 +1282,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			NewMessageBtn.is_disabled = true
 		
 			InvestigateBackBtn.onClick = func() -> void:
-				await lock_investigate(true)
 				clear_lines()
 				reveal_cardminipanel(false)
 				reveal_investigate_controls(false)
-				await reveal_action_controls(true)
-				await U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
+				lock_investigate(true)
+				reveal_action_controls(true)
+				U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
 				NewMessageBtn.is_disabled = !show_new_message_btn
 				current_mode = MODE.ACTIONS
 				GameplayNode.show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
@@ -1235,9 +1301,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			reveal_action_controls(false)
 			reveal_cardminipanel(true)
-			
+		
+			lock_investigate(false)
 			await lock_actions(true)			
-			await lock_investigate(false)
+			
 		
 			U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].hide)
 			
@@ -1321,8 +1388,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RoomDetailsControl.show_scp_card = false
 				RoomDetailsControl.show_researcher_card = false
 
-					
-
 			BtnControls.onBack = func() -> void:
 				RoomDetailsControl.cycle_to_room(true)
 				RoomDetailsControl.show()				
@@ -1345,9 +1410,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			clear_lines()
 			reveal_cardminipanel(false)
 			RoomDetailsControl.reveal(false)
-			await lock_investigate(true)
-			await show_build_options()
-			RoomDetailsControl.reveal(true)
+			await lock_investigate(true)						
+			show_build_options()
+
 			
 			#if GameplayNode.is_tutorial:
 				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.BUILD, 0.5)
@@ -1355,7 +1420,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	on_current_location_update()	
 	on_camera_settings_update()
 	
-	room_config
 # --------------------------------------------------------------------------------------------------			
 
 ## --------------------------------------------------------------------------------------------------	
@@ -1395,12 +1459,12 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"S":
 					U.dec_floor()
 				# ----------------------------
-				"D":
-					U.inc_ring()
+				#"D":
+					#U.inc_ring()
 				# ----------------------------
-				"A":
-					camera_settings.is_locked = !camera_settings.is_locked
-					SUBSCRIBE.camera_settings = camera_settings
+				#"A":
+					#camera_settings.is_locked = !camera_settings.is_locked
+					#SUBSCRIBE.camera_settings = camera_settings
 		# ----------------------------
 		CAMERA.TYPE.WING_SELECT:
 			match key:

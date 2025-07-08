@@ -219,3 +219,5 @@ layout_mode = 2
 a_btn_title = "COLLECT"
 b_btn_title = ""
 hide_b_btn = true
+c_btn_title = ""
+c_btn_icon = 14

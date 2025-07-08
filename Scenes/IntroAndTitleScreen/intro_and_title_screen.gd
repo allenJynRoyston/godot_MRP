@@ -187,7 +187,7 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide)
 				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
 				
-				GBL.find_node(REFS.AUDIO).fade_out(2.0)
+				#GBL.find_node(REFS.AUDIO).fade_out(2.0)
 				await U.tween_node_property(SceneCamera, 'fov', 100, 2.0)
 			
 			current_mode = MODE.EXIT

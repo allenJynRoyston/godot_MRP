@@ -10,6 +10,7 @@ extends GameContainer
 @onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
+@onready var HSeperator:HSeparator = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HSeparator
 
 @onready var ResourcePanel:PanelContainer = $ResourceControl/PanelContainer
 @onready var ResourceMargin:MarginContainer = $ResourceControl/PanelContainer/MarginContainer
@@ -128,10 +129,12 @@ func end(made_changes:bool) -> void:
 
 	if made_changes:
 		var tally_dict:Dictionary = {}
+		var amount_count:int = 0
 		for item in activation_requirements:
 			tally_dict[item.resource.ref] = item.amount
-
-		if !tally_dict.is_empty():
+			amount_count += item.amount
+		
+		if !tally_dict.is_empty() and amount_count != 0:
 			await GAME_UTIL.open_tally( tally_dict )
 			
 	user_response.emit(made_changes)
@@ -182,21 +185,26 @@ func on_activation_requirements_update() -> void:
 	
 	var disable_btn:bool = false
 		
+	
 	for item in activation_requirements:
 		var current_amount:int = resources_data[item.resource.ref].amount		
-		var has_enough:bool = current_amount - absi(item.amount) >= 0
+		var has_enough:bool = (current_amount - absi(item.amount) >= 0) if item.amount < 0 else true
 		var new_node:Control = CheckboxBtnPreload.instantiate()
 		var new_resource_node:Control = ResourceItemPreload.instantiate()
 		
 		if !disable_btn and !has_enough:
 			disable_btn = true
 		
-		new_node.is_hoverable = false
-		new_node.no_bg = true
-		new_node.is_checked = has_enough
-		new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
-		new_node.title =  "%s %s required.  (You have %s)" % [abs(item.amount), item.resource.name, current_amount]
-		StaffingList.add_child(new_node)
+		
+		HSeperator.hide() if item.amount > 0 else HSeperator.show()
+		
+		if item.amount < 0:
+			new_node.is_hoverable = false
+			new_node.no_bg = true
+			new_node.is_checked = has_enough
+			new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
+			new_node.title =  "%s %s required.  (You have %s)" % [abs(item.amount), item.resource.name, current_amount]
+			StaffingList.add_child(new_node)
 		
 		new_resource_node.is_hoverable = false
 		new_resource_node.no_bg = true
@@ -206,7 +214,7 @@ func on_activation_requirements_update() -> void:
 		BeforeList.add_child(new_resource_node)
 		
 		var after_node:Control = new_resource_node.duplicate()
-		after_node.title = str(current_amount - abs(item.amount))
+		after_node.title = str(current_amount + item.amount)
 		after_node.is_negative = disable_btn
 		AfterList.add_child(after_node) 
 

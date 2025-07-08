@@ -139,7 +139,7 @@ func return_data_via_location(use_location:Dictionary) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:int, room_config:Dictionary) -> Array: 
-		return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
+	return SHARED_UTIL.return_unavailable_rooms(return_data(ref))
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -178,37 +178,6 @@ func return_activation_cost(ref:int) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_cost")
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-#func return_pairs_with_details(ref:int) -> Dictionary:
-	#var room_data:Dictionary = return_data(ref)
-	#var details:Dictionary = {}
-	#if "pairs_with" in room_data:
-		#details = {
-			#"specialization": RESEARCHER_UTIL.return_specialization_data(room_data.pairs_with.specialization),
-			##"trait": RESEARCHER_UTIL.return_trait_data(room_data.pairs_with.trait),
-		#}
-#
-	#return details
-# ------------------------------------------------------------------------------
-
-## ------------------------------------------------------------------------------
-#func check_for_pairing(ref:int, researchers:Array) -> bool:
-	#var scp_details:Dictionary = return_data(ref)
-	#var match_spec:bool = false
-	#
-	#for researcher in researchers:
-		#if !match_spec and (scp_details.pairs_with.specialization in researcher.specializations):
-			#match_spec = true
-		##if !match_trait and (scp_details.pairs_with.trait in researcher.traits):
-			##match_trait = true
-	#
-	#return {
-		#"match_spec": match_spec,
-		##"match_trait": match_trait,
-		#
-	#}
-## ------------------------------------------------------------------------------
-
 ## ------------------------------------------------------------------------------
 func get_max_possible_level(ref:int) -> int:
 	var room_data:Dictionary = return_data(ref)	
@@ -236,18 +205,26 @@ func get_activated_count() -> int:
 ## ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------
-#func check_for_room_pair(ref:int, researcher:Dictionary) -> bool:
-	#var room_data:Dictionary = return_data(ref)	
-	#return room_data.requires_specialization == researcher.specialization.ref
-## ------------------------------------------------------------------------------
-
-## ------------------------------------------------------------------------------
 func add_to_unlocked_list(ref:int) -> void:
 	if ref not in shop_unlock_purchases:
 		shop_unlock_purchases.push_back(ref)
 	SUBSCRIBE.shop_unlock_purchases = shop_unlock_purchases	
 ## ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func add_room(ref:int, use_location:Dictionary = current_location) -> void:
+	purchased_facility_arr.push_back({
+		"ref": ref,
+		"location": current_location.duplicate()
+	})
+	
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func reset_room(use_location:Dictionary) -> void:
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location == use_location))
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func calculate_unlock_cost(ref:int, add:bool = false) -> void:		

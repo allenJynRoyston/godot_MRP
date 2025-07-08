@@ -5,6 +5,8 @@ extends MouseInteractions
 @onready var TitleLabel:Label = $MarginContainer/HBoxContainer/Label
 @onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/IconBtn
 
+@export var index:int = -1
+
 @export var title:String = "" : 
 	set(val):
 		title = val
@@ -40,6 +42,8 @@ extends MouseInteractions
 
 @export var COLOR_A_DISABLED:Color = Color.RED
 @export var COLOR_B_DISABLED:Color = Color.BLACK
+
+
 
 var onClick:Callable = func() -> void:pass
 
@@ -105,20 +109,21 @@ func update_colors() -> void:
 		flat_stylebox_copy.border_color = COLOR_A if !is_selected else COLOR_B
 		label_settings_copy.font_color = txt_color
 		label_settings_copy.outline_color = Color(txt_color.r, txt_color.g, txt_color.b, 0.5)
+		IconBtn.static_color = txt_color
 		
 	else:
-		flat_stylebox_copy.bg_color = COLOR_B
-		flat_stylebox_copy.border_color = COLOR_A if is_selected else COLOR_B
+		flat_stylebox_copy.bg_color = use_color_b
+		flat_stylebox_copy.border_color = use_color_a if is_selected else use_color_b
 		flat_stylebox_copy.border_width_left = 2
 		flat_stylebox_copy.border_width_right = 2
 		flat_stylebox_copy.border_width_top = 2
 		flat_stylebox_copy.border_width_bottom = 2
-		label_settings_copy.font_color = COLOR_A
-		label_settings_copy.outline_color = Color(COLOR_A.r, COLOR_A.g, COLOR_A.b, 0.5)
+		label_settings_copy.font_color = use_color_a
+		label_settings_copy.outline_color = Color(use_color_a.r, use_color_a.g, use_color_a.b, 0.5)
+		IconBtn.static_color = use_color_a
 		modulate = Color(1, 1, 1, 1 if is_selected else 0.5)
-
 		
-	IconBtn.static_color = txt_color
+	
 	TitleLabel.label_settings = label_settings_copy
 	RootPanel.add_theme_stylebox_override("panel", flat_stylebox_copy)	
 

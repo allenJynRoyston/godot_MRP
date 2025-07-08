@@ -13,45 +13,15 @@ var chapters:Array = [
 			"title": "SETUP",
 			"complete_by_day": 2,
 			"required":[
-				# --------------------- CRITERIA BASED OBJECTIVES
-				{ 
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.DIRECTORS_OFFICE
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-						{"title": "Step 2", "cost": 2},
-						{"title": "Step 3", "cost": 5},
-					]
-				},
-				{ 
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.HQ
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-						{"title": "Step 2", "cost": 2},
-						{"title": "Step 3", "cost": 5},
-					]
-				},
 				{
 					"custom": {
-						"title": "Activate all rooms.",
+						"title": "Supply power to AT LEAST 1 floor.",
 						"count_str": func(amount:int) -> String:
-							var activated_count:int = ROOM_UTIL.get_activated_count()
-							return "(Rooms activated: %s out of %s)" % [activated_count, amount],
+							return "(Required floors activated: %s/1.)" % [amount],
 						"you_have": func() -> int: 
-							return purchased_facility_arr.size(),
+							return GAME_UTIL.get_activated_floor_count(),
 						"is_completed": func() -> bool:
-							var total_count:int = purchased_facility_arr.size()
-							var activated_count:int = ROOM_UTIL.get_activated_count()
-							return total_count > 0 and total_count == activated_count,
+							return GAME_UTIL.get_activated_floor_count() > 0,
 						},
 					"hints": [
 						{"title": "Custom step A", "cost": 1},
@@ -106,6 +76,66 @@ var chapters:Array = [
 					]
 				},				
 				# ---------------------
+			],
+		}
+	},
+		
+	# ----------------------------------------------------------------------------------------------
+	{
+		"story_message": [
+			"Story section 2"
+		],
+		"objectives": {
+			"title": "SETUP",
+			"complete_by_day": 4,
+			"required":[
+				# --------------------- CRITERIA BASED OBJECTIVES
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": TYPE.BUILDING,
+						"ref": ROOM.REF.DIRECTORS_OFFICE
+					},
+					"hints": [
+						{"title": "Step 1", "cost": 1},
+						{"title": "Step 2", "cost": 2},
+						{"title": "Step 3", "cost": 5},
+					]
+				},
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": TYPE.BUILDING,
+						"ref": ROOM.REF.HQ
+					},
+					"hints": [
+						{"title": "Step 1", "cost": 1},
+						{"title": "Step 2", "cost": 2},
+						{"title": "Step 3", "cost": 5},
+					]
+				},
+				{
+					"custom": {
+						"title": "Activate all rooms.",
+						"count_str": func(amount:int) -> String:
+							var activated_count:int = ROOM_UTIL.get_activated_count()
+							return "(Rooms activated: %s out of %s)" % [activated_count, amount],
+						"you_have": func() -> int: 
+							return purchased_facility_arr.size(),
+						"is_completed": func() -> bool:
+							var total_count:int = purchased_facility_arr.size()
+							var activated_count:int = ROOM_UTIL.get_activated_count()
+							return total_count > 0 and total_count == activated_count,
+						},
+					"hints": [
+						{"title": "Custom step A", "cost": 1},
+					]
+				},
+			],
+			"optional": [
+
 			],
 		},
 		"rewarded": func() -> Array:

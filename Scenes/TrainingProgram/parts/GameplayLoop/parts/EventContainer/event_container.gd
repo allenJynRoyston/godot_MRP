@@ -7,6 +7,7 @@ extends GameContainer
 @onready var ResourceFloatingPanel:Control = $ResourceRequiredFloatingPanel
 @onready var ConsequenceFloatingPanel:Control = $ConsequenceFloatingPanel
 @onready var SuccessRoll:Control = $SuccessRoll
+@onready var RoomDetails:Control = $RoomDetails
 
 @onready var ResearcherPanel:PanelContainer = $ResearcherControl/PanelContainer
 @onready var ResearcherMargin:MarginContainer = $ResearcherControl/PanelContainer/MarginContainer
@@ -82,6 +83,8 @@ func _ready() -> void:
 	reset()
 	reset_content_nodes()
 	
+	RoomDetails.reveal(false)
+	
 	BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
 	use_force_results = DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
 	
@@ -118,6 +121,12 @@ func _ready() -> void:
 				ConsequenceFloatingPanel.reveal(show_consequences)
 				ConsequenceFloatingPanel.update(node.data if show_consequences else {}, type)
 				ConsequenceFloatingPanel.goto(node.global_position + Vector2(0, node.size.y) + Vector2(0, -node.size.y/2))
+				
+				if node.data.has("room_ref"):
+					RoomDetails.reveal(true)
+					RoomDetails.room_ref = node.data.room_ref
+				else:
+					RoomDetails.reveal(false)
 
 # --------------------------------------------------------------------------------------------------		
 
@@ -193,7 +202,8 @@ func start(new_event_data:Array) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
-	BtnControls.reveal(false)
+	BtnControls.reveal(false)	
+	RoomDetails.reveal(false)	
 	
 	reveal_researcher(false)
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
@@ -515,6 +525,7 @@ func on_current_instruction_update() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func on_option_select(option:Dictionary) -> void:	
+	RoomDetails.reveal(false)	
 	await BtnControls.reveal(false)
 	
 	update_next_btn(false)	
@@ -529,7 +540,7 @@ func on_option_select(option:Dictionary) -> void:
 		var node:Control = OptionsListContainer.get_child(index)
 		node.fade_out(0 if node != SelectedNode else 1.0) 
 	
-	await U.set_timeout(1.5)
+	await U.set_timeout(1.0)
 
 	if "onSelected" in option:
 		if use_force_results and option.has('success_rate'):

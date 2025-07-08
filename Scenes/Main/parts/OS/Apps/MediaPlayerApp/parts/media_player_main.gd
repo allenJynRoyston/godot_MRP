@@ -4,7 +4,7 @@ extends PanelContainer
 @onready var BtnControls:Control = $BtnControl
 @onready var TrackList:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
 
 var MediaPlayerNode:Control 
 var onBackToDesktop:Callable = func() -> void:pass
@@ -75,7 +75,7 @@ func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	if !is_node_ready() or music_data.is_empty():return
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)
-		n.icon = SVGS.TYPE.MUSIC if index == music_data.selected else SVGS.TYPE.NONE
+		n.is_checked = index == music_data.selected
 		
 
 func on_music_track_list_update() -> void:
@@ -86,7 +86,8 @@ func on_music_track_list_update() -> void:
 	for item in music_track_list:
 		var new_btn:PanelContainer = TextBtnPreload.instantiate()
 		new_btn.title = item.details.name
-		new_btn.icon = SVGS.TYPE.NONE
+		new_btn.display_checkmark = true
+		new_btn.is_checked = false
 		TrackList.add_child(new_btn)
 	
 # ------------------------------------------------------------------------------

@@ -164,7 +164,7 @@ var initial_values:Dictionary = {
 	"camera_settings": func() -> Dictionary:
 		return {
 			"type": CAMERA.TYPE.FLOOR_SELECT,
-			"is_locked": false
+			"is_locked": true
 		},
 	# ----------------------------------
 	"base_states": func() -> Dictionary:
@@ -175,7 +175,8 @@ var initial_values:Dictionary = {
 		# ------------------------------
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
-				"is_powered": floor_index in [0],
+				# if start on ring level, floor 0 starts with power
+				"is_powered": floor_index in [0] if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL) else false,
 				"generator_level": 0,
 				"buffs": [],
 				"debuffs": [],

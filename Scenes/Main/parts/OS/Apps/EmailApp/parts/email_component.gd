@@ -13,7 +13,7 @@ extends PanelContainer
 @onready var EmailContentRichText:RichTextLabel = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/EmailContentRichText
 @onready var AttachmentContainer:PanelContainer = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/AttachmentContainer
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/TextBtn/TextBtn.tscn")
+const TextBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
 
 var email_data:Array[Dictionary] = [] : 
 	set(val):
@@ -99,7 +99,7 @@ func parse_email(data:Dictionary, index:int) -> void:
 func on_read_emails_update() -> void:
 	for index in read_emails:
 		var node:Control = List.get_child(index)
-		node.icon = SVGS.TYPE.CHECKBOX
+		node.is_checked  = true
 	
 func on_email_data_update() -> void:
 	if !is_node_ready():return
@@ -112,9 +112,10 @@ func on_email_data_update() -> void:
 		var new_btn:Control = TextBtnPreload.instantiate()
 		new_btn.index = index
 		new_btn.title = item.title
-		new_btn.icon = SVGS.TYPE.CHECKBOX if index in read_emails else SVGS.TYPE.EMPTY_CHECKBOX
+		new_btn.display_checkmark = true
+		new_btn.is_checked = index in read_emails
 		new_btn.is_hoverable = false
-		new_btn.panel_color = Color(1, 1, 1, 0)
+		#new_btn.COLOR_A = Color.GREEN
 		
 		email_list.push_back(new_btn)
 		List.add_child(new_btn)

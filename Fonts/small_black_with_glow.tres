@@ -1,0 +1,11 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://gtflywuysx2d"]
+
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="1_d767i"]
+
+[resource]
+font = ExtResource("1_d767i")
+font_color = Color(0.0497766, 0.0497766, 0.0497766, 1)
+outline_size = 2
+outline_color = Color(0.185383, 0.185383, 0.185383, 0.498039)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)

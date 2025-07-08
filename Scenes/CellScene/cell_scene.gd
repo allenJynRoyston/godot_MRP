@@ -135,7 +135,7 @@ func play_next_sequence() -> void:
 	check_btn_states()
 	
 	# change the root node to show this scene...
-	MAIN_NODE.current_layer = MAIN_NODE.LAYER.DOOR_LAYER
+	MAIN_NODE.current_layer = MAIN_NODE.LAYER.CELLBLOCK_LAYER
 
 	# wait for story sequence to complete
 	await wait_for_story

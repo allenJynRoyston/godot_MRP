@@ -52,20 +52,6 @@ func build_floors() -> void:
 	FloorInstance.queue_free()
 # ------------------------------------------------
 
-# --------------------------------------------------------
-#func reset_transition() -> void:
-	#TransitionRect.hide()
-	#SceneTextureRect.show()
-	#print("reset...")
-	
-#func transition_out(state:bool, duration:float, viewport:SubViewport) -> void:
-	#TransitionRect.show()
-	#TransitionRect.texture = U.get_viewport_texture(viewport)
-	#await U.tween_range(0.0, 1.0, duration, func(val:float) -> void:
-		#TransitionRect.material.set_shader_parameter("sensitivity", val)
-	#).finished	
-# --------------------------------------------------------
-
 # ------------------------------------------------
 func update_mesh() -> void:	
 	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	

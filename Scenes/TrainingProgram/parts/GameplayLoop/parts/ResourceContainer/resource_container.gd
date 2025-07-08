@@ -1,60 +1,60 @@
 extends GameContainer
 
 @onready var HeaderContainer:PanelContainer = $PanelContainer
-@onready var MarginControl:MarginContainer = $PanelContainer/MarginControl
+@onready var MarginControl:MarginContainer = $PanelContainer/ResourcesMargin
 
-@onready var LocationFloor:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Floor
-@onready var LocationWing:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Wing
-@onready var LocationRoom:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/Room
+@onready var LocationFloor:VBoxContainer = $PanelContainer/LocationMargin/VBoxContainer/Location/Floor
+@onready var LocationWing:VBoxContainer = $PanelContainer/LocationMargin/VBoxContainer/Location/Wing
+@onready var LocationRoom:VBoxContainer = $PanelContainer/LocationMargin/VBoxContainer/Location/Room
 
-@onready var LocationFloorLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Floor/CenterLabel2
-@onready var LocationWingLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Wing/CenterLabel2
-@onready var LocationRoomLabel:Label = $PanelContainer/MarginContainer2/VBoxContainer/Location/Room/CenterLabel2
+@onready var LocationFloorLabel:Label = $PanelContainer/LocationMargin/VBoxContainer/Location/Floor/CenterLabel2
+@onready var LocationWingLabel:Label = $PanelContainer/LocationMargin/VBoxContainer/Location/Wing/CenterLabel2
+@onready var LocationRoomLabel:Label = $PanelContainer/LocationMargin/VBoxContainer/Location/Room/CenterLabel2
 
-@onready var FloorVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/Location/FloorVisualizer
-@onready var WingVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/Location/WingVisualizer
-@onready var RoomVisualizer:Control = $PanelContainer/MarginContainer2/VBoxContainer/RoomVisualizer
+@onready var FloorVisualizer:Control = $PanelContainer/LocationMargin/VBoxContainer/Location/FloorVisualizer
+@onready var WingVisualizer:Control = $PanelContainer/LocationMargin/VBoxContainer/Location/WingVisualizer
+@onready var RoomVisualizer:Control = $PanelContainer/LocationMargin/VBoxContainer/RoomVisualizer
 
-@onready var WingHBox:HBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/WingVisualizer/WingHBox
-@onready var FloorVBox:VBoxContainer = $PanelContainer/MarginContainer2/VBoxContainer/Location/FloorVisualizer/HBoxContainer/FloorVBox
+@onready var WingHBox:HBoxContainer = $PanelContainer/LocationMargin/VBoxContainer/Location/WingVisualizer/WingHBox
+@onready var FloorVBox:VBoxContainer = $PanelContainer/LocationMargin/VBoxContainer/Location/FloorVisualizer/HBoxContainer/FloorVBox
 
-@onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
-@onready var RingBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
-@onready var RoomBuffContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RoomBuffContainer
+@onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/BuffMargin/VBoxContainer/HBoxContainer/FloorBuffsContainer
+@onready var RingBuffsContainer:HBoxContainer = $PanelContainer/BuffMargin/VBoxContainer/HBoxContainer/RingBuffsContainer
+@onready var RoomBuffContainer:HBoxContainer = $PanelContainer/BuffMargin/VBoxContainer/HBoxContainer/RoomBuffContainer
 
-@onready var CurrencyMoney:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
-@onready var CurrencyMaterials:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Materials
-@onready var CurrencyResearch:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Research
-@onready var CurrencyCore:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Core
+@onready var CurrencyMoney:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
+@onready var CurrencyMaterials:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Materials
+@onready var CurrencyResearch:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Research
+@onready var CurrencyCore:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Core
 
-@onready var CurrenyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CurrencyTag
-@onready var MaterialTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MaterialTag
-@onready var ScienceTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ScienceTag
-@onready var CoreTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
+@onready var CurrenyTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CurrencyTag
+@onready var MaterialTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MaterialTag
+@onready var ScienceTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ScienceTag
+@onready var CoreTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
 
-@onready var VibesContainer:PanelContainer = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes
-@onready var VibeMorale:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeMorale
-@onready var VibeSafety:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeSafety
-@onready var VibeReadiness:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeReadiness
+@onready var VibesContainer:PanelContainer = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes
+@onready var VibeMorale:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeMorale
+@onready var VibeSafety:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeSafety
+@onready var VibeReadiness:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeReadiness
 
-@onready var MoraleTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MoraleTag
-@onready var SafetyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
-@onready var ReadinessTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
+@onready var MoraleTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MoraleTag
+@onready var SafetyTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
+@onready var ReadinessTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
 
-@onready var EnergyContainer:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy
-@onready var Energy:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer/EnergyItem
-@onready var EnergyTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/EnergyTag
+@onready var EnergyContainer:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Energy
+@onready var Energy:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer/EnergyItem
+@onready var EnergyTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/EnergyTag
 
-@onready var Personnel:Container = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel
-@onready var PersonnelStaff:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Staff
-@onready var PersonnelTechnicians:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Technicians
-@onready var PersonnelSecurity:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Security
-@onready var PersonnelDClass:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/DClass
+@onready var Personnel:Container = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel
+@onready var PersonnelStaff:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Staff
+@onready var PersonnelTechnicians:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Technicians
+@onready var PersonnelSecurity:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/Security
+@onready var PersonnelDClass:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer/DClass
 
-@onready var StaffTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/StaffTag
-@onready var TechTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/TechTag
-@onready var SecTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SecTag
-@onready var DClassTag:Control = $PanelContainer/MarginControl/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/DClassTag
+@onready var StaffTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/StaffTag
+@onready var TechTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/TechTag
+@onready var SecTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SecTag
+@onready var DClassTag:Control = $PanelContainer/ResourcesMargin/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/DClassTag
 
 # buff or debuff
 const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
@@ -107,8 +107,9 @@ func activate() -> void:
 func get_hint_buttons() -> Array:
 	var btns:Array =  [CurrencyMoney, CurrencyMaterials, CurrencyResearch, CurrencyCore, VibeMorale, VibeSafety, VibeReadiness, Energy, PersonnelStaff, PersonnelTechnicians, PersonnelSecurity, PersonnelDClass]
 	for node in [FloorBuffsContainer, RingBuffsContainer, RoomBuffContainer]:
-		for child in node.get_children():
-			btns.push_back(child)
+		if node.is_visible_in_tree():
+			for child in node.get_children():
+				btns.push_back(child)
 	return btns
 # --------------------------------------------------------------------------------------------------	
 

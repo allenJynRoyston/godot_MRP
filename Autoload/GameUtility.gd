@@ -131,6 +131,18 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func get_activated_floor_count() -> int:
+	if room_config.is_empty():return -1
+	
+	var activated_count:int = 0
+	for floor_index in room_config.floor.size():
+		if base_states.floor[str(floor_index)].is_powered:
+			activated_count += 1
+
+	return activated_count
+# ------------------------------------------------------------------------------
+						
+# ------------------------------------------------------------------------------
 func get_vibes_summary(use_location:Dictionary) -> Dictionary:
 	var floor_config_data:Dictionary = room_config.floor[use_location.floor]
 	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
@@ -290,8 +302,6 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-	
-
 	# compiles metrics
 	var metrics:Dictionary = {}
 	for dict in [room_details, scp_details]:
@@ -314,8 +324,8 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		# -----------
 		"room": {
 			"details": room_details,
-			"can_destroy": room_details.can_contain,
-			"can_contain": room_details.can_destroy,
+			"can_destroy": room_details.can_destroy,
+			"can_contain": room_details.can_contain,
 			"is_activated": false if is_room_empty else room_level.is_activated,
 			"metrics": metrics,
 			"abl_lvl": 0, #room_config.abl_lvl + ring_config.abl_lvl,		
@@ -365,43 +375,28 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reset_room() -> bool:
-	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room
-	var unavailable_rooms:Array = []
-	for room_index in room_config_data.size():
-		var designation:String = str(current_location.floor, current_location.ring, room_index)
-		if room_config_data[room_index].room_data.is_empty() or !room_config_data[room_index].scp_data.is_empty():
-			unavailable_rooms.push_back(designation)
-	SUBSCRIBE.unavailable_rooms = unavailable_rooms
+func reset_room(use_location:Dictionary = current_location) -> bool:
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
 
-	var confirm:bool = await create_modal("Reset room?", "Room will be destroyed, researchers will be unassigned.")
-	SUBSCRIBE.unavailable_rooms = []
+	if room_details.is_empty():
+		return false
+
+	var refund_val:int = floori(room_details.costs.purchase/2)
+	var costs:Array = [{
+		"amount": refund_val, 
+		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	}]	
+	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "Room will be reset and half the building cost will be refunded.", room_details.img_src, costs)
 	
 	if confirm:	
-		var floor_index:int = current_location.floor
-		var ring_index:int = current_location.ring
-		var room_index:int = current_location.room
-		var reset_arr:Array = purchased_facility_arr.filter(func(i): return (i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-		# ---------------------
-		if reset_arr.size() > 0:
-			var reset_item:Dictionary = reset_arr[0]
-			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location.floor == floor_index and i.location.ring == ring_index and i.location.room == room_index))
-			SUBSCRIBE.resources_data = ROOM_UTIL.calculate_purchase_cost(reset_item.ref, true)
-			
-			hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-				# clear out prior researchers
-				if U.dictionaries_equal(i[11].assigned_to_room, current_location):
-					i[10].assigned_to_room = {}
-				return i
-			)
-			SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
-			
-			return true
-		else:
-			return false
-	else:
-		GameplayNode.restore_player_hud()
-		return false	
+		RESEARCHER_UTIL.remove_assigned_location(use_location)
+		ROOM_UTIL.reset_room(use_location)
+		#var refund_val:int = floori(room_details.costs.purchase/2)
+		#print(refund_val)
+		#await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: refund_val}, Color(1, 1, 1, 0) )
+
+
+	return confirm
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------
@@ -893,46 +888,15 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func activate_floor(floor_val:int) -> bool:
-	SUBSCRIBE.suppress_click = true
-
-	var activated_count:int = 0
-	for floor_index in room_config.floor.size():
-		if base_states.floor[str(floor_index)].is_powered:
-			activated_count += 1
-	var activation_cost:int = activated_count * 50
-	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
-	
-	var activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
-	var title:String = "Activate floor %s?" % floor_val
-	var subtitle:String = ""
-
-	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
-
-	if confirm:
-		base_states.floor[str(floor_val)].is_powered = true
-		SUBSCRIBE.base_states = base_states 
-		SUBSCRIBE.resources_data = resources_data
-			
-	return confirm
+func activate_floor(floor_val:int) -> void:
+	base_states.floor[str(floor_val)].is_powered = true
+	SUBSCRIBE.base_states = base_states 
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func upgrade_generator_level(use_location:Dictionary = current_location) -> bool:
-	var activation_cost:int = 25
-	var can_purchase:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= activation_cost
-	var title:String = "Upgrade generator?"
-	var subtitle:String = "X energy will be available per ring."
-
-	var activation_requirements = [{"amount": activation_cost, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]
-	var confirm:bool = await create_modal(title, subtitle, "", activation_requirements)
-
-	if confirm:
-		base_states.floor[str(use_location.floor)].generator_level += 1
-		SUBSCRIBE.base_states = base_states
-		SUBSCRIBE.resources_data = resources_data
-
-	return confirm
+func upgrade_generator_level(use_location:Dictionary = current_location) -> void:
+	base_states.floor[str(use_location.floor)].generator_level += 1
+	SUBSCRIBE.base_states = base_states
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

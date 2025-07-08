@@ -1,14 +1,19 @@
 extends Node
 
-enum TRACK { 
+enum TRACK {
+	# -------------------- 
 	INTRO, 
 	LOADING, 
 	OS_STARTUP_SFX,
+	# --------------------
+	OS_TRACK_ONE,
+	OS_TRACK_TWO,
 	
+	# --------------------
 	GAME_MAIN_MENU,
 	GAME_TRACK_ONE, 
 	GAME_TRACK_TWO,
-	
+	# --------------------
 	INITIAL_CONTAINMENT, 
 	CONTAINMENT_BREACH 
 }
@@ -46,6 +51,29 @@ var track_list:Array = [
 			return false,
 		"file": preload("res://Audio/fx/Computer Start Up - Premier Sound - SoundLoadMate.com.mp3")
 	},	
+	
+	# ---------------------------------------------------------------------------------------------- OS TRACKS
+	{
+		"details": {
+			"name": "OS_TRACK_ONE",
+			"author": "OS_TRACK_ONE",
+			"ref": TRACK.OS_TRACK_ONE,
+		},
+		"unlocked": func(data:Dictionary) -> bool:
+			return false,
+		"file": preload("res://Audio/mp3/nagz-1_DO_NOT_USE_IN_FINAL.mp3")
+	},		
+	{
+		"details": {
+			"name": "OS_TRACK_TWO",
+			"author": "OS_TRACK_TWO",
+			"ref": TRACK.OS_TRACK_TWO,
+		},
+		"unlocked": func(data:Dictionary) -> bool:
+			return false,
+		"file": preload("res://Audio/mp3/nagz-2-DO_NOT_USE_IN_FINAL.mp3")
+	},		
+		
 	
 	# ---------------------------------------------------------------------------------------------- GAME TRACKS
 	{

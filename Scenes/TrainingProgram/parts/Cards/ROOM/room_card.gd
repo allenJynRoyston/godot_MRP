@@ -1,16 +1,21 @@
 @tool
 extends MouseInteractions
 
-@onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
-
+# --------
 @onready var CardBody:Control = $CardBody
+@onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
 @onready var Front:Control = $CardBody/SubViewport/Control/CardBody/Front
 @onready var Back:Control = $CardBody/SubViewport/Control/CardBody/Back
-@onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/InactivePanel
+
+# --------
 @onready var CostPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel
 @onready var CostAmount:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostAmount
 @onready var CostIcon:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostIcon
 @onready var CostLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostLabel
+
+# --------
+@onready var AtFullCapacity:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/AtFullCapacity
+@onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/InactivePanel
 
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
@@ -104,6 +109,8 @@ func _ready() -> void:
 	
 	Front.show()
 	Back.hide()
+	AtFullCapacity.hide()
+	CostPanel.hide()
 	
 	default_border_color = CardDrawerName.border_color
 # ------------------------------------------------------------------------------
@@ -145,10 +152,15 @@ func on_resources_data_update(new_val:Dictionary) -> void:
 	
 func on_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty():return	
-	
-	CostPanel.show() if show_cost or show_research_cost else CostPanel.hide()
-	
+		
 	if ref == -1:
+		InactivePanel.hide()
+		CostPanel.hide()
+		AtFullCapacity.hide()
+		
+		CardBody.border_color = Color.TRANSPARENT
+		CardBody.modulate = Color(1, 1, 1, 0.2)
+		
 		CardDrawerImage.use_static = true
 		CardDrawerName.content = "-"
 		CardDrawerDescription.content = "-"
@@ -163,7 +175,7 @@ func on_ref_update() -> void:
 	var currency_list:Array = []
 	var label_settings_copy:LabelSettings = CostAmount.label_settings 
 
-
+	# has location
 	if use_location.is_empty() or preview_mode:
 		for ref in room_details.currencies:
 			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
@@ -180,42 +192,44 @@ func on_ref_update() -> void:
 			metrics = extract_data.room.metrics
 			currency_list = extract_data.room.currency_list
 			
-
+	CardBody.border_color = default_border_color if is_activated else Color.RED
+	CardBody.modulate = Color(1, 1, 1, 1)
 	
-	for node in [CardBody]:
-		node.border_color = default_border_color if is_activated else Color.RED
-
 	var abl_lvl:int = 0
 	if !use_location.is_empty():
 		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
 		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
-
 	# -----------
-	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()	
 	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
-	#CardDrawerStaffingRequirements.required_personnel = room_details.required_personnel
 	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated
 	CardDrawerDescription.content = room_details.description
-	# -----------
-	#CardDrawerPairsWith.spec_name = RESEARCHER_UTIL.return_specialization_data(room_details.requires_specialization).name 
+	
 	# -----------
 	CardDrawerVibes.preview_mode = preview_mode	
 	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = metrics
-
 	CardDrawerCurrency.preview_mode = preview_mode
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
 	CardDrawerCurrency.list = currency_list
 	
-	if show_cost:
+	# panels
+	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()	
+	CostPanel.hide()
+
+	# show cost panel
+	if show_cost or show_research_cost:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= room_details.costs.purchase
 		var use_color:Color = Color.WHITE if can_afford else Color.RED
+		var at_capacity:bool = ROOM_UTIL.at_own_limit(room_details.ref)
+		
+		CostPanel.show() if !at_capacity else CostPanel.hide()
+		AtFullCapacity.show() if at_capacity else AtFullCapacity.hide()
 		
 		CostLabel.text = "CONSTRUCTION COST"
 		CostAmount.text = str(room_details.costs.purchase) if room_details.costs.purchase > 0 else "FREE"
@@ -226,10 +240,12 @@ func on_ref_update() -> void:
 		CostIcon.icon = SVGS.TYPE.MONEY
 		CostIcon.static_color = use_color
 	
+	# researcher panel
 	if show_research_cost:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.SCIENCE].amount >= room_details.costs.unlock
 		var use_color:Color = Color.WHITE if can_afford else Color.RED
-
+		
+		CostPanel.show()
 		CostLabel.text = "RESEARCH COST"
 		CostAmount.text = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
 		
@@ -237,20 +253,22 @@ func on_ref_update() -> void:
 		
 		CostAmount.label_settings = label_settings_copy
 		CostIcon.icon = SVGS.TYPE.RESEARCH
-		CostIcon.static_color = use_color		
+		CostIcon.static_color = use_color
+		
+	
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:	
-	if !is_node_ready():return	
-	is_focused = state
-	onFocus.call(self) if state else onBlur.call(self)	
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover and btn == MOUSE_BUTTON_LEFT:		
-		onClick.call()
+#func on_focus(state:bool = is_focused) -> void:	
+	#if !is_node_ready():return	
+	#is_focused = state
+	#onFocus.call(self) if state else onBlur.call(self)	
+	#if state:
+		#GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	#else:
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+#
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if on_hover and btn == MOUSE_BUTTON_LEFT:		
+		#onClick.call()
 # ------------------------------------------------------------------------------

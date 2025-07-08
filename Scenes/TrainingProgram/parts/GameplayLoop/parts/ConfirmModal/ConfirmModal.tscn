@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=18 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_upopm"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_kq5a2"]
 [ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_t4xaw"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_eu6o6"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="6_kq5a2"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="7_t4xaw"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="8_qglm5"]
@@ -57,18 +56,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugt3m"]
 bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qglm5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -182,27 +181,12 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "REQUIREMENTS "
-label_settings = ExtResource("5_eu6o6")
-
 [node name="List" type="VBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="CheckBox" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ugt3m")
 no_bg = true
 title = "1 energy required (you have X)"
 
@@ -220,7 +204,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
 icon = 31
 no_bg = true
 title = "99"
@@ -239,7 +223,7 @@ layout_mode = 2
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qglm5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
 icon = 31
 no_bg = true
 title = "99"

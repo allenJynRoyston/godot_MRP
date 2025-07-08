@@ -4,9 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_re623"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_ka7tl"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_dkurb"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="5_j6bi6"]
+[ext_resource type="LabelSettings" uid="uid://gtflywuysx2d" path="res://Fonts/small_black_with_glow.tres" id="6_j6bi6"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e24g7"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ka7tl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ka7tl"]
 bg_color = Color(0, 0, 0, 0)
@@ -15,7 +15,7 @@ expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkurb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q36v"]
 bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 border_width_left = 2
 border_width_top = 2
@@ -27,7 +27,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j6bi6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iae0a"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -39,7 +39,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q36v"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6pxk"]
 bg_color = Color(0, 0.529412, 0.278431, 1)
 border_width_left = 2
 border_width_top = 2
@@ -52,16 +52,19 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jky8x"]
-bg_color = Color(0, 0, 0, 0.796078)
+bg_color = Color(1, 0.74902, 0.2, 0.862745)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.282353)
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
 
 [node name="BtnControls" type="Control"]
 layout_mode = 3
@@ -79,7 +82,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_e24g7")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ka7tl")
 
 [node name="BtnMarginContainer" type="MarginContainer" parent="BtnControlPanel"]
 custom_minimum_size = Vector2(0, 100)
@@ -116,7 +119,7 @@ theme_override_constants/separation = 10
 
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "BACK"
 assigned_key = "B"
 icon = 28
@@ -131,7 +134,7 @@ size_flags_vertical = 8
 [node name="CBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_iae0a")
 title = "INFO"
 assigned_key = "R"
 icon = 23
@@ -140,7 +143,7 @@ allow_hint = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6pxk")
 title = "NEXT"
 assigned_key = "E"
 icon = 27
@@ -159,7 +162,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HintContainer" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer"]
-visible = false
 custom_minimum_size = Vector2(600, 20)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -192,10 +194,11 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 icon = 23
+static_color = Color(0, 0, 0, 1)
 is_hoverable = false
 allow_hint = false
 
 [node name="HintDescription" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Hint goes here."
-label_settings = ExtResource("5_j6bi6")
+label_settings = ExtResource("6_j6bi6")

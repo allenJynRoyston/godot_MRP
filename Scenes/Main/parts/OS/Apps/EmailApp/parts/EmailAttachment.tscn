@@ -5,16 +5,18 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_psari"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8egu3"]
-bg_color = Color(0.0728426, 0.0728426, 0.0728426, 1)
+bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_03pfx"]
+[sub_resource type="LabelSettings" id="LabelSettings_psari"]
 font = ExtResource("3_psari")
 font_size = 8
-font_color = Color(0, 0.8, 0.32, 1)
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0.0784314, 0.0784314, 0.0784314, 0.207843)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
@@ -40,17 +42,17 @@ theme_override_constants/separation = 10
 [node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_7ovhd")]
 layout_mode = 2
 icon = 4
-static_color = Color(0.431373, 0.803922, 0.329412, 1)
+static_color = Color(0, 0, 0, 1)
 is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "ATTACHMENT:"
-label_settings = SubResource("LabelSettings_03pfx")
+label_settings = SubResource("LabelSettings_psari")
 uppercase = true
 
 [node name="AttachmentLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "filename"
-label_settings = SubResource("LabelSettings_03pfx")
+label_settings = SubResource("LabelSettings_psari")
 uppercase = true
