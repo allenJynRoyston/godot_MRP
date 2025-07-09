@@ -29,7 +29,7 @@ bg_color = Color(0.05, 0.05, 0.05, 0)
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xathl"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -41,7 +41,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah17n"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -53,7 +53,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_58xi4"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -65,7 +65,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x63m5"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -77,7 +77,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nld38"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -89,7 +89,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_273dx"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -101,7 +101,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gjl"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -113,7 +113,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8fc8h"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -125,7 +125,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fx5xy"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -137,7 +137,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2nmih"]
-bg_color = Color(0.808644, 0.230432, 7.70092e-07, 1)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -149,7 +149,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txh3k"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -161,7 +161,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3pfk"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -173,7 +173,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fqpim"]
-bg_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -185,7 +185,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww8tn"]
-bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -197,7 +197,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_en8v0"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -209,7 +209,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a4y2m"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -221,7 +221,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_edhtb"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -233,7 +233,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4sxg"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -245,7 +245,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0d7l"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -257,7 +257,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34kq7"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -269,7 +269,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qan0e"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -281,7 +281,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4qisn"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -293,7 +293,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -307,7 +307,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_se8j2"]
-bg_color = Color(0.337255, 0.27451, 1, 1)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -450,26 +450,22 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="FacilityActionBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "UPGRADE"
+title = "ACTIONS"
 assigned_key = "E"
 icon = 15
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="FacilityEndTurnBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -503,26 +499,22 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="WingActionBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_58xi4")
 title = "ACTIONS"
 assigned_key = "E"
 icon = 29
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="WingEndTurnBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -556,26 +548,22 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="GenActionBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "UPGRADES"
 assigned_key = "E"
 icon = 29
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="GenEndTurnBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 27
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -617,35 +605,33 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="GotoFloorBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "FLOOR"
 assigned_key = "1"
 icon = 70
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="GotoWingBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8fc8h")
 title = "WING"
 assigned_key = "2"
 icon = 29
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 allow_hint = false
 
 [node name="GotoGeneratorBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fx5xy")
 title = "GENERATOR"
 assigned_key = "3"
 icon = 32
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 allow_hint = false
 
 [node name="Right" type="HBoxContainer" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2"]
@@ -684,49 +670,41 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="TutorialBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_2nmih")
 title = "HINT"
 assigned_key = "H"
 icon = 67
-panel_color = Color(0.808644, 0.230432, 7.70092e-07, 1)
 is_disabled = false
 
 [node name="ObjectivesBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_txh3k")
 title = "OBJECTIVES"
 assigned_key = "O"
 icon = 23
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="HintInfoBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_l3pfk")
 title = "INFO"
 assigned_key = "I"
 icon = 23
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
 [node name="SettingsBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fqpim")
 title = "SETTINGS"
 assigned_key = "TAB"
 icon = 15
-panel_color = Color(0.137536, 3.03224e-05, 0.521353, 0.796078)
 is_disabled = false
 allow_hint = false
 
@@ -791,13 +769,11 @@ uppercase = true
 layout_mode = 2
 
 [node name="InvestigateBackBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ww8tn")
 title = "BACK"
 assigned_key = "B"
 icon = 28
-panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 is_disabled = false
 allow_hint = false
 
@@ -855,6 +831,7 @@ uppercase = true
 layout_mode = 2
 
 [node name="UseAbilityBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_en8v0")
@@ -864,6 +841,7 @@ icon = 10
 allow_hint = false
 
 [node name="BuildBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a4y2m")
 title = "CONSTRUCT"
@@ -871,6 +849,7 @@ assigned_key = "E"
 allow_hint = false
 
 [node name="DeconstructBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_edhtb")
@@ -909,6 +888,7 @@ layout_mode = 2
 
 [node name="ResearcherDetailBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_k4sxg")
 title = "DETAIL"
@@ -917,6 +897,7 @@ icon = 3
 allow_hint = false
 
 [node name="AssignBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e0d7l")
 title = "ASSIGN"
@@ -925,6 +906,7 @@ icon = 53
 allow_hint = false
 
 [node name="UnassignBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_34kq7")
 title = "UNASSIGN"
@@ -934,6 +916,7 @@ allow_hint = false
 
 [node name="ResearcherNextBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ResearcherBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qan0e")
 title = "NEXT"
@@ -973,6 +956,7 @@ uppercase = true
 layout_mode = 2
 
 [node name="ContainBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4qisn")
 title = "CONTAIN"
@@ -982,6 +966,7 @@ allow_hint = false
 
 [node name="ScpDetailsBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/ScpBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3de1l")
 title = "DETAILS"
@@ -1023,14 +1008,12 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="NewMessageBtn" parent="NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_se8j2")
 title = "NEW MESSAGE"
 assigned_key = "SHIFT"
 icon = 67
-panel_color = Color(0.337255, 0.27451, 1, 1)
 is_disabled = false
 
 [node name="NameControl" type="Control" parent="."]

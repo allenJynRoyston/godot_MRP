@@ -16,7 +16,7 @@ extends GameContainer
 @onready var ResourceHBox:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
-const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
+const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 
 @onready var allow_controls:bool = false : 
 	set(val):

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cl4l2eumm0uv5" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_staffing_requirements.gd" id="1_n4lo8"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_n4lo8"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_ym2li"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://UI/ResourceItem/ResourceItem.tscn" id="3_ym2li"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n4lo8"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)

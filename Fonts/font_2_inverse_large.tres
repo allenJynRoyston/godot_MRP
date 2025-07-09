@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bh6uxtrmlpvog"]
+
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="1_hgv8u"]
+
+[resource]
+font = ExtResource("1_hgv8u")
+font_size = 32

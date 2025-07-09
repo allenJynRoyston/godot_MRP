@@ -1,23 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://bxish5x37ra5e"]
 
 [ext_resource type="Script" uid="uid://dj1ai3q3um8r" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/setup_container.gd" id="1_afx8l"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_jxkdm"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_nlxs0"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_nlxs0"]
+[ext_resource type="LabelSettings" uid="uid://bawc06ioiq5cl" path="res://Fonts/font_2_32.tres" id="3_nlxs0"]
+[ext_resource type="LabelSettings" uid="uid://gtflywuysx2d" path="res://Fonts/small_black_with_glow.tres" id="4_yqgl1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o40oq"]
-bg_color = Color(0.144063, 0.144063, 0.144063, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mhehc"]
-bg_color = Color(0.337255, 0.27451, 1, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.162066, 0.162066, 0.162066, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nlxs0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqy2x"]
 bg_color = Color(0.162066, 0.162066, 0.162066, 1)
@@ -25,39 +13,61 @@ bg_color = Color(0.162066, 0.162066, 0.162066, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j2rtl"]
 bg_color = Color(1, 1, 1, 1)
 
-[node name="SetupContainer" type="PanelContainer"]
-z_index = 2
+[node name="Setup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_afx8l")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_o40oq")
-script = ExtResource("1_afx8l")
+color = Color(0.0541422, 0.0541422, 0.0541422, 1)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
+z_index = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nlxs0")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/margin_top = 200
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_mhehc")
+theme_override_styles/panel = ExtResource("2_nlxs0")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "SETTING UP PLEASE WAIT..."
-label_settings = ExtResource("2_jxkdm")
+label_settings = ExtResource("3_nlxs0")
 
-[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_tqy2x")
@@ -65,8 +75,8 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_j2rtl")
 max_value = 1.0
 show_percentage = false
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "FINDING THE FILES..."
-label_settings = ExtResource("3_nlxs0")
+label_settings = ExtResource("4_yqgl1")
 horizontal_alignment = 2

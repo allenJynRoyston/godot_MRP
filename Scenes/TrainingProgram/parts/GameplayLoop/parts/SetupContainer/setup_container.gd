@@ -1,8 +1,13 @@
-extends PanelContainer
+extends Control
 
-@onready var SetupProgressBar:ProgressBar = $PanelContainer/MarginContainer/VBoxContainer/ProgressBar
-@onready var TitleLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Label
-@onready var SubtitleLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/Label2
+@onready var RootPanel:PanelContainer = $PanelContainer
+@onready var MarginPanel:MarginContainer = $PanelContainer/MarginContainer
+
+@onready var SetupProgressBar:ProgressBar = $PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ProgressBar
+@onready var TitleLabel:Label = $PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Label
+@onready var SubtitleLabel:Label = $PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Label2
+
+var control_pos:Dictionary = {}
 
 var title:String = "" : 
 	set(val):
@@ -26,10 +31,23 @@ func _ready() -> void:
 	on_title_update()
 	on_subtitle_update()
 
+func activate() -> void:
+	await U.tick()
+	
+	control_pos[RootPanel] = {
+		"show": 0,
+		"hide": -MarginPanel.size.y
+	}
+	
+	RootPanel.position.y = control_pos[RootPanel].hide
+	
+
 func start() -> void:
 	self.modulate = Color(1, 1, 1, 1)
+	await U.tween_node_property(RootPanel, "position:y", control_pos[RootPanel].show)
 
 func end() -> void:
+	U.tween_node_property(RootPanel, "position:y", control_pos[RootPanel].hide)
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.5)
 	self.queue_free()	
 

@@ -727,6 +727,19 @@ func clone_researcher() -> bool:
 	return true
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func view_personnel() -> bool:	
+	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
+	GameplayNode.add_child(ResearcherGrid)
+	ResearcherGrid.z_index = z_index_lvl
+	
+	await ResearcherGrid.activate()	
+	ResearcherGrid.view_only()
+	await ResearcherGrid.user_response
+	
+	return true
+# --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func promote_researcher() -> bool:	
@@ -890,6 +903,12 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 # ------------------------------------------------------------------------------
 func activate_floor(floor_val:int) -> void:
 	base_states.floor[str(floor_val)].is_powered = true
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func deactivate_floor(floor_val:int) -> void:
+	base_states.floor[str(floor_val)].is_powered = false
 	SUBSCRIBE.base_states = base_states 
 # ------------------------------------------------------------------------------
 
@@ -1118,23 +1137,3 @@ func increament_story() -> void:
 	# then update
 	GBL.update_and_save_user_profile()	
 # ------------------------------------------------------------------------------	
-
-
-# ------------------------------------------------------------------------------	TUTORIAL
-#region START GAME
-func start_tutorial() -> void:
-	await add_dialogue({
-		"title": "HOW TO PLAY",
-		"text": [
-			'Welcome Site Director.',
-			'The rules of this simulation are simple.',
-			'You will have a set of objectives.  These objectives have a deadline.',
-			'There is no singular way to complete an objective, but if you get stuck you can purchase a hint.',
-			'Do not fear failure.  If you get to a point where you cannot proceed, start over.',
-			'Knowledge, experience and creativity are the cornerstone for doing this job safetly and effectively.',
-			'This is your time to practice before you have to deal with the real thing.  Good luck.',
-			'- The O5 Council'
-		]
-	})
-#endregion
-# ------------------------------------------------------------------------------

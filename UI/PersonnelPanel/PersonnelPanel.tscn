@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bkv2hecqu5w4m" path="res://UI/PersonnelPanel/PersonnelPanel.gd" id="1_0850i"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_to88n"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn" id="3_aigyd"]
+[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://UI/ResourceItem/ResourceItem.tscn" id="3_aigyd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7y1q"]
 bg_color = Color(0, 0, 0, 0.572549)

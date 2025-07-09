@@ -27,6 +27,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cucwc")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.185383, 0.185383, 0.185383, 1)
+
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 40.0
@@ -63,6 +72,7 @@ size = Vector2i(1920, 1080)
 
 [node name="OverviewCamera" type="Camera3D" parent="SubViewport/Rendering/OverviewScene"]
 projection = 1
+size = 1.2
 far = 10.0
 
 [node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/OverviewScene/OverviewCamera"]

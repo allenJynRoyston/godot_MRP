@@ -20,7 +20,7 @@ var preview_mode:bool = false
 
 var is_researched:bool = true
 
-const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
+const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 
 # -----------------------------
 func _init() -> void:

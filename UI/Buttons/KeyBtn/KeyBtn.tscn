@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dw4yaadsasl86" path="res://UI/Buttons/KeyBtn/key_btn.gd" id="1_5n3hm"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_0ixyl"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_vl4h5"]
-[ext_resource type="LabelSettings" uid="uid://bhvjm3opd1txx" path="res://Fonts/game/label_small.tres" id="3_7luo6"]
+[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="2_f1p3b"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="4_f1p3b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1p3b"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -19,22 +19,15 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_26aci"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wp1od"]
-bg_color = Color(0, 0, 0, 0.560784)
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f1p3b"]
 
 [node name="KeyBtn" type="PanelContainer"]
-modulate = Color(1, 0, 0, 1)
 offset_right = 54.0
 offset_bottom = 32.0
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_f1p3b")
 script = ExtResource("1_5n3hm")
 title = "TITLE"
-panel_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-text_active_color = Color(1, 1, 1, 1)
-text_inactive_color = Color(0.662745, 0.662745, 0.662745, 1)
 is_disabled = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -63,7 +56,7 @@ custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 5
 text = "TITLE"
-label_settings = ExtResource("2_vl4h5")
+label_settings = ExtResource("2_f1p3b")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -79,6 +72,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 icon = 24
+static_color = Color(0, 0, 0, 1)
 is_hoverable = false
 
 [node name="NewIndicatorBtn" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer" instance=ExtResource("2_0ixyl")]
@@ -96,14 +90,14 @@ static_color = Color(0, 0, 0, 0)
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wp1od")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f1p3b")
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer2"]
 layout_mode = 2
@@ -114,6 +108,6 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 text = "X"
-label_settings = ExtResource("3_7luo6")
+label_settings = ExtResource("4_f1p3b")
 horizontal_alignment = 1
 vertical_alignment = 1

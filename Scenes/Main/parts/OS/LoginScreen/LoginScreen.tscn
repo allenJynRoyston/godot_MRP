@@ -6,7 +6,7 @@
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="4_sifuj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y2fyr"]
-bg_color = Color(0.12549, 0.129412, 0.137255, 1)
+bg_color = Color(0.054042, 0.0564311, 0.0612084, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_n3vdj"]
 font = ExtResource("3_ya276")

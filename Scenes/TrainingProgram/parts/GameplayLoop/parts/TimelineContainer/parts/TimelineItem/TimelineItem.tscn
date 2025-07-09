@@ -1,13 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://cgp6oftk1itbm"]
+[gd_scene load_steps=7 format=3 uid="uid://cgp6oftk1itbm"]
 
 [ext_resource type="Script" uid="uid://ds3v31x8jtj0f" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/timeline_item.gd" id="1_kvhu7"]
 [ext_resource type="PackedScene" uid="uid://hlplj21egi7y" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineListItem.tscn" id="3_bjc2s"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="4_uc60w"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_h7nph"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_nkia3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cl2rc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6f2x"]
-bg_color = Color(1, 1, 1, 0.796078)
+[sub_resource type="LabelSettings" id="LabelSettings_op8kj"]
+font = ExtResource("4_nkia3")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
 
 [node name="TimelineItem" type="PanelContainer"]
 custom_minimum_size = Vector2(350, 0)
@@ -41,13 +44,19 @@ size_flags_vertical = 3
 script = null
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_m6f2x")
+theme_override_styles/panel = ExtResource("3_h7nph")
 
-[node name="DayLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+
+[node name="DayLabel" type="Label" parent="MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "99"
-label_settings = ExtResource("4_uc60w")
+label_settings = SubResource("LabelSettings_op8kj")
 horizontal_alignment = 1
 vertical_alignment = 1

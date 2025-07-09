@@ -2,9 +2,10 @@
 
 [ext_resource type="Script" uid="uid://bt4fuj4j35pdi" path="res://Components/BtnControls/btn_controls.gd" id="1_42gfu"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_re623"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_ka7tl"]
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="3_dkurb"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_dkurb"]
-[ext_resource type="LabelSettings" uid="uid://gtflywuysx2d" path="res://Fonts/small_black_with_glow.tres" id="6_j6bi6"]
+[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="4_j6bi6"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="6_0q36v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ka7tl"]
 
@@ -15,8 +16,32 @@ expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkurb"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j6bi6"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q36v"]
-bg_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -26,45 +51,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iae0a"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6pxk"]
-bg_color = Color(0, 0.529412, 0.278431, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jky8x"]
-bg_color = Color(1, 0.74902, 0.2, 0.862745)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.282353)
-shadow_size = 2
-shadow_offset = Vector2(1, 1)
 
 [node name="BtnControls" type="Control"]
 layout_mode = 3
@@ -118,12 +104,12 @@ size_flags_vertical = 8
 theme_override_constants/separation = 10
 
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
 title = "BACK"
 assigned_key = "B"
 icon = 28
-panel_color = Color(0.52438, 0.0871933, 4.81308e-08, 1)
 allow_hint = false
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -133,21 +119,21 @@ size_flags_vertical = 8
 
 [node name="CBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_iae0a")
+theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
 title = "INFO"
 assigned_key = "R"
 icon = 23
-panel_color = Color(0, 0.529412, 0.278431, 1)
 allow_hint = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_m6pxk")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "NEXT"
 assigned_key = "E"
 icon = 27
-panel_color = Color(0, 0.529412, 0.278431, 1)
 allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControlPanel/BtnMarginContainer"]
@@ -165,12 +151,12 @@ grow_vertical = 2
 custom_minimum_size = Vector2(600, 20)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jky8x")
+theme_override_styles/panel = ExtResource("3_dkurb")
 
 [node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = -12
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
@@ -182,7 +168,7 @@ theme_override_constants/separation = -4
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "HINT"
-label_settings = ExtResource("3_ka7tl")
+label_settings = ExtResource("4_j6bi6")
 vertical_alignment = 1
 uppercase = true
 
@@ -201,4 +187,4 @@ allow_hint = false
 [node name="HintDescription" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Hint goes here."
-label_settings = ExtResource("6_j6bi6")
+label_settings = ExtResource("6_0q36v")

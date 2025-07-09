@@ -1,6 +1,6 @@
 extends BtnBase
 
-@onready var DayLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/DayLabel
+@onready var DayLabel:Label = $MarginContainer/HBoxContainer/PanelContainer/MarginContainer/DayLabel
 @onready var ListContainer:VBoxContainer = $MarginContainer/HBoxContainer/ListContainer
 
 const TimlineListItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineListItem.tscn")

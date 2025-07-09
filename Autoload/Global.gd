@@ -16,7 +16,6 @@ func mark_messages_played(on_chapter:int) -> void:
 func has_message_been_played(on_chapter:int) -> bool:
 	if "story_message" not in STORY.chapters[on_chapter]:
 		return true
-	print(active_user_profile.story_progress.messages_played)
 	return on_chapter in active_user_profile.story_progress.messages_played
 
 func update_and_save_user_profile(_active_user_profile:Dictionary = active_user_profile) -> void:

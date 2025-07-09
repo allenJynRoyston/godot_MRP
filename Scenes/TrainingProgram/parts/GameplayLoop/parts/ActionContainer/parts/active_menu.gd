@@ -233,7 +233,7 @@ func on_options_list_update() -> void:
 		#btn_node.title = "NO LVL %s ACTIONS AVAILABLE" % [level + 1]
 		btn_node.btn_color = use_color
 		btn_node.is_empty = true
-		btn_node.is_hollow = true
+		#btn_node.is_hollow = true
 		
 		List.add_child(btn_node)		
 		return
@@ -254,13 +254,13 @@ func on_options_list_update() -> void:
 		if show:
 			btn_node.title = item.title
 			#btn_node.btn_color = use_color
-			btn_node.COLOR_A = Color.WHITE
-			btn_node.COLOR_A_DISABLED = Color(0.337, 0.275, 1.0).lightened(0.4)
+			btn_node.COLOR_A = COLORS.primary_color
+			btn_node.COLOR_A_DISABLED = COLORS.disabled_color
 			#btn_node.COLOR_B = Color.WHITE
 			btn_node.display_checkmark = item.is_togglable if "is_togglable" in item else false
 			btn_node.is_checked = item.is_checked if "is_checked" in item else false
 			btn_node.is_disabled = item.is_disabled if "is_disabled" in item else false
-			btn_node.is_hollow = true
+			#btn_node.is_hollow = true
 			btn_node.index = index
 			
 			btn_node.hint_description = item.hint.description if item.has("hint") else ""

@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2xiva1hpi0f4"]
+[gd_scene load_steps=5 format=3 uid="uid://b2xiva1hpi0f4"]
 
 [ext_resource type="Script" uid="uid://b60uuqkimgfwr" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/email_attachment.gd" id="1_dkvyx"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_7ovhd"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_psari"]
+[ext_resource type="LabelSettings" uid="uid://gtflywuysx2d" path="res://Fonts/small_black_with_glow.tres" id="3_psari"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8egu3"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -10,16 +10,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_psari"]
-font = ExtResource("3_psari")
-font_size = 8
-font_color = Color(0, 0, 0, 1)
-outline_size = 2
-outline_color = Color(0.0784314, 0.0784314, 0.0784314, 0.207843)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 1)
-shadow_offset = Vector2(0, 0)
 
 [node name="AttachmentContainer" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_8egu3")
@@ -48,11 +38,11 @@ is_hoverable = false
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "ATTACHMENT:"
-label_settings = SubResource("LabelSettings_psari")
+label_settings = ExtResource("3_psari")
 uppercase = true
 
 [node name="AttachmentLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "filename"
-label_settings = SubResource("LabelSettings_psari")
+label_settings = ExtResource("3_psari")
 uppercase = true

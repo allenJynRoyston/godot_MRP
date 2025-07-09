@@ -28,55 +28,61 @@ var chapters:Array = [
 					]
 				},
 			],
-			"optional": [
-				# --------------------- OPTIONAL
-				{ 
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.UI_ASSIST
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-						{"title": "Step 2", "cost": 2},
-						{"title": "Step 3", "cost": 5},
-					]
-				},				
-				{
-					"custom": {
-						"is_optional": true,
-						"title": "%s is enabled" % [ABL_P.get_ability(ABL_P.REF.OBJECTIVE_ASSIST).name],
-						"count_str": func(amount:int) -> String:
-							# purposely don't want to render this
-							return "",
-						"you_have": func() -> int: 
-							return 1 if ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.OBJECTIVE_ASSIST) else 0,
-						"is_completed": func() -> bool:
-							return ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.OBJECTIVE_ASSIST),
-						},
-					"hints": [
-						{"title": "Step custom 1", "cost": 1},
-					]
-				},
-				{
-					"custom": {
-						"is_optional": true,
-						"title": "%s is enabled." % [ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE).name],
-						"count_str": func(amount:int) -> String:
-							# purposely don't want to render this
-							return "",
-						"you_have": func() -> int: 
-							return 1 if ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.PREDICTIVE_TIMELINE) else 0,
-						"is_completed": func() -> bool:
-							return ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.PREDICTIVE_TIMELINE),
-						},
-					"hints": [
-						{"title": "Step custom 1", "cost": 1},
-					]
-				},				
-				# ---------------------
-			],
+			#"optional": [
+				## --------------------- OPTIONAL
+				#{ 
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 1,
+						#"type": TYPE.BUILDING,
+						#"ref": ROOM.REF.UI_ASSIST
+					#},
+					#"hints": [
+						#{"title": "Step 1", "cost": 1},
+						#{"title": "Step 2", "cost": 2},
+						#{"title": "Step 3", "cost": 5},
+					#]
+				#},				
+				#{
+					#"custom": {
+						#"is_optional": true,
+						#"title": "%s is enabled" % [ABL_P.get_ability(ABL_P.REF.OBJECTIVE_ASSIST).name],
+						#"count_str": func(amount:int) -> String:
+							## purposely don't want to render this
+							#return "",
+						#"you_have": func() -> int: 
+							#return 1 if ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.OBJECTIVE_ASSIST) else 0,
+						#"is_completed": func() -> bool:
+							#return ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.OBJECTIVE_ASSIST),
+						#},
+					#"hints": [
+						#{"title": "Step custom 1", "cost": 1},
+					#]
+				#},
+				#{
+					#"custom": {
+						#"is_optional": true,
+						#"title": "%s is enabled." % [ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE).name],
+						#"count_str": func(amount:int) -> String:
+							## purposely don't want to render this
+							#return "",
+						#"you_have": func() -> int: 
+							#return 1 if ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.PREDICTIVE_TIMELINE) else 0,
+						#"is_completed": func() -> bool:
+							#return ROOM_UTIL.check_if_passive_is_active(ABL_P.REF.PREDICTIVE_TIMELINE),
+						#},
+					#"hints": [
+						#{"title": "Step custom 1", "cost": 1},
+					#]
+				#},				
+				## ---------------------
+			#],
+		},
+		"tutorial": {
+			"title": "TUTORIAL 1",
+			"text": [
+				'Welcome Site Director.'
+			]			
 		}
 	},
 		
@@ -141,6 +147,7 @@ var chapters:Array = [
 		"rewarded": func() -> Array:
 			return [
 				{
+					"room_ref": ROOM.REF.HR_DEPARTMENT, 
 					"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
 					"val": {
 						"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
@@ -148,13 +155,20 @@ var chapters:Array = [
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
 				},
 				{
+					"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
 					"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
 					"val": {
 						"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
-				}				
+				}							
 		],
+		"tutorial": {
+			"title": "TUTORIAL 2",
+			"text": [
+				'Tutorial 2.'
+			]			
+		}		
 	},
 	# ----------------------------------------------------------------------------------------------
 	

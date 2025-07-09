@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://c7n7pxhkwpt0k"]
+
+[ext_resource type="Script" uid="uid://cp7d664lrqs7o" path="res://UI/SvgIcon/svg_icon.gd" id="1_477u7"]
+[ext_resource type="Shader" uid="uid://b6aj377ryrxsw" path="res://Shader/ReColor/ReColor.gdshader" id="2_m64fp"]
+[ext_resource type="Texture2D" uid="uid://bcsulh43i1bt1" path="res://SVGs/bin-xmark-fill-svgrepo-com.svg" id="3_nefuk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_477u7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0csvm"]
+shader = ExtResource("2_m64fp")
+shader_parameter/tint_color = Color(0, 0.254902, 0.0823529, 1)
+shader_parameter/alpha = 1.0
+
+[node name="SVGIcon" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_477u7")
+script = ExtResource("1_477u7")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="Btn" type="TextureRect" parent="MarginContainer"]
+material = SubResource("ShaderMaterial_0csvm")
+layout_mode = 2
+texture = ExtResource("3_nefuk")
+expand_mode = 2

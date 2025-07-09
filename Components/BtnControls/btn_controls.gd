@@ -230,7 +230,7 @@ func on_hide_c_btn_update() -> void:
 func on_include_blackbar_update() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = BtnPanel.get_theme_stylebox('panel').duplicate()	
-	new_stylebox.bg_color = Color(0.221, 0.244, 0.331) if include_blackbar else Color(0, 0, 0, 0)
+	new_stylebox.bg_color = COLORS.primary_black if include_blackbar else Color(0, 0, 0, 0)
 	BtnPanel.add_theme_stylebox_override("panel", new_stylebox)
 # --------------------------------------------------------------------------------------------------
 	

@@ -31,17 +31,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_mtjfd")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 150
-theme_override_constants/margin_top = 80
-theme_override_constants/margin_right = 150
-theme_override_constants/margin_bottom = 125
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer"]
+custom_minimum_size = Vector2(600, 600)
 layout_mode = 2
 
-[node name="IconBtn" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/CenterContainer"]
+custom_minimum_size = Vector2(600, 400)
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CenterContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="IconBtn" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -50,22 +55,24 @@ static_color = Color(1, 1, 1, 0.705882)
 flip_h = true
 is_hoverable = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="FloorLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+[node name="FloorLabel" type="Label" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_l8yab")
 
-[node name="RingLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+[node name="RingLabel" type="Label" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 text = "A"
 label_settings = SubResource("LabelSettings_l8yab")
 
-[node name="IconBtn2" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
+[node name="IconBtn2" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_7ogr2")]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -73,10 +80,10 @@ icon = 27
 static_color = Color(1, 1, 1, 0.705882)
 is_hoverable = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/CenterContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="IconBtn" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+[node name="IconBtn" parent="PanelContainer/CenterContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -85,12 +92,12 @@ static_color = Color(1, 1, 1, 0.705882)
 flip_v = true
 is_hoverable = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CenterContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="IconBtn2" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
+[node name="IconBtn2" parent="PanelContainer/CenterContainer/MarginContainer/VBoxContainer" instance=ExtResource("1_7ogr2")]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2

@@ -1,10 +1,10 @@
 extends PanelContainer
 
+@onready var HeaderControl:Control = $HeaderControl
 @onready var Structure3dContainer:Control = $Structure3DContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var MarkedObjectivesContainer:PanelContainer = $MarkedObjectivesContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
-@onready var ResourceContainer:Control = $ResourceContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
@@ -106,6 +106,7 @@ var initial_values:Dictionary = {
 				"capacity": 100
 			},						
 		},
+		
 	# ----------------------------------
 	"researcher_hire_list": func() -> Array:
 		return [],
@@ -176,6 +177,7 @@ var initial_values:Dictionary = {
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
 				# if start on ring level, floor 0 starts with power
+				"previous_powered": false,
 				"is_powered": floor_index in [0] if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL) else false,
 				"generator_level": 0,
 				"buffs": [],
@@ -368,13 +370,6 @@ func _ready() -> void:
 		node.set_process(false)
 		node.set_physics_process(false)			
 	
-	# first these
-	on_show_structures_update()
-	on_show_actions_update()
-	on_show_resources_update()
-	on_show_linedraw_update()
-	on_show_marked_objectives_update()
-	
 	# other
 	on_is_busy_update()
 
@@ -398,6 +393,7 @@ func exit_game() -> void:
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
 func start() -> void:
+	GAME_UTIL.disable_taskbar(true)
 	show()
 	
 	# assign
@@ -434,11 +430,12 @@ func start_new_game() -> void:
 	var SetupContainer:Control = SetupContainedPreload.instantiate()
 	add_child(SetupContainer)
 	SetupContainer.z_index = 9
-	
-	await SetupContainer.start()
 	SetupContainer.title = "SETTING UP. PLEASE WAIT."
 	SetupContainer.subtitle = "Initializing systems..."
 	SetupContainer.progressbar_val = 0
+	await SetupContainer.activate()
+	await SetupContainer.start()	
+	
 	# 1.) loading game data config
 	parse_restore_data()
 	await U.set_timeout(duration)	
@@ -506,10 +503,6 @@ func start_new_game() -> void:
 	SUBSCRIBE.music_data = {
 		"selected": MUSIC.TRACK.GAME_TRACK_TWO,
 	}	
-	
-	# update phase and start game
-	if is_tutorial:
-		await GAME_UTIL.start_tutorial()
 			
 	# show objectives
 	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -534,7 +527,7 @@ func start_new_game() -> void:
 		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.PLAYER
-		
+	
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -663,7 +656,7 @@ func get_all_container_nodes(exclude:Array = []) -> Array:
 		ActionContainer, 
 		TimelineContainer,
 		MarkedObjectivesContainer,
-		ResourceContainer,
+		HeaderControl,
 		PhaseAnnouncement, 
 		ToastContainer
 	].filter(func(node): return node not in exclude)
@@ -694,9 +687,9 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	var arr:Array = [Structure3dContainer, ActionContainer,  ResourceContainer, TimelineContainer]
-	if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val:
-		arr.push_back(MarkedObjectivesContainer)
+	var arr:Array = [Structure3dContainer, ActionContainer,  HeaderControl, TimelineContainer, MarkedObjectivesContainer]
+	#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val:
+		#arr.push_back(MarkedObjectivesContainer)
 
 	await show_only(arr)
 # ------------------------------------------------------------------------------
@@ -851,7 +844,6 @@ func on_show_marked_objectives_update() -> void:
 	MarkedObjectivesContainer.is_showing = show_marked_objectives
 	showing_states[MarkedObjectivesContainer] = show_marked_objectives
 
-
 func on_show_linedraw_update() -> void:
 	if !is_node_ready():return
 	LineDrawContainer.is_showing = show_linedraw
@@ -859,8 +851,8 @@ func on_show_linedraw_update() -> void:
 
 func on_show_resources_update() -> void:
 	if !is_node_ready():return
-	ResourceContainer.is_showing = show_resources
-	showing_states[ResourceContainer] = show_resources
+	HeaderControl.is_showing = show_resources
+	showing_states[HeaderControl] = show_resources
 
 #endregion
 # ------------------------------------------------------------------------------
@@ -875,8 +867,16 @@ func on_current_phase_update() -> void:
 			show_only([])
 		# ------------------------
 		PHASE.PLAYER:
-			pass
-			#current_phase = PHASE.SCHEDULED_EVENTS
+			if true:
+				show_only([Structure3dContainer])
+				var story_progress:Dictionary = GBL.active_user_profile.story_progress
+				var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
+				if chapter.has("tutorial"):
+					await GAME_UTIL.add_dialogue(chapter.tutorial)
+					
+				await restore_player_hud()
+				
+			GAME_UTIL.disable_taskbar(false)		
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			current_location_snapshot = current_location.duplicate(true)
@@ -1032,7 +1032,7 @@ func on_current_phase_update() -> void:
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
 			await U.set_timeout(1.5)
-			PhaseAnnouncement.end()			
+			await PhaseAnnouncement.end()		
 			
 			await GAME_UTIL.open_objectives()
 			# update bookmarked objectives

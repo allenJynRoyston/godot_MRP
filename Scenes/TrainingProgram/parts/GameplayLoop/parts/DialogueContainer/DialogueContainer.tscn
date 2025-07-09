@@ -30,7 +30,7 @@ script = ExtResource("1_d66cv")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.0364, 0.07384, 0.13, 0.760784)
+color = Color(0.0352941, 0.0745098, 0.129412, 0.941176)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2

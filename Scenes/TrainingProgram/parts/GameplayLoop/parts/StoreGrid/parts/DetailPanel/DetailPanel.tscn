@@ -18,7 +18,7 @@ colors = PackedColorArray(0, 0, 0, 0, 0.133196, 0.133196, 0.133196, 1)
 gradient = SubResource("Gradient_e52w3")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qemqr"]
-bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -30,7 +30,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v48pi"]
-bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -42,7 +42,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wo0v0"]
-bg_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
+bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -121,7 +121,6 @@ size_flags_horizontal = 2
 [node name="RoomCard" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer/CardContainer" instance=ExtResource("2_xwi2o")]
 layout_mode = 2
 size_flags_horizontal = 2
-show_cost = false
 
 [node name="IconBtn2" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8ajdb")]
 visible = false
@@ -138,16 +137,17 @@ alignment = 1
 
 [node name="PrevBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_qemqr")
 title = "PREV"
 assigned_key = "L1"
 icon = 28
-panel_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 hide_icon_panel = true
 
 [node name="FlipBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -155,16 +155,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_v48pi")
 title = "FLIP"
 assigned_key = "F"
 icon = 56
-panel_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 hide_icon_panel = true
 
 [node name="NextBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
 visible = false
+modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_wo0v0")
 title = "NEXT"
 assigned_key = "R1"
 icon = 27
-panel_color = Color(0.391185, 0.391185, 0.391185, 0.258824)
 hide_icon_panel = true

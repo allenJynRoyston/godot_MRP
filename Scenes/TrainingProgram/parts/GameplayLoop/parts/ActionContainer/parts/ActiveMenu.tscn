@@ -15,16 +15,15 @@
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1lsc"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hjr8x"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -32,7 +31,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0.901961, 0.662745, 0.152941, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -44,7 +43,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -85,7 +84,7 @@ theme_override_constants/margin_bottom = 10
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
 card_size = Vector2(250, 200)
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0, 0, 0, 1)
 
 [node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="0"]
 texture = SubResource("ViewportTexture_epm40")
@@ -106,7 +105,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hjr8x")
 is_small = true
 title = ""
-border_color = Color(0.337255, 0.27451, 1, 1)
+border_color = Color(0.901961, 0.662745, 0.152941, 1)
 
 [node name="PaginationContainer" type="HBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader"]
 layout_mode = 2
@@ -140,6 +139,7 @@ is_hoverable = false
 [node name="List" type="VBoxContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 6
 
 [node name="FooterLabel" type="Label" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2

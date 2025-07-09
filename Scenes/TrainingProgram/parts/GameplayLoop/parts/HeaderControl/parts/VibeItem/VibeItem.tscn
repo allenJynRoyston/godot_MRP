@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://bqrsajf65ravg"]
+
+[ext_resource type="Script" uid="uid://d2lwr0dms23ca" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/vibe_item.gd" id="1_7egax"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="2_24nkd"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_pxje0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_24nkd"]
+font = ExtResource("3_pxje0")
+font_size = 28
+font_color = Color(0.05, 0.05, 0.05, 1)
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
+script = ExtResource("1_7egax")
+title = "MORALE"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "MORALE"
+label_settings = ExtResource("2_24nkd")
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_24nkd")
+horizontal_alignment = 1

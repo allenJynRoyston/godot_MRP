@@ -24,25 +24,25 @@ extends BtnBase
 		icon = val
 		on_icon_update()
 		
-@export var panel_color:Color = Color(0.169, 0.169, 0.169) : 
+@export var primary_color:Color = COLORS.primary_color : 
 	set(val):
-		panel_color = val
+		primary_color = val
 		on_panel_color_update()		
 	
-@export var text_active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) :
-	set(val): 
-		text_active_color = val
-		on_focus()
-		
-@export var text_inactive_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE) :
-	set(val): 
-		text_inactive_color = val
-		on_focus()
+#@export var text_active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) :
+	#set(val): 
+		#text_active_color = val
+		#on_focus()
+		#
+#@export var text_inactive_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE) :
+	#set(val): 
+		#text_inactive_color = val
+		#on_focus()
 
-@export var has_new:bool = false : 
-	set(val):
-		has_new = val
-		on_has_new_update()		
+#@export var has_new:bool = false : 
+	#set(val):
+		#has_new = val
+		#on_has_new_update()		
 		
 @export var hide_icon_panel:bool = false : 
 	set(val):
@@ -76,7 +76,7 @@ func _ready() -> void:
 
 	on_icon_update()
 	on_title_update()
-	on_has_new_update()
+	#on_has_new_update()
 	on_assigned_key_update()
 	
 	on_panel_color_update()
@@ -103,20 +103,20 @@ func on_assigned_key_update() -> void:
 	if !is_node_ready():return
 	KeyLabel.text = assigned_key
 	
-func on_has_new_update() -> void:
-	if !is_node_ready():return
-	if !has_new:
-		IndicatorBtn.hide()
-	else:
-		IndicatorBtn.show()
+#func on_has_new_update() -> void:
+	#if !is_node_ready():return
+	#if !has_new:
+		#IndicatorBtn.hide()
+	#else:
+		#IndicatorBtn.show()
 		
 func on_is_disabled_updated() -> void:
-	modulate = Color(1, 0, 0, 1) if is_disabled else Color(1, 1, 1, 1)
+	modulate.a = 0.5 if is_disabled else 1
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
 	var new_stylebox:StyleBoxFlat = StyleBoxFlat.new()
-	new_stylebox.bg_color = panel_color
+	new_stylebox.bg_color = primary_color
 	new_stylebox.corner_radius_bottom_left = 5
 	new_stylebox.corner_radius_bottom_right = 5
 	new_stylebox.corner_radius_top_left = 5

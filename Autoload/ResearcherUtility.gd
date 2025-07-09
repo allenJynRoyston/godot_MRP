@@ -353,6 +353,11 @@ func get_spec_count(ref:RESEARCHER.SPECIALIZATION) -> int:
 	)
 	return filtered.size()
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func get_spec_capacity_count(ref:RESEARCHER.SPECIALIZATION) -> int:
+	return room_config.base.staff_capacity[ref]	
+# ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------	
 func get_details_from_extract(location:Dictionary) -> Dictionary:
@@ -605,7 +610,7 @@ func add_experience(uid:String, amount:int) -> bool:
 
 # ------------------------------------------------------------------------------	
 func can_be_promoted(uid:String) -> bool:	
-	var xp_required_for_promotion:int = DEBUG.get_val(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION)
+	var xp_required_for_promotion:int = 10 #1DEBUG.get_val(DEBUG.RESEARCHER_XP_REQUIRED_FOR_PROMOTION)
 	return hired_lead_researchers_arr.filter(func(i): return i[8] >= xp_required_for_promotion and i[0] == uid).size() > 0
 # ------------------------------------------------------------------------------		
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dy2mfovmflq4a" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_vibes.gd" id="1_3wduh"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_tf6yb"]
-[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/VibeItem/VibeItem.tscn" id="3_tf6yb"]
+[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="3_tf6yb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tf6yb"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)

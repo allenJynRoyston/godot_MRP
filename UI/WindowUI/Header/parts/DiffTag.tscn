@@ -1,28 +1,29 @@
 [gd_scene load_steps=5 format=3 uid="uid://cv1ha0twon7kt"]
 
 [ext_resource type="Script" uid="uid://bavvwcrp1qxvg" path="res://UI/WindowUI/Header/parts/diff_tag.gd" id="1_tm3ka"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_cknqf"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="2_tm3ka"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3gw83"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tm3ka"]
-font = ExtResource("2_cknqf")
+font = ExtResource("2_tm3ka")
 font_color = Color(0, 1, 0.184, 1)
-outline_size = 4
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-shadow_size = 4
-shadow_color = Color(0.162066, 0.162066, 0.162066, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
 [node name="PanelContainer" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0)
+offset_right = 21.0
+offset_bottom = 16.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3gw83")
 script = ExtResource("1_tm3ka")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 1
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 1
 theme_override_constants/margin_right = 1
 theme_override_constants/margin_bottom = 1

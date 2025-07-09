@@ -11,7 +11,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k7mft"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyp1d"]
-bg_color = Color(0.220654, 0.244283, 0.331351, 1)
+bg_color = Color(0.0497766, 0.0497766, 0.0497766, 1)
 shadow_offset = Vector2(0, 2)
 
 [node name="Taskbar" type="PanelContainer"]
@@ -51,11 +51,14 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_nyp1d")
 
 [node name="MarginContainer" type="MarginContainer" parent="TaskbarControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 5
 
 [node name="LeftContainer" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -69,7 +72,7 @@ hint_description = "Return to desktop."
 [node name="RunningTasks" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_override_constants/separation = 5
 
 [node name="RightContainer" type="HBoxContainer" parent="TaskbarControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2

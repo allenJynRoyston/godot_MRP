@@ -33,7 +33,7 @@ func on_use_icon_update() -> void:
 		TextLabel.text = "★" if val > 0 else ""
 	else:
 		label_settings_copy.font_size = 16
-		label_settings_copy.font_color = Color(0.0, 1.0, 0.184) if val >=0 else Color(0.999, 0.0, 0.184)
+		label_settings_copy.font_color = Color.WHITE if val >=0 else Color.YELLOW
 		TextLabel.text = "%s%s" % ["+" if val >= 0 else "", val]
 		
 	TextLabel.label_settings = label_settings_copy

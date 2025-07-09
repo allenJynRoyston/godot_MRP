@@ -736,35 +736,39 @@ func show_facility_updates() -> void:
 	
 	var options:Array = [
 		{
-			"title": "ENERGY SUPPLY",
+			"title": "ENERGY",
 			"items": [
 				{
-					"title": "POWER" if !is_powered else "ALREADY POWERED",
+					"title": "SUPPLY POWER",
 					"hint": {
 						"icon": SVGS.TYPE.ENERGY,
 						"title": "HINT",
 						"description": "Supply power to FLOOR %s." % [current_location.floor]
 					},
-					"is_disabled": is_powered,
+					#"is_disabled": is_powered,
 					"is_checked": is_powered,
 					"is_togglable": true,
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25
+						var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25 if !is_powered else 0
 
 						var costs:Array = [{
 							"amount": -(activation_cost), 
 							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
 						}]
 						
-						var confirm:bool = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "" , "", costs)
+						
+						var confirm:bool = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor  if !is_powered else "Remove power supply?", "" , "", costs)
 						
 						if confirm:
 							ActiveMenuNode.close()
 							camera_settings.type = CAMERA.TYPE.WING_SELECT
 							SUBSCRIBE.camera_settings = camera_settings	
 							await U.set_timeout(0.3)
-							GAME_UTIL.activate_floor(current_location.floor)
+							if !is_powered:
+								GAME_UTIL.activate_floor(current_location.floor)
+							else:
+								GAME_UTIL.deactivate_floor(current_location.floor)
 							return
 							
 						ActiveMenuNode.unlock(),
@@ -779,38 +783,50 @@ func show_facility_updates() -> void:
 					"is_disabled": true,
 					"action": func() -> void:
 						pass,
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				}								
+				}
 			]
-		}
+		},
+		{
+			"title": "PERSONNEL MANAGEMENT",
+			"items": [
+				{
+					"title": "VIEW PROFILES",
+					"hint": {
+						"icon": SVGS.TYPE.INVESTIGATE,
+						"title": "HINT",
+						"description": "View personnel records"
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						
+						await GAME_UTIL.view_personnel()
+							
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "PROMOTE",
+					"hint": {
+						"icon": SVGS.TYPE.INVESTIGATE,
+						"title": "HINT",
+						"description": "Promote a staff member."
+					},
+					"is_disabled": true,
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						
+						await GAME_UTIL.promote_researcher()
+							
+						ActiveMenuNode.unlock(),
+				}
+			]
+		}		
 	]
 	
 	GameplayNode.show_marked_objectives = false
 	GameplayNode.show_timeline = false	
 
 	ActiveMenuNode.onClose = func() -> void:	
-		GameplayNode.show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
+		GameplayNode.show_marked_objectives = true #gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
 		GameplayNode.show_timeline = true
 		
 		set_backdrop_state(false)
@@ -1290,7 +1306,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
 				NewMessageBtn.is_disabled = !show_new_message_btn
 				current_mode = MODE.ACTIONS
-				GameplayNode.show_marked_objectives = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
+				GameplayNode.show_marked_objectives = true #gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
 				GameplayNode.show_timeline = true
 
 			enable_room_focus(true)

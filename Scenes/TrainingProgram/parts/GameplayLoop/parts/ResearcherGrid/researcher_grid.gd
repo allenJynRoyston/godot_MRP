@@ -140,6 +140,18 @@ func start(_assigned_uids:Array = [], _filter_for_type:int = RESEARCHER.SPECIALI
 		node.uid = ""
 	GridSelect.start(ResearcherMiniCard, filter_for_type, init_func)
 
+func view_only() -> void:
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
+	await TransitionScreen.start()	
+	setup_gridselect()	
+	
+	check_for_promotions = false
+	check_for_compatability = false
+	
+	var init_func:Callable = func(node:Control) -> void:
+		node.uid = ""
+		
+	GridSelect.start(ResearcherMiniCard, 0, init_func, true)
 
 func promote() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
@@ -151,7 +163,7 @@ func promote() -> void:
 	
 	var init_func:Callable = func(node:Control) -> void:
 		node.uid = ""
-	GridSelect.start(ResearcherMiniCard, init_func)
+	GridSelect.start(ResearcherMiniCard, 0, init_func)
 	
 	
 func end(uid:String = "") -> void:

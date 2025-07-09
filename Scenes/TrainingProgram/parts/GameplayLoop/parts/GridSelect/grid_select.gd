@@ -24,6 +24,7 @@ var freeze_inputs:bool = false
 var is_animating:bool = false
 var control_pos_default:Dictionary = {}
 var control_pos:Dictionary = {}
+var view_only:bool = false
 
 var current_mode:MODE = MODE.HIDE : 
 	set(val):
@@ -102,7 +103,9 @@ func _ready() -> void:
 	ContentPanel.position.y = control_pos[ContentPanel].hide
 
 
-func start(use_node:PackedScene, start_on_tab:int, init_func:Callable) -> void:
+func start(use_node:PackedScene, start_on_tab:int, init_func:Callable, view_only_val:bool = false) -> void:
+	view_only = view_only_val
+	
 	for n in range(0, 9):
 		var new_node:Control = use_node.instantiate()
 		init_func.call(new_node)
@@ -307,6 +310,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 			BtnControls.directional_pref = "LR"
 			BtnControls.disable_active_btn = false
+			BtnControls.hide_a_btn = false
 			
 			BtnControls.onBack = func() -> void:
 				end()
@@ -324,6 +328,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 			onModeContent.call()			
 			BtnControls.freeze_and_disable(true)
+			
+			if view_only:
+				BtnControls.hide_a_btn = true
 			
 			reveal_tabs(false)
 			await reveal_header(true)

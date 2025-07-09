@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://bfm8qs02vehgm"]
+
+[ext_resource type="Script" uid="uid://bxx1tie0vvw0u" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Location/location.gd" id="1_m5ak5"]
+[ext_resource type="LabelSettings" uid="uid://bsrcxwnbjodu1" path="res://Fonts/font_2_inverse.tres" id="2_j0hl6"]
+[ext_resource type="LabelSettings" uid="uid://bh6uxtrmlpvog" path="res://Fonts/font_2_inverse_large.tres" id="3_j0hl6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eg0jl"]
+
+[node name="Location" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m5ak5")
+
+[node name="LocationPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_eg0jl")
+
+[node name="MarginContainer" type="MarginContainer" parent="LocationPanel"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_top = 20
+
+[node name="Location" type="HBoxContainer" parent="LocationPanel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Floor" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Floor"]
+layout_mode = 2
+text = "FLOOR"
+label_settings = ExtResource("2_j0hl6")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Floor"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("3_j0hl6")
+horizontal_alignment = 1
+
+[node name="Wing" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Wing"]
+layout_mode = 2
+text = "WING"
+label_settings = ExtResource("2_j0hl6")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Wing"]
+layout_mode = 2
+text = "A"
+label_settings = ExtResource("3_j0hl6")
+horizontal_alignment = 1
+
+[node name="Room" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Room"]
+layout_mode = 2
+text = "ROOM"
+label_settings = ExtResource("2_j0hl6")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Room"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("3_j0hl6")
+horizontal_alignment = 1

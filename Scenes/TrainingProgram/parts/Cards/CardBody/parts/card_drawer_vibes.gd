@@ -17,7 +17,7 @@ var is_researched:bool = true
 var preview_mode:bool = false
 var room_config:Dictionary = {}
 
-const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
+const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 
 # -------------------------------
 func _init() -> void:

@@ -10,7 +10,7 @@ extends CardDrawerClass
 
 var researchers_per_room:int
 
-const ResourceItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResourceContainer/parts/ResourceItem/ResourceItem.tscn")
+const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 
 
 func _ready() -> void:

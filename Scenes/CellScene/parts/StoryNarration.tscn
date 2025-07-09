@@ -1,7 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://bbo8dutfowpc6"]
 
 [ext_resource type="Script" uid="uid://cehjigucmd63m" path="res://Scenes/CellScene/parts/story_narration.gd" id="1_nskse"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_2i2yr"]
 [ext_resource type="Texture2D" uid="uid://c0w62ba8jtw6e" path="res://Media/images/researcher_girl_01.jpg" id="2_gfp2v"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_nskse"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_kkeqb"]
@@ -104,6 +103,14 @@ shader_parameter/step_count = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2i2yr"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_df6ri"]
+font = ExtResource("6_kkeqb")
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kkeqb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bi8ty"]
@@ -184,7 +191,7 @@ modulate = Color(0.448712, 0.448712, 0.448712, 1)
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_vertical = 1
-label_settings = ExtResource("2_2i2yr")
+label_settings = SubResource("LabelSettings_df6ri")
 autowrap_mode = 2
 
 [node name="Control" type="Control" parent="PanelContainer/TextContainer"]
@@ -198,7 +205,7 @@ offset_top = -2.0
 offset_right = 602.0
 offset_bottom = 978.0
 size_flags_vertical = 1
-label_settings = ExtResource("2_2i2yr")
+label_settings = SubResource("LabelSettings_df6ri")
 autowrap_mode = 2
 visible_characters = 0
 visible_ratio = 0.12

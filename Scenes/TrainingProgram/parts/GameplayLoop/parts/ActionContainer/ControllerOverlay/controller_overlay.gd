@@ -1,13 +1,13 @@
 @tool
 extends Control
 
-@onready var LeftIconBtn:BtnBase = $PanelContainer/MarginContainer/HBoxContainer/IconBtn
-@onready var RightIconBtn:BtnBase = $PanelContainer/MarginContainer/HBoxContainer/IconBtn2
-@onready var UpIconBtn:BtnBase = $PanelContainer/MarginContainer/VBoxContainer/IconBtn
-@onready var DownIconBtn:BtnBase = $PanelContainer/MarginContainer/VBoxContainer/IconBtn2
+@onready var LeftIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/IconBtn
+@onready var RightIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/IconBtn2
+@onready var UpIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/VBoxContainer/IconBtn
+@onready var DownIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/VBoxContainer/IconBtn2
 
-@onready var FloorLabel:Label = $PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/FloorLabel
-@onready var RingLabel:Label = $PanelContainer/MarginContainer/HBoxContainer/HBoxContainer/RingLabel
+@onready var FloorLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer/FloorLabel
+@onready var RingLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer/RingLabel
 
 @export var show_directional:bool = false : 
 	set(val):

@@ -133,7 +133,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 3)
+			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 0)
 		],	
 	# ------------------------------------------
 	

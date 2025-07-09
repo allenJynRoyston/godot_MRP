@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://ccpunmv3ei3ig"]
+
+[ext_resource type="Script" uid="uid://b1pu138mdjhd3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/BuffsAndDebuffs/BuffOrDebuffTag/buff_or_debuff_tag.gd" id="1_p5lcx"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="3_048cx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b5s3x"]
+bg_color = Color(1, 0.749, 0.2, 0.863)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[node name="Tag" type="PanelContainer"]
+offset_right = 108.0
+offset_bottom = 18.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_b5s3x")
+script = ExtResource("1_p5lcx")
+hint_title = "HINT"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+label_settings = ExtResource("3_048cx")
+horizontal_alignment = 1
+
+[node name="DurationLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "(0)"
+label_settings = ExtResource("3_048cx")
+horizontal_alignment = 1

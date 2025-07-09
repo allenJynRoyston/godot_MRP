@@ -122,7 +122,10 @@ func _ready() -> void:
 				ConsequenceFloatingPanel.update(node.data if show_consequences else {}, type)
 				ConsequenceFloatingPanel.goto(node.global_position + Vector2(0, node.size.y) + Vector2(0, -node.size.y/2))
 				
+				print(node.data)
+				
 				if node.data.has("room_ref"):
+					print(node.data.room_ref)
 					RoomDetails.reveal(true)
 					RoomDetails.room_ref = node.data.room_ref
 				else:

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bbooyim4irs2v" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MarkedObjectivesContainer/marked_objectives_container.gd" id="1_jh8wr"]
 [ext_resource type="PackedScene" uid="uid://bf3827l1mdr17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn" id="1_sed7y"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_hud5c"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="2_hud5c"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ixlt"]
 
@@ -35,7 +35,7 @@ gradient = SubResource("Gradient_q3i3u")
 fill_from = Vector2(0.762195, 0)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud5c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ixlt"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 2
 border_width_top = 2
@@ -97,7 +97,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "OBJECTIVES: "
+text = "OBJECTIVES"
 label_settings = ExtResource("2_hud5c")
 
 [node name="ObjectiveList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
@@ -108,5 +108,5 @@ theme_override_constants/separation = -10
 
 [node name="ObjectiveItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/ObjectiveList" instance=ExtResource("1_sed7y")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_hud5c")
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ixlt")
 is_naked = true
