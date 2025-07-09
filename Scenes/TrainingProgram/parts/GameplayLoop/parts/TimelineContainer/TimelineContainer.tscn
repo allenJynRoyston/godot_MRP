@@ -1,9 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://d04lnq4yhp80o"]
+[gd_scene load_steps=12 format=3 uid="uid://d04lnq4yhp80o"]
 
 [ext_resource type="Script" uid="uid://brj5kk7yojux4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/timeline_container.gd" id="1_4mrhk"]
 [ext_resource type="PackedScene" uid="uid://cgp6oftk1itbm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineItem.tscn" id="2_hg1uk"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="2_ipnk1"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_so6r3"]
+[ext_resource type="LabelSettings" uid="uid://bsrcxwnbjodu1" path="res://Fonts/font_2_inverse.tres" id="3_so6r3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gu0f8"]
 
@@ -42,13 +42,6 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_d4byj"]
-font = ExtResource("2_so6r3")
-outline_size = 2
-outline_color = Color(0.695503, 0.695503, 0.695503, 0.498039)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.235294)
-
 [node name="TimelineContainer" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,8 +60,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -50.0
-offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_go307")
@@ -88,12 +79,11 @@ texture = SubResource("GradientTexture2D_r6wmq")
 flip_h = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
-custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 130
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 0
 
@@ -116,7 +106,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = "Monday "
-label_settings = SubResource("LabelSettings_d4byj")
+label_settings = ExtResource("3_so6r3")
 horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
@@ -127,6 +117,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 0
 
 [node name="ListScrollContainer" type="ScrollContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 290)
 layout_mode = 2
 size_flags_vertical = 3
 vertical_scroll_mode = 3

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=31 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -9,6 +9,7 @@
 [ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="9_wgovn"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="9_xggvw"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="10_xd21n"]
+[ext_resource type="Shader" uid="uid://b3tekv1p1wml4" path="res://Shader/Outline/Outline.gdshader" id="11_cv8e0"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="11_iwp64"]
 [ext_resource type="PackedScene" uid="uid://blq88bwlfy7io" path="res://Scenes/Main/parts/Audio/Audio.tscn" id="12_wgovn"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
@@ -116,6 +117,11 @@ viewport_path = NodePath("ColorDepthShader")
 [sub_resource type="ViewportTexture" id="ViewportTexture_hkvnm"]
 viewport_path = NodePath("BorderShader")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5ci8a"]
+shader = ExtResource("11_cv8e0")
+shader_parameter/outline_thickness = 2.0
+shader_parameter/outline_color = Vector4(0, 0, 0, 1)
+
 [sub_resource type="Shader" id="Shader_14y6p"]
 code = "shader_type canvas_item;
 
@@ -173,7 +179,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-is_production_build = true
 reset_userprofile_save = true
 audio_mute = true
 skip_splash = true
@@ -187,8 +192,6 @@ office_skip_animation = true
 os_skip_boot = true
 os_skip_to_game = true
 os_app_fast_load = true
-stdr_skip_titlescreen = true
-stdr_skip_loadingscreen = true
 skip_setup_progress = true
 skip_objectives = true
 enable_scp_debug = true
@@ -227,14 +230,6 @@ material = ExtResource("9_xggvw")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_y3p8a")
-stretch_mode = 2
-
-[node name="MousePointer" type="TextureRect" parent="GlitchShader"]
-z_index = 10
-offset_right = 1920.0
-offset_bottom = 1080.0
-texture = ExtResource("7_qdkat")
-expand_mode = 1
 stretch_mode = 2
 
 [node name="CRTShader" type="SubViewport" parent="."]
@@ -371,6 +366,15 @@ texture = SubResource("ViewportTexture_hkvnm")
 
 [node name="FinalComposition" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
+
+[node name="MousePointer" type="TextureRect" parent="FinalComposition"]
+z_index = 10
+material = SubResource("ShaderMaterial_5ci8a")
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("7_qdkat")
+expand_mode = 1
+stretch_mode = 2
 
 [node name="FinalComposite" type="TextureRect" parent="FinalComposition"]
 material = SubResource("ShaderMaterial_linol")

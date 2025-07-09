@@ -1,9 +1,6 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://cutx1388lr8w2"]
-
-[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="1_6fgen"]
+[gd_resource type="LabelSettings" format=3 uid="uid://cutx1388lr8w2"]
 
 [resource]
-font = ExtResource("1_6fgen")
 outline_size = 8
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0

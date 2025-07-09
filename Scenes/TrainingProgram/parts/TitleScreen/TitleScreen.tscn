@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="3_id14l"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_p3swr"]
 [ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="4_oonus"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
@@ -13,27 +13,32 @@ bg_color = Color(0, 0, 0, 0.337255)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oonus"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_f0u0i"]
-font = ExtResource("3_id14l")
-font_size = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3swr"]
-bg_color = Color(0, 0, 0, 0.8)
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwmuc"]
-bg_color = Color(0, 0, 0, 0.8)
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+[sub_resource type="LabelSettings" id="LabelSettings_nwmuc"]
+font = ExtResource("3_p3swr")
+font_color = Color(0.237466, 0.751181, 1.15514e-06, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.666667)
+shadow_offset = Vector2(4, 4)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oonus"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
 bg_color = Color(0, 0, 0, 0.8)
 border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 3
@@ -83,7 +88,7 @@ theme_override_constants/margin_bottom = 40
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 50
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -92,7 +97,7 @@ alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="Title" type="Label" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -107,7 +112,7 @@ vertical_alignment = 1
 [node name="SubTitle" type="Label" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "GAME MODE TYPE"
-label_settings = SubResource("LabelSettings_f0u0i")
+label_settings = SubResource("LabelSettings_nwmuc")
 horizontal_alignment = 2
 
 [node name="BtnList" type="VBoxContainer" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -118,33 +123,21 @@ alignment = 1
 
 [node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 title = "NEW GAME"
-is_disabled = false
-is_hollow = false
 COLOR_A = Color(1, 1, 1, 1)
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="ContinueBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
 title = "CONTINUE..."
-is_disabled = false
-is_hollow = false
 COLOR_A = Color(1, 1, 1, 1)
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
 title = "EXIT APPLICATION"
-is_disabled = false
-is_hollow = false
 COLOR_A = Color(1, 1, 1, 1)
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="BtnControl" parent="." instance=ExtResource("10_3sdtd")]
 layout_mode = 2

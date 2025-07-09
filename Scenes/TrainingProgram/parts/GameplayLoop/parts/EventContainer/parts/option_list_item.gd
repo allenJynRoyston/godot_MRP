@@ -1,7 +1,7 @@
 extends MouseInteractions
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var IconBtn:Control = $MarginContainer/HBoxContainer/IconBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/SVGIcon
 
 @onready var PropertyLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PropertyLabel
 @onready var TitleLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleLabel
@@ -49,14 +49,14 @@ func _ready() -> void:
 	
 
 func start(delay:float = 0) -> void:
-	U.tween_node_property(IconBtn, 'static_color:a', 0.6, 0.3, delay)
+	U.tween_node_property(IconBtn, 'icon_color:a', 0.6, 0.3, delay)
 	U.tween_node_property(self, 'modulate:a', 0.6, 0.3, delay)
 	await U.set_timeout(0.1)
 # ----------------------
 
 # ----------------------	
 func fade_out(delay:float = 0) -> void:
-	U.tween_node_property(IconBtn, 'static_color:a', 0, 0.3, delay)
+	U.tween_node_property(IconBtn, 'icon_color:a', 0, 0.3, delay)
 	await U.tween_node_property(self, 'modulate:a', 0, 0.3, delay)
 # ----------------------		
 
@@ -73,11 +73,14 @@ func is_available_update() -> void:
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	var stylebox:StyleBoxFlat = RootPanel.get("theme_override_styles/panel").duplicate()
-	stylebox.bg_color = Color.RED if !is_available else (Color(0.337, 0.275, 1.0) if is_selected else Color(0.162, 0.162, 0.162))
+	var use_color:Color = COLORS.disabled_color if !is_available else COLORS.primary_color
+	use_color.a = 1 if is_selected else 0.75
+	
+	stylebox.bg_color = use_color
 	RootPanel.set('theme_override_styles/panel', stylebox)	
 	
 	modulate = Color(1, 1, 1, 1 if is_selected else 0.6)
-	IconBtn.static_color.a = 1 if is_selected else 0.6
+	IconBtn.icon_color.a = 1 if is_selected else 0.6
 	
 	if hint_description == "":
 		if is_available:

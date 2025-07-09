@@ -307,7 +307,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_se8j2"]
-bg_color = Color(1, 0.749, 0.2, 1)
+bg_color = Color(0.177067, 0.817889, 0.923605, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -1011,9 +1011,10 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_se8j2")
-title = "NEW MESSAGE"
+title = "NEMESSAGE"
 assigned_key = "SHIFT"
-icon = 67
+icon = 5
+primary_color = Color(0.177067, 0.817889, 0.923605, 1)
 is_disabled = false
 
 [node name="NameControl" type="Control" parent="."]

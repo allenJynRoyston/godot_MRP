@@ -2,8 +2,8 @@
 extends PanelContainer
 
 @onready var CostLabel:Label = $MarginContainer/VBoxContainer/Label
-@onready var IconBtn:BtnBase = $MarginContainer/VBoxContainer/IconBtn
-@onready var AmountLabel:Label = $MarginContainer/VBoxContainer/AmountLabel
+@onready var IconBtn:Control = $MarginContainer/VBoxContainer/SVGIcon
+@onready var AmountLabel:Label = $MarginContainer/VBoxContainer/MarginContainer/AmountLabel
 
 
 @export var icon:SVGS.TYPE = SVGS.TYPE.MONEY : 
@@ -52,10 +52,10 @@ func on_is_negative_update() -> void:
 func update_colors() -> void:
 	var label_settings_copy:LabelSettings = AmountLabel.label_settings.duplicate()
 	var alpha:float = self.modulate.a
-	var new_color:Color = Color.WHITE if !is_negative else Color.RED
+	var new_color:Color = COLORS.primary_black if !is_negative else Color.RED
 	var mixed_color:Color = Color(new_color.r, new_color.g, new_color.b, alpha)
 	
 	label_settings_copy.font_color = mixed_color
 	AmountLabel.label_settings = label_settings_copy
 	
-	IconBtn.static_color = mixed_color	
+	IconBtn.icon_color = mixed_color	

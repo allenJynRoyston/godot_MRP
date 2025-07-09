@@ -1,22 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=5 format=3 uid="uid://doexmbeotqsd4"]
 
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_hvfea"]
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_ryuwo"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_hp3pi"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvfea"]
-bg_color = Color(0.337255, 0.27451, 1, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_hvfea"]
-font = ExtResource("3_hp3pi")
-outline_size = 4
-outline_color = Color(0.992157, 0.992157, 0.992157, 0.266667)
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_4l8vf"]
+[ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="4_4l8vf"]
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_hvfea")
+theme_override_styles/panel = ExtResource("1_hvfea")
 script = ExtResource("1_j7po5")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -30,10 +23,11 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_ryuwo")]
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("3_4l8vf")]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 icon = 48
-is_hoverable = false
+icon_size = Vector2(15, 15)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -48,12 +42,12 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Option A this can be quite long but it needs to wrap"
-label_settings = SubResource("LabelSettings_hvfea")
+label_settings = ExtResource("4_4l8vf")
 autowrap_mode = 2
 
 [node name="PropertyLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "[MORALE] "
-label_settings = SubResource("LabelSettings_hvfea")
+label_settings = ExtResource("4_4l8vf")
 horizontal_alignment = 2

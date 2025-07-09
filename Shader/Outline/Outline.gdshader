@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform float outline_thickness : hint_range(0.0, 10.0) = 1.0;
+uniform vec4 outline_color = vec4(0.0, 0.0, 0.0, 1.0); // Default outline color (black)
 
 void fragment() {
     // Fetch the current texture color
@@ -21,9 +22,9 @@ void fragment() {
         is_edge = is_edge || (texture(TEXTURE, UV + vec2(0.0, -texel_size.y)).a < 0.1);
         is_edge = is_edge || (texture(TEXTURE, UV + vec2(0.0, texel_size.y)).a < 0.1);
 
-        // If it's an edge pixel, use black for the outline
+        // If it's an edge pixel, use the specified outline color
         if (is_edge) {
-            output_color = vec4(0.0, 0.0, 0.0, 1.0);
+            output_color = outline_color;
         }
     } else {
         // If the pixel is fully transparent, set it to transparent

@@ -879,6 +879,7 @@ func on_current_phase_update() -> void:
 			GAME_UTIL.disable_taskbar(false)		
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
+			await show_only([Structure3dContainer, TimelineContainer])
 			current_location_snapshot = current_location.duplicate(true)
 			camera_settings_snapshot = camera_settings.duplicate(true)
 			

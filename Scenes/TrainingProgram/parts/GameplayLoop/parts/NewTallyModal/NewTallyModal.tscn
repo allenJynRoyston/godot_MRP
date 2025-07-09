@@ -1,9 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://b5vcatxkos4a3"]
+[gd_scene load_steps=14 format=3 uid="uid://b5vcatxkos4a3"]
 
 [ext_resource type="Script" uid="uid://djbh6v6e8b7nd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NewTallyModal/new_tally_modal.gd" id="1_o0y4m"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_tlry5"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_6dlkw"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_o0sm6"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_8ekbd"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_8ekbd"]
 [ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="5_gug6l"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_0536k"]
 
@@ -39,6 +39,13 @@ shader_parameter/blur_radius = 3.715
 shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_r38dr"]
+font = ExtResource("4_8ekbd")
+font_color = Color(0.297318, 0.859883, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4xaw"]
 
@@ -100,7 +107,7 @@ stretch_mode = 6
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "COLLECT RESOURCES"
-label_settings = ExtResource("3_6dlkw")
+label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -109,7 +116,7 @@ autowrap_mode = 2
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "CH-CHING!"
-label_settings = ExtResource("4_o0sm6")
+label_settings = SubResource("LabelSettings_r38dr")
 horizontal_alignment = 1
 autowrap_mode = 2
 uppercase = true
@@ -166,7 +173,7 @@ title = "MONEY"
 [node name="DiffLabel" type="Label" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "+200"
-label_settings = ExtResource("3_6dlkw")
+label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -181,7 +188,7 @@ title = "RESEARCH"
 [node name="DiffLabel" type="Label" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "+200"
-label_settings = ExtResource("3_6dlkw")
+label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -196,7 +203,7 @@ title = "MATERIAL"
 [node name="DiffLabel" type="Label" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "+200"
-label_settings = ExtResource("3_6dlkw")
+label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 
 [node name="VBoxContainer4" type="VBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -211,7 +218,7 @@ title = "CORE"
 [node name="DiffLabel" type="Label" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 text = "+200"
-label_settings = ExtResource("3_6dlkw")
+label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 
 [node name="BtnControls" parent="." instance=ExtResource("9_0536k")]

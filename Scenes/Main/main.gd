@@ -1,6 +1,6 @@
 extends PanelContainer
 
-@onready var MousePointer:TextureRect = $GlitchShader/MousePointer
+@onready var MousePointer:TextureRect = $FinalComposition/MousePointer
 @onready var Output:TextureRect = $FinalOutput/Output
 @onready var Gamelayer:SubViewport = $GameLayer
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
