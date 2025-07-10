@@ -1,22 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://cp63njwa3niv7"]
 
 [ext_resource type="Script" uid="uid://bxh1yjy0l6jr5" path="res://UI/Buttons/Checkbox/checkbox.gd" id="1_wmtyv"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_kiejb"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_sh7tv"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_sh7tv"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_utjfo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sh7tv"]
-bg_color = Color(0.055, 0.055, 0.055, 0.796)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l7ga8"]
 
 [node name="CheckBox" type="PanelContainer"]
 offset_right = 20.0
 offset_bottom = 20.0
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_sh7tv")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_l7ga8")
 script = ExtResource("1_wmtyv")
+is_negative = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,14 +24,11 @@ theme_override_constants/margin_bottom = 0
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_kiejb")]
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_sh7tv")]
 layout_mode = 2
-icon = 51
-active_color = Color(1, 1, 1, 1)
-inactive_color = Color(1, 1, 1, 1)
-is_hoverable = false
+icon = 50
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
-label_settings = ExtResource("3_sh7tv")
+text = "CHECKBOX"
+label_settings = ExtResource("3_utjfo")

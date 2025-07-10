@@ -20,7 +20,7 @@ extends GameContainer
 @onready var AfterList:HBoxContainer = $ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after
 
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
-const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
+const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 
 @onready var allow_controls:bool = false : 
 	set(val):
@@ -185,37 +185,31 @@ func on_activation_requirements_update() -> void:
 	
 	var disable_btn:bool = false
 		
-	
 	for item in activation_requirements:
 		var current_amount:int = resources_data[item.resource.ref].amount		
 		var has_enough:bool = (current_amount - absi(item.amount) >= 0) if item.amount < 0 else true
-		var new_node:Control = CheckboxBtnPreload.instantiate()
-		var new_resource_node:Control = ResourceItemPreload.instantiate()
-		
+		var checkbox_node:Control = CheckboxBtnPreload.instantiate()
+		var before_node:Control = EconItemPreload.instantiate()
+		var after_node:Control = EconItemPreload.instantiate()
+
 		if !disable_btn and !has_enough:
 			disable_btn = true
 		
-		
-		HSeperator.hide() if item.amount > 0 else HSeperator.show()
-		
 		if item.amount < 0:
-			new_node.is_hoverable = false
-			new_node.no_bg = true
-			new_node.is_checked = has_enough
-			new_node.modulate = Color(1, 0, 0, 1) if !has_enough else Color(1, 1, 1, 1)
-			new_node.title =  "%s %s required.  (You have %s)" % [abs(item.amount), item.resource.name, current_amount]
-			StaffingList.add_child(new_node)
+			checkbox_node.is_negative = !has_enough
+			checkbox_node.is_checked = has_enough
+			checkbox_node.title =  "%s %s required (you have %s)." % [abs(item.amount), item.resource.name, current_amount]
+			StaffingList.add_child(checkbox_node)
+			
+		before_node.icon = item.resource.icon
+		before_node.amount = current_amount
+		before_node.burn_val = str("0000")
+		BeforeList.add_child(before_node)
 		
-		new_resource_node.is_hoverable = false
-		new_resource_node.no_bg = true
-		new_resource_node.display_at_bottom = true
-		new_resource_node.icon = item.resource.icon
-		new_resource_node.title = str(current_amount)
-		BeforeList.add_child(new_resource_node)
-		
-		var after_node:Control = new_resource_node.duplicate()
-		after_node.title = str(current_amount + item.amount)
+		after_node.icon = item.resource.icon		
+		after_node.amount = U.min_max( current_amount + item.amount, 0, 9999)
 		after_node.is_negative = disable_btn
+		after_node.burn_val = str("0000")
 		AfterList.add_child(after_node) 
 
 	await U.tick()

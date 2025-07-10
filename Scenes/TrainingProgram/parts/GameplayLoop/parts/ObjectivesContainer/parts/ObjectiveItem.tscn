@@ -1,49 +1,45 @@
 [gd_scene load_steps=5 format=3 uid="uid://bf3827l1mdr17"]
 
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_e76ta"]
 [ext_resource type="Script" uid="uid://d3uknw4ypees8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_item.gd" id="1_qkbpp"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="3_qkbpp"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_dvwty"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_fefqo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qkbpp"]
-bg_color = Color(0, 0, 0, 0.7)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337, 0.275, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmabp"]
+bg_color = Color(1, 0.749, 0.2, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [node name="ObjectiveItem" type="PanelContainer"]
-modulate = Color(1, 1, 1, 0.8)
+modulate = Color(1, 1, 1, 0.7)
 custom_minimum_size = Vector2(100, 50)
 offset_right = 253.0
 offset_bottom = 50.0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qkbpp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmabp")
 script = ExtResource("1_qkbpp")
 hint_title = "HINT"
-hint_description = "Objective "
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 5
+theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 15
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer" instance=ExtResource("1_e76ta")]
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("3_dvwty")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 51
-static_color = Color(0.337, 0.275, 1, 1)
-is_hoverable = false
+icon_size = Vector2(30, 30)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -55,24 +51,5 @@ alignment = 1
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Objective"
-label_settings = ExtResource("3_qkbpp")
+label_settings = ExtResource("5_fefqo")
 autowrap_mode = 3
-
-[node name="YouHaveLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-label_settings = ExtResource("3_qkbpp")
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 2
-
-[node name="BookmarkIcon" parent="Control" instance=ExtResource("1_e76ta")]
-visible = false
-layout_mode = 0
-offset_left = -31.0
-offset_top = 10.0
-offset_right = -6.0
-offset_bottom = 35.0
-icon = 19
-static_color = Color(1, 1, 1, 0.6)
-is_hoverable = false

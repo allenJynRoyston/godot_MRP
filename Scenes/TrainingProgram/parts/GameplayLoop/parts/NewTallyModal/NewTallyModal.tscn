@@ -106,7 +106,7 @@ stretch_mode = 6
 [node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-text = "COLLECT RESOURCES"
+text = "TITLE"
 label_settings = ExtResource("3_8ekbd")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -115,7 +115,7 @@ autowrap_mode = 2
 [node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-text = "CH-CHING!"
+text = "SUBTITLE"
 label_settings = SubResource("LabelSettings_r38dr")
 horizontal_alignment = 1
 autowrap_mode = 2

@@ -3,9 +3,7 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 @onready var ContentLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/ContentLabel
-@onready var YouHaveLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/YouHaveLabel
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/IconBtn
-@onready var BookmarkIcon:BtnBase = $Control/BookmarkIcon
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/SVGIcon
 
 @export var is_naked:bool = false : 
 	set(val):
@@ -26,13 +24,8 @@ var is_selected:bool = false :
 
 
 var bookmarked_objectives:Array = []
-var show_bookmark:bool = false
-var is_bookmarked:bool = false : 
-	set(val):
-		is_bookmarked = val
-		on_is_bookmarked_update()
-
-var use_color:Color = Color(1, 1, 1, 1)
+var stylebox_copy:StyleBoxFlat
+var use_color:Color = COLORS.primary_color
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -46,25 +39,24 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
-	
+	var you_have_str:String = "Objective complete" if is_expired else you_have
+	stylebox_copy = RootPanel.get_theme_stylebox('panel').duplicate()		
+
+
 	ContentLabel.text = "Upcoming..." if is_upcoming else ("OPTIONAL: \r%s" % content) if is_optional else content
-	YouHaveLabel.text = "(Objective complete)" if is_expired else you_have
-	YouHaveLabel.hide() if (you_have == "" or is_upcoming) else YouHaveLabel.show()
 	IconBtn.icon = SVGS.TYPE.CLEAR if is_expired else (SVGS.TYPE.CHECKBOX if is_completed else SVGS.TYPE.EMPTY_CHECKBOX)
-	BookmarkIcon.show() if show_bookmark else BookmarkIcon.hide()
-	on_is_bookmarked_update()
 	
-	use_color = Color.GREEN
-	
-	if !is_completed:
-		use_color = Color(0.337, 0.275, 1.0)
-	if is_expired:
-		use_color = Color(0.337, 0.275, 1.0).lightened(0.5)
-	if is_optional:
-		use_color = Color(1.0, 0.694, 0.0)
+	#use_color = Color.GREEN
+	#
+	#if !is_completed:
+		#use_color = Color(0.337, 0.275, 1.0)
+	#if is_expired:
+		#use_color = Color(0.337, 0.275, 1.0).lightened(0.5)
+	#if is_optional:
+		#use_color = Color(1.0, 0.694, 0.0)
 		
 	hint_title = "HINT"
-	hint_description = "%s %s" % [ContentLabel.text, "" if is_upcoming else YouHaveLabel.text]
+	hint_description = "" if is_upcoming else you_have_str
 	hint_icon = SVGS.TYPE.INFO
 	
 	if is_hoverable:
@@ -77,39 +69,24 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_bookmarked_objectives_update(new_val:Array = bookmarked_objectives) -> void:
 	bookmarked_objectives = new_val
-	show_bookmark_update()
-	
-func show_bookmark_update() -> void:
-	if !is_node_ready() or !show_bookmark:return
-	for item in bookmarked_objectives:
-		if item.title == content:
-			is_bookmarked = true
-			return
-	is_bookmarked = false
-	
-func on_is_bookmarked_update() -> void:
-	if !is_node_ready():return
-	BookmarkIcon.static_color = Color(1, 1, 1, 1 if is_bookmarked else 0.6)
 	
 func on_is_naked_update() -> void:
 	if !is_node_ready():return	
 	on_is_selected_update()
 
 func on_is_selected_update() -> void:
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	var c:Color = use_color
-	new_stylebox.border_color = c if !is_naked else Color(1, 1, 1, 0)
-	new_stylebox.bg_color = Color(0.0, 0.0, 0.0, 0.7 if !is_naked else 0)
+	var new_stylebox:StyleBoxFlat = stylebox_copy.duplicate()	
+	var text_color:Color = COLORS.primary_black if !is_naked else Color.WHITE
+	var content_label_settings:LabelSettings = ContentLabel.label_settings.duplicate()
+	
+	new_stylebox.bg_color = use_color if !is_naked else Color.TRANSPARENT
+	new_stylebox.shadow_color = stylebox_copy.shadow_color if !is_naked else Color.TRANSPARENT
+	
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
-	IconBtn.static_color = Color(c.r, c.g, c.b, 0.7 if is_selected else 1)
+	IconBtn.icon_color = text_color
 	
-
-func on_focus(state:bool = is_focused) -> void:
-	if !is_disabled:	
-		super.on_focus(state)
-		self.modulate = Color(1, 1, 1, 1 if state else 0.8)
+	content_label_settings.font_color = text_color
+	ContentLabel.label_settings = content_label_settings
 	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
-	super.on_mouse_click(node, btn, on_hover)
+	modulate.a = 1 if is_naked else (1 if is_selected else 0.7)
 # ------------------------------------------------------------------------------

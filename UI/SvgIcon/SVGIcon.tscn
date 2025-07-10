@@ -6,7 +6,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_477u7"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m64fp"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_477u7"]
 shader = ExtResource("2_m64fp")
 shader_parameter/tint_color = Color(0.05, 0.05, 0.05, 1)
 shader_parameter/alpha = 1.0
@@ -24,7 +24,7 @@ script = ExtResource("1_477u7")
 layout_mode = 2
 
 [node name="Btn" type="TextureRect" parent="MarginContainer"]
-material = SubResource("ShaderMaterial_m64fp")
+material = SubResource("ShaderMaterial_477u7")
 layout_mode = 2
 texture = ExtResource("3_477u7")
 expand_mode = 2

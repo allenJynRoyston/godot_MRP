@@ -51,7 +51,7 @@ theme_override_constants/separation = 15
 
 [node name="CategoryLabel" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "AVAILABLE TRAKCS"
+text = "AVAILABLE TRACKS"
 label_settings = SubResource("LabelSettings_ypqhe")
 horizontal_alignment = 1
 

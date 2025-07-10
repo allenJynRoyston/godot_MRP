@@ -85,6 +85,8 @@ func setup_gridselect() -> void:
 			node.is_assigned_elsewhere = false
 			node.is_already_assigned = false
 			node.can_be_promoted = RESEARCHER_UTIL.can_be_promoted(data.uid)
+			
+		
 
 				
 		#node.onHover = func() -> void:
@@ -95,8 +97,14 @@ func setup_gridselect() -> void:
 			
 		node.onClick = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
+			
+			if data.status == RESEARCHER.STATUS.KIA:
+				return
+			
 			GridSelect.freeze_and_disable(true)
 			GridSelect.grid_index = index
+			
+			
 			
 			if node.is_assigned_elsewhere:
 				await GridSelect.freeze_and_disable(true, true)

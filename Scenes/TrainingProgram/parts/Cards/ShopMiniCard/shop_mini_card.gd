@@ -4,6 +4,7 @@ extends MouseInteractions
 @onready var CardBody:Control = $SubViewport/CardBody
 @onready var CardTitle:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
 @onready var CardResource:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResource
+@onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 
 @onready var AlreadyResearched:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/AlreadyResearched
 
@@ -95,10 +96,11 @@ func update_content() -> void:
 	for node in panel_nodes:
 		node.hide()
 	
-	CardTitle.content = room_details.shortname
+	CardTitle.content = room_details.name
+	CardDrawerImage.img_src = room_details.img_src
 	is_clickable = true
 
-	CardResource.title = "UNLOCK COST"
+	#CardResource.title = "UNLOCK COST"
 	CardResource.list = [{
 		"title": str(room_details.costs.unlock),
 		"icon": SVGS.TYPE.RESEARCH,

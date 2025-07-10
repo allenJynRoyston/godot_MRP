@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://btl83p0xrlqoi"]
+[gd_scene load_steps=5 format=3 uid="uid://btl83p0xrlqoi"]
 
 [ext_resource type="Script" uid="uid://bfbjtjenaho3v" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/phase_announcement.gd" id="1_6ijd8"]
-[ext_resource type="LabelSettings" uid="uid://cwas73lpm1tqt" path="res://Fonts/game/label_medium.tres" id="2_8757y"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_un7wr"]
+[ext_resource type="PackedScene" uid="uid://ciioh1kbjafri" path="res://UI/VHSLabel/VHSLabel.tscn" id="2_gnjp4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u7v0s"]
 
@@ -35,26 +34,12 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_4unn7")
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/StageContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/StageContainer/MarginContainer"]
+[node name="VhsLabel" parent="VBoxContainer/StageContainer/MarginContainer" instance=ExtResource("2_gnjp4")]
 layout_mode = 2
-size_flags_horizontal = 8
-alignment = 1
-
-[node name="IconBtn" parent="VBoxContainer/StageContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_un7wr")]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-icon = 3
-static_color = Color(1, 0, 0, 1)
-is_hoverable = false
-
-[node name="StageLabel" type="Label" parent="VBoxContainer/StageContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "PHASE NAME"
-label_settings = ExtResource("2_8757y")
-horizontal_alignment = 1
-vertical_alignment = 1
+title = "PHASE"
+icon = 8

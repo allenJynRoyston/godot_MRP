@@ -2,11 +2,6 @@
 extends CardDrawerClass
 
 @onready var ListContainer:HBoxContainer = $MarginContainer/MarginContainer/VBoxContainer/ListContainer
-@onready var SpecBonusLabel:Label = $MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer/SpecBonusLabel
-@onready var TraitBonusLabel:Label = $MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/VBoxContainer/TraitBonusLabel
-@onready var AppliedBonusLabel:Label = $MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/AppliedBonusLabel
-@onready var TotalBonusLabel:Label = $MarginContainer/MarginContainer/VBoxContainer/VBoxContainer/TotalBonusLabel
-
 @export var list:Array = [] : 
 	set(val):
 		list = val
@@ -20,7 +15,7 @@ var preview_mode:bool = false
 
 var is_researched:bool = true
 
-const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
+const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 
 # -----------------------------
 func _init() -> void:
@@ -71,14 +66,10 @@ func on_list_update() -> void:
 		var amount:int = int(item.title) if !is_activated else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
 
 		if amount != 0:		
-			var new_node:Control = ResourceItemPreload.instantiate()
-			new_node.no_bg = true
-			new_node.display_at_bottom = true
-			new_node.title = str(amount)
-			new_node.is_faded = !is_activated
+			var new_node:Control = EconItemPreload.instantiate()
+			new_node.amount = amount
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon
-			new_node.is_hoverable = false
 			
 			ListContainer.add_child(new_node)
 # -----------------------------

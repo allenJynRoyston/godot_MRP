@@ -1,12 +1,13 @@
-[gd_scene load_steps=18 format=3 uid="uid://dqajtnshjj5i7"]
+[gd_scene load_steps=17 format=3 uid="uid://dqajtnshjj5i7"]
 
 [ext_resource type="Script" uid="uid://d3rdbn88vaa70" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ConfirmModal/confirm_modal.gd" id="1_7tykf"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_upopm"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="3_kq5a2"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="4_t4xaw"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_ugt3m"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_kq5a2"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="5_kq5a2"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="6_kq5a2"]
-[ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://UI/ResourceItem/ResourceItem.tscn" id="7_t4xaw"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="8_qglm5"]
+[ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="7_kq5a2"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="8_t4xaw"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_t4xaw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
@@ -42,34 +43,21 @@ shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_t4xaw"]
+font = ExtResource("4_kq5a2")
+font_color = Color(1, 0.74902, 0.2, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4xaw"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t8u6m"]
-bg_color = Color(0.124083, 0.124083, 0.124083, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugt3m"]
-bg_color = Color(1, 1, 1, 0)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq5a2"]
 bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xaw"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="ConfirmModal" type="PanelContainer"]
 anchors_preset = 15
@@ -112,12 +100,12 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer2"]
-custom_minimum_size = Vector2(600, 0)
+custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="ImageTextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
-custom_minimum_size = Vector2(300, 200)
+custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 texture = ExtResource("2_upopm")
 expand_mode = 1
@@ -127,7 +115,7 @@ stretch_mode = 6
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "TITLE GOES HERE"
-label_settings = ExtResource("3_kq5a2")
+label_settings = ExtResource("3_ugt3m")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -135,8 +123,8 @@ autowrap_mode = 2
 [node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-text = "subtitle goes here"
-label_settings = ExtResource("4_t4xaw")
+text = "subtitle"
+label_settings = SubResource("LabelSettings_t4xaw")
 horizontal_alignment = 1
 autowrap_mode = 2
 uppercase = true
@@ -163,12 +151,12 @@ size_flags_vertical = 8
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 200
+theme_override_constants/margin_bottom = 120
 
 [node name="PanelContainer" type="PanelContainer" parent="ResourceControl/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_t8u6m")
+theme_override_styles/panel = ExtResource("5_kq5a2")
 
 [node name="MarginContainer" type="MarginContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
@@ -186,12 +174,9 @@ layout_mode = 2
 
 [node name="CheckBox" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ugt3m")
-no_bg = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
+is_negative = false
 title = "1 energy required (you have X)"
-
-[node name="HSeparator" type="HSeparator" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
 
 [node name="BeforeAndAfter" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -201,33 +186,24 @@ alignment = 1
 [node name="before" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter"]
 layout_mode = 2
 
-[node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_t4xaw")]
+[node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_kq5a2")]
 layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
-icon = 31
-no_bg = true
-title = "99"
-display_at_bottom = true
-is_negative = true
+max_amount = -1
+burn_val = "0000"
 
-[node name="IconBtn" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_qglm5")]
+[node name="SVGIcon" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_t4xaw")]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 27
-inactive_color = Color(1, 1, 1, 1)
-is_hoverable = false
+icon_size = Vector2(30, 30)
 
 [node name="after" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter"]
 layout_mode = 2
 
-[node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_t4xaw")]
+[node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_kq5a2")]
 layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_t4xaw")
-icon = 31
-no_bg = true
-title = "99"
-display_at_bottom = true
+max_amount = -1
+burn_val = "0000"
 
 [node name="BtnControls" parent="." instance=ExtResource("9_t4xaw")]
 layout_mode = 2

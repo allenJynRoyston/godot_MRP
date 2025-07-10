@@ -36,6 +36,6 @@ func on_title_update() -> void:
 
 func on_border_color_update() -> void:
 	if !is_node_ready():return
-	var panel_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
-	panel_stylebox.border_color = border_color
-	RootPanel.set('theme_override_styles/panel', panel_stylebox)
+	#var panel_stylebox:StyleBoxFlat = RootPanel.get('theme_override_styles/panel').duplicate()
+	#panel_stylebox.border_color = border_color
+	#RootPanel.set('theme_override_styles/panel', panel_stylebox)

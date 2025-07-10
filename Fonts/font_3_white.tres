@@ -1,0 +1,11 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dc068pueo8ay0"]
+
+[ext_resource type="FontFile" uid="uid://cl0rds8hm0r81" path="res://Fonts/m5x7.ttf" id="1_npfsv"]
+
+[resource]
+font = ExtResource("1_npfsv")
+font_size = 32
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)

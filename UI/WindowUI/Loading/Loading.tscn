@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
 [ext_resource type="Texture2D" uid="uid://ciyxen7577ylg" path="res://Media/images/Defaults/orange_software.png" id="2_1rmxq"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_1rmxq"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_vp5h5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5hsv"]
 bg_color = Color(0.12549, 0.129412, 0.141176, 1)
@@ -11,11 +11,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_hi8yv"]
-font = ExtResource("3_1rmxq")
+[sub_resource type="LabelSettings" id="LabelSettings_eidsy"]
+font = ExtResource("3_vp5h5")
 font_size = 32
-outline_size = 2
-outline_color = Color(1, 1, 1, 0.607843)
+font_color = Color(1, 0.74902, 0.2, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [node name="LoadingComponent" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 200)
@@ -57,5 +59,5 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/LoadingVBox"]
 layout_mode = 2
 text = "TITLE"
-label_settings = SubResource("LabelSettings_hi8yv")
+label_settings = SubResource("LabelSettings_eidsy")
 horizontal_alignment = 1

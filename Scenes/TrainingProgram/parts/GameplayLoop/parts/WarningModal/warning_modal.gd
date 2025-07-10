@@ -19,12 +19,6 @@ extends GameContainer
 const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
 const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 
-@onready var allow_controls:bool = false : 
-	set(val):
-		allow_controls = val
-		check_for_unavailable_rooms()
-		#GBL.find_node(REFS.ROOM_NODES).enable_room_focus = val
-
 var title:String = "" : 
 	set(val):
 		title = val
@@ -117,24 +111,17 @@ func activate(auto_start:bool = true) -> void:
 
 # -------------------------------------------------------------------------------------------------	
 func start() -> void:
-	if !allow_controls:
-		TextureRectUI.show()
-		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
-	
+	#if !allow_controls:
+		#TextureRectUI.show()
+		#TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+	#
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
 	
 	BtnControls.reveal(true)
 # -------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------
-func check_for_unavailable_rooms() -> void:
-	if current_location.is_empty():return
-	var designation:String = U.location_to_designation(current_location)	
-	BtnControls.disable_active_btn = designation in unavailable_rooms
-# --------------------------------------------------------------------------------------------------	
-
-
+# -------------------------------------------------------------------------------------------------	
 func on_image_update() -> void:
 	if !is_node_ready():return	
 	ImageTextureRect.texture = CACHE.fetch_image("res://Media/rooms/redacted.jpg" if image.is_empty() else image)

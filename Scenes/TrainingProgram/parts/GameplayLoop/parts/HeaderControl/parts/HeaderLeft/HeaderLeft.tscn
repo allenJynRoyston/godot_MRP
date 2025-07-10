@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://ccu56yntif2r1"]
 
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_j4ms0"]
 [ext_resource type="Script" uid="uid://cmfetnavdvnoq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderLeft/header_left.gd" id="1_jivws"]
-[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="2_4pjdv"]
 [ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="2_jivws"]
 [ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="4_6xxio"]
 [ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="4_jivws"]
@@ -50,7 +50,7 @@ theme_override_constants/separation = 10
 [node name="Currencies" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_4pjdv")
+theme_override_styles/panel = ExtResource("1_j4ms0")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies"]
 layout_mode = 2
@@ -137,7 +137,7 @@ val = 1
 
 [node name="Vibes" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left"]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_4pjdv")
+theme_override_styles/panel = ExtResource("1_j4ms0")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes"]
 layout_mode = 2

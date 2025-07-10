@@ -1,6 +1,7 @@
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
+@onready var Nametag:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Name
 @onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 #@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
 #@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
@@ -118,9 +119,9 @@ func update_content() -> void:
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var level:int = 0 if scp_ref not in scp_data else scp_data[scp_ref].level
 	
-	ScpImage.title = "%s - LVL%s" % [scp_details.name, level]
+
 	ScpImage.img_src = scp_details.img_src
-	
+	Nametag.content = str(scp_details.name)
 	
 	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.CONTAIN

@@ -6,26 +6,31 @@ extends MouseInteractions
 @onready var InnerCardBody:Control = $CardBody/SubViewport/Control/CardBody
 
 # status panel
-@onready var StatusPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/StatusPanel
-@onready var StatusIcon:BtnBase = $CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/VBoxContainer/StatusIcon
-@onready var StatusLabel:Label = $CardBody/SubViewport/Control/CardBody/StatusPanel/PanelContainer/VBoxContainer/HBoxContainer/StatusLabel
+@onready var StatusPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel
+@onready var StatusIcon:BtnBase = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel/PanelContainer/VBoxContainer/StatusIcon
+@onready var StatusLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel/PanelContainer/VBoxContainer/HBoxContainer/StatusLabel
 
 # FRONT
 @onready var FrontImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage
 @onready var FrontName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontName
 @onready var FrontLevel:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontLevel
 
-@onready var BackTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackTrait
-@onready var BackMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackMood
+@onready var FrontTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackTrait
+@onready var FrontMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackMood
 
-@onready var Health:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Health
-@onready var Sanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Sanity
+@onready var FrontHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Health
+@onready var FrontSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Sanity
 
 # BACK
 @onready var BackName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackName
 @onready var BackImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackImage
-@onready var AssignedTo:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/AssignedTo
+#@onready var AssignedTo:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/AssignedTo
 
+@onready var BackTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackTrait
+@onready var BackMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackMood
+
+@onready var BackHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Health
+@onready var BackSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Sanity
 
 @export var card_border_color:Color = Color(0.0, 0.638, 0.337) : 
 	set(val): 
@@ -181,7 +186,7 @@ func on_uid_update() -> void:
 	
 	if uid == "-1" or researcher_details.is_empty():
 		FrontImage.use_static = true
-		for node in [FrontName, BackName, FrontLevel, BackTrait, BackMood]:
+		for node in [FrontName, FrontLevel, FrontHealth, FrontSanity, FrontMood, FrontTrait, BackHealth, BackSanity, BackMood, BackTrait, ]:
 			node.content = "-"
 		return
 	
@@ -200,11 +205,15 @@ func update_nodes(researcher_details:Dictionary) -> void:
 		
 	FrontName.content = researcher_details.name
 	FrontLevel.content = str(researcher_details.level)
-	BackMood.content = researcher_details.mood.details.name
-	BackTrait.content = researcher_details.trait.details.name
-		
-	Health.content = str(researcher_details.health.current)
-	Sanity.content = str(researcher_details.sanity.current)
+	
+	for node in [FrontMood, BackMood]:
+		node.content = researcher_details.mood.details.name
+	for node in [FrontTrait, BackTrait]:
+		node.content = researcher_details.trait.details.name
+	for node in [FrontHealth, BackHealth]:
+		node.content = str(researcher_details.health.current)
+	for node in [FrontSanity, BackSanity]:
+		node.content = str(researcher_details.sanity.current)
 	
 	match researcher_details.status:
 		RESEARCHER.STATUS.INSANE:
@@ -222,9 +231,9 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	if !researcher_details.props.assigned_to_room.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
 		if extract_data.is_empty():return
-		AssignedTo.content = extract_data.room.details.name
-	else:
-		AssignedTo.content = "None"
+		##AssignedTo.content = extract_data.room.details.name
+	#else:
+		#AssignedTo.content = "None"
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

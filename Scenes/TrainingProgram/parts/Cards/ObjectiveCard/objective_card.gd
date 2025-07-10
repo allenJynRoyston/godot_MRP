@@ -6,15 +6,16 @@ extends MouseInteractions
 @onready var CardBodySubviewport:SubViewport = $CardBody/SubViewport
 
 # drawer items
-@onready var ObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/ObjectiveItemList
-@onready var OptionalObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/OptionalObjectiveItemList
-@onready var OptionalSeperator:HSeparator = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/OptionalSeperator
+@onready var Required:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Required
+@onready var ObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Required/ObjectiveItemList
+
+@onready var Optional:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Optional
+@onready var OptionalObjectiveItemList:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Optional/OptionalObjectiveItemList
 
 # title/next/back buttons
 @onready var CardDrawerTitle:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle
-@onready var BackBtn:BtnBase = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer/BackBtn
-@onready var NextBtn:BtnBase = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer/NextBtn
-
+@onready var PrevIcon:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer/PrevIcon
+@onready var NextIcon:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer/NextIcon
 
 @export var is_upcoming:bool = false
 @export var is_expired:bool = false
@@ -33,13 +34,16 @@ extends MouseInteractions
 	set(val):
 		at_start = val
 		update_btns()
-		
+
+const ObjectiveItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn")
+
+
 var objectives:Dictionary = {} : 
 	set(val):
 		objectives = val
 		on_objectives_update()
 		
-const ObjectiveItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn")
+signal objectives_updated
 
 # ------------------------------------------------------------------------------
 func on_objectives_update() -> void:
@@ -54,7 +58,6 @@ func on_objectives_update() -> void:
 		var is_optional:bool = objective.is_optional
 		
 		new_btn.index = index
-		new_btn.show_bookmark = false
 		new_btn.is_naked = false
 		new_btn.is_optional = is_optional
 		new_btn.is_expired = is_expired
@@ -67,18 +70,17 @@ func on_objectives_update() -> void:
 			OptionalObjectiveItemList.add_child(new_btn)
 		else:
 			ObjectiveItemList.add_child(new_btn)	
-		
-	OptionalSeperator.show() if OptionalObjectiveItemList.get_child_count() > 0 and !is_upcoming else OptionalSeperator.hide()
-
+	
 	await U.tick()
-	CardControlBody.size.y = 0
+	Optional.show() if (OptionalObjectiveItemList.get_child_count() > 0 and !is_upcoming) else Optional.hide()
+	objectives_updated.emit()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func update_btns() -> void:
 	if !is_node_ready():return	
-	BackBtn.static_color = Color(1, 1, 1, 0.5 if at_start else 1)
-	NextBtn.static_color = Color(1, 1, 1, 0.5 if at_end else 1)
+	PrevIcon.icon_color.a = 0.2 if at_start else 1
+	NextIcon.icon_color.a = 0.2 if at_end else 1
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -88,11 +90,18 @@ func on_title_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func set_selected_node(node:Control) -> void:
+	for NodeItem in [OptionalObjectiveItemList, ObjectiveItemList]:
+		for n in NodeItem.get_children():
+			n.is_selected =  n == node	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func get_buttons() -> Array:
 	var arr:Array = []
-	for node in [OptionalObjectiveItemList, ObjectiveItemList]:
+	for node in [ObjectiveItemList, OptionalObjectiveItemList]:
 		for btn in node.get_children():
-			arr.append(btn)
+			arr.push_back(btn)
 	return arr
 # ------------------------------------------------------------------------------
 

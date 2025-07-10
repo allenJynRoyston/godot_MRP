@@ -17,12 +17,14 @@ extends GameContainer
 @onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
 @onready var ImageOutputTextureRect:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture
 @onready var ImageTextureRect:TextureRect = $ImageControl/PanelContainer/MarginContainer/SubViewport/TextureRect
-@onready var ImageTitle:Label = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/Title
+#@onready var ImageTitle:Label = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/Title
+@onready var VHSLabel:Control = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/VHSLabel
 @onready var ImageSubTitle:Label = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/Subtitle
+
 @onready var ContentPanel:PanelContainer	 = $ContentControl/PanelContainer
 @onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 
-@onready var DialogBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
+@onready var DialogBtn:Control = $ImageControl/PanelContainer/MarginContainer2/VBoxContainer/VHSLabel/MarginContainer/HBoxContainer/Control/SVGIcon
 @onready var BodyContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
 @onready var BodyLabelBtm:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
 @onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
@@ -122,10 +124,8 @@ func _ready() -> void:
 				ConsequenceFloatingPanel.update(node.data if show_consequences else {}, type)
 				ConsequenceFloatingPanel.goto(node.global_position + Vector2(0, node.size.y) + Vector2(0, -node.size.y/2))
 				
-				print(node.data)
-				
+
 				if node.data.has("room_ref"):
-					print(node.data.room_ref)
 					RoomDetails.reveal(true)
 					RoomDetails.room_ref = node.data.room_ref
 				else:
@@ -160,9 +160,10 @@ func reset() -> void:
 	update_next_btn(false)
 	reveal_outputtexture(false, 0.0)	
 	
-	for node in [ImageTitle, ImageSubTitle]:
-		node.text = ""	
-
+	VHSLabel.hide()
+	VHSLabel.title = ""
+	ImageSubTitle.text = ""
+	
 	#current_controls = CONTROLS.FREEZE
 	current_event_instruction = {} 
 	current_instruction = {} 
@@ -186,14 +187,15 @@ func reset_content_nodes() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func start(new_event_data:Array) -> void:
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))				
+	TransitionScreen.start()	
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
+	
 	await BtnControls.reveal(true)
 	
 	BtnControls.disable_back_btn = true
 	BtnControls.onBack = func() -> void:pass
 	BtnControls.onAction = func() -> void:pass
 
-	await TransitionScreen.start()	
 	
 	event_data = new_event_data
 
@@ -211,9 +213,9 @@ func end() -> void:
 	reveal_researcher(false)
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
 	
-	TransitionScreen.end()
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0) )
-	
+	await TransitionScreen.end()
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.7 )
+	await U.set_timeout(0.3)
 	user_response.emit(event_output)
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
@@ -400,7 +402,8 @@ func on_current_instruction_update() -> void:
 	
 	# -----------------------------------
 	if "title" in current_instruction:
-		ImageTitle.text = "%s" % [current_instruction.title]
+		VHSLabel.title = "%s" % [current_instruction.title]
+		VHSLabel.show()
 		
 	if "subtitle" in current_instruction:
 		ImageSubTitle.text = "%s" % [current_instruction.subtitle]		

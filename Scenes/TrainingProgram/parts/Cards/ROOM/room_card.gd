@@ -201,6 +201,20 @@ func on_ref_update() -> void:
 		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
+	var hide_currency:bool = true
+	for item in currency_list:
+		var amount:int = int(item.title)
+		if amount != 0:
+			hide_currency = false
+			break
+			
+	var hide_metrics:bool = true
+	for key in metrics:
+		var amount:int = metrics[key]
+		if amount != 0:
+			hide_metrics = false
+			break
+			
 	# -----------
 	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
@@ -212,14 +226,17 @@ func on_ref_update() -> void:
 	CardDrawerVibes.preview_mode = preview_mode	
 	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = metrics
+	CardDrawerVibes.hide() if hide_metrics else CardDrawerVibes.show()
+	
 	CardDrawerCurrency.preview_mode = preview_mode
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
-	CardDrawerCurrency.list = currency_list
+	CardDrawerCurrency.hide() if hide_currency else CardDrawerCurrency.show()
 	
+
 	# panels
-	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()	
+	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()
 	CostPanel.hide()
 
 	# show cost panel

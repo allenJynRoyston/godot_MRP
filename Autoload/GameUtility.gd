@@ -815,7 +815,7 @@ func auto_assign_staff(spec_ref:int, index:int, location_data:Dictionary = curre
 	
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# add current users
-		if i[0] in uid:
+		if (i[0] in uid):
 			i[11].assigned_to_room = location_data.duplicate()
 			i[11].slot = index
 		return i
@@ -1028,7 +1028,7 @@ func open_tally(differential:Dictionary, color_bg:Color = Color(0, 0, 0, 0.7)) -
 	var NewtallyNode:Control = NewTallyPreload.instantiate()
 	NewtallyNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(NewtallyNode)
-	NewtallyNode.set_props("DAILY RESOURCES", "We gots to get paid.", "", Color(0, 0, 0, 0.7))	
+	NewtallyNode.set_props("COLLECT RESOURCES", "Put it to good use.", "", Color(0, 0, 0, 0.7))	
 	await NewtallyNode.activate(false)
 	
 	NewtallyNode.start(differential)
@@ -1038,7 +1038,7 @@ func open_tally(differential:Dictionary, color_bg:Color = Color(0, 0, 0, 0.7)) -
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func create_warning(title:String = "", subtitle:String = "", img_src:String = "", allow_controls:bool = false, color_bg:Color = Color(0, 0, 0, 0.7)) -> bool:
+func create_warning(title:String = "", subtitle:String = "", img_src:String = "", color_bg:Color = Color(0, 0, 0, 0.9)) -> bool:
 	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
@@ -1046,7 +1046,6 @@ func create_warning(title:String = "", subtitle:String = "", img_src:String = ""
 	WarningNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(WarningNode)
 	WarningNode.set_props(title, subtitle, img_src, color_bg)
-	WarningNode.allow_controls = allow_controls
 	
 	await WarningNode.activate(false)
 	

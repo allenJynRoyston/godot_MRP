@@ -3,7 +3,7 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/SVGIcon
 @onready var LvlLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/Label
 @onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/NameLabel
 
@@ -31,7 +31,7 @@ var scp_data:Dictionary = {}
 
 var is_available:bool = true
 
-const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
+const LabelSettingsPreload:LabelSettings = preload("res://Fonts/font_1_black.tres")
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -50,6 +50,11 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+	
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	U.debounce(str(self.name, "_update_all"), update_all)
+
 func on_is_disabled_updated() -> void:
 	U.debounce(str(self.name, "_update_all"), update_all)
 	
@@ -74,17 +79,8 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	is_available = true		
 	scp_ref = -1
 			
-	
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE
-	
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	new_stylebox.bg_color = panel_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 
 func update_all() -> void:
-	#print("update all...")
 	update_font_color()
 	on_panel_color_update()
 	update_text()	
@@ -93,28 +89,35 @@ func update_all() -> void:
 func update_font_color() -> void:
 	if !is_node_ready():return
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
-	var new_color:Color = Color.WHITE
+	var use_color:Color = COLORS.primary_black 
+	var altered:bool = false
+
+	if is_disabled:
+		use_color = COLORS.disabled_color
+		altered = true
 	
-	if is_available:
-		new_color = Color(0.561, 1.0, 0.0)
-		
-	if is_disabled:		
-		new_color = Color.RED
-		
-	label_duplicate.font_color = new_color
+	use_color.a = 1 if is_selected else 0.7
+	
+				
+	label_duplicate.font_color = use_color
 	for node in [NameLabel]:
 		node.label_settings = label_duplicate	
-		
-	IconBtn.static_color = new_color
-	
-	
+	IconBtn.icon_color = use_color
+
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	#var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()
-	#var new_color:Color = panel_color
-			#
-	#new_stylebox.bg_color = new_color
-	#RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
+	var use_color:Color = COLORS.primary_color 
+	var altered:bool = false
+
+	if is_disabled:
+		use_color = COLORS.primary_black
+		altered = true
+		
+	use_color.a = 1 if is_selected else 0.7		
+		
+	new_stylebox.bg_color = use_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
 	
 func update_text() -> void:
 	if !is_node_ready():return

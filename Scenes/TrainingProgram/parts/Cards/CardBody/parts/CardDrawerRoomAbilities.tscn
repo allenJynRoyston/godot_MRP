@@ -3,24 +3,14 @@
 [ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_b2hfq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ildx4"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ildx4"]
 
 [node name="CardDrawerAblities" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
 offset_bottom = 54.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ildx4")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ildx4")
 script = ExtResource("1_6ymt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

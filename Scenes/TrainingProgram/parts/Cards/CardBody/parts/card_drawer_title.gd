@@ -31,7 +31,7 @@ func update_label_settings() -> void:
 	if !is_node_ready():return
 	var label_settings_copy:LabelSettings = ContentLabel.label_settings.duplicate()
 	label_settings_copy.font_size = 16 if is_small else 32
-	label_settings_copy.outline_size = label_settings_copy.font_size/2
-	label_settings_copy.outline_color = outline_color
+	#label_settings_copy.outline_size = label_settings_copy.font_size/2
+	#label_settings_copy.outline_color = outline_color
 	ContentLabel.label_settings = label_settings_copy
 	

@@ -143,14 +143,26 @@ func on_ref_update() -> void:
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-	#var spec_name:String = str(RESEARCHER_UTIL.return_specialization_data(scp_details.pairs_with.specialization).name)
-	#var trait_name:String = str(RESEARCHER_UTIL.return_trait_data(scp_details.pairs_with.trait).name)
-	#var bonus_str:String = "%s or %s" % [spec_name, trait_name]
 	var currency_list:Array = []
 	var has_spec_bonus:bool = false
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
 	var research_level:int = 0 if ref not in scp_data else scp_data[ref].level
+	
+	var hide_currency:bool = true
+	for item in currency_list:
+		var amount:int = int(item.title)
+		if amount != 0:
+			hide_currency = false
+			break
+			
+	var hide_metrics:bool = true
+	for key in scp_details.metrics:
+		var amount:int = scp_details.metrics[key]
+		if amount != 0:
+			hide_metrics = false
+			break	
+	
 	# -----------
 	CardDrawerDesignation.content = scp_details.name
 	CardDrawerName.content = scp_details.nickname
@@ -162,11 +174,13 @@ func on_ref_update() -> void:
 	CardDrawerVibes.preview_mode = false	
 	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = scp_details.metrics
+	CardDrawerVibes.hide() if hide_metrics else CardDrawerVibes.show()
 
 	CardDrawerCurrency.preview_mode = false
 	CardDrawerCurrency.room_details = scp_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
+	CardDrawerCurrency.hide() if hide_currency else CardDrawerCurrency.show()
 	#CardDrawerCurrency.morale_val = morale_val
 	#CardDrawerCurrency.list = currency_list
 	# -----------

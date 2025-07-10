@@ -1,6 +1,7 @@
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
+@onready var CardImage:Control =  $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
 @onready var Level:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Lvl
 @onready var Name:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Name
 @onready var Spec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Spec
@@ -139,12 +140,13 @@ func update_content() -> void:
 	hint_des_str += researcher_details.specialization.details.name
 			
 	Name.content = researcher_details.name
+	CardImage.img_src = researcher_details.img_src
 	Level.content = str(researcher_details.level)
 	Spec.content = spec_str
 
 	var name_title_str:String = "Researcher %s, %s specialist" % [researcher_details.name, hint_des_str]
 	
-	hint_title = "RESEARCHER"
+	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.DRS	
 	hint_description = str(name_title_str, ".")
 	

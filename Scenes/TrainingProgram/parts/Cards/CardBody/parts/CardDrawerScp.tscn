@@ -4,24 +4,14 @@
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_urot6"]
 [ext_resource type="PackedScene" uid="uid://drucry14qot6f" path="res://UI/Buttons/ScpBtn/ScpBtn.tscn" id="3_urot6"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urot6"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_urot6"]
 
 [node name="CardDrawerScp" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 offset_right = 200.0
 offset_bottom = 50.0
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_urot6")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_urot6")
 script = ExtResource("1_dy7w8")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

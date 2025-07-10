@@ -5,7 +5,7 @@ extends GameContainer
 
 @onready var ObjectivePanel:PanelContainer = $ObjectivesControl/PanelContainer
 @onready var ObjectiveMargin:MarginContainer = $ObjectivesControl/PanelContainer/MarginContainer
-@onready var ObjectiveItemList:VBoxContainer = $ObjectivesControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ObjectiveItemList
+@onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
 
 @onready var HintPanel:PanelContainer = $HintControl/PanelContainer
 @onready var HintMargin:MarginContainer = $HintControl/PanelContainer/MarginContainer
@@ -17,7 +17,6 @@ extends GameContainer
 @onready var Days:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Days
 @onready var Cores:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores
 
-@onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
 
 signal mode_updated
 
@@ -31,12 +30,6 @@ var objective_index:int :
 		on_objective_index_update()
 		
 var selected_index:int = 0
-#var bookmark_data:Dictionary = {} : 
-	#set(val):
-		#bookmark_data = val
-		#if !is_node_ready():return
-		#BtnControls.disable_active_btn = bookmark_data.is_empty()
-
 var hint_index:int
 var current_objective:Dictionary
 var current_hints:Array = []
@@ -73,11 +66,11 @@ func _ready() -> void:
 		
 		BtnControls.reveal(true)
 
-
 	BtnControls.onUpdate = func(node:Control) -> void:
 		current_objective = objectives[objective_index].list[node.index]
 		current_hints = objectives[objective_index].list[node.index].hints
 		build_hints(current_hints)
+		ObjectiveCard.set_selected_node(node)
 	
 	BtnControls.onDirectional = func(key:String):
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -172,6 +165,7 @@ func clear_hints() -> void:
 # --------------------------------------------------------------------------------------------------		
 func build_hints(hints:Array = current_hints) -> void:
 	clear_hints()
+	var is_upcoming:bool = objective_index > story_progress.on_chapter 
 	var is_expired:bool = objective_index < story_progress.on_chapter 	
 	var already_completed:bool = current_objective.is_completed.call()	
 	var filter_arr:Array = hints.filter(func(x): return x.is_purchased.call() )
@@ -214,9 +208,8 @@ func build_hints(hints:Array = current_hints) -> void:
 		new_hint.cost = hint.cost
 		HintList.add_child(new_hint)
 	
-	
-	BtnControls.disable_active_btn = already_completed
-	
+	BtnControls.hide_a_btn = is_upcoming or is_expired or already_completed
+
 	if !already_completed:
 		check_for_next_hint(current_hints)
 # --------------------------------------------------------------------------------------------------		
@@ -227,23 +220,21 @@ func check_for_next_hint(hints:Array = current_hints) -> void:
 		var hint:Dictionary = hints[index]
 		if !hint.is_purchased.call():
 			purchase_hint = hint
-			BtnControls.disable_active_btn = false
 			hint_index = index
 			return
 	
 	purchase_hint = {}
-	BtnControls.disable_active_btn = true
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func on_objective_index_update() -> void:
 	if !is_node_ready():return
-
 	var current_objectives:Dictionary = objectives[objective_index]	
 	var is_upcoming:bool = objective_index > story_progress.on_chapter 
 	var is_expired:bool = objective_index < story_progress.on_chapter 
 	
-	Days.amount = str(current_objectives.complete_by_day - progress_data.day)	
+	Days.amount = str( U.min_max( current_objectives.complete_by_day - progress_data.day, 0, 999 ) )	
+	Days.is_negative = is_expired
 	
 	ObjectiveCard.at_start = objective_index == 0
 	ObjectiveCard.at_end = objective_index == objectives.size() - 1
@@ -263,8 +254,11 @@ func on_objective_index_update() -> void:
 		ObjectiveCard.title = "OBJECTIVES"
 		HintPanel.show()
 		
-	await U.tick()
+	#await U.tick()
+	await ObjectiveCard.objectives_updated
+
+	
 	BtnControls.itemlist = ObjectiveCard.get_buttons()
-	BtnControls.item_index = 0
+	BtnControls.item_index = 0	
 # --------------------------------------------------------------------------------------------------	
 	

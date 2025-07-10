@@ -757,8 +757,12 @@ func show_facility_updates() -> void:
 							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
 						}]
 						
+						var confirm:bool 
 						
-						var confirm:bool = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor  if !is_powered else "Remove power supply?", "" , "", costs)
+						if is_powered:
+							confirm = await GAME_UTIL.create_warning("Remove power from floor %s" % current_location.floor, "Rooms on this floor will be deactivated and any SCP's contained here a be at risk of breaking containment.", "res://Media/images/Defaults/stop_sign.png")						
+						else:
+							confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "" , "", costs)
 						
 						if confirm:
 							ActiveMenuNode.close()
@@ -1350,7 +1354,13 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					BtnControls.a_btn_title = "USE"
 					
 					BtnControls.hide_c_btn = true
-					RoomDetailsControl.hide()
+					
+					RoomDetailsControl.cycle_to_room(true)
+					RoomDetailsControl.show()				
+					await U.tick()
+					RoomDetailsControl.show_room_card = true
+					RoomDetailsControl.show_scp_card = false
+					RoomDetailsControl.show_researcher_card = false
 					return
 				# ----------------------
 				if "researcher" in node:

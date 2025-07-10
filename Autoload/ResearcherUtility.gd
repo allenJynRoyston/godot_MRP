@@ -154,10 +154,13 @@ func get_user_object(val:Array) -> Dictionary:
 	# images
 	var img_src:String = ""
 	match spec_val: 
+		RESEARCHER.SPECIALIZATION.ADMIN:
+			img_src = "res://Media/images/ProfilePics/admin_male_01.png"
 		RESEARCHER.SPECIALIZATION.SECURITY:
 			img_src = "res://Media/images/ProfilePics/security_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/security_female_01.png"
-		_:
-			img_src = "res://Media/images/ProfilePics/researcher_male_01.png" if gender_val % 2 == 0 else "res://Media/images/ProfilePics/researcher_female_01.jpg"			
+		_: 
+			img_src = "res://Media/images/ProfilePics/researcher_male_01.png" #if gender_val % 2 == 0 else "res://Media/images/ProfilePics/researcher_female_01.jpg"	
+			
 	# get name
 	var lname:String = get_lname(name_val)
 	
@@ -622,11 +625,12 @@ func get_list_of_available(filter_for_specs: Array = []) -> Array:
 		var specialization_ref = researcher_data.specialization.ref
 		var accepts_any = RESEARCHER.SPECIALIZATION.ANY in filter_for_specs
 		var matches_spec = specialization_ref in filter_for_specs
-
-		if accepts_any and is_unassigned:
+		var is_unavailable = researcher_data.status == RESEARCHER.STATUS.KIA or researcher_data.status == RESEARCHER.STATUS.INSANE
+		
+		if accepts_any and is_unassigned and !is_unavailable:
 			return true
 		
-		return is_unassigned and matches_spec
+		return is_unassigned and matches_spec and !is_unavailable
 	)
 # ------------------------------------------------------------------------------		
 

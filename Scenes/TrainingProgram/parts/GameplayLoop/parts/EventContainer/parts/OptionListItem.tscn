@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=6 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_hvfea"]
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_4l8vf"]
 [ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="4_4l8vf"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_8ufj8"]
 
 [node name="OptionListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -42,7 +43,7 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Option A this can be quite long but it needs to wrap"
-label_settings = ExtResource("4_4l8vf")
+label_settings = ExtResource("4_8ufj8")
 autowrap_mode = 2
 
 [node name="PropertyLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]

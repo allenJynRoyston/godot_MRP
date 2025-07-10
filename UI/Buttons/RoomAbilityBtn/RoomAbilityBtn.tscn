@@ -1,43 +1,28 @@
-[gd_scene load_steps=7 format=3 uid="uid://d0rtygjh5shck"]
+[gd_scene load_steps=6 format=3 uid="uid://d0rtygjh5shck"]
 
 [ext_resource type="Script" uid="uid://bxi2q2qrosct8" path="res://UI/Buttons/RoomAbilityBtn/room_ability_btn.gd" id="1_02iep"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_t1vmv"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_rylm3"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_rylm3"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_m0cea"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="4_m0cea"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t1vmv"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_48nus"]
-bg_color = Color(0.162066, 0.162066, 0.162066, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_rylm3"]
-font = ExtResource("2_t1vmv")
-font_color = Color(0.827451, 0.827451, 0.827451, 1)
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rylm3"]
 
 [node name="RoomAbilityBtn" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 40)
 offset_right = 194.0
 offset_bottom = 29.0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_t1vmv")
+theme_override_styles/panel = ExtResource("1_rylm3")
 script = ExtResource("1_02iep")
 panel_color = Color(0.275367, 0.56172, 0.999992, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -47,7 +32,7 @@ theme_override_constants/separation = 2
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rylm3")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown"]
 layout_mode = 2
@@ -59,24 +44,22 @@ layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_rylm3")]
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_m0cea")]
 layout_mode = 2
-icon = 44
-static_color = Color(0.827451, 0.827451, 0.827451, 1)
-is_hoverable = false
+icon = 68
 
 [node name="CooldownLabel" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "99"
-label_settings = SubResource("LabelSettings_rylm3")
+label_settings = ExtResource("4_m0cea")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_48nus")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rylm3")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Name"]
 layout_mode = 2
@@ -86,5 +69,6 @@ theme_override_constants/margin_right = 10
 [node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-label_settings = SubResource("LabelSettings_rylm3")
+text = "Ability name"
+label_settings = ExtResource("4_m0cea")
 vertical_alignment = 1

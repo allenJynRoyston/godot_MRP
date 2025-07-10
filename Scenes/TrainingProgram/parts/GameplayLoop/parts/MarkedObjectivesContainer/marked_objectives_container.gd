@@ -80,7 +80,6 @@ func on_bookmarked_objectives_update(new_val:Array) -> void:
 	for objective in new_val:
 		var new_btn:Control = ObjectiveItemPreload.instantiate()
 		new_btn.is_naked = true
-		new_btn.show_bookmark = false
 		new_btn.is_expired = false
 		new_btn.is_upcoming = false
 		new_btn.is_optional = objective.is_optional

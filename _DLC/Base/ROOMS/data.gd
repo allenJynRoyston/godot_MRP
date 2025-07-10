@@ -4,8 +4,8 @@ extends Node
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.DEBUG_ROOM,
-	"name": "Debug Room",
-	"shortname": "Debug",
+	"name": "DEBUG_ROOM",
+	"shortname": "DEBUG_ROOM",
 	"categories": [ROOM.CATEGORY.UTILITY],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Debug room.",
@@ -516,6 +516,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"description": "Containment cell used to house anamolous objects.",
 		
 	# ------------------------------------------
+	"requires_unlock": false,
 	"can_contain": true,
 	"containment_properties": [
 		SCP.CONTAINMENT_TYPES.PHYSICAL
@@ -872,7 +873,7 @@ var SCRANTON_REALITY_ANCHOR:Dictionary = {
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	# DEBUG_ROOM,
+	DEBUG_ROOM,
 	# --------------- SPECIALS
 	DIRECTORS_OFFICE, 
 	HQ, 

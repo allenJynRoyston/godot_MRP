@@ -193,9 +193,11 @@ os_skip_boot = true
 os_skip_to_game = true
 os_app_fast_load = true
 skip_setup_progress = true
+start_at_ring_level = true
 skip_objectives = true
 enable_scp_debug = true
 max_energy = false
+all_personnel = true
 
 [node name="OS" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

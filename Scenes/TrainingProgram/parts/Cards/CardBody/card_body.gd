@@ -121,11 +121,11 @@ func instant_flip(state:bool) -> void:
 # ------------------------------------------------
 func on_border_color_update() -> void:
 	if !is_node_ready():return
-	for panel in [FrontPanel, BackPanel]:
-		var panel_stylebox:StyleBoxFlat = panel.get('theme_override_styles/panel').duplicate()
-		panel_stylebox.border_color = border_color
-		panel.set('theme_override_styles/panel', panel_stylebox)
-	update_drawer_items()
+	#for panel in [FrontPanel, BackPanel]:
+		#var panel_stylebox:StyleBoxFlat = panel.get('theme_override_styles/panel').duplicate()
+		#panel_stylebox.border_color = border_color
+		#panel.set('theme_override_styles/panel', panel_stylebox)
+	#update_drawer_items()
 # ------------------------------------------------
 
 # ------------------------------------------------

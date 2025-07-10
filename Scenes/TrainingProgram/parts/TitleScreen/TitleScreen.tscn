@@ -15,30 +15,30 @@ bg_color = Color(0, 0, 0, 0.337255)
 
 [sub_resource type="LabelSettings" id="LabelSettings_nwmuc"]
 font = ExtResource("3_p3swr")
-font_color = Color(0.237466, 0.751181, 1.15514e-06, 1)
+font_color = Color(1, 0.74902, 0.2, 1)
 outline_size = 8
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 0.666667)
 shadow_offset = Vector2(4, 4)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3swr"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwmuc"]
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oonus"]
-bg_color = Color(0, 0, 0, 0.8)
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ousww"]
-bg_color = Color(0, 0, 0, 0.8)
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3sdtd"]
 bg_color = Color(0, 0, 0, 0.8)
 border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 3
@@ -123,19 +123,19 @@ alignment = 1
 
 [node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
 title = "NEW GAME"
 COLOR_A = Color(1, 1, 1, 1)
 
 [node name="ContinueBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ousww")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
 title = "CONTINUE..."
 COLOR_A = Color(1, 1, 1, 1)
 
 [node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3sdtd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 title = "EXIT APPLICATION"
 COLOR_A = Color(1, 1, 1, 1)
 

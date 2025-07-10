@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://b2glyeqvwy3vs"]
 
 [ext_resource type="Script" uid="uid://cama33xd6387p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/objectives_container.gd" id="1_5mn2c"]
-[ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_h6i7u"]
 [ext_resource type="PackedScene" uid="uid://d33nsdab6tg1o" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/ObjectiveCard.tscn" id="2_q6d11"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_q73ge"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_2g7pg"]
 [ext_resource type="PackedScene" uid="uid://cv350lyuukxss" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveHint.tscn" id="4_2g7pg"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_q6d11"]
 [ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="4_ul6yg"]
@@ -99,7 +99,7 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="HintControl/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "HINTS"
-label_settings = ExtResource("2_h6i7u")
+label_settings = ExtResource("3_2g7pg")
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HintControl/PanelContainer/MarginContainer/VBoxContainer"]
@@ -132,6 +132,7 @@ theme_override_constants/margin_bottom = 20
 
 [node name="ObjectiveCard" parent="ObjectivesControl/PanelContainer/MarginContainer" instance=ExtResource("2_q6d11")]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="ObjectivesControl/PanelContainer/MarginContainer"]
 visible = false

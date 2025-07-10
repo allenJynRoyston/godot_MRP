@@ -1,20 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://b38bvj8mti387"]
 
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_e6u7c"]
 [ext_resource type="Script" uid="uid://dbcjx0aq66hmg" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_image.gd" id="1_ndhov"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_ndhov"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="3_e6u7c"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4suv"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="Shader" id="Shader_ei827"]
 code = "shader_type canvas_item;
@@ -60,7 +49,7 @@ shader_parameter/step_count = 2
 [node name="CardDrawerImage" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 125)
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_y4suv")
+theme_override_styles/panel = ExtResource("1_e6u7c")
 script = ExtResource("1_ndhov")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]

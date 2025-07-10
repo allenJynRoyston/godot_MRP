@@ -5,8 +5,8 @@ extends Control
 @onready var CardBodySubviewport:SubViewport = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport
 
 @onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer
-@onready var PrevIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PrevIcon
-@onready var NextIcon:BtnBase = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/NextIcon
+@onready var PrevIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PrevIcon
+@onready var NextIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/NextIcon
 @onready var PaginationList:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PaginationList
 @onready var Footerlabel:Label = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FooterLabel
 @onready var MenuPanel:PanelContainer = $MenuControl/PanelContainer
@@ -240,8 +240,8 @@ func on_options_list_update() -> void:
 	
 	PaginationContainer.show() if options_list.size() > 1 else PaginationContainer.hide()
 	if options_list.size() > 1:
-		PrevIcon.static_color = Color(1, 1, 1, 0.5 if tab_index == 0 else 1)
-		NextIcon.static_color = Color(1, 1, 1, 0.5 if tab_index == options_list.size() - 1 else 1)
+		PrevIcon.icon_color.a = 0.2 if tab_index == 0 else 1
+		NextIcon.icon_color.a = 0.2 if tab_index == options_list.size() - 1 else 1
 	
 	# render list
 	for index in options_list[tab_index].items.size():

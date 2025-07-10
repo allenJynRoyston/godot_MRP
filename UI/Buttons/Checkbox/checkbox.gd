@@ -1,24 +1,14 @@
 @tool
-extends BtnBase
+extends Control
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/IconBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/SVGIcon
 @onready var TitleLabel:Label = $MarginContainer/HBoxContainer/Label
-
-@export var no_bg:bool = false : 
-	set(val):
-		no_bg = val
-		bg_color_update()
-
-@export var bg_color:Color = Color(0.055, 0.055, 0.055, 0.796) : 
-	set(val):
-		bg_color = val
-		bg_color_update()
 		
-@export var checkbox_color:Color = Color(1.0, 1.0, 1.0) : 
+@export var is_negative:bool = false : 
 	set(val):
-		checkbox_color = val
-		checkbox_color_update()		
+		is_negative = val
+		on_is_negative_update()
 
 @export var is_checked:bool = false : 
 	set(val):
@@ -30,53 +20,23 @@ extends BtnBase
 		title = val
 		on_title_update()
 
-var onChange = func(is_checked:bool):pass
-
-var onCondition = null
-
 # ------------------------------------------------------------------------------
-func _init() -> void:
-	super._init()
-
-func _exit_tree() -> void:
-	super._exit_tree()
-
 func _ready() -> void:
-	super._ready()
 	on_is_checked_update()
 	on_title_update()
-	bg_color_update()	
-	checkbox_color_update()
-	onChange.call(is_checked)
+	on_is_negative_update()
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:
-	super.on_focus(state)
+# ------------------------------------------------------------------------------	
+func on_is_negative_update() -> void:
+	if !is_node_ready():return
+	var label_settings_copy:LabelSettings = TitleLabel.label_settings.duplicate()
+	var use_color:Color = COLORS.disabled_color if is_negative else COLORS.primary_black
+	label_settings_copy.font_color = use_color
+	print(is_negative)
+	IconBtn.icon_color = use_color
+	TitleLabel.label_settings = label_settings_copy
 
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	super.on_mouse_click(node, btn, on_hover)
-	if on_hover:
-		is_checked = !is_checked
-		onChange.call(is_checked)
-
-func on_condition_check(props:Dictionary = {}) -> void:
-	if onCondition != null:
-		is_checked = onCondition.call(props)
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func checkbox_color_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		IconBtn.static_color = checkbox_color
-
-func bg_color_update() -> void:
-	if is_node_ready() or Engine.is_editor_hint():
-		var new_stylebox = RootPanel.get_theme_stylebox('panel').duplicate()
-		new_stylebox.bg_color = Color.TRANSPARENT if no_bg else bg_color
-		if RootPanel != null:
-			RootPanel.add_theme_stylebox_override("panel", new_stylebox)
-		
 func on_is_checked_update() -> void:
 	if !is_node_ready():return
 	IconBtn.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX

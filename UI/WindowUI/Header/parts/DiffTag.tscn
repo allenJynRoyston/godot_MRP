@@ -7,7 +7,6 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_tm3ka"]
 font = ExtResource("2_tm3ka")
-font_color = Color(0, 1, 0.184, 1)
 outline_size = 8
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0

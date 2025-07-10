@@ -1,31 +1,15 @@
 [gd_scene load_steps=8 format=3 uid="uid://drucry14qot6f"]
 
 [ext_resource type="Script" uid="uid://c2dlikqxf610s" path="res://UI/Buttons/ScpBtn/scp_btn.gd" id="1_00exf"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_1o44w"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_2tjjk"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_2tjjk"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_ne0d8"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_8apxe"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a255s"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onoaw"]
-bg_color = Color(0.162066, 0.162066, 0.162066, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8apxe"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a255s"]
 font = ExtResource("3_ne0d8")
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_00exf"]
-font = ExtResource("3_ne0d8")
-font_color = Color(0.561, 1, 0, 1)
 outline_size = 8
 outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 
@@ -33,10 +17,11 @@ outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 offset_right = 194.0
 offset_bottom = 29.0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_a255s")
+theme_override_styles/panel = ExtResource("1_2tjjk")
 script = ExtResource("1_00exf")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
@@ -51,7 +36,7 @@ theme_override_constants/separation = 2
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_onoaw")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8apxe")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown"]
 layout_mode = 2
@@ -63,12 +48,9 @@ layout_mode = 2
 theme_override_constants/separation = -5
 alignment = 1
 
-[node name="IconBtn" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("2_1o44w")]
-custom_minimum_size = Vector2(18, 18)
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_2tjjk")]
 layout_mode = 2
-icon = 14
-static_color = Color(0.561, 1, 0, 1)
-is_hoverable = false
+icon = 29
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer"]
 visible = false
@@ -83,7 +65,7 @@ vertical_alignment = 1
 [node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_onoaw")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8apxe")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Name"]
 layout_mode = 2
@@ -97,11 +79,12 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -5
+alignment = 1
 
 [node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "ASSIGN OBJECT"
-label_settings = SubResource("LabelSettings_00exf")
+label_settings = ExtResource("5_8apxe")
 vertical_alignment = 1

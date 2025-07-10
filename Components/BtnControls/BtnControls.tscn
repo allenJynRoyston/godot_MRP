@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bt4fuj4j35pdi" path="res://Components/BtnControls/btn_controls.gd" id="1_42gfu"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_re623"]
-[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="3_dkurb"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_dkurb"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_dkurb"]
 [ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="4_j6bi6"]
 [ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="6_0q36v"]

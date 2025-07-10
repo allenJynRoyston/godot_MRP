@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bcutea2mk6dtk"]
+[gd_scene load_steps=12 format=3 uid="uid://bcutea2mk6dtk"]
 
 [ext_resource type="Script" uid="uid://b07g7jcbtop8c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/gameplay_loop.gd" id="1_15jbj"]
 [ext_resource type="PackedScene" uid="uid://dl5rw8mq2i0dp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Structure3DContainer.tscn" id="2_gauva"]
@@ -6,20 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://d04lnq4yhp80o" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/TimelineContainer.tscn" id="5_1tp62"]
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="11_lgd8l"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="10_3w3kc"]
 [ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/HeaderControl.tscn" id="13_goe6f"]
 [ext_resource type="PackedScene" uid="uid://p7chmumf3rm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/LineDrawContainer.tscn" id="14_g12vl"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="15_y8y6g"]
 [ext_resource type="PackedScene" uid="uid://btl83p0xrlqoi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/PhaseAnnouncement.tscn" id="20_q3yo6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lgd8l"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_f17ht"]
-font = ExtResource("11_lgd8l")
-font_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-shadow_color = Color(0.333333, 0.333333, 0.333333, 0.694118)
-shadow_offset = Vector2(-1, 1)
 
 [node name="GameplayLoop" type="PanelContainer"]
 clip_contents = true
@@ -76,14 +68,14 @@ theme_override_constants/margin_bottom = 10
 
 [node name="PanelContainer" type="PanelContainer" parent="WaitContainer/PanelContainer2/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_lgd8l")
 
 [node name="MarginContainer" type="MarginContainer" parent="WaitContainer/PanelContainer2/MarginContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 8
+size_flags_vertical = 4
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -96,20 +88,12 @@ size_flags_vertical = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="IconBtn" parent="WaitContainer/PanelContainer2/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("15_y8y6g")]
-custom_minimum_size = Vector2(30, 30)
+[node name="SVGIcon" parent="WaitContainer/PanelContainer2/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("10_3w3kc")]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 icon = 19
-is_hoverable = false
-allow_hint = false
-
-[node name="Label" type="Label" parent="WaitContainer/PanelContainer2/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "PLEASE WAIT"
-label_settings = SubResource("LabelSettings_f17ht")
-horizontal_alignment = 1
-uppercase = true
+icon_color = Color(1, 0.74902, 0.2, 1)
+icon_size = Vector2(100, 100)
 
 [node name="Control" type="Control" parent="WaitContainer/PanelContainer2/MarginContainer/PanelContainer"]
 layout_mode = 2

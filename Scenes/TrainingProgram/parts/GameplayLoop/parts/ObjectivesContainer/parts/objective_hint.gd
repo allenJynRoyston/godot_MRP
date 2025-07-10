@@ -1,9 +1,9 @@
 extends VBoxContainer
 
 @onready var RootPanel:PanelContainer = $PanelContainer
-@onready var ObjectiveTitle:Label = $PanelContainer/MarginContainer/HBoxContainer/ObjectiveTitle
-@onready var CostLabel:Label = $PanelContainer/MarginContainer/HBoxContainer/CostLabel
-@onready var LockIcon:Control = $PanelContainer/MarginContainer/HBoxContainer/LockIcon
+@onready var ObjectiveTitle:Label = $PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/ObjectiveTitle
+@onready var CostLabel:Label = $PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/CostLabel
+@onready var LockIcon:Control = $PanelContainer/MarginContainer/HBoxContainer/SVGIcon
 @onready var HasMoreIcon:Control = $HasMoreBtn
 
 var index:int : 
@@ -60,7 +60,9 @@ func on_index_update() -> void:
 func on_is_complete_update() -> void:
 	if !is_node_ready():return
 	var label_settings_copy:LabelSettings = ObjectiveTitle.label_settings.duplicate()
-	label_settings_copy.font_color = Color.GRAY if is_complete else Color.WHITE
+	var use_color:Color = COLORS.primary_black 
+	label_settings_copy.font_color = use_color
+	label_settings_copy.font_color.a = 1 
 	ObjectiveTitle.label_settings = label_settings_copy
 
 func on_is_expired_update() -> void:

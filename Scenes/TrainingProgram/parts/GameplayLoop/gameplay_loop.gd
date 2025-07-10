@@ -86,17 +86,17 @@ var initial_values:Dictionary = {
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": 300 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 300 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 9999, 
 				"diff": 0,
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 1000, 
 				"diff": 0,
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 50 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 999, 
+				"amount": 50 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_PERSONNEL) else 500, 
 				"diff": 0,
 				"capacity": 500
 			},
@@ -304,7 +304,7 @@ var completed_actions:Array = [] :
 	set(val):
 		completed_actions = val
 
-var current_phase:PHASE = PHASE.STARTUP : 
+var current_phase:PHASE : 
 	set(val):
 		current_phase = val
 		on_current_phase_update()
@@ -377,7 +377,6 @@ func _ready() -> void:
 	capture_default_showing_state()
 
 	await U.tick()
-	
 		
 	LineDrawContainer.show()
 	show_only([])
@@ -435,6 +434,11 @@ func start_new_game() -> void:
 	SetupContainer.progressbar_val = 0
 	await SetupContainer.activate()
 	await SetupContainer.start()	
+	
+	# start game music
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.GAME_TRACK_TWO,
+	}		
 	
 	# 1.) loading game data config
 	parse_restore_data()
@@ -499,16 +503,8 @@ func start_new_game() -> void:
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
 
-	# start game music
-	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.GAME_TRACK_TWO,
-	}	
-			
-	# show objectives
-	if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-		await GAME_UTIL.open_objectives()
-		await U.set_timeout(duration)
 
+			
 	# then build marked objectives
 	GAME_UTIL.mark_current_objectives()
 	
@@ -526,7 +522,7 @@ func start_new_game() -> void:
 		GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup = {}
 		GBL.update_and_save_user_profile()			
 	
-	current_phase = PHASE.PLAYER
+	current_phase = PHASE.STARTUP
 	
 #endregion
 # ------------------------------------------------------------------------------
@@ -722,7 +718,7 @@ func next_day() -> void:
 	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
 	
 	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
-		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "", false, Color(1, 1, 1, 0.2))
+		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "res://Media/images/Defaults/stop_sign.png")
 		if res:
 			current_phase = PHASE.RESOURCE_COLLECTION
 			await phase_cycle_complete
@@ -864,9 +860,6 @@ func on_current_phase_update() -> void:
 	match current_phase:
 		# ------------------------
 		PHASE.STARTUP:
-			show_only([])
-		# ------------------------
-		PHASE.PLAYER:
 			if true:
 				show_only([Structure3dContainer])
 				var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -874,8 +867,14 @@ func on_current_phase_update() -> void:
 				if chapter.has("tutorial"):
 					await GAME_UTIL.add_dialogue(chapter.tutorial)
 					
-				await restore_player_hud()
 				
+			# show objectives
+			#if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+			await GAME_UTIL.open_objectives()
+			current_phase = PHASE.PLAYER
+		# ------------------------
+		PHASE.PLAYER:
+			await restore_player_hud()			
 			GAME_UTIL.disable_taskbar(false)		
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
@@ -988,7 +987,6 @@ func on_current_phase_update() -> void:
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
-			
 			
 			
 			await restore_player_hud()

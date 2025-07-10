@@ -5,7 +5,7 @@ extends BtnBase
 
 @onready var CostAndCooldownContainer:PanelContainer = $MarginContainer/HBoxContainer/CostAndCooldown
 @onready var CooldownLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/CooldownLabel
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/SVGIcon
 @onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/NameLabel
 
 @export var panel_color:Color = Color("0e0e0ecb") : 
@@ -70,7 +70,7 @@ var ability_data:Dictionary = {} :
 		ability_data = val
 		on_ability_data_update()
 	
-const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
+const LabelSettingsPreload:LabelSettings = preload("res://Fonts/font_1_black.tres")
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -115,11 +115,7 @@ func update_all() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE
-	
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	new_stylebox.bg_color = panel_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	U.debounce(str(self.name, "_update_all"), update_all)	
 
 func on_is_disabled_updated() -> void:
 	U.debounce(str(self.name, "_update_all"), update_all)
@@ -138,6 +134,11 @@ func on_ability_data_update() -> void:
 func on_not_enough_resources_update() -> void:
 	U.debounce(str(self.name, "_update_all"), update_all)
 	
+func on_abl_lvl_update() -> void:
+	if ability_data.is_empty():return	
+	lvl_locked = abl_lvl < ability_data.lvl_required	
+	U.debounce(str(self.name, "_update_all"), update_all)	
+	
 func on_ability_name_update() -> void:
 	if !is_node_ready():return
 	NameLabel.text = str(ability_name)
@@ -146,40 +147,53 @@ func on_ability_name_update() -> void:
 func on_cost_update() -> void:
 	if !is_node_ready():return
 	CooldownLabel.text = str(cost)
-
-func on_abl_lvl_update() -> void:
-	if ability_data.is_empty():return	
-	lvl_locked = abl_lvl < ability_data.lvl_required	
-	U.debounce(str(self.name, "_update_all"), update_all)
 	
 func update_font_color() -> void:
 	if !is_node_ready():return
 	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
-	var new_color:Color = Color.WHITE	
+	var use_color:Color = COLORS.primary_black 
 	var altered:bool = false
 	
 	if !preview_mode:
 		if on_cooldown and !altered:
-			new_color = Color.SKY_BLUE
+			use_color = COLORS.disabled_color
 			altered = true
 		if lvl_locked and !altered:
-			new_color = Color.WEB_GRAY
+			use_color = COLORS.disabled_color
 			altered = true
-		#if not_enough_resources and !altered:
-			#new_color = Color.RED
-			#altered = true
 		if is_disabled:
-			new_color = Color.RED
+			use_color = COLORS.disabled_color
 			altered = true
+	
+	use_color.a = 1 if is_selected else 0.7
+	
 				
-	label_duplicate.font_color = new_color
+	label_duplicate.font_color = use_color
 	for node in [NameLabel, CooldownLabel]:
 		node.label_settings = label_duplicate	
-	IconBtn.static_color = new_color
-	
+	IconBtn.icon_color = use_color
+
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	#border_color = panel_color
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
+	var use_color:Color = COLORS.primary_color 
+	var altered:bool = false
+
+	if !preview_mode:
+		if on_cooldown and !altered:
+			use_color = COLORS.primary_black
+			altered = true
+		if lvl_locked and !altered:
+			use_color = COLORS.primary_black
+			altered = true
+		if is_disabled:
+			use_color = COLORS.primary_black
+			altered = true
+		
+	use_color.a = 1 if is_selected else 0.7		
+		
+	new_stylebox.bg_color = use_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
 
 	
 func update_text() -> void:
@@ -217,8 +231,7 @@ func update_text() -> void:
 			cost = cooldown_val
 			CooldownLabel.show()
 			return
-	
-	
+
 		
 	ability_name = ability_data.name
 	hint_title = ability_data.name

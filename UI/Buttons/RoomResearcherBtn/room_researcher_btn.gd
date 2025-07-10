@@ -3,13 +3,15 @@ extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
 
-@onready var IconBtn:BtnBase = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/IconBtn
-@onready var LvlLabel:Label = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/Label
+@onready var IconBtn:Control = $MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer/SVGIcon
 
-@onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/NameLabel
-@onready var SpecLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spec
-@onready var TraitLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Trait
-#
+@onready var CostAndCooldown:Control = $MarginContainer/HBoxContainer/CostAndCooldown
+@onready var LvlLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Label
+@onready var NameLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/NameLabel
+
+#@onready var SpecLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spec
+#@onready var TraitLabel:Label = $MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Trait
+##
 @export var panel_color:Color = Color("0e0e0ecb") : 
 	set(val):
 		panel_color = val
@@ -84,10 +86,10 @@ func on_researcher_update() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	var panel_color:Color = Color.BLACK if !is_selected else Color.WHITE
-	
 	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	new_stylebox.bg_color = panel_color
+	var use_color:Color = COLORS.primary_color
+	use_color.a = 1 if is_selected else 0.7		
+	new_stylebox.bg_color = use_color
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 
 func update_all() -> void:
@@ -97,18 +99,18 @@ func update_all() -> void:
 
 func update_font_color() -> void:
 	if !is_node_ready():return
-	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
-	var new_color:Color = Color.WHITE
-	
-	if is_available:
-		new_color = Color(0.561, 1.0, 0.0)
-		
-	label_duplicate.font_color = new_color
-	for node in [NameLabel]:
-		node.label_settings = label_duplicate	
-		
-	IconBtn.static_color = new_color
-	
+	#var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
+	#var new_color:Color = Color.WHITE
+	#
+	#if is_available:
+		#new_color = Color(0.561, 1.0, 0.0)
+		#
+	#label_duplicate.font_color = new_color
+	#for node in [NameLabel]:
+		#node.label_settings = label_duplicate	
+		#
+	#IconBtn.static_color = new_color
+	#
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
@@ -119,6 +121,7 @@ func update_text() -> void:
 	var required_slot:Dictionary = RESEARCHER_UTIL.return_specialization_data(room_details.required_staffing[index])
 		
 	if researcher.is_empty():
+		CostAndCooldown.show()
 		IconBtn.icon = SVGS.TYPE.PLUS
 		LvlLabel.hide()
 		NameLabel.text = "ASSIGN %s" % [required_slot.name]
@@ -128,14 +131,15 @@ func update_text() -> void:
 		hint_description = "This room requires a %s to be activated." % required_slot.name
 		return
 	
+	CostAndCooldown.hide()
 	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
 	LvlLabel.show()
 	
 	NameLabel.text = researcher.name
-	SpecLabel.text = "" if researcher.is_empty() else researcher.specialization.details.name	
-	TraitLabel.text = "" if researcher.is_empty() else researcher.trait.details.name
-	
+	#SpecLabel.text = "" if researcher.is_empty() else researcher.specialization.details.name	
+	#TraitLabel.text = "" if researcher.is_empty() else researcher.trait.details.name
+	#
 	hint_title = "HINT"
 	hint_description = str("Slotted by ",  researcher.name, ".")
 # ------------------------------------------------------------------------------

@@ -1,24 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://cntgsx4ms1bdd"]
 
 [ext_resource type="Script" uid="uid://ducuuue5yto5s" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_resource.gd" id="1_b2j78"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_xurlm"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_xurlm"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vxawm"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="CardDrawerResource" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 50)
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_vxawm")
+theme_override_styles/panel = ExtResource("1_xurlm")
 script = ExtResource("1_b2j78")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

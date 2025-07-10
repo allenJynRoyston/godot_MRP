@@ -2,23 +2,12 @@
 
 [ext_resource type="Script" uid="uid://b2jg6t1bontc2" path="res://Scenes/Main/parts/OS/Options/options.gd" id="1_1xncx"]
 [ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="2_1xncx"]
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="2_h2ypb"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="4_h2ypb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xncx"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klbsx"]
-bg_color = Color(0.078815, 0.078815, 0.078815, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xncx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbhxw"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -31,9 +20,10 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_jbhxw"]
-color = Color(1, 1, 1, 0.607843)
+color = Color(1, 0.74902, 0.2, 1)
+thickness = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2ypb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmhwb"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -45,7 +35,7 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbhxw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwxh6"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -80,7 +70,7 @@ offset_left = 32.0
 offset_top = 41.0
 offset_right = 241.0
 offset_bottom = 55.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_klbsx")
+theme_override_styles/panel = ExtResource("2_h2ypb")
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
 layout_mode = 2
@@ -99,12 +89,8 @@ theme_override_constants/separation = 5
 
 [node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1xncx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
 title = "RUN"
-is_disabled = false
-is_hollow = null
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -119,21 +105,13 @@ theme_override_constants/separation = 5
 
 [node name="OptionItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_h2ypb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rmhwb")
 title = "Option A"
-is_disabled = false
-is_hollow = null
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="OptionItem2" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nwxh6")
 title = "Option B"
-is_disabled = false
-is_hollow = null
-COLOR_A_DISABLED = Color(1, 0, 0, 1)
-COLOR_B_DISABLED = Color(0, 0, 0, 1)
 
 [node name="BtnControls" parent="." instance=ExtResource("4_h2ypb")]
 layout_mode = 2

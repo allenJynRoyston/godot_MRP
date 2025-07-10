@@ -36,6 +36,7 @@ layout_mode = 2
 color = Color(0.120418, 0.120418, 0.120418, 1)
 
 [node name="SummaryControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]

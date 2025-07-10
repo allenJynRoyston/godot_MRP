@@ -1,11 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://btadhfwtptr10"]
 
 [ext_resource type="Script" uid="uid://covec4eqq4fid" path="res://Scenes/Main/parts/OS/Taskbar/parts/TaskbarLiveItem/taskbar_live_item.gd" id="1_pvm5v"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_sepfl"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_jsu1p"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_282hj"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34og0"]
-bg_color = Color(0.758296, 0.832661, 0.92436, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_282hj"]
 font = ExtResource("3_282hj")
@@ -16,7 +14,7 @@ shadow_color = Color(0.129412, 0.129412, 0.129412, 0.345098)
 
 [node name="TaskbarLiveItem" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-theme_override_styles/panel = SubResource("StyleBoxFlat_34og0")
+theme_override_styles/panel = ExtResource("1_sepfl")
 script = ExtResource("1_pvm5v")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
