@@ -10,6 +10,7 @@ enum TYPE {
 	SCP_BREACH_EVENT_1,
 	SCP_BREACH_EVENT_2,
 	SCP_CONTAINED_EVENT,
+	SCP_NO_STAFF_EVENT,
 	# ------------
 	
 	# ------------

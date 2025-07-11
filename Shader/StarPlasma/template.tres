@@ -4,7 +4,7 @@
 
 [resource]
 shader = ExtResource("1_lwck6")
-shader_parameter/kelvin = 2370.97
+shader_parameter/kelvin = 7451.62
 shader_parameter/red_colour = 6.4
 shader_parameter/green_colour = 3.9
 shader_parameter/blue_colour = 4.2

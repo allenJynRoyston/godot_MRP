@@ -360,6 +360,109 @@ var SCP_TEMPLATE:Dictionary = {
 			}			
 		],
 		# ----------------------------		
+		
+		# ----------------------------
+		EVT.TYPE.SCP_NO_STAFF_EVENT: [
+			{
+				"story": func(props:Dictionary) -> Array:
+					var _scp_details:Dictionary = props.scp_details
+					return [
+						"NO STAFF EVENT",
+					],
+
+				"choices": func(props:Dictionary) -> Array:
+					var _scp_details:Dictionary = props.scp_details
+					var _vibes:Dictionary = props.vibes
+
+					return [
+						# -----------------------------------------
+						{
+							"title": "MORALE OPTION",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, {}, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"MORALE SUCCESS"
+									] if is_success else [
+										"MORALE FAIL"
+									],
+									"consequence": [
+										
+									] if is_success else [
+										
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "SAFETY OPTION",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, {}, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"SAFETY SUCCESS"
+									] if is_success else [
+										"SAFETY FAIL"
+									],
+									"consequence": [
+										
+									] if is_success else [
+										
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "READINESS OPTION",
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, {}, _vibes),
+							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"READINESS SUCCESS"
+									] if is_success else [
+										"READINESS FAIL"
+									],
+									"consequence": [
+										
+									] if is_success else [
+										
+									]
+								},
+						},
+						# -----------------------------------------
+						{
+							"title": "ALT OPTION.",
+							"success_rate": 50,
+							"effect": func(is_success:bool) -> Dictionary:
+								return {
+									"story": [
+										"ALT SUCCESS"
+									] if is_success else [
+										"ALT FAIL"
+									],
+									"consequence": [
+										
+									] if is_success else [
+										
+									]
+								},
+						},
+						# -----------------------------------------					
+					],
+				
+			},
+			{
+				"story": func(props:Dictionary) -> Array:
+					var _scp_details:Dictionary = props.scp_details
+					return [
+						"END EVENT",
+					],
+			}			
+		],
+		# ----------------------------				
 	}
 	# ------------------------------------------
 }
@@ -497,17 +600,17 @@ func get_render_from_metrics(ref:int, staff_details:Dictionary, vibes:Dictionary
 	match ref:
 		RESOURCE.METRICS.MORALE:
 			property = "MORALE"
-			if staff_details.mood.ref == RESEARCHER.MOODS.DEPRESSED:
+			if !staff_details.is_empty() and  staff_details.mood.ref == RESEARCHER.MOODS.DEPRESSED:
 				lockout = true
 				hint_description = "Unavailable due to current mood."
 		RESOURCE.METRICS.SAFETY:
 			property = "SAFETY"
-			if staff_details.mood.ref == RESEARCHER.MOODS.FRIGHTENED:
+			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.FRIGHTENED:
 				lockout = true
 				hint_description = "Unavailable due to current mood."			
 		RESOURCE.METRICS.READINESS:
 			property = "READINESS"
-			if staff_details.mood.ref == RESEARCHER.MOODS.RELUCTANT:
+			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.RELUCTANT:
 				lockout = true
 				hint_description = "Unavailable due to current mood."
 	

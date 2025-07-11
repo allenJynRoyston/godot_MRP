@@ -12,7 +12,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qha80"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_1pgoi"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_50nll"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aydr2"]
@@ -115,7 +115,7 @@ layout_mode = 2
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_1pgoi")
+texture = SubResource("ViewportTexture_50nll")
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
 offset_bottom = 487.0

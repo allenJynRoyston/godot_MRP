@@ -1,7 +1,7 @@
 @tool
 extends CardDrawerClass
 
-@onready var List:HBoxContainer = $MarginContainer/MarginContainer/List
+@onready var List:VBoxContainer = $MarginContainer/MarginContainer/List
 
 const RoomResearchersBtnPreload:PackedScene = preload("res://UI/Buttons/RoomResearcherBtn/RoomResearcherBtn.tscn")
 

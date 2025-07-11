@@ -608,7 +608,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	# create dict if it doesn't exist
 	if scp_ref not in scp_data:
 		scp_data[scp_ref] = new_scp_entry.duplicate(true)
-	
+		
 	# then update entry
 	scp_data[scp_ref].location = current_location.duplicate(true)
 	scp_data[scp_ref].contained_on_day = progress_data.day
@@ -616,12 +616,12 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 
 	# save
 	SUBSCRIBE.scp_data = scp_data	
-	
+
 	# update music
 	var previous_track:int = SUBSCRIBE.music_data.selected
 	SUBSCRIBE.music_data = {
 		"selected": MUSIC.TRACK.SCP_INITIAL_CONTAINMENT,
-	}			
+	}
 	
 	# Check for initial breach event
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
@@ -660,9 +660,6 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	await U.set_timeout(1.0)	
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
 	SUBSCRIBE.base_states = base_states
-	
-		
-
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -672,7 +669,8 @@ func trigger_breach_event(scp_ref:int) -> void:
 		
 	# pull details
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	
+	var data:Dictionary = scp_data[scp_ref]
+
 	# Check for initial breach event
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): 
 		return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
@@ -683,7 +681,9 @@ func trigger_breach_event(scp_ref:int) -> void:
 	SUBSCRIBE.music_data = {
 		"selected": MUSIC.TRACK.SCP_CONTAINMENT_BREACH,
 	}
-		
+	
+	SUBSCRIBE.current_location = data.location
+	await U.set_timeout(1.0)
 	
 	# set emergency mode
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
@@ -695,7 +695,7 @@ func trigger_breach_event(scp_ref:int) -> void:
 	await SplashNode.zero()
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_BREACH_EVENT_1, 
+		EVT.TYPE.SCP_BREACH_EVENT_1  if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
 			{
 				"room_details": ROOM_UTIL.return_data_via_location(current_location),
 				"scp_details": scp_details,
@@ -727,7 +727,8 @@ func trigger_containment_event(scp_ref:int) -> void:
 		
 	# pull details
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-	
+	var data:Dictionary = scp_data[scp_ref]
+
 	# Check for initial breach event
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): 
 		return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
@@ -739,6 +740,10 @@ func trigger_containment_event(scp_ref:int) -> void:
 		"selected": MUSIC.TRACK.SCP_FINAL_CONTAINMENT,
 	}	
 	
+	SUBSCRIBE.current_location = data.location
+	await U.set_timeout(1.0)
+	
+	
 	# set emergency mode
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
@@ -749,7 +754,7 @@ func trigger_containment_event(scp_ref:int) -> void:
 	await SplashNode.zero()
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_CONTAINED_EVENT, 
+		EVT.TYPE.SCP_CONTAINED_EVENT if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
 			{
 				"room_details": ROOM_UTIL.return_data_via_location(current_location),
 				"scp_details": scp_details,
@@ -763,8 +768,39 @@ func trigger_containment_event(scp_ref:int) -> void:
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
 	
-	scp_data[scp_ref].is_contained = true
-	SUBSCRIBE.scp_data = scp_data		
+	# CAN ONLY INITIATE IF FULLY STAFFED
+	if !researchers.is_empty():
+		scp_data[scp_ref].is_contained = true
+		SUBSCRIBE.scp_data = scp_data		
+		
+		await trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.OBJECTIVE_REWARD, 
+				{
+					"rewarded": func() -> Array:
+						return [
+							{
+								"room_ref": ROOM.REF.HR_DEPARTMENT, 
+								"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
+								"val": {
+									"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
+								},
+								"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
+							},
+							{
+								"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
+								"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
+								"val": {
+									"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
+								},
+								"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
+							}							
+					],
+					"onSelection": func(selection:Dictionary) -> void:
+						await selection.func.call(),
+				}
+			)
+		])	
+				
 	
 	# restore previous emergency mode
 	await U.set_timeout(1.0)
@@ -802,6 +838,13 @@ func clone_researcher() -> bool:
 	RESEARCHER_UTIL.clone_researcher(uid)	
 	
 	return true
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func rewarded_room(room_ref:int) -> void:
+	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
+	await GAME_UTIL.create_modal("You've received %s!" % [room_details.name], "Available in the BUILD menu.", room_details.img_src)	
+	ROOM_UTIL.add_to_unlocked_list(room_ref)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -998,7 +1041,11 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> void
 # ------------------------------------------------------------------------------
 func upgrade_facility(blacklist_self:bool = true) -> bool:
 	var unavailable_rooms:Array = [] if !blacklist_self else [U.location_to_designation(current_location)]
-	var previous_location:Dictionary = current_location.duplicate(true)
+	var previous_location:Dictionary = {
+		"floor": current_location.floor,
+		"ring": current_location.ring,
+		"room": current_location.room
+	}
 	
 	# determine which rooms are unavailble 
 	var floor:int = current_location.floor

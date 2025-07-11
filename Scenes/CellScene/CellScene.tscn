@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b3atfi3xe6ern" path="res://Scenes/CellScene/cell_scene.gd" id="1_enmig"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_fu8yw"]
-[ext_resource type="PackedScene" uid="uid://bbo8dutfowpc6" path="res://Scenes/CellScene/parts/StoryNarration.tscn" id="3_y10y4"]
+[ext_resource type="PackedScene" uid="uid://bbo8dutfowpc6" path="res://StoryNarration.tscn" id="3_y10y4"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y10y4"]
 

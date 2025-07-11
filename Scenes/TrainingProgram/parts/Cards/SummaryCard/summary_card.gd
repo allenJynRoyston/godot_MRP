@@ -7,7 +7,9 @@ extends MouseInteractions
 @onready var BusyPanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/BusyPanel
 
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails/CardDrawerName
-@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails/CardDrawerResearchers
+
+@onready var PersonnelContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer
+@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer/CardDrawerResearchers
 
 @onready var AbilityContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer
 @onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/CardDrawerActiveAbilities
@@ -106,6 +108,7 @@ func on_room_ref_update() -> void:
 
 	if room_ref == -1:
 		CardDrawerName.content = "EMPTY"		
+		PersonnelContainer.hide()		
 		AbilityContainer.hide()
 		PassiveContainer.hide()
 		ScpContinaer.hide()
@@ -142,7 +145,7 @@ func on_room_ref_update() -> void:
 	CardDrawerResearchers.room_details = room_details
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.required_staffing = required_staffing
-	CardDrawerResearchers.show() if required_staffing.size() > 0 and !preview_mode else CardDrawerResearchers.hide()
+	PersonnelContainer.show() if required_staffing.size() > 0 and !preview_mode else PersonnelContainer.hide()
 	
 	var filtered:Array = hired_lead_researchers.filter(func(x): 
 		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 

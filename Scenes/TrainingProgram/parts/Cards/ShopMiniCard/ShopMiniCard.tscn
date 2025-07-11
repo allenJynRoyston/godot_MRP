@@ -109,11 +109,13 @@ is_left_side = true
 visible = false
 layout_mode = 2
 title = "RESEARCHED"
+v_offset = 40
 
 [node name="LevelRequired" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("4_ctiee")]
 layout_mode = 2
 title = "LEVEL X REQUIRED"
 icon = 48
+v_offset = 40
 
 [node name="CardDrawerTitle" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("3_sv0aq")]
 z_index = 2
@@ -123,7 +125,7 @@ size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_sv0aq")
 is_small = true
 content = "Roomname"
-center_text = null
+center_text = true
 title = ""
 border_color = Color(0.931198, 0, 0.462987, 1)
 

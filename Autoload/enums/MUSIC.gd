@@ -13,6 +13,8 @@ enum TRACK {
 	GAME_MAIN_MENU,
 	GAME_TRACK_ONE, 
 	GAME_TRACK_TWO,
+	GAME_TRACK_THREE,
+	
 	# --------------------
 	SCP_INITIAL_CONTAINMENT, 
 	SCP_CONTAINMENT_BREACH,
@@ -73,7 +75,8 @@ var track_list:Array = [
 		"unlocked": func(data:Dictionary) -> bool:
 			return false,
 		"file": preload("res://Audio/mp3/nagz-2-DO_NOT_USE_IN_FINAL.mp3")
-	},		
+	},
+	
 		
 	
 	# ---------------------------------------------------------------------------------------------- GAME TRACKS
@@ -107,7 +110,17 @@ var track_list:Array = [
 			return true,
 		"file": preload("res://Audio/mp3/Tokyo Night - Gabtosin - SoundLoadMate.com.mp3")
 	},
-	
+	{
+		"details": {
+			"name": "GAME_TRACK_THREE",
+			"author": "GAME_TRACK_THREE",
+			"ref": TRACK.GAME_TRACK_THREE
+		},
+		"unlocked": func(data:Dictionary) -> bool:
+			return true,
+		"file": preload("res://Audio/mp3/stephen-walking-the-difference-between-us-and-the-aliens-scdler.mp3")
+	},
+		
 	
 	# ---------------------------------------------------------------------------------------------- GAME TRACKS
 	{

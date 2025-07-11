@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://h60sdjb0774i"]
+[gd_scene load_steps=12 format=3 uid="uid://h60sdjb0774i"]
 
 [ext_resource type="Script" uid="uid://crkc5a52sevq1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/scp_grid.gd" id="1_ibfck"]
-[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_miqia"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_fypad"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://UI/ResourceItem/ResourceItem.tscn" id="3_skfir"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_dlnnq"]
@@ -13,11 +12,11 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skfir"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljatq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -31,7 +30,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_gm34h")
 script = ExtResource("1_ibfck")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_miqia")
 layout_mode = 2
 color = Color(0.120418, 0.120418, 0.120418, 1)
 
@@ -73,7 +71,7 @@ alignment = 1
 
 [node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_skfir")
 icon = 39
 no_bg = true
 title = "999"
@@ -87,7 +85,7 @@ is_hoverable = false
 
 [node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ljatq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
 icon = 39
 no_bg = true
 title = "999"

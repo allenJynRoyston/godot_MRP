@@ -326,8 +326,9 @@ func on_item_index_update() -> void:
 	else:
 		HintContainer.hide()
 	
-	onUpdate.call(node)
-	Input.warp_mouse(node.global_position + offset)
+	if node != null:
+		onUpdate.call(node)
+		Input.warp_mouse(node.global_position + offset)
 # --------------------------------------------------------------------------------------------------
 	
 # ------------------------------------------

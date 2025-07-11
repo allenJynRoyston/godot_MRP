@@ -1360,7 +1360,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				for _node in BtnControls.itemlist:
 					if "is_selected" in _node:
 						_node.is_selected = _node == node
-				
+				BtnControls.hide_c_btn = true
 				
 				# ----------------------
 				if "ability_data" in node:

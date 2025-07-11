@@ -2,18 +2,10 @@ extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
 @onready var CardImage:Control =  $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var Level:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Lvl
-@onready var Name:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/Name
+@onready var Level:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/HBoxContainer/Lvl
+@onready var Name:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/HBoxContainer/Name
 @onready var Spec:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Spec
-
-@onready var AlreadyAssigned:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AlreadyAssignedPanel
-@onready var CannotPromote:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/CannotPromote
-
-@onready var IncompatablePanel:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel
-@onready var IncompatableLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/IncompatablePanel/CenterContainer/Label
-
-@onready var AssignedElsewhere:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere
-@onready var AssignedElsewhereLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/AssignedElsewhere/CenterContainer/Label
+@onready var StatusPanel:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/Status
 
 enum CARD_TYPE {UNLOCK, PURCHASE}
 
@@ -39,6 +31,8 @@ const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/t
 var freeze_inputs:bool = false
 var index:int
 var border_color:Color
+
+var is_kia:bool = false
 
 var is_already_assigned:bool = false : 
 	set(val):
@@ -83,9 +77,6 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 
-	for node in [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]:
-		node.hide()		
-
 	on_focus()
 	on_uid_update()
 	on_is_highlighted_update()
@@ -124,11 +115,7 @@ func on_uid_update() -> void:
 # --------------------------------------		
 func update_content() -> void:	
 	if !is_node_ready():return
-	
-	var panel_nodes:Array = [AlreadyAssigned, IncompatablePanel, AssignedElsewhere, CannotPromote]
-	for node in panel_nodes:
-		node.hide()				
-	
+
 	if uid == "":
 		return
 		
@@ -143,6 +130,7 @@ func update_content() -> void:
 	CardImage.img_src = researcher_details.img_src
 	Level.content = str(researcher_details.level)
 	Spec.content = spec_str
+	
 
 	var name_title_str:String = "%s" % [researcher_details.name]
 	
@@ -151,55 +139,71 @@ func update_content() -> void:
 	hint_description = name_title_str
 	
 	if !can_be_promoted and check_for_promotions:
-		for node in panel_nodes:
-			if node in [CannotPromote]:
-				node.show() 
-			else:
-				node.hide()
+		StatusPanel.title = "CANNOT PROMOTE"
+		StatusPanel.icon = SVGS.TYPE.HOURGLASS
+		StatusPanel.show()
+		
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(not eligible for promotion)."]
 		return
 
 	if is_already_assigned:
-		for node in panel_nodes:
-			if node in [AlreadyAssigned]:
-				node.show() 
-			else:
-				node.hide()
+		StatusPanel.title = "ALREADY HERE"
+		StatusPanel.icon = SVGS.TYPE.HOURGLASS
+		StatusPanel.show()
+		
 		hint_icon = SVGS.TYPE.CHECKBOX
 		hint_description = "%s %s" % [name_title_str, "(currently assigned here)."]
 		return
 	
 	if is_incompatable:
-		for node in panel_nodes:
-			if node in [IncompatablePanel]:
-				node.show() 
-			else:
-				node.hide()
+		StatusPanel.title = "INCOMPATABLE"
+		StatusPanel.icon = SVGS.TYPE.CLEAR
+		StatusPanel.show()
+		
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(not compatable)."]
 		
 		if !spec_required.is_empty():
 			hint_icon = SVGS.TYPE.DRS
 			hint_description = "%s specialization required." % spec_required.name
-			IncompatableLabel.text = "INCOMPATABLE" 
 		return
 	
 	if is_assigned_elsewhere:
-		for node in panel_nodes:
-			if node in [AssignedElsewhere]:
-				node.show() 
-			else:
-				node.hide()
+		StatusPanel.title = "ALREADY ASSIGNED"
+		StatusPanel.icon = SVGS.TYPE.HOURGLASS
+		StatusPanel.show()
+		
 		hint_icon = SVGS.TYPE.STOP
 		hint_description = "%s %s" % [name_title_str, "(assigned to %s)." % [assigned_elsewhere_data.room.details.name]]
-		AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.shortname]
+		#AssignedElsewhereLabel.text = "ASSIGNED to\r%s" % [assigned_elsewhere_data.room.details.shortname]
 		return
+		
+		
+	is_kia = false
+	match researcher_details.status:
+		RESEARCHER.STATUS.INSANE:
+			StatusPanel.title = "INSANE"
+			StatusPanel.icon = SVGS.TYPE.DANGER
+			StatusPanel.show()
+		RESEARCHER.STATUS.KIA:
+			is_kia = true
+			StatusPanel.title = "KILLED IN ACTION"
+			StatusPanel.icon = SVGS.TYPE.DELETE
+			StatusPanel.use_color = COLORS.disabled_color
+			StatusPanel.show()
+		RESEARCHER.STATUS.WOUNDED:
+			StatusPanel.title = "REQUIRES MEDICAL ATTENTION"
+			StatusPanel.icon = SVGS.TYPE.DANGER
+			StatusPanel.use_color = COLORS.disabled_color
+			StatusPanel.show()
+		_:
+			StatusPanel.hide()			
 # --------------------------------------		
 
 # --------------------------------------	
 func is_clickable() -> bool:
-	if uid == "" or freeze_inputs or is_incompatable or is_already_assigned or (!can_be_promoted and check_for_promotions):
+	if uid == "" or freeze_inputs or is_incompatable or is_already_assigned or (!can_be_promoted and check_for_promotions) or is_kia:
 		return false
 	return true 
 # --------------------------------------	

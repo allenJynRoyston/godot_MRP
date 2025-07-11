@@ -101,7 +101,7 @@ var chapters:Array = [
 					"room_ref": ROOM.REF.HR_DEPARTMENT, 
 					"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
 					"val": {
-						"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
+						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
 				},
@@ -109,7 +109,7 @@ var chapters:Array = [
 					"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
 					"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
 					"val": {
-						"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
+						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
 				}							
@@ -184,14 +184,14 @@ var chapters:Array = [
 				{
 					"title":  ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).name,
 					"val": {
-						"func": rewarded_room.bind(ROOM.REF.GEOTHERMAL_POWER),
+						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.GEOTHERMAL_POWER),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).description
 				},
 				{
 					"title":  ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).name,
 					"val": {
-						"func": rewarded_room.bind(ROOM.REF.MINIERAL_MINING),
+						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.MINIERAL_MINING),
 					},
 					"hint_description": ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).description
 				}				
@@ -361,11 +361,6 @@ var chapters:Array = [
 			#],
 
 # ----------------------------------------------------------------------------------------------		
-func rewarded_room(room_ref:int) -> void:
-	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
-	await GAME_UTIL.create_modal("You've received %s!" % [room_details.name], "Available in the BUILD menu.", room_details.img_src)	
-	ROOM_UTIL.add_to_unlocked_list(room_ref)
-
 func check_for_criteria(criteria:Dictionary) -> bool:
 	var current_amount = check_for_current(criteria)
 	match criteria.action:

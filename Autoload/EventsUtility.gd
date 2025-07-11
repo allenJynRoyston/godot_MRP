@@ -170,6 +170,126 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var SCP_CONTAINED_EVENT:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var event_ref:int = EVT.TYPE.SCP_CONTAINED_EVENT
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+		
+		var room_details:Dictionary = props.room_details
+		var scp_details:Dictionary = props.scp_details
+		var scp_entry:Dictionary = props.scp_entry
+		var researchers:Array = props.researchers
+		var breach_count:int = scp_entry.breach_count
+				
+		var event_data:Array = scp_details.event[event_ref]
+		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
+
+		# add additional props and send to event
+		props.selected_staff = selected_staff
+		props.vibes = vibes
+		props.breach_count = breach_count
+		
+		# build seequence		
+		var sequence:Array = []
+		for item in event_data:
+						
+			# build out story
+			var story_text:Array = []
+			for line in item.story.call(props):
+				story_text.push_back(line)
+			
+			# build out choices
+			var options:Array = []
+			if "choices" in item:
+				var choices:Array = item.choices.call(props)
+				for choice in choices:
+					choice.onSelected = onSelected
+					options.append(choice)
+			
+			sequence.push_back(
+				# ---------
+				func() -> Dictionary:
+					return {
+						"title": scp_details.name,
+						"subtitle": scp_details.nickname,
+						"img_src": scp_details.img_src,
+						"selected_staff": selected_staff,
+						"text": story_text,
+						"options": options
+					}
+			)
+			
+			if !options.is_empty():
+				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected, selected_staff) )
+
+		return sequence
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SCP_NO_STAFF_EVENT:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var event_ref:int = EVT.TYPE.SCP_NO_STAFF_EVENT
+		var option_selected:Dictionary = {
+			"val": null
+		}
+		var onSelected = func(val) -> void:
+			option_selected.val = val
+		
+		var room_details:Dictionary = props.room_details
+		var scp_details:Dictionary = props.scp_details
+		var scp_entry:Dictionary = props.scp_entry
+		
+		var event_data:Array = scp_details.event[event_ref]
+		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
+
+		# add additional props and send to event
+		props.vibes = vibes
+		
+		# build seequence		
+		var sequence:Array = []
+		for item in event_data:
+						
+			# build out story
+			var story_text:Array = []
+			for line in item.story.call(props):
+				story_text.push_back(line)
+			
+			# build out choices
+			var options:Array = []
+			if "choices" in item:
+				var choices:Array = item.choices.call(props)
+				for choice in choices:
+					choice.onSelected = onSelected
+					options.append(choice)
+			
+			sequence.push_back(
+				# ---------
+				func() -> Dictionary:
+					return {
+						"title": scp_details.name,
+						"subtitle": scp_details.nickname,
+						"img_src": scp_details.img_src,
+						"text": story_text,
+						"options": options
+					}
+			)
+			
+			if !options.is_empty():
+				sequence.push_back( 
+					func() -> Dictionary:return create_sequence(option_selected, {}) 
+				)
+
+		return sequence
+}
+# ------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------
 var HIRE_RESEARCHER:Dictionary = {
@@ -636,6 +756,8 @@ var reference_data:Dictionary = {
 	# ------------------ 
 	EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,
 	EVT.TYPE.SCP_BREACH_EVENT_1: SCP_BREACH_EVENT_1,
+	EVT.TYPE.SCP_CONTAINED_EVENT: SCP_CONTAINED_EVENT,
+	EVT.TYPE.SCP_NO_STAFF_EVENT: SCP_NO_STAFF_EVENT,
 	
 	# ------------------
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,
@@ -685,18 +807,25 @@ func create_sequence(option_selected:Dictionary, selected_staff:Dictionary) -> D
 							end = true
 						# -----------------	
 						EVT.CONSEQUENCE.HP_HURT:
-							var health_remaining:int = selected_staff.health.current - 1
-							result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-							if health_remaining <= 0:
-								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA) ] )
+							if !selected_staff.is_empty():
+								var health_remaining:int = selected_staff.health.current - 1
+								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
+								if health_remaining <= 0:
+									result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA) ] )
+							else:
+								result_text.push_back(("But no one was around..."))
 						EVT.CONSEQUENCE.SP_HURT:
-							var sanity_remaining:int = selected_staff.sanity.current - 1
-							result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-							if sanity_remaining <= 0:
-								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE) ] )
+							if !selected_staff.is_empty():
+								var sanity_remaining:int = selected_staff.sanity.current - 1
+								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
+								if sanity_remaining <= 0:
+									result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE) ] )
+							else:
+								result_text.push_back(("But no one was around..."))
 						# -----------------	
 						_:
-							result_text.push_back("%s %s" % [selected_staff.name, EVT.CONSEQUENCE_STR[consequence]])
+							if !selected_staff.is_empty():
+								result_text.push_back("%s %s" % [selected_staff.name, EVT.CONSEQUENCE_STR[consequence]])
 
 	return {
 		"end": end,

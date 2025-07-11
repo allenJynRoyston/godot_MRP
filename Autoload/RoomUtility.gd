@@ -220,7 +220,11 @@ func add_to_unlocked_list(ref:int) -> void:
 func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	purchased_facility_arr.push_back({
 		"ref": ref,
-		"location": current_location.duplicate()
+		"location": {
+			"floor": use_location.floor,
+			"ring": use_location.ring,
+			"room": use_location.room
+		}
 	})
 	
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr

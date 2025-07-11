@@ -438,7 +438,7 @@ func start_new_game() -> void:
 	
 	# start game music
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.GAME_TRACK_TWO,
+		"selected": MUSIC.TRACK.GAME_TRACK_ONE,
 	}		
 	
 	# 1.) loading game data config
@@ -881,7 +881,12 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			await show_only([Structure3dContainer, TimelineContainer])
-			current_location_snapshot = current_location.duplicate(true)
+			current_location_snapshot = {
+				"floor": current_location.floor,
+				"ring": current_location.ring,
+				"room": current_location.room
+			}
+			
 			camera_settings_snapshot = camera_settings.duplicate(true)
 			
 			# hide objectives
@@ -942,7 +947,6 @@ func on_current_phase_update() -> void:
 				var contained_for_total:int = data.contained_on_day + progress_data.day
 				var contained_on_day:int = scp_details.days_until_contained + data.contained_on_day
 				
-				
 				if !is_contained:
 					if (progress_data.day >= contained_on_day):
 						event_final_containment.push_back(ref)
@@ -974,12 +978,14 @@ func on_current_phase_update() -> void:
 					#if "event" in item and !item.event.is_empty():
 						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
 						# open music player, no music selected
-						
+			
+			
+			# restore previous music and location
 			SUBSCRIBE.music_data = {
 				"selected": previous_track,
 			}
 			
-			# restore hud
+			# next
 			current_phase = PHASE.CONCLUDE
 		# ------------------------
 		PHASE.CONCLUDE:

@@ -37,5 +37,5 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="List" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="List" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2

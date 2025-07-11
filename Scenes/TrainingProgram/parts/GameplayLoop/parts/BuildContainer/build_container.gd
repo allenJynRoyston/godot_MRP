@@ -260,7 +260,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				purchased_facility_arr.push_back({
 					"ref": room_details.ref,
 					"type_ref": room_details.type_ref,
-					"location": current_location.duplicate()
+					"location": {
+						"floor": current_location.floor,
+						"ring": current_location.ring,
+						"room": current_location.room
+					}
 				})
 				
 				SUBSCRIBE.purchased_facility_arr = purchased_facility_arr	

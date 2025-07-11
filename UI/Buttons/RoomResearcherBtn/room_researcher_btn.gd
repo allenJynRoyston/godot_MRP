@@ -138,7 +138,7 @@ func update_text() -> void:
 	if researcher.is_empty():
 		CostAndCooldown.show()
 		IconBtn.icon = SVGS.TYPE.PLUS
-		LvlLabel.hide()
+		#LvlLabel.hide()
 		NameLabel.text = "ASSIGN %s" % [required_slot.name]
 		
 		hint_title = "HINT"
@@ -149,7 +149,7 @@ func update_text() -> void:
 	CostAndCooldown.show()
 	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
-	LvlLabel.show()
+	#LvlLabel.show()
 	
 	NameLabel.text = researcher.name
 	#SpecLabel.text = "" if researcher.is_empty() else researcher.specialization.details.name	

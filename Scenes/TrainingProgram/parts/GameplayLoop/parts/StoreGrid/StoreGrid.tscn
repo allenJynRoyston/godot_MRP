@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=9 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/store_grid.gd" id="1_v8g2t"]
-[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_rerlm"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_2ktk6"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_ne0x7"]
 [ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="6_o6blh"]
@@ -23,7 +22,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
 script = ExtResource("1_v8g2t")
 
 [node name="ColorRectBG" type="ColorRect" parent="."]
-material = ExtResource("2_rerlm")
 layout_mode = 2
 color = Color(0.120418, 0.120418, 0.120418, 1)
 

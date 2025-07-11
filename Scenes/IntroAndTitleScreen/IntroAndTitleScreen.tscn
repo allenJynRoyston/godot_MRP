@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=28 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
 [ext_resource type="Script" uid="uid://cbyqr6lnfrevh" path="res://Scenes/IntroAndTitleScreen/camera_3d.gd" id="2_r577g"]
@@ -10,9 +10,8 @@
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_yi28m"]
-[ext_resource type="LabelSettings" uid="uid://gjdqvbphklm4" path="res://Fonts/settings/small_label.tres" id="8_6bd6i"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="9_bxtjv"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="11_6bd6i"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="9_yi28m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
@@ -370,7 +369,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "TEXT GOES HERE"
-label_settings = ExtResource("8_6bd6i")
+label_settings = ExtResource("9_yi28m")
 vertical_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Credits/PanelContainer"]
@@ -452,6 +451,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PressStart/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
 text = "Version 0.1.1B  (Internal Use Only)"
-label_settings = ExtResource("11_6bd6i")
+label_settings = ExtResource("9_yi28m")
 horizontal_alignment = 1
 vertical_alignment = 2

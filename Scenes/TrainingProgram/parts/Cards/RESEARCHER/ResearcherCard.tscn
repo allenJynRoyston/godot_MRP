@@ -11,7 +11,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6m5t"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ughr2"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_tcow0"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tcow0"]
@@ -56,7 +56,7 @@ card_size = Vector2(275, 500)
 border_color = Color(0.821379, 0.0352417, 0.41483, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_ughr2")
+texture = SubResource("ViewportTexture_tcow0")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(275, 500)

@@ -216,13 +216,16 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	match researcher_details.status:
 		RESEARCHER.STATUS.INSANE:
 			StatusPanel.title = "INSANE"
+			StatusPanel.icon = SVGS.TYPE.DANGER
 			StatusPanel.show()
 		RESEARCHER.STATUS.KIA:
 			StatusPanel.title = "KILLED IN ACTION"
+			StatusPanel.icon = SVGS.TYPE.DELETE
 			StatusPanel.use_color = COLORS.disabled_color
 			StatusPanel.show()
 		RESEARCHER.STATUS.WOUNDED:
 			StatusPanel.title = "REQUIRES MEDICAL ATTENTION"
+			StatusPanel.icon = SVGS.TYPE.DANGER
 			StatusPanel.use_color = COLORS.disabled_color
 			StatusPanel.show()
 		_:

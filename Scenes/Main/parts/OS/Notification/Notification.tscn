@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://clbcu7v8n62o8"]
+[gd_scene load_steps=9 format=3 uid="uid://clbcu7v8n62o8"]
 
 [ext_resource type="Script" uid="uid://dx0reoudccltn" path="res://Scenes/Main/parts/OS/Notification/notification.gd" id="1_1fpx8"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_yw5st"]
@@ -30,6 +30,9 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nd6wa"]
+bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="Notification" type="PanelContainer"]
 visible = false
@@ -111,4 +114,5 @@ alignment = 2
 [node name="OkayBtn" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("4_4osw4")]
 layout_mode = 2
 size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_nd6wa")
 title = "Okay"
