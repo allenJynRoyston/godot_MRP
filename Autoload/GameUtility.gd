@@ -774,10 +774,9 @@ func trigger_containment_event(scp_ref:int) -> void:
 		SUBSCRIBE.scp_data = scp_data		
 		
 		await trigger_event([EVENT_UTIL.run_event(
-			EVT.TYPE.OBJECTIVE_REWARD, 
+			EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT, 
 				{
-					"rewarded": func() -> Array:
-						return [
+					"rewarded": [
 							{
 								"room_ref": ROOM.REF.HR_DEPARTMENT, 
 								"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,

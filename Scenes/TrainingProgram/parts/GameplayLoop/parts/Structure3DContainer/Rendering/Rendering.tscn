@@ -1,10 +1,22 @@
-[gd_scene load_steps=10 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=12 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
 [ext_resource type="Material" uid="uid://cadagoadb5vbl" path="res://CanvasShader/Dissolve/Dissolve.tres" id="2_dy8ob"]
+[ext_resource type="Shader" uid="uid://cmqkpk1mn6eq7" path="res://CanvasShader/AudioShader/audio_shader_3.gdshader" id="2_uoiph"]
 [ext_resource type="PackedScene" uid="uid://m74gitiqvwla" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Overview/Overview.tscn" id="2_urwmy"]
 [ext_resource type="PackedScene" uid="uid://c83wswsjxnmva" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Generator/Generator.tscn" id="4_dy8ob"]
 [ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/Wing.tscn" id="4_ujma6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kgjio"]
+shader = ExtResource("2_uoiph")
+shader_parameter/speed = 0.2
+shader_parameter/zoom = 3.0
+shader_parameter/line_thickness = 0.05
+shader_parameter/glow_strength = 0.5
+shader_parameter/line_color = Color(0, 1, 1, 1)
+shader_parameter/alpha = 0.419
+shader_parameter/moving = true
+shader_parameter/angle = 0.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_dy8ob"]
 viewport_path = NodePath("SubViewport")
@@ -27,7 +39,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cucwc")
 
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.184417, 0.192739, 0.211887, 1)
+
 [node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_kgjio")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

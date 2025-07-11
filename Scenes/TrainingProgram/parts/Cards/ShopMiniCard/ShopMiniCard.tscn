@@ -54,6 +54,7 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_i4yqh")
 script = ExtResource("1_7gy44")
 ref = 0
+is_hoverable = false
 
 [node name="CardTextureRect" type="TextureRect" parent="."]
 layout_mode = 2

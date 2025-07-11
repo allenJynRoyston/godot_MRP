@@ -844,10 +844,10 @@ room_number = 3
 ref_index = 8
 
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
+visible = false
 
 [node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("6_iutnv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
-visible = false
 
 [node name="Frontlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
 transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, -0.42984, 26.3554, -14.8911)
@@ -873,7 +873,7 @@ size = Vector3(32.5796, 3, 39.2004)
 material = SubResource("FogMaterial_0edq6")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(0.690484, -0.714958, -0.10985, -0.430454, -0.528179, 0.73194, -0.581327, -0.458107, -0.672456, 0.107867, 14.8846, -7.84279)
+transform = Transform3D(0.603547, -0.780252, -0.164128, -0.260789, -0.387705, 0.884123, -0.753473, -0.490807, -0.437479, 0.107867, 14.8846, -8.56863)
 light_color = Color(0.996723, 1, 0.762783, 1)
 light_energy = 0.05
 light_indirect_energy = 0.0

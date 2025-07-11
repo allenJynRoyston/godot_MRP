@@ -140,8 +140,12 @@ func on_process_update(delta: float) -> void:
 		var fft = []
 		for i in range(VU_COUNT):
 			fft.append(lerp(min_values[i], max_values[i], ANIMATION_SPEED))
-
-		GBL.find_node(REFS.AUDIO_BG).update_music_shader(fft, current_audio_stream_player.get_playback_position())
+		
+		SUBSCRIBE.audio_data = {
+			"data": fft, 
+			"pos": current_audio_stream_player.get_playback_position()
+		}
+		#GBL.find_node(REFS.AUDIO_BG).update_music_shader(fft, current_audio_stream_player.get_playback_position())
 
 	#if scroll_name:
 	frame_counter += 1

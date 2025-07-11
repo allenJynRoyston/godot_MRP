@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://d35m668pfaxmj"]
+[gd_scene load_steps=11 format=3 uid="uid://d35m668pfaxmj"]
 
 [ext_resource type="Script" uid="uid://cuo7fn44s3f17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/store_grid.gd" id="1_v8g2t"]
+[ext_resource type="Shader" uid="uid://cfl1dvqw6dgoh" path="res://Shader/BGShader/bg_shader.gdshader" id="2_o6blh"]
 [ext_resource type="PackedScene" uid="uid://m5qomxk6amc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/GridSelect.tscn" id="3_2ktk6"]
 [ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="4_ne0x7"]
 [ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="6_o6blh"]
@@ -8,6 +9,19 @@
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_v07qp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d3jd6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v8g2t"]
+shader = ExtResource("2_o6blh")
+shader_parameter/speed = 0.2
+shader_parameter/zoom = 4.277
+shader_parameter/line_thickness = 0.02
+shader_parameter/glow_strength = 0.839
+shader_parameter/line_color = Color(0.898271, 0.257006, 0.192404, 1)
+shader_parameter/alpha = 1.0
+shader_parameter/moving = true
+shader_parameter/angle = 2.686
+shader_parameter/center_falloff_radius = 0.0
+shader_parameter/center_falloff_softness = 0.001
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvufl"]
 
@@ -21,9 +35,14 @@ scale = Vector2(1.08494, 0.982777)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_d3jd6")
 script = ExtResource("1_v8g2t")
 
-[node name="ColorRectBG" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.120418, 0.120418, 0.120418, 1)
+color = Color(0.05, 0.05, 0.05, 1)
+
+[node name="ColorRectBG" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_v8g2t")
+layout_mode = 2
+color = Color(0.09, 0.09, 0.09, 1)
 
 [node name="GridSelect" parent="." instance=ExtResource("3_2ktk6")]
 layout_mode = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://m5qomxk6amc4"]
+[gd_scene load_steps=11 format=3 uid="uid://m5qomxk6amc4"]
 
 [ext_resource type="Script" uid="uid://b2dei8vuk454c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/GridSelect/grid_select.gd" id="1_7gsg3"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_kdf3w"]
@@ -10,7 +10,12 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2y0xg"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdf3w"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0a1v0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kdf3w"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="GridSelect" type="PanelContainer"]
 anchors_preset = 15
@@ -49,7 +54,7 @@ layout_mode = 2
 
 [node name="Tabs" type="HBoxContainer" parent="TabControl/PanelContainer/MarginContainer/Categories"]
 layout_mode = 2
-theme_override_constants/separation = 50
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="HeaderControl" type="Control" parent="."]
@@ -61,7 +66,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 58.0
 grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_2y0xg")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_kdf3w")
 
 [node name="MarginContainer" type="MarginContainer" parent="HeaderControl/PanelContainer"]
 layout_mode = 2
@@ -133,12 +138,18 @@ icon = 28
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(25, 25)
 
-[node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kdf3w")
 
-[node name="GridContainer" type="GridContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="GridContainer" type="GridContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

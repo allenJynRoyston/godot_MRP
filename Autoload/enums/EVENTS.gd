@@ -11,9 +11,11 @@ enum TYPE {
 	SCP_BREACH_EVENT_2,
 	SCP_CONTAINED_EVENT,
 	SCP_NO_STAFF_EVENT,
+	SCP_CONTAINMENT_AWARD_EVENT,
 	# ------------
 	
 	# ------------
+	
 	OBJECTIVE_REWARD,
 	# ------------
 

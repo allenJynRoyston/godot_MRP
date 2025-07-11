@@ -145,12 +145,15 @@ func start(new_differential:Dictionary) -> void:
 	
 	differential = new_differential
 	
+	
 	var index:int = 0
 	for ref in resources_data:
 		var ResourceNode:VBoxContainer = ResourceHBox.get_child(index)
 		var CostPanel:Control = ResourceNode.get_child(0)
 		var DiffLabel:Label = ResourceNode.get_child(1)		
 		var diff_amount:int = differential[ref] if differential.has(ref) else 0
+		
+		DiffLabel.text = "%s %s" % ["+" if diff_amount >= 0 else "-", absi(diff_amount)]
 		CostPanel.modulate = Color(1, 1, 1, 1 if diff_amount != 0 else 0.5)
 		DiffLabel.modulate = Color(1, 1, 1, 1 if diff_amount != 0 else 0.5)
 		CostPanel.update_colors()

@@ -12,7 +12,7 @@ extends PanelContainer
 @onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 @onready var LessBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/LessBtn
 @onready var MoreBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MoreBtn
-@onready var GridContent:GridContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/GridContainer
+@onready var GridContent:GridContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/GridContainer
 
 @onready var BtnControls:Control = $BtnControls
 
@@ -73,6 +73,8 @@ var onValidCheck:Callable = func(_node:Control) -> bool:
 	return true
 	
 
+var SelectedNode:Control
+
 signal mode_updated
 
 # --------------------------------------------------------------------------------------------------			
@@ -81,6 +83,14 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	BtnControls.onDirectional = on_key_press
 	BtnControls.freeze_and_disable(true)
+	#BtnControls.onUpdate = func(node:Control) -> void:
+		#SelectedNode = node
+		#match current_mode:
+			## -------------------
+			#MODE.TAB_SELECT:		
+				#tab_index = node.index
+			#MODE.CONTENT_SELECT:
+				#grid_index = node.index
 	
 	await U.tick()
 	control_pos[HeaderPanel]  = {
@@ -147,6 +157,7 @@ func on_tabs_update() -> void:
 	for index in tabs.size():
 		var tab:Dictionary = tabs[index]
 		var tab_node:Control = TabBtnPreload.instantiate()
+		tab_node.index = index
 		tab_node.title = tab.title
 		Tabs.add_child(tab_node)
 		page_tracker[index] = 0
@@ -157,6 +168,7 @@ func on_tab_index_update() -> void:
 	
 	for index in Tabs.get_child_count():
 		var tab:Control = Tabs.get_child(index)
+		#tab.is_selected = tab == SelectedNode
 		# ---------------------------------------
 		tab.onFocus = func(node:Control) -> void:
 			if current_mode != MODE.TAB_SELECT:return

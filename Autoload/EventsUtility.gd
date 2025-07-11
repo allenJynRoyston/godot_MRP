@@ -747,6 +747,91 @@ var OBJECTIVE_REWARD:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var SCP_CONTAINMENT_AWARD_EVENT:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+		
+		var text:Array = []
+		
+		# -------------  ORIGINAL, NO CLONES 
+		text = [
+			"Well done.  Please select a reward."
+		]
+		
+		const awarded_money:int = 100
+		const awarded_science:int = 50
+		const awarded_material:int = 25
+		
+
+		# ----------------------------------------- DEFAULT REWARDS
+		#  if objective has rewards, overwrite and add it here
+		var options:Array = [
+			{
+				"title": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY).name,
+				"val": {
+					"func": func() -> void:
+						await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: awarded_money} ),
+				},
+				"hint_description": "Instantly gain %s %s." % [awarded_money, RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY).name],
+			},
+			{
+				"title":  RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE).name,
+				"val": {
+					"func": func() -> void:
+						await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: awarded_science} ),
+				},
+				"hint_description": "Instantly gain %s %s." % [awarded_science, RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE).name],
+			},
+			{
+				"title":  RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL).name,
+				"val": {
+					"func": func() -> void:
+						await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MATERIAL: awarded_material} ),
+				},
+				"hint_description": "Instantly gain %s %s." % [awarded_material, RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL).name],
+			}
+		]  if props.rewarded.is_empty() else props.rewarded
+		
+		# map onSelected func to options
+		options = options.map(func(x): 
+			x.onSelected = onSelected
+			return x
+		)		
+
+		return [
+			# ---------
+			func() -> Dictionary:
+				
+				return {
+					"title": "SCP_CONTAINMENT_AWARD_EVENT EVENT",
+					"img_src": "res://Media/images/Defaults/05-council.png",
+					"text": text,
+					"options": options
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+				
+				if option_selected.selected.has("response"):
+					return {
+						"text": [
+							option_selected.selected.response
+						]
+					}
+					
+				return {
+					"end": true
+				}
+		],
+}
+# ------------------------------------------------------------------------
+
 
 var reference_data:Dictionary = {
 	# ------------------
@@ -758,6 +843,7 @@ var reference_data:Dictionary = {
 	EVT.TYPE.SCP_BREACH_EVENT_1: SCP_BREACH_EVENT_1,
 	EVT.TYPE.SCP_CONTAINED_EVENT: SCP_CONTAINED_EVENT,
 	EVT.TYPE.SCP_NO_STAFF_EVENT: SCP_NO_STAFF_EVENT,
+	EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT: SCP_CONTAINMENT_AWARD_EVENT,
 	
 	# ------------------
 	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,

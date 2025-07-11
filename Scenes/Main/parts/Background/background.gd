@@ -4,12 +4,15 @@ extends PanelContainer
 @onready var FinalOutput:TextureRect = $FinalOutput
 
 func _init() -> void:
-	GBL.register_node(REFS.AUDIO_BG, self)	
+	SUBSCRIBE.subscribe_to_audio_data(self)
 	
 func _exit_tree() -> void:
-	GBL.unregister_node(REFS.AUDIO_BG)	
+	SUBSCRIBE.unsubscribe_to_audio_data(self)
 
-func update_music_shader(new_audio_data:Array, music_position:float) -> void:
+func on_audio_data_update(new_val:Dictionary) -> void:
+	if new_val.is_empty():return
+	var new_audio_data:Array = new_val.data
+	var music_position:float = new_val.pos
 	var shader_material:ShaderMaterial = MusicShaderTexture.material.duplicate()	
 	shader_material.set_shader_parameter("audio_data", new_audio_data)
 	shader_material.set_shader_parameter("time", music_position)

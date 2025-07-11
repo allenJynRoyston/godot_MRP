@@ -491,7 +491,25 @@ func unsubscribe_to_gameplay_conditionals(node:Node) -> void:
 	gameplay_conditionals_subscriptions.erase(node)
 # ------------------------------------------------------------	
 
+# ------------------------------------------------------------	
+var audio_data_subscriptions:Array = []
 
+var audio_data:Dictionary = {} :
+	set(val):
+		audio_data = val 
+		for node in audio_data_subscriptions:
+			if "on_audio_data_update" in node:
+				node.on_audio_data_update.call( audio_data )
+				
+func subscribe_to_audio_data(node:Node) -> void:
+	if node not in audio_data_subscriptions:
+		audio_data_subscriptions.push_back(node)
+		if "on_audio_data_update" in node:
+			node.on_audio_data_update.call( audio_data )
+			
+func unsubscribe_to_audio_data(node:Node) -> void:
+	audio_data_subscriptions.erase(node)				
+# ------------------------------------------------------------	
 # ------------------------------------------------------------	
 var hints_unlocked_subscriptions:Array = []
 

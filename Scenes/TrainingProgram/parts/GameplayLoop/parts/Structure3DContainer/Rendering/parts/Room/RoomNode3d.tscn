@@ -123,6 +123,7 @@ skeleton = NodePath("../RoomNumberLabel")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="RoomNode/MainMesh/DoorMesh/OverheadLight"]
 transform = Transform3D(0.987838, 0.0382481, 0.151004, -0.155769, 0.24254, 0.957555, -2.6867e-10, -0.96943, 0.245548, 0.111611, 0.948877, 0.309094)
+visible = false
 light_color = Color(1, 1, 0.803922, 1)
 light_energy = 0.4
 light_indirect_energy = 0.0

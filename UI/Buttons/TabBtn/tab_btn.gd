@@ -2,8 +2,8 @@
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var IconBtn:Control = $VBoxContainer/SVGIcon
-@onready var TitleLabel:Label = $VBoxContainer/TitleLabel
+@onready var IconBtn:Control = $MarginContainer/VBoxContainer/SVGIcon
+@onready var TitleLabel:Label = $MarginContainer/VBoxContainer/TitleLabel
 
 @export var is_selected:bool = false : 
 	set(val):
@@ -34,7 +34,7 @@ func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	IconBtn.icon = SVGS.TYPE.UP_ARROW
 	IconBtn.show() if is_selected else IconBtn.hide()
-	modulate.a = 1 if is_selected else 0.5
+	modulate.a = 1 if is_selected else 0.7
 
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
