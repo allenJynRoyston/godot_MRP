@@ -1,7 +1,7 @@
 @tool
 extends CardDrawerClass
 
-@onready var List:VBoxContainer = $MarginContainer/MarginContainer/List
+@onready var List:HBoxContainer = $MarginContainer/MarginContainer/List
 
 const RoomResearchersBtnPreload:PackedScene = preload("res://UI/Buttons/RoomResearcherBtn/RoomResearcherBtn.tscn")
 
@@ -31,6 +31,7 @@ func on_required_staffing_update() -> void:
 	for index in range(0, required_staffing.size()):
 		var new_btn:Control = RoomResearchersBtnPreload.instantiate()
 		new_btn.index = index
+		new_btn.preview_mode = preview_mode
 		new_btn.use_location = use_location
 		new_btn.room_details = room_details
 		#new_btn.pairs_with = pairs_with

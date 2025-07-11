@@ -14,8 +14,9 @@ enum TRACK {
 	GAME_TRACK_ONE, 
 	GAME_TRACK_TWO,
 	# --------------------
-	INITIAL_CONTAINMENT, 
-	CONTAINMENT_BREACH 
+	SCP_INITIAL_CONTAINMENT, 
+	SCP_CONTAINMENT_BREACH,
+	SCP_FINAL_CONTAINMENT,
 }
 
 
@@ -113,7 +114,7 @@ var track_list:Array = [
 		"details": {
 			"name": "INITIAL_CONTAINMENT",
 			"author": "INITIAL_CONTAINMENT",
-			"ref": TRACK.INITIAL_CONTAINMENT
+			"ref": TRACK.SCP_INITIAL_CONTAINMENT
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
@@ -123,11 +124,21 @@ var track_list:Array = [
 		"details": {
 			"name": "CONTAINMENT_BREACH",
 			"author": "CONTAINMENT_BREACH",
-			"ref": TRACK.CONTAINMENT_BREACH
+			"ref": TRACK.SCP_CONTAINMENT_BREACH
 		},
 		"unlocked": func(data:Dictionary) -> bool:
 			return true,
 		"file": preload("res://Audio/mp3/Horror Night - Chiptune.mp3")
 	},	
+	{
+		"details": {
+			"name": "SCP_FINAL_CONTAINMENT",
+			"author": "SCP_FINAL_CONTAINMENT",
+			"ref": TRACK.SCP_FINAL_CONTAINMENT
+		},
+		"unlocked": func(data:Dictionary) -> bool:
+			return true,
+		"file": preload("res://Audio/mp3/Cant Catch Me - That Andy Guy - SoundLoadMate.com.mp3")
+	},		
 	
 ]

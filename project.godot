@@ -69,6 +69,10 @@ window/stretch/scale_mode="integer"
 window/dpi/allow_hidpi=false
 window/main_scene="res://Scenes/Computer/Computer.tscn"
 
+[editor]
+
+movie_writer/movie_file="/Users/jyn/Desktop/gameplay_capture.avi"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg", "res://addons/script-ide/plugin.cfg")

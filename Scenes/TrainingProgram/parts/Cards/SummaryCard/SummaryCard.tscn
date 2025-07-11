@@ -3,31 +3,20 @@
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_s7sdo"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_djb7u"]
-[ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="4_ihy8r"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_ihy8r"]
 [ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="5_djb7u"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_4uruu"]
 [ext_resource type="PackedScene" uid="uid://dy0x4w2beaa05" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResearchers.tscn" id="6_ihy8r"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_wqrfb"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_ihy8r"]
 [ext_resource type="PackedScene" uid="uid://bwdoedxrhp17b" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerScp.tscn" id="7_wi2bx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wi2bx"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ihy8r"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_wi2bx"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqrfb"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uh585"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0krab"]
 bg_color = Color(0, 0, 0, 0.509804)
@@ -68,80 +57,120 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 auto_color_panels = false
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_ihy8r")
+texture = SubResource("ViewportTexture_wi2bx")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(275, 70)
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(275, 70)
-offset_bottom = 313.0
+offset_bottom = 311.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxEmpty_wqrfb")
 
-[node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
-theme_override_constants/separation = 15
+[node name="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer" index="0"]
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
-[node name="RoomDetails" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
-modulate = Color(1, 1, 1, 0.5)
-custom_minimum_size = Vector2(0, 40)
+[node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
+theme_override_constants/separation = 8
+
+[node name="RoomDetails" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
 layout_mode = 2
+theme_override_constants/separation = -5
 
 [node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 0
 is_small = true
+center_text = true
 title = "NAME"
 border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="CardDrawerLevel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
-visible = false
-custom_minimum_size = Vector2(0, 0)
+[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("6_ihy8r")]
 layout_mode = 2
-size_flags_horizontal = 1
-size_flags_vertical = 0
-content = "0"
-title = "LVL"
-border_color = Color(1, 0.74902, 0.2, 1)
+title = ""
+is_left_side = true
 
-[node name="ListContainers" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = -3
 
-[node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("4_ihy8r")]
-visible = false
-custom_minimum_size = Vector2(0, 0)
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer"]
+layout_mode = 2
+text = "PROGRAMS"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer" instance=ExtResource("5_djb7u")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_uh585")
 title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("6_ihy8r")]
+[node name="PassiveContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
-is_left_side = true
+theme_override_constants/separation = -3
 
-[node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("5_djb7u")]
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer"]
 layout_mode = 2
-size_flags_vertical = 3
-title = "PROGRAMS"
-is_left_side = true
-border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="CardDrawerPassiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("5_djb7u")]
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer/HBoxContainer"]
+layout_mode = 2
+text = "MODULES"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="CardDrawerPassiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer" instance=ExtResource("5_djb7u")]
 layout_mode = 2
 size_flags_vertical = 3
 ability_type = 1
-title = "MODULES"
+title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="CardDrawerScp" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers" instance=ExtResource("7_wi2bx")]
+[node name="ScpContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
 layout_mode = 2
-title = "CONTAINMENT"
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer/HBoxContainer"]
+layout_mode = 2
+text = "CONTAINMENT"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="CardDrawerScp" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer" instance=ExtResource("7_wi2bx")]
+layout_mode = 2
+title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 

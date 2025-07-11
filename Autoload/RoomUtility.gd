@@ -14,6 +14,10 @@ var ROOM_TEMPLATE:Dictionary = {
 
 	# ------------------------------------------
 	"can_contain": false,
+	"containment_properties": [],
+	# ------------------------------------------
+	
+	# ------------------------------------------
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": true,	
@@ -29,6 +33,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------	
 	
 	# ------------------------------------------
+	
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
 	"required_support": [
 		# RESOURCE.PERSONNEL.STAFF
@@ -271,10 +276,10 @@ func owns_and_is_active(ref:int) -> bool:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func get_category(category:ROOM.CATEGORY, unlock_level:int, start_at:int, limit:int) -> Dictionary:
+func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
 	var filter:Callable = func(list:Array) -> Array:
 		return list.filter(func(i): 
-			return (category in i.details.categories) and (unlock_level >= i.details.unlock_level)
+			return (category in i.details.categories)# and (unlock_level >= i.details.unlock_level)
 		)
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------

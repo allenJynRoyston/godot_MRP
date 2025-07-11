@@ -18,10 +18,20 @@ extends CardDrawerClass
 		content = val 
 		on_content_update()
 
+@export var center_text:bool = true : 
+	set(val):
+		center_text = val
+		on_center_text_update()
+
 func _ready() -> void:
 	super._ready()
 	on_content_update()
 	update_label_settings()
+	on_center_text_update()
+
+func on_center_text_update() -> void:
+	if !is_node_ready():return
+	ContentLabel.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if center_text else HORIZONTAL_ALIGNMENT_LEFT
 
 func on_content_update() -> void:
 	if !is_node_ready():return

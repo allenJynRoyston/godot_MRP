@@ -6,20 +6,18 @@ extends MouseInteractions
 @onready var InnerCardBody:Control = $CardBody/SubViewport/Control/CardBody
 
 # status panel
-@onready var StatusPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel
-@onready var StatusIcon:BtnBase = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel/PanelContainer/VBoxContainer/StatusIcon
-@onready var StatusLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage/StatusPanel/PanelContainer/VBoxContainer/HBoxContainer/StatusLabel
+@onready var StatusPanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailContainer/FrontImage/Status
 
 # FRONT
-@onready var FrontImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FrontImage
-@onready var FrontName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontName
-@onready var FrontLevel:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/FrontLevel
+@onready var FrontImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailContainer/FrontImage
+@onready var FrontName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailContainer/HBoxContainer/FrontName
+@onready var FrontLevel:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailContainer/HBoxContainer/FrontLevel
 
-@onready var FrontTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackTrait
-@onready var FrontMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/BackMood
+@onready var FrontTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonalityContainer/HBoxContainer3/FrontTrait
+@onready var FrontMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonalityContainer/HBoxContainer3/FrontMood
 
-@onready var FrontHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Health
-@onready var FrontSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/Sanity
+@onready var FrontHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VitalsContainer/HBoxContainer2/FrontHealth
+@onready var FrontSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VitalsContainer/HBoxContainer2/FrontSanity
 
 # BACK
 @onready var BackName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackName
@@ -201,7 +199,7 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	for node in [FrontImage, BackImage]:
 		node.img_src = researcher_details.img_src
 		node.use_static = false
-		node.title = researcher_details.name
+		node.title = ""
 		
 	FrontName.content = researcher_details.name
 	FrontLevel.content = str(researcher_details.level)
@@ -217,23 +215,25 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	
 	match researcher_details.status:
 		RESEARCHER.STATUS.INSANE:
-			StatusLabel.text = "INSANE"
+			StatusPanel.title = "INSANE"
 			StatusPanel.show()
 		RESEARCHER.STATUS.KIA:
-			StatusLabel.text = "KILLED IN ACTION"
+			StatusPanel.title = "KILLED IN ACTION"
+			StatusPanel.use_color = COLORS.disabled_color
 			StatusPanel.show()
 		RESEARCHER.STATUS.WOUNDED:
-			StatusLabel.text = "REQUIRES MEDICAL ATTENTION"
+			StatusPanel.title = "REQUIRES MEDICAL ATTENTION"
+			StatusPanel.use_color = COLORS.disabled_color
 			StatusPanel.show()
 		_:
 			StatusPanel.hide()
 	
-	if !researcher_details.props.assigned_to_room.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
-		if extract_data.is_empty():return
-		##AssignedTo.content = extract_data.room.details.name
-	#else:
-		#AssignedTo.content = "None"
+	#if !researcher_details.props.assigned_to_room.is_empty():
+		#var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
+		#if extract_data.is_empty():return
+		###AssignedTo.content = extract_data.room.details.name
+	##else:
+		##AssignedTo.content = "None"
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

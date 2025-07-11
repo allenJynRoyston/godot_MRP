@@ -339,14 +339,14 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	
 	onDirectional.call(key)
 	
-	if directional_pref == "LR":
+	if directional_pref == "LR" or directional_pref == "ALL":
 		match key:
 			"A":
 				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1, true)
 			"D":
 				item_index = U.min_max(item_index + 1, 0, itemlist.size() - 1, true)
 			
-	if directional_pref == "UD":
+	if directional_pref == "UD" or directional_pref == "ALL":
 		match key:
 			"W":
 				item_index = U.min_max(item_index - 1, 0, itemlist.size() - 1, true)

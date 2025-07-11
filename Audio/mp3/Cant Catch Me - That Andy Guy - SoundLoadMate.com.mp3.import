@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dtb5irde6fvi2"
+path="res://.godot/imported/Cant Catch Me - That Andy Guy - SoundLoadMate.com.mp3-c010f8db036a8dc4ac088881e5e219a7.mp3str"
+
+[deps]
+
+source_file="res://Audio/mp3/Cant Catch Me - That Andy Guy - SoundLoadMate.com.mp3"
+dest_files=["res://.godot/imported/Cant Catch Me - That Andy Guy - SoundLoadMate.com.mp3-c010f8db036a8dc4ac088881e5e219a7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

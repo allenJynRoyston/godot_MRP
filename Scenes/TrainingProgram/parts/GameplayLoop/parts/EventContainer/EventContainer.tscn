@@ -30,7 +30,7 @@ viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/SubViewpor
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oju27"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dpn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wycer"]
@@ -190,6 +190,7 @@ layout_mode = 2
 size_flags_vertical = 5
 text = "something goes here"
 label_settings = ExtResource("9_n5dpn")
+vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
 
@@ -198,6 +199,7 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
 label_settings = ExtResource("9_n5dpn")
+vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
 
@@ -212,7 +214,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_oju27")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n5dpn")
 
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

@@ -17,6 +17,7 @@ extends BtnBase
 		panel_color = val
 		on_panel_color_update()		
 
+var preview_mode:bool = false
 var use_location:Dictionary = {}
 var room_details:Dictionary = {}
 
@@ -34,7 +35,7 @@ var is_selected:bool = false :
 
 var is_available:bool = true
 
-const LabelSettingsPreload:LabelSettings = preload("res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres")
+const LabelSettingsPreload:LabelSettings = preload("res://Fonts/font_1_black.tres")
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -86,11 +87,8 @@ func on_researcher_update() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
-	var use_color:Color = COLORS.primary_color
-	use_color.a = 1 if is_selected else 0.7		
-	new_stylebox.bg_color = use_color
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	U.debounce(str(self.name, "_update_all"), update_all)
+
 
 func update_all() -> void:
 	update_font_color()
@@ -99,21 +97,38 @@ func update_all() -> void:
 
 func update_font_color() -> void:
 	if !is_node_ready():return
-	#var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
-	#var new_color:Color = Color.WHITE
-	#
-	#if is_available:
-		#new_color = Color(0.561, 1.0, 0.0)
-		#
-	#label_duplicate.font_color = new_color
-	#for node in [NameLabel]:
-		#node.label_settings = label_duplicate	
-		#
-	#IconBtn.static_color = new_color
-	#
+	var label_duplicate:LabelSettings = LabelSettingsPreload.duplicate()
+	var use_color:Color = COLORS.primary_black 
+	var altered:bool = false
 	
+	if !preview_mode:
+		if researcher.is_empty():
+			use_color = COLORS.disabled_color
+			altered = true
+	
+	use_color.a = 1 if is_selected else 0.7
+	
+				
+	label_duplicate.font_color = use_color
+	for node in [NameLabel]:
+		node.label_settings = label_duplicate	
+	IconBtn.icon_color = use_color
+
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
+	var new_stylebox:StyleBoxFlat = RootPanel.get_theme_stylebox('panel').duplicate()	
+	var use_color:Color = COLORS.primary_color 
+	var altered:bool = false
+
+	if !preview_mode:
+		if researcher.is_empty():
+			use_color = COLORS.primary_black
+			altered = true
+		
+	use_color.a = 1 if is_selected else 0.7		
+		
+	new_stylebox.bg_color = use_color
+	RootPanel.add_theme_stylebox_override("panel", new_stylebox)	
 
 	
 func update_text() -> void:
@@ -131,7 +146,7 @@ func update_text() -> void:
 		hint_description = "This room requires a %s to be activated." % required_slot.name
 		return
 	
-	CostAndCooldown.hide()
+	CostAndCooldown.show()
 	IconBtn.icon = SVGS.TYPE.ASSIGN
 	LvlLabel.text = str(researcher.level)
 	LvlLabel.show()

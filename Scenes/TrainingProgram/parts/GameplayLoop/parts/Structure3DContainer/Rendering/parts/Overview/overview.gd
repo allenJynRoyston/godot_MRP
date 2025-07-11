@@ -17,10 +17,12 @@ var current_location:Dictionary = {}
 
 # ------------------------------------------------
 func _init() -> void:
+	GBL.subscribe_to_process(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	
 func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
@@ -74,5 +76,11 @@ func update_mesh() -> void:
 					material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
 					mesh_duplicate.material = material_copy		
 			child.mesh = mesh_duplicate	
+# ------------------------------------------------
 
+# ------------------------------------------------
+func on_process_update(delta:float) -> void:
+	if !is_node_ready():return
+	
+	FloorInstanceContainer.rotate_y(0.005)
 # ------------------------------------------------

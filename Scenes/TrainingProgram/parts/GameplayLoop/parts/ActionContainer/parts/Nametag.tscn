@@ -1,12 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://ckywdp1o7nc2i"]
+[gd_scene load_steps=8 format=3 uid="uid://ckywdp1o7nc2i"]
 
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_rcgg0"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="6_rodcg"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_6ohcx"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_o1lms"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ohcx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1lms"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_o1lms"]
+font = ExtResource("3_6ohcx")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.623529)
 
 [node name="Nametag" type="PanelContainer"]
 offset_right = 40.0
@@ -81,9 +88,19 @@ layout_mode = 2
 icon = 33
 is_hoverable = false
 
-[node name="NameLabel" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = -10
+
+[node name="SVGIcon" parent="VBoxContainer/HBoxContainer" instance=ExtResource("3_o1lms")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon_color = Color(1, 0, 0, 1)
+icon_size = Vector2(40, 40)
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 z_index = 1
 layout_mode = 2
 text = " Nametag"
-label_settings = ExtResource("6_rodcg")
+label_settings = SubResource("LabelSettings_o1lms")
 horizontal_alignment = 1

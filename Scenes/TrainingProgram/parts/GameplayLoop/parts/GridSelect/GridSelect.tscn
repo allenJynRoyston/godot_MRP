@@ -162,3 +162,5 @@ horizontal_alignment = 1
 
 [node name="BtnControls" parent="." instance=ExtResource("7_vcb3m")]
 layout_mode = 2
+c_btn_title = "DETAILS"
+c_btn_icon = 7

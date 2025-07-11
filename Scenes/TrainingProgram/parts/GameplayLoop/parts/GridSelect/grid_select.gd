@@ -162,7 +162,6 @@ func on_tab_index_update() -> void:
 			if current_mode != MODE.TAB_SELECT:return
 			tab.is_selected = true
 			tab_index = index
-			update_grid_content(index)
 		# ---------------------------------------
 		tab.onBlur = func(node:Control) -> void:
 			if current_mode != MODE.TAB_SELECT:return
@@ -230,6 +229,8 @@ func update_grid_content(index:int = tab_index) -> void:
 	var grid_size:int = GridContent.get_child_count() 
 	var start_at:int = page_tracker[index] * grid_size
 	var end_at:int = start_at + grid_size
+	
+	
 	var query:Dictionary = tabs[index].onSelect.call(index, start_at, end_at)
 		
 	if query.is_empty():
@@ -237,20 +238,7 @@ func update_grid_content(index:int = tab_index) -> void:
 		return
 	
 	BtnControls.disable_active_btn = query.list.size() == 0
-	# reset show/hide more buttons	
 	has_more = query.has_more
-	#MoreBtn.is_hoverable = has_more
-	
-	#MoreBtn.onClick = func() -> void:
-		#page_tracker[index] = page_tracker[index] + 1
-		#update_grid_content()
-	#
-	#LessBtn.onClick = func() -> void:
-		#if page_tracker[index] > 0:
-			#page_tracker[index] = page_tracker[index] - 1
-			#update_grid_content()	
-			#
-	#LessBtn.is_hoverable = page_tracker[index] > 0
 
 	MoreBtn.modulate = Color(1, 1, 1, 1 if has_more else 0) 			
 	LessBtn.modulate = Color(1, 1, 1, 0 if page_tracker[index] == 0 else 1) 
@@ -392,7 +380,6 @@ func on_key_press(key:String) -> void:
 							grid_index = grid_index - 1
 					elif page_tracker[tab_index] > 0:
 						page_tracker[tab_index] = page_tracker[tab_index] - 1
-						update_grid_content()
 						find_nearest_valid(grid_index, true)
 
 		"D":
@@ -403,7 +390,6 @@ func on_key_press(key:String) -> void:
 							grid_index = grid_index + 1
 					elif has_more:
 						page_tracker[tab_index] = page_tracker[tab_index] + 1
-						update_grid_content()
 						find_nearest_valid(grid_index, false)
 		
 # --------------------------------------------------------------------------------------------------

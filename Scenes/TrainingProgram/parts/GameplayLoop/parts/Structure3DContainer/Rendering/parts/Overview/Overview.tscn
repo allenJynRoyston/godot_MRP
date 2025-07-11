@@ -47,15 +47,15 @@ environment = SubResource("Environment_kdkyo")
 
 [node name="Node3D" type="Node3D" parent="SubViewport"]
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Node3D"]
+transform = Transform3D(-0.202309, 0.693053, -0.691917, -1.49012e-08, 0.706527, 0.707686, 0.979322, 0.143171, -0.142937, 0, 8.3956, 0)
+shadow_enabled = true
+
 [node name="Elevator" type="MeshInstance3D" parent="SubViewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
 layers = 1023
 mesh = SubResource("CylinderMesh_45i8x")
 skeleton = NodePath("../../../../..")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Node3D/Elevator"]
-transform = Transform3D(-0.202309, 0.693053, -0.691917, -1.49012e-08, 0.706527, 0.707687, 0.979322, 0.143171, -0.142936, 0, 36.5862, 0)
-shadow_enabled = true
 
 [node name="FloorInstance" type="Node3D" parent="SubViewport/Node3D"]
 

@@ -144,6 +144,7 @@ var initial_values:Dictionary = {
 					RESEARCHER.SPECIALIZATION.SECURITY: 9,
 					RESEARCHER.SPECIALIZATION.DCLASS: 9,
 				},
+				"room_unlock_val": 0,
 				"buffs": [],
 				"debuffs": [],
 				"onsite_nuke": {
@@ -554,7 +555,6 @@ func get_floor_default(array_size:int) -> Dictionary:
 		"buffs": [],
 		"debuffs": [],
 		# --------------
-		"room_unlock_val": 0,
 		"in_lockdown": false,
 		"is_powered": false,
 		"array_size": array_size,
@@ -723,9 +723,11 @@ func next_day() -> void:
 			current_phase = PHASE.RESOURCE_COLLECTION
 			await phase_cycle_complete
 		return
-		
+
+	GAME_UTIL.disable_taskbar(true)
 	current_phase = PHASE.RESOURCE_COLLECTION
 	await phase_cycle_complete		
+	GAME_UTIL.disable_taskbar(false)	
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -927,33 +929,43 @@ func on_current_phase_update() -> void:
 			await U.set_timeout(0.5)
 			
 			# CHECK FOR SCP BREACH EVENTS
-			var refs:Array = []
-			for key in scp_data:
-				var data:Dictionary = scp_data[key]
-				if progress_data.day >= data.next_breach_at:
-					refs.push_back(key)
+			var event_breach_refs:Array = []
+			var event_final_containment:Array = []
+			var previous_track:MUSIC.TRACK = SUBSCRIBE.music_data.selected
+
+			for ref in scp_data:
+				var data:Dictionary = scp_data[ref]
+				var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+				var breach_event_chance:int = SCP_UTIL.get_breach_event_chance(ref, data.location)	
+				var random_int:int = U.generate_rand(0, 100)
+				var is_contained:bool = data.is_contained
+				var contained_for_total:int = data.contained_on_day + progress_data.day
+				var contained_on_day:int = scp_details.days_until_contained + data.contained_on_day
+				
+				
+				if !is_contained:
+					if (progress_data.day >= contained_on_day):
+						event_final_containment.push_back(ref)
+					
+					# check and add event breachs
+					if (random_int < breach_event_chance) and (ref not in event_final_containment):
+						event_breach_refs.push_back(ref)
+				
 			
 			# start breach splash
-			if refs.size() > 0:
-				# hide phase 
-				PhaseAnnouncement.end()				
-				
-				var previous_track:MUSIC.TRACK = SUBSCRIBE.music_data.selected
-				
-				# open music player, no music selected
-				SUBSCRIBE.music_data = {
-					"selected": MUSIC.TRACK.CONTAINMENT_BREACH,
-				}
-				
-				
+			if event_breach_refs.size() > 0:
+				PhaseAnnouncement.end()
 				# then do them...
-				for index in refs.size():
-					await GAME_UTIL.trigger_breach_event(refs[index])
-					if index == refs.size() - 1:					
-						# open music player, no music selected
-						SUBSCRIBE.music_data = {
-							"selected": previous_track,
-						}	
+				for index in event_breach_refs.size():
+					await GAME_UTIL.trigger_breach_event(event_breach_refs[index])
+			
+			
+			# start breach splash
+			if event_final_containment.size() > 0:
+				PhaseAnnouncement.end()				
+				# then do them...
+				for index in event_final_containment.size():
+					await GAME_UTIL.trigger_containment_event(event_final_containment[index])						
 			
 			# CHECK FOR TIMELINE EVENTS			
 			#var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
@@ -961,7 +973,12 @@ func on_current_phase_update() -> void:
 				#for item in timeline_filter:
 					#if "event" in item and !item.event.is_empty():
 						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
-
+						# open music player, no music selected
+						
+			SUBSCRIBE.music_data = {
+				"selected": previous_track,
+			}
+			
 			# restore hud
 			current_phase = PHASE.CONCLUDE
 		# ------------------------

@@ -6,7 +6,10 @@ extends BtnBase
 const TimlineListItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/TimelineListItem.tscn")
 
 var suppress_click:bool = false 
+
 var progress_data:Dictionary = {}
+var gameplay_conditionals:Dictionary = {}
+
 var alpha_map:Dictionary = {}
 var forecast_amount:int = 7 : 
 	set(val):
@@ -26,12 +29,15 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_timeline_array(self)
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_suppress_click(self)
+	SUBSCRIBE.subscribe_to_gameplay_conditionals(self)
 
 func _exit_tree() -> void:
 	super._exit_tree()
 	SUBSCRIBE.unsubscribe_to_timeline_array(self)
 	SUBSCRIBE.unsubscribe_to_suppress_click(self)
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
+	SUBSCRIBE.unsubscribe_to_gameplay_conditionals(self)
+	
 # --------------------------------------------------
 
 # --------------------------------------------------
@@ -63,6 +69,15 @@ func on_timeline_array_update(new_val:Array) -> void:
 func get_items() -> Array:
 	return ListContainer.get_children()
 # --------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------	
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	gameplay_conditionals = new_val
+	if !is_node_ready() or new_val.is_empty():return
+	var make_visible:bool = new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE].val		
+	ListContainer.show() if make_visible else ListContainer.hide()
+# --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------
 func on_focus(state:bool = is_focused) -> void:

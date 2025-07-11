@@ -1,19 +1,37 @@
-[gd_scene load_steps=7 format=3 uid="uid://bw15rh8totdjb"]
+[gd_scene load_steps=8 format=3 uid="uid://bw15rh8totdjb"]
 
 [ext_resource type="Script" uid="uid://v4is71ut1uax" path="res://UI/Buttons/RoomResearcherBtn/room_researcher_btn.gd" id="1_q5tva"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_s5kfy"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_eolxu"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_2wbbd"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_s5kfy"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_2wbbd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5tva"]
+bg_color = Color(0.05, 0.05, 0.05, 0.7)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ak8pd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_s5kfy"]
+font = ExtResource("3_eolxu")
+font_color = Color(1, 0, 0, 0.7)
+outline_size = 2
+outline_color = Color(0.185383, 0.185383, 0.185383, 0.498039)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="RoomResearcherBtn" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 194.0
 offset_bottom = 29.0
+size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("1_s5kfy")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q5tva")
 script = ExtResource("1_q5tva")
 hint_icon = 14
 hint_title = "ASSIGN RESEARCHER"
@@ -21,39 +39,37 @@ hint_description = "Assigning a researcher to this room will increase its level.
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
 [node name="CostAndCooldown" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ak8pd")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown"]
 layout_mode = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_right = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_right = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = -5
 alignment = 1
 
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("4_s5kfy")]
-custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 14
-icon_size = Vector2(15, 15)
+size_flags_horizontal = 6
+icon = 25
+icon_color = Color(1, 0, 0, 0.7)
 
 [node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ak8pd")
@@ -65,6 +81,7 @@ theme_override_constants/margin_right = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Name/MarginContainer"]
 layout_mode = 2
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -75,9 +92,10 @@ alignment = 1
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
+alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(50, 25)
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("4_2wbbd")
@@ -85,9 +103,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "ASSIGN"
-label_settings = ExtResource("5_2wbbd")
+label_settings = SubResource("LabelSettings_s5kfy")
 vertical_alignment = 1

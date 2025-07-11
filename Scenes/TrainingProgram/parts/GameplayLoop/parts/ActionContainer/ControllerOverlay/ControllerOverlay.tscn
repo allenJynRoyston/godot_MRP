@@ -1,16 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://2egdont4wbiv"]
+[gd_scene load_steps=7 format=3 uid="uid://2egdont4wbiv"]
 
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_7ogr2"]
 [ext_resource type="Script" uid="uid://dqpibb07vhjwa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ControllerOverlay/controller_overlay.gd" id="1_vkq4n"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_vkq4n"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_vkq4n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mtjfd"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_mtjfd"]
+font = ExtResource("3_vkq4n")
+font_size = 192
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 2)
+
 [sub_resource type="LabelSettings" id="LabelSettings_l8yab"]
-font = ExtResource("2_vkq4n")
-font_size = 256
-outline_size = 32
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
+font = ExtResource("3_vkq4n")
+font_size = 192
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 2)
 
 [node name="ControllerOverlay" type="Control"]
 layout_mode = 3
@@ -64,7 +74,7 @@ alignment = 1
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_l8yab")
+label_settings = SubResource("LabelSettings_mtjfd")
 
 [node name="RingLabel" type="Label" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer"]
 modulate = Color(1, 1, 1, 0)

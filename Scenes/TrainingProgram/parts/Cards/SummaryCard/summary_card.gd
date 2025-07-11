@@ -6,16 +6,17 @@ extends MouseInteractions
 
 @onready var BusyPanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/BusyPanel
 
-@onready var ListContainers:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers
-@onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers/CardDrawerActiveAbilities
-@onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers/CardDrawerPassiveAbilities
-@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers/CardDrawerResearchers
-@onready var CardDrawerScp:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ListContainers/CardDrawerScp
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails/CardDrawerName
+@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails/CardDrawerResearchers
 
-@onready var RoomDetails:HBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails
-#@onready var ScpDetails:HBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpDetails
-#@onready var Researcher1Details:HBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Researcher1Details
-#@onready var Researcher2Details:HBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Researcher2Details
+@onready var AbilityContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer
+@onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/CardDrawerActiveAbilities
+
+@onready var PassiveContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer
+@onready var CardDrawerPassiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PassiveContainer/CardDrawerPassiveAbilities
+
+@onready var ScpContinaer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer
+@onready var CardDrawerScp:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer/CardDrawerScp
 
 @export var preview_mode:bool = false 
 
@@ -53,22 +54,20 @@ func _ready() -> void:
 	var node_list:Array = [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]
 	
 	for node in node_list:
-		node.border_color = room_color
-	
-	for node in node_list:
 		node.preview_mode = preview_mode
 		node.is_left_side = false
 	
 	for node in node_list:
 		node.onLock = func() -> void:
-			BusyPanel.show()
+			#BusyPanel.show()
 			for child in node_list:
 				child.lock_btns(true)
 			
 		node.onUnlock = func() -> void:
-			BusyPanel.hide()
+			#BusyPanel.hide()
 			for child in node_list:
 				child.lock_btns(false)
+				
 				
 	on_room_ref_update()
 # ------------------------------------------------------------------------------
@@ -95,30 +94,21 @@ func update_room_label() -> void:
 		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
 		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
-	
-	var TextNode:Control = RoomDetails.get_child(0)
-	var LvlNode:Control = RoomDetails.get_child(1)
 
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
 		node.abl_lvl = abl_lvl
 
-	TextNode.content = "%s" % [room_details.name]
-	LvlNode.content = str(abl_lvl)
+	CardDrawerName.content = room_details.name
 	
 var previous_room_ref:int
 func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
-	var TextNode:Control = RoomDetails.get_child(0)	
-	var LvlNode:Control = RoomDetails.get_child(1)
-	
+
 	if room_ref == -1:
-		RoomDetails.modulate = Color(1, 1, 1, 0.5)
-		TextNode.content = "EMPTY"		
-		LvlNode.content = "-"
-		CardDrawerResearchers.hide()
-		CardDrawerActiveAbilities.hide()
-		CardDrawerPassiveAbilities.hide()
-		ListContainers.hide()
+		CardDrawerName.content = "EMPTY"		
+		AbilityContainer.hide()
+		PassiveContainer.hide()
+		ScpContinaer.hide()
 		await U.tick()
 		CardControlBody.size = Vector2(1, 1)		
 		return
@@ -141,7 +131,6 @@ func on_room_ref_update() -> void:
 		#researchers_per_room = 0 if preview_mode else ring_base_states.researchers_per_room 
 	# --	
 	
-	RoomDetails.modulate = Color(1, 1, 1, 1)
 	update_room_label()
 	# attach scp data (if applicable)
 	CardDrawerScp.use_location = use_location
@@ -153,7 +142,7 @@ func on_room_ref_update() -> void:
 	CardDrawerResearchers.room_details = room_details
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.required_staffing = required_staffing
-	CardDrawerResearchers.show() if required_staffing.size() > 0 else CardDrawerResearchers.hide()
+	CardDrawerResearchers.show() if required_staffing.size() > 0 and !preview_mode else CardDrawerResearchers.hide()
 	
 	var filtered:Array = hired_lead_researchers.filter(func(x): 
 		var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
@@ -179,7 +168,10 @@ func on_room_ref_update() -> void:
 		show_abilities = true
 	
 	# hide container
-	ListContainers.show() #if (show_passives or show_abilities or show_researchers or show_scp) else ListContainers.hide()
+	AbilityContainer.show() if show_abilities else AbilityContainer.hide()
+	PassiveContainer.show() if show_passives else PassiveContainer.hide()
+	ScpContinaer.show() if show_scp else ScpContinaer.hide()
+	
 	await U.tick()
 	CardControlBody.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
@@ -197,7 +189,7 @@ func deselect_btns() -> void:
 
 # ------------------------------------------------------------------------------
 func get_ability_btns() -> Array:
-	var btn_list:Array = [RoomDetails]
+	var btn_list:Array = [CardDrawerName]
 	for node in [CardDrawerResearchers, CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerScp]:
 		if node.is_visible_in_tree():
 			for btn in node.get_btns():

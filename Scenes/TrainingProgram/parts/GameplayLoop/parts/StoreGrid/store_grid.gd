@@ -12,8 +12,6 @@ extends GameContainer
 @onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/SummaryImage
 
 @onready var CostPanel:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/CostPanel
-#@onready var CostResourceItem:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItem
-#@onready var CostResourceDiff:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CostResourceItemDiff
 
 const ShopMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn")
 
@@ -38,33 +36,33 @@ func activate() -> void:
 	await U.tick()
 	
 func setup_gridselect() -> void:
-	var room_unlock_level:int = room_config.floor[current_location.floor].room_unlock_val
+	#var room_unlock_level:int = 9 #room_config.base.room_unlock_val
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
 		{
 			"title": "RESOURCE",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.RESOURCES, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.RESOURCES, start_at, end_at),
 		},
 		{
 			"title": "RECRUITMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.RECRUITMENT, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.RECRUITMENT, start_at, end_at),
 		},
 		{
 			"title": "ENERGY",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, start_at, end_at),
 		},
 		{
 			"title": "CONTAINMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, start_at, end_at),
 		},
 		{
 			"title": "UTILITY",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, room_unlock_level, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, start_at, end_at),
 		},		
 	]
 	
@@ -78,12 +76,15 @@ func setup_gridselect() -> void:
 	
 	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
 		var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(data.ref) )
-		DetailPanel.room_ref = data.ref
-		CostPanel.amount = str(U.min_max(resources_data[RESOURCE.CURRENCY.SCIENCE].amount - data.details.costs.unlock, 0, resources_data[RESOURCE.CURRENCY.SCIENCE].capacity))
+		var show_card:bool = node.show_card
+		
+		DetailPanel.reveal(show_card)
+		DetailPanel.room_ref = data.ref if show_card else -1
+		CostPanel.amount =resources_data[RESOURCE.CURRENCY.SCIENCE].amount
 		CostPanel.is_negative = !can_afford
 		SummaryImage.texture = CACHE.fetch_image(data.details.img_src)
 		
-		GridSelect.BtnControls.disable_active_btn = !can_afford
+		GridSelect.BtnControls.disable_active_btn = !can_afford or !node.is_clickable
 		
 		if data.details.requires_unlock:
 			if data.ref in shop_unlock_purchases:

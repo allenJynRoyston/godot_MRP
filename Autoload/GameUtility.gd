@@ -21,9 +21,8 @@ const new_scp_entry:Dictionary = {
 	"level": 0,
 	"location": {},
 	"contained_on_day": null,
-	"check_for_breaches_on": [],
 	"breach_count": 0,
-	"next_breach_at": 0,
+	"is_contained": false,
 	"event_results": {}
 }
 
@@ -412,9 +411,10 @@ func add_objectives_to_timeline(objectives:Array = []) -> void:
 # -----------------------------------
 
 # -----------------------------------
-func start_containment_breach() -> Control:
+func start_splash(title:String = "WARNING") -> Control:
 	var SplashNode:Control = SplashPreload.instantiate()
 	SplashNode.z_index = z_index_lvl
+	SplashNode.title = title
 	GameplayNode.add_child(SplashNode)
 	
 	await SplashNode.activate()
@@ -600,11 +600,75 @@ func select_scp_to_contain() -> int:
 	return await ScpGridNode.user_response
 # --------------------------------------------------------------------------------------------------	
 
+# --------------------------------------------------------------------------------------------------	
+func trigger_initial_containment_event(scp_ref:int) -> void:
+	var SplashNode:Control = await GAME_UTIL.start_splash("WARNING CONTAINMENT IN PROCESS")
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
+	
+	# create dict if it doesn't exist
+	if scp_ref not in scp_data:
+		scp_data[scp_ref] = new_scp_entry.duplicate(true)
+	
+	# then update entry
+	scp_data[scp_ref].location = current_location.duplicate(true)
+	scp_data[scp_ref].contained_on_day = progress_data.day
+	scp_data[scp_ref].breach_count = 0
+
+	# save
+	SUBSCRIBE.scp_data = scp_data	
+	
+	# update music
+	var previous_track:int = SUBSCRIBE.music_data.selected
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.SCP_INITIAL_CONTAINMENT,
+	}			
+	
+	# Check for initial breach event
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	)
+
+	# set emergency mode
+	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
+	SUBSCRIBE.base_states = base_states
+	GameplayNode.capture_current_showing_state()
+	await U.set_timeout(1.5)	
+	GameplayNode.show_only([])
+	await SplashNode.zero()	
+
+	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+		EVT.TYPE.SCP_ON_CONTAINMENT, 
+			{
+				"room_details": ROOM_UTIL.return_data_via_location(current_location),
+				"scp_details": scp_details,
+				"scp_entry": scp_data[scp_ref],
+				"researchers": researchers
+			}
+		)
+	])
+	
+	await SplashNode.end()
+	GameplayNode.restore_showing_state()	
+	
+	# then revert music...
+	SUBSCRIBE.music_data = {
+		"selected": previous_track
+	}			
+
+	# restore previous emergency mode
+	await U.set_timeout(1.0)	
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
+	SUBSCRIBE.base_states = base_states
+	
+		
+
+# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func trigger_breach_event(scp_ref:int) -> void:	
 	# get the splash
-	var SplashNode:Control = await GAME_UTIL.start_containment_breach()
+	var SplashNode:Control = await GAME_UTIL.start_splash("CONTAINMENT BREACH IN PROGRESS")
 		
 	# pull details
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
@@ -615,18 +679,19 @@ func trigger_breach_event(scp_ref:int) -> void:
 			return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
 	)
 	
-	# update next breach event day
-	scp_data[scp_ref].next_breach_at = progress_data.day + scp_details.breach_check_frequency
-	scp_data[scp_ref].breach_count += 1
-	SUBSCRIBE.scp_data = scp_data	
-
+	# open music player, no music selected
+	SUBSCRIBE.music_data = {
+		"selected": MUSIC.TRACK.SCP_CONTAINMENT_BREACH,
+	}
+		
+	
 	# set emergency mode
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 	SUBSCRIBE.base_states = base_states
+	GameplayNode.capture_current_showing_state()	
 	await U.set_timeout(3.5)	
 	GameplayNode.show_only([])
-	
 	await SplashNode.zero()
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
@@ -642,57 +707,69 @@ func trigger_breach_event(scp_ref:int) -> void:
 	
 
 	await SplashNode.end()
+	GameplayNode.restore_showing_state()	
+	
+	# update next breach event day
+	scp_data[scp_ref].breach_count += 1
+	SUBSCRIBE.scp_data = scp_data		
 	
 	# restore previous emergency mode
+	await U.set_timeout(1.0)	
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
 	SUBSCRIBE.base_states = base_states
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func trigger_initial_containment(scp_ref:int) -> bool:
-	if scp_ref == -1:return false
-	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
-
-	# create dict if it doesn't exist
-	if scp_ref not in scp_data:
-		scp_data[scp_ref] = new_scp_entry.duplicate(true)
 	
-	# then update entry
-	scp_data[scp_ref].location = current_location.duplicate(true)
-	scp_data[scp_ref].contained_on_day = progress_data.day
-	scp_data[scp_ref].breach_count = 0
-	scp_data[scp_ref].next_breach_at = progress_data.day + scp_details.breach_check_frequency
-	# save
-	SUBSCRIBE.scp_data = scp_data	
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func trigger_containment_event(scp_ref:int) -> void:
+	# get the splash
+	var SplashNode:Control = await GAME_UTIL.start_splash("ANAMOLOUS ACTIVITY DETECTED")
+		
+	# pull details
+	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	
 	# Check for initial breach event
-	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
-		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	var researchers:Array = hired_lead_researchers_arr.map(func(x): 
+		return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+			return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
 	)
 	
-	# update music
-	var previous_track:int = SUBSCRIBE.music_data.selected
+	# open music player, no music selected
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.INITIAL_CONTAINMENT,
-	}		
+		"selected": MUSIC.TRACK.SCP_FINAL_CONTAINMENT,
+	}	
+	
+	# set emergency mode
+	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
+	SUBSCRIBE.base_states = base_states
+	GameplayNode.capture_current_showing_state()	
+	await U.set_timeout(3.5)	
+	GameplayNode.show_only([])
+	await SplashNode.zero()
 
 	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_ON_CONTAINMENT, 
+		EVT.TYPE.SCP_CONTAINED_EVENT, 
 			{
 				"room_details": ROOM_UTIL.return_data_via_location(current_location),
 				"scp_details": scp_details,
 				"scp_entry": scp_data[scp_ref],
-				"researchers": researchers
+				"researchers": researchers,
 			}
 		)
 	])
 	
-	# then revert music...
-	SUBSCRIBE.music_data = {
-		"selected": previous_track
-	}			
 
-	return true
+	await SplashNode.end()
+	GameplayNode.restore_showing_state()	
+	
+	scp_data[scp_ref].is_contained = true
+	SUBSCRIBE.scp_data = scp_data		
+	
+	# restore previous emergency mode
+	await U.set_timeout(1.0)
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
+	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

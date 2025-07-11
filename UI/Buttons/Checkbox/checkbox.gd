@@ -33,7 +33,6 @@ func on_is_negative_update() -> void:
 	var label_settings_copy:LabelSettings = TitleLabel.label_settings.duplicate()
 	var use_color:Color = COLORS.disabled_color if is_negative else COLORS.primary_black
 	label_settings_copy.font_color = use_color
-	print(is_negative)
 	IconBtn.icon_color = use_color
 	TitleLabel.label_settings = label_settings_copy
 

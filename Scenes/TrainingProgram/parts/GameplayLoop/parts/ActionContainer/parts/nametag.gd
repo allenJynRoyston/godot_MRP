@@ -1,6 +1,7 @@
 extends Control
 
-@onready var NameLabel:Label = $VBoxContainer/NameLabel
+@onready var NameLabel:Label = $VBoxContainer/HBoxContainer/NameLabel
+@onready var Icon:Control = $VBoxContainer/HBoxContainer/SVGIcon
 
 @onready var MoneyIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MoneyIcon
 @onready var MatIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MatIcon
@@ -174,7 +175,7 @@ func update_node(shift_val:int = 10) -> void:
 					CoreIcon.hide() if amount <= 0 else CoreIcon.show()
 		
 		name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
-		
+		Icon.icon_color = Color.GREEN if room_extract.room.is_activated else COLORS.disabled_color
 
 	hide() if is_room_empty else show()
 # --------------------------------------------

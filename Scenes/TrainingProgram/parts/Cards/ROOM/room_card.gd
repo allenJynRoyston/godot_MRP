@@ -8,21 +8,19 @@ extends MouseInteractions
 @onready var Back:Control = $CardBody/SubViewport/Control/CardBody/Back
 
 # --------
-@onready var CostPanel:MarginContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel
-@onready var CostAmount:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostAmount
-@onready var CostIcon:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostIcon
-@onready var CostLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/PanelContainer/MarginContainer/VBoxContainer2/CostLabel
-
-# --------
-@onready var AtFullCapacity:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/AtFullCapacity
-@onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/InactivePanel
+@onready var CostPanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage/CostPanel
+@onready var AtFullCapacity:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage/AtFullCapacity
+@onready var InactivePanel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage/InactivePanel
 
 #front
-@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerLevel
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer2/CardDrawerName
-@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerCurrency
-@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerVibes
+@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/HBoxContainer2/CardDrawerName
+
+@onready var CurrencyContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer
+@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer/CardDrawerCurrency
+
+@onready var VibesContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer
+@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer/CardDrawerVibes
 
 # back
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
@@ -167,13 +165,15 @@ func on_ref_update() -> void:
 		CardDrawerImage.img_src = "-"
 		CardDrawerCurrency.list = []
 		CardDrawerVibes.metrics = {}
+		
+		CardDrawerCurrency.hide()
+		CardDrawerVibes.hide()
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_activated:bool = preview_mode
 	var metrics:Dictionary = room_details.metrics
 	var currency_list:Array = []
-	var label_settings_copy:LabelSettings = CostAmount.label_settings 
 
 	# has location
 	if use_location.is_empty() or preview_mode:
@@ -192,7 +192,7 @@ func on_ref_update() -> void:
 			metrics = extract_data.room.metrics
 			currency_list = extract_data.room.currency_list
 			
-	CardBody.border_color = default_border_color if is_activated else Color.RED
+	CardBody.border_color = default_border_color if is_activated else COLORS.disabled_color
 	CardBody.modulate = Color(1, 1, 1, 1)
 	
 	var abl_lvl:int = 0
@@ -203,20 +203,19 @@ func on_ref_update() -> void:
 
 	var hide_currency:bool = true
 	for item in currency_list:
-		var amount:int = int(item.title)
+		var amount:int = int(item.title) if is_activated else 0
 		if amount != 0:
 			hide_currency = false
 			break
 			
-	var hide_metrics:bool = true
+	var hide_metrics:bool = true 
 	for key in metrics:
-		var amount:int = metrics[key]
+		var amount:int = metrics[key] if is_activated else 0
 		if amount != 0:
 			hide_metrics = false
 			break
 			
 	# -----------
-	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated
@@ -226,14 +225,15 @@ func on_ref_update() -> void:
 	CardDrawerVibes.preview_mode = preview_mode	
 	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = metrics
-	CardDrawerVibes.hide() if hide_metrics else CardDrawerVibes.show()
+	CardDrawerVibes.show()
+	VibesContainer.hide() if hide_metrics else VibesContainer.show()
 	
 	CardDrawerCurrency.preview_mode = preview_mode
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
-	CardDrawerCurrency.hide() if hide_currency else CardDrawerCurrency.show()
-	
+	CardDrawerCurrency.show()
+	CurrencyContainer.hide() if hide_currency else CurrencyContainer.show()
 
 	# panels
 	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()
@@ -242,35 +242,27 @@ func on_ref_update() -> void:
 	# show cost panel
 	if show_cost or show_research_cost:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= room_details.costs.purchase
-		var use_color:Color = Color.WHITE if can_afford else Color.RED
+		var use_color:Color = Color.WHITE if can_afford else COLORS.disabled_color
 		var at_capacity:bool = ROOM_UTIL.at_own_limit(room_details.ref)
 		
 		CostPanel.show() if !at_capacity else CostPanel.hide()
 		AtFullCapacity.show() if at_capacity else AtFullCapacity.hide()
 		
-		CostLabel.text = "CONSTRUCTION COST"
-		CostAmount.text = str(room_details.costs.purchase) if room_details.costs.purchase > 0 else "FREE"
-		
-		label_settings_copy.font_color = use_color
-		
-		CostAmount.label_settings = label_settings_copy
-		CostIcon.icon = SVGS.TYPE.MONEY
-		CostIcon.static_color = use_color
+		CostPanel.title = "CONSTRUCTION COST"
+		CostPanel.amount = str(room_details.costs.purchase) if room_details.costs.purchase > 0 else 0
+		CostPanel.icon = SVGS.TYPE.MONEY
+		CostPanel.use_color = use_color
 	
 	# researcher panel
 	if show_research_cost:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.SCIENCE].amount >= room_details.costs.unlock
-		var use_color:Color = Color.WHITE if can_afford else Color.RED
+		var use_color:Color = Color.WHITE if can_afford else COLORS.disabled_color
 		
 		CostPanel.show()
-		CostLabel.text = "RESEARCH COST"
-		CostAmount.text = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
-		
-		label_settings_copy.font_color = use_color
-		
-		CostAmount.label_settings = label_settings_copy
-		CostIcon.icon = SVGS.TYPE.RESEARCH
-		CostIcon.static_color = use_color
+		CostPanel.title = "RESEARCH COST"
+		CostPanel.amount = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else 0
+		CostPanel.icon = SVGS.TYPE.RESEARCH
+		CostPanel.use_color = use_color
 		
 	
 # ------------------------------------------------------------------------------

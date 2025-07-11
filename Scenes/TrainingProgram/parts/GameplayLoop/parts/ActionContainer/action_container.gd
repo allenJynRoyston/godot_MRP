@@ -29,7 +29,7 @@ extends GameContainer
 # MINICARDS
 @onready var MiniCardPanel:PanelContainer = $MiniCardControl/PanelContainer
 @onready var MiniCardMargin:MarginContainer = $MiniCardControl/PanelContainer/MarginContainer
-@onready var SummaryCard:PanelContainer = $MiniCardControl/PanelContainer/MarginContainer/VBoxContainer/SummaryCard
+@onready var SummaryCard:PanelContainer = $MiniCardControl/PanelContainer/MarginContainer/SummaryCard
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -681,24 +681,37 @@ func show_events_debug() -> void:
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"title": "HINT",
-						"description": "Test for initial containment"
+						"description": "Test for INITIAL CONTAINMENT event."
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.trigger_initial_containment(scp_ref)
+						await GAME_UTIL.trigger_initial_containment_event(scp_ref)
 						ActiveMenuNode.unlock(),
 				},
 				{
-					"title": "CONTAINMENT BREACH",
+					"title": "CONTAINMENT BREACH EVENT",
 					"icon": SVGS.TYPE.CONVERSATION,
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"title": "HINT",
-						"description": "Test for containment breach"
+						"description": "Test for CONTAINMENT BREACH event."
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
 						await GAME_UTIL.trigger_breach_event(scp_ref)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "CONTAINED EVENT",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for CONTAINED event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.trigger_containment_event(scp_ref)
 						ActiveMenuNode.unlock(),
 				}				
 			]
@@ -862,7 +875,7 @@ func show_settings() -> void:
 			"title": "GRAPHICS",
 			"items": [
 				{
-					"title": "Fullscreen",
+					"title": "FULLSCREEN",
 					"icon": SVGS.TYPE.CONVERSATION,
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
@@ -881,7 +894,7 @@ func show_settings() -> void:
 			"title": "SAVE AND LOAD",
 			"items": [
 				{
-					"title": "Quicksave",
+					"title": "QUICKSAVE",
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"description": "Save your current progress."
@@ -926,7 +939,7 @@ func show_settings() -> void:
 			"title": "QUIT",
 			"items": [
 				{
-					"title": "Exit Game",
+					"title": "EXIT GAME",
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"description": "Exit your current game."
@@ -935,7 +948,7 @@ func show_settings() -> void:
 						get_tree().quit(),
 				},				
 				{
-					"title": "Return to Desktop",
+					"title": "RETURN TO DESKTOP",
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"description": "Exit your current game."
@@ -945,7 +958,7 @@ func show_settings() -> void:
 						GameplayNode.exit_game(),
 				},
 				{
-					"title": "Return to Titlescreen",
+					"title": "RETURN TO TITLESCREEN",
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"description": "Exit to title screen."

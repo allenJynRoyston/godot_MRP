@@ -43,11 +43,12 @@ shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_t4xaw"]
+[sub_resource type="LabelSettings" id="LabelSettings_kq5a2"]
 font = ExtResource("4_kq5a2")
 font_color = Color(1, 0.74902, 0.2, 1)
 outline_color = Color(0, 0, 0, 0.615686)
-shadow_size = 0
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4xaw"]
@@ -124,7 +125,7 @@ autowrap_mode = 2
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "subtitle"
-label_settings = SubResource("LabelSettings_t4xaw")
+label_settings = SubResource("LabelSettings_kq5a2")
 horizontal_alignment = 1
 autowrap_mode = 2
 uppercase = true

@@ -1,6 +1,5 @@
 extends Node
 
-
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.DEBUG_ROOM,
@@ -83,7 +82,6 @@ var DEBUG_ROOM:Dictionary = {
 		],	
 	# ------------------------------------------		
 }
-
 
 #region SPECIALS
 # ------------------------------------------------------------------------------ SPECIALS
@@ -279,6 +277,111 @@ var GENERATOR_SUBSTATION:Dictionary = {
 	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.jpg",
 	"description": "Can make adjustments to the power generator.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"own_limit": 1,	
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 0,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
+
+var	PROBABILITY_ROOM:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.PROBABILITY_ROOM,
+	"name": "PROBABILITY_ROOM",
+	"shortname": "PROBABILITY_ROOM",
+	"categories": [ROOM.CATEGORY.SPECIAL],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "PROBABILITY_ROOM description",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"own_limit": 1,	
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 0,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
+
+var CHRONO_ROOM:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.CHRONO_ROOM,
+	"name": "CHRONO_ROOM",
+	"shortname": "CHRONO_ROOM",
+	"categories": [ROOM.CATEGORY.SPECIAL],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "CHRONO_ROOM description.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"own_limit": 1,	
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 0,
+		"purchase": 0,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
+
+var NUCLEAR_FAILSAFE:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.GENERATOR_SUBSTATION,
+	"name": "NUCLEAR_FAILSAFE",
+	"shortname": "NUKEFAILSAFE",
+	"categories": [ROOM.CATEGORY.SPECIAL],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "NUCLEAR_FAILSAFE description",
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -519,7 +622,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"requires_unlock": false,
 	"can_contain": true,
 	"containment_properties": [
-		SCP.CONTAINMENT_TYPES.PHYSICAL
+		#SCP.CONTAINMENT_TYPES.PHYSICAL
 	],
 	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER, RESEARCHER.SPECIALIZATION.SECURITY],	
 	# ------------------------------------------
@@ -667,6 +770,44 @@ var ENGINEERING_BAY:Dictionary = {
 		],	
 	# ------------------------------------------	
 }
+
+var CORE_ROOM:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.CORE_ROOM,
+	"name": "CORE_ROOM",
+	"shortname": "CORE_ROOM",
+	"categories": [ROOM.CATEGORY.RESOURCES],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "CORE_ROOM description.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 200,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	#"required_personnel": [
+		#RESOURCE.PERSONNEL.TECHNICIANS
+	#],
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
+		],	
+	# ------------------------------------------	
+}
+
 # ------------------------------------------------------------------------------ 
 #endregion
 
@@ -865,6 +1006,83 @@ var SCRANTON_REALITY_ANCHOR:Dictionary = {
 		],	
 	# ------------------------------------------	
 }
+
+var HP_CLINIC:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.HP_CLINIC,
+	"name": "HP_CLINIC",
+	"shortname": "HP_CLINIC",
+	"categories": [ROOM.CATEGORY.UTILITY],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "HP_CLINIC description",	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"unlock_level": 1,		
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	# ------------------------------------------	
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	#"required_personnel": [
+		#RESOURCE.PERSONNEL.TECHNICIANS
+	#],
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
+
+var SP_CLINIC:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.SP_CLINIC,
+	"name": "SP_CLINIC",
+	"shortname": "SRA",
+	"categories": [ROOM.CATEGORY.UTILITY],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "SP_CLINIC description",	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"unlock_level": 1,		
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	# ------------------------------------------	
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	#"required_personnel": [
+		#RESOURCE.PERSONNEL.TECHNICIANS
+	#],
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+
+		],	
+	# ------------------------------------------	
+}
+
 # ------------------------------------------------------------------------------ 
 #endregion
 
@@ -881,31 +1099,29 @@ var list:Array[Dictionary] = [
 	MINIERAL_MINING, GEOTHERMAL_POWER, #--- S2
 	GENERATOR_SUBSTATION, 
 	
+	PROBABILITY_ROOM,
+	CHRONO_ROOM,
+	NUCLEAR_FAILSAFE,
+	
 	# --------------- RECRUIT
-	PRISONER_BLOCK,
-	ADMIN_OFFICE,
-	SECURITY_DEPARTMENT,
-	ACADEMIC_OUTREACH,
+	ADMIN_OFFICE, ACADEMIC_OUTREACH, SECURITY_DEPARTMENT, PRISONER_BLOCK,
 	
 	# --------------- CONTAINMENT
 	STANDARD_CONTAINMENT_CELL, 
 	
 	# --------------- RESOURCES
-	AERD,
-	RESEARCH_LAB,
-	ENGINEERING_BAY,
+	AERD, RESEARCH_LAB, ENGINEERING_BAY, CORE_ROOM,
 	
 	# --------------- RECRUITMENT
-	PRISONER_BLOCK, 
-	OPERATIONS_SUPPORT, 
-	SECURITY_DEPARTMENT,
+	PRISONER_BLOCK, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	
 	# --------------- ENERGY
 	ENERGY_STORAGE,
 	
 	# --------------- UTILITY
-	UI_ASSIST,
-	WEAPONS_RANGE, 
-	SCRANTON_REALITY_ANCHOR,
+	UI_ASSIST, WEAPONS_RANGE, SCRANTON_REALITY_ANCHOR,
+	HP_CLINIC, SP_CLINIC,
+	
+	
 ]
 # -----------------------------------	

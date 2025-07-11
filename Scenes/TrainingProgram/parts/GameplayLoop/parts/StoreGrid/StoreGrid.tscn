@@ -54,7 +54,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_jvufl")
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 85
 theme_override_constants/margin_right = 10
 
 [node name="SummaryImage" type="TextureRect" parent="SummaryControl/PanelContainer/MarginContainer"]
@@ -70,7 +72,6 @@ theme_override_constants/separation = 25
 alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 0
@@ -80,10 +81,9 @@ theme_override_constants/margin_bottom = 0
 [node name="CostPanel" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2" instance=ExtResource("6_o6blh")]
 layout_mode = 2
 icon = 44
-title = "RESEARCH COST"
+title = "RESEARCH"
 
 [node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("7_jhptp")]
-custom_minimum_size = Vector2(0, 350)
 layout_mode = 2
 size_flags_horizontal = 4
 preview_mode = true

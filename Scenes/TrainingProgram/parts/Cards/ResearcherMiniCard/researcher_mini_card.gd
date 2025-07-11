@@ -144,11 +144,11 @@ func update_content() -> void:
 	Level.content = str(researcher_details.level)
 	Spec.content = spec_str
 
-	var name_title_str:String = "Researcher %s, %s specialist" % [researcher_details.name, hint_des_str]
+	var name_title_str:String = "%s" % [researcher_details.name]
 	
 	hint_title = "HINT"
 	hint_icon = SVGS.TYPE.DRS	
-	hint_description = str(name_title_str, ".")
+	hint_description = name_title_str
 	
 	if !can_be_promoted and check_for_promotions:
 		for node in panel_nodes:
@@ -177,7 +177,7 @@ func update_content() -> void:
 			else:
 				node.hide()
 		hint_icon = SVGS.TYPE.STOP
-		hint_description = "%s %s" % [name_title_str, "(lacks correct specialization)."]
+		hint_description = "%s %s" % [name_title_str, "(not compatable)."]
 		
 		if !spec_required.is_empty():
 			hint_icon = SVGS.TYPE.DRS

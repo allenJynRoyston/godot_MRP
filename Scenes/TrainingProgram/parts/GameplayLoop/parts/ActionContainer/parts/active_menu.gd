@@ -1,20 +1,20 @@
 extends Control
 
+@onready var BtnControls:Control = $BtnControls
+
 @onready var CardBody:Control = $MenuControl/PanelContainer/MarginContainer/CardBody
 @onready var CardControlBody:PanelContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody
 @onready var CardBodySubviewport:SubViewport = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport
 
-@onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer
-@onready var PrevIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PrevIcon
-@onready var NextIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/NextIcon
-@onready var PaginationList:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader/PaginationContainer/PaginationList
-@onready var Footerlabel:Label = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FooterLabel
 @onready var MenuPanel:PanelContainer = $MenuControl/PanelContainer
 @onready var MenuMargin:MarginContainer = $MenuControl/PanelContainer/MarginContainer
-@onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/List
-@onready var CardMenuHeader:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardMenuHeader
 
-@onready var BtnControls:Control = $BtnControls
+@onready var PaginationContainer:HBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PaginationContainer
+@onready var CategoryLabel:Label = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PaginationContainer/CategoryLabel
+@onready var PrevIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PaginationContainer/PrevIcon
+@onready var NextIcon:Control = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PaginationContainer/NextIcon
+@onready var Footerlabel:Label = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/FooterLabel
+@onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/List
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
 const LabelSettingPreload:LabelSettings = preload("res://Fonts/game/label_small_thick.tres")
@@ -165,7 +165,7 @@ func animate_in(state:bool, duration:float = 0.3) -> void:
 
 # ------------------------------------------------------------------------------
 func clear_list() -> void:
-	for node in [PaginationList, List]:
+	for node in [List]:
 		for child in node.get_children():
 			child.queue_free()
 
@@ -206,9 +206,9 @@ func on_hint_border_color_update() -> void:
 func on_tab_index_update() -> void:
 	on_options_list_update()
 	await U.tick()
-	for index in PaginationList.get_child_count():		
-		var LabelNode:Label = PaginationList.get_child(index) 
-		LabelNode.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
+	#for index in PaginationList.get_child_count():		
+		#var LabelNode:Label = PaginationList.get_child(index) 
+		#LabelNode.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
 		
 	# create a render table
 	await U.tick()
@@ -249,7 +249,7 @@ func on_options_list_update() -> void:
 		var btn_node:Control = MenuBtnPreload.instantiate()
 		var show:bool = item.show if item.has("show") else true
 		
-		CardMenuHeader.content = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
+		CategoryLabel.text = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
 		
 		if show:
 			btn_node.title = item.title

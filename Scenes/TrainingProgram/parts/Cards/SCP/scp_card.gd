@@ -3,25 +3,28 @@ extends MouseInteractions
 
 @onready var CardBody:Control = $CardBody
 @onready var OutputTextureRect:TextureRect = $CardBody/TextureRect
+
 #front
-@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var CardDrawerDesignation:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerDesignation
-@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerLevel
-@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer/CardDrawerName
-#@onready var CardDrawerItemClass:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/HBoxContainer3/CardDrawerItemClass
-@onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerAssigned
-@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerVibes
-@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerCurrency
+@onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage
+@onready var Status:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/Status
+
+@onready var DetailsContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer
+@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/HBoxContainer/CardDrawerLevel
+@onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/HBoxContainer/CardDrawerName
+@onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerAssigned
+
+@onready var VibesContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer
+@onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer/CardDrawerVibes
+
+@onready var CurrencyContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer
+@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer/CardDrawerCurrency
+
+@onready var EffectContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectsContainer
+@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
 
 # back
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
 
-#@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
-#@onready var CardDrawerBreach:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerBreach
-#@onready var CardDrawerNeutralize:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerNeutralize
-
-#@onready var CardDrawerPairsWith:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerPairsWith
-#@onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerCurrency
 
 @export var ref:int = -1: 
 	set(val):
@@ -138,8 +141,11 @@ func on_ref_update() -> void:
 	if !is_node_ready():return	
 	if ref not in SCP_UTIL.reference_data:
 		CardDrawerImage.use_static = true
-		for node in [CardDrawerLevel, CardDrawerDesignation, CardDrawerDescription]:
+		for node in [CardDrawerLevel, CardDrawerDescription]:
 			node.content = "-"
+		EffectContainer.hide()
+		VibesContainer.hide()
+		CurrencyContainer.hide()
 		return
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
@@ -148,6 +154,7 @@ func on_ref_update() -> void:
 	var has_trait_bonus:bool = false
 	var morale_val:int = 0	
 	var research_level:int = 0 if ref not in scp_data else scp_data[ref].level
+	var is_contained:bool = false if ref not in scp_data else scp_data[ref].is_contained
 	
 	var hide_currency:bool = true
 	for item in currency_list:
@@ -164,7 +171,10 @@ func on_ref_update() -> void:
 			break	
 	
 	# -----------
-	CardDrawerDesignation.content = scp_details.name
+	Status.title = "CURRENTLY INHERT" 
+	Status.icon = SVGS.TYPE.CONTAIN
+	Status.show() if is_contained else Status.hide()
+	
 	CardDrawerName.content = scp_details.nickname
 	CardDrawerDescription.content = scp_details.abstract.call(scp_details)
 	CardDrawerImage.img_src = scp_details.img_src
@@ -174,15 +184,16 @@ func on_ref_update() -> void:
 	CardDrawerVibes.preview_mode = false	
 	CardDrawerVibes.use_location = use_location
 	CardDrawerVibes.metrics = scp_details.metrics
-	CardDrawerVibes.hide() if hide_metrics else CardDrawerVibes.show()
+	VibesContainer.hide() if hide_metrics else VibesContainer.show()
 
 	CardDrawerCurrency.preview_mode = false
 	CardDrawerCurrency.room_details = scp_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
-	CardDrawerCurrency.hide() if hide_currency else CardDrawerCurrency.show()
-	#CardDrawerCurrency.morale_val = morale_val
-	#CardDrawerCurrency.list = currency_list
+	CurrencyContainer.hide() if hide_currency else CurrencyContainer.show()
+
+	CardDrawerEffect.title = "EFFECT"
+	EffectContainer.show()
 	# -----------
 	
 # ------------------------------------------------------------------------------

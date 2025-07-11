@@ -14,7 +14,6 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_eidsy"]
 font = ExtResource("3_vp5h5")
 font_size = 32
-font_color = Color(1, 0.74902, 0.2, 1)
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
