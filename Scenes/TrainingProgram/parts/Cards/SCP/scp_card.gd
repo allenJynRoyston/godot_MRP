@@ -13,6 +13,9 @@ extends MouseInteractions
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/HBoxContainer/CardDrawerName
 @onready var CardDrawerAssigned:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerAssigned
 
+@onready var BreachChanceContainer:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/BreachChanceContainer
+@onready var BreachChanceLabel:Label = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/BreachChanceContainer/HBoxContainer/BreachChanceLabel
+
 @onready var VibesContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer/CardDrawerVibes
 
@@ -20,7 +23,10 @@ extends MouseInteractions
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer/CardDrawerCurrency
 
 @onready var EffectContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectsContainer
-@onready var CardDrawerEffect:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerEffect
+@onready var EffectDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectsContainer/EffectDescription
+
+@onready var ContainmentTypeRequierdContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired
+@onready var ContainmentTypeDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired/ContainmentTypeDescription
 
 # back
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
@@ -169,6 +175,7 @@ func on_ref_update() -> void:
 		if amount != 0:
 			hide_metrics = false
 			break	
+			
 	
 	# -----------
 	Status.title = "CURRENTLY INHERT" 
@@ -191,9 +198,15 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
 	CurrencyContainer.hide() if hide_currency else CurrencyContainer.show()
-
-	CardDrawerEffect.title = "EFFECT"
-	EffectContainer.show()
+	
+	EffectDescription.content = scp_details.effect.description if !scp_details.effect.is_empty() else ""
+	EffectContainer.show() if !scp_details.effect.is_empty() else EffectContainer.hide()
+	
+	ContainmentTypeDescription.content = SCP_UTIL.get_containment_type_str(scp_details.containment_requirements) if !scp_details.containment_requirements.is_empty() else ""
+	ContainmentTypeRequierdContainer.show() if !scp_details.containment_requirements.is_empty() and !use_location.is_empty() else ContainmentTypeRequierdContainer.hide()
+	if !use_location.is_empty():
+		BreachChanceLabel.text = str(SCP_UTIL.get_breach_event_chance(ref, use_location), "%")
+		
 	# -----------
 	
 # ------------------------------------------------------------------------------

@@ -96,17 +96,27 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
 @export var enable_scp_debug:bool = false
-
 @export var max_energy:bool = true
-@export var all_personnel:bool = false
+@export var all_rooms_available:bool = false
+@export var all_resources:bool = false
 
-@export_category("RESEARCHERS DEBUG")
+@export_category("EVENTS IN GAMEPLAYLOOP")
+@export var skip_initial_containment:bool = false
+@export var skip_breach_events:bool = false
+@export var skip_contained_events:bool = false
+
+@export_category("PERSONNEL DEBUG")
 @export var staff_debug:bool = false
+
 @export var staff_starting_researchers:int = 9
 @export var staff_starting_admin:int = 9
 @export var staff_starting_security:int = 9
 @export var staff_starting_dclass:int = 9
 @export var xp_needed_for_promotion:int = 0
+
+@export var mtf_alpha:bool = false
+@export var mtf_bravo:bool = false
+@export var mtf_delta:bool = false
 
 # SHADER VARS
 @onready var shader_arr:Array = [ 
@@ -318,11 +328,15 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)
 	DEBUG.assign(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG, enable_scp_debug)
-	
-	
+	DEBUG.assign(DEBUG.GAMPELAY_ALL_ROOMS_AVAILABLE, all_rooms_available)
 	DEBUG.assign(DEBUG.GAMEPLAY_MAX_ENERGY, max_energy)
-	DEBUG.assign(DEBUG.GAMEPLAY_ALL_PERSONNEL, all_personnel)	
-
+	DEBUG.assign(DEBUG.GAMEPLAY_ALL_RESOURCES, all_resources)
+	
+	# EVENTS
+	DEBUG.assign(DEBUG.GAMEPLAY_EVENTS_SKIP_INITIAL_CONTAINMENT, skip_initial_containment)
+	DEBUG.assign(DEBUG.GAMEPLAY_EVENTS_SKIP_BREACH_EVENTS, skip_breach_events)
+	DEBUG.assign(DEBUG.GAMEPLAY_EVENTS_SKIP_CONTAINED_EVENTS, skip_contained_events)
+	
 	# staff
 	DEBUG.assign(DEBUG.STAFF_DEBUG, staff_debug)
 	DEBUG.assign(DEBUG.STAFF_XP_REQUIRED_FOR_PROMOTION, xp_needed_for_promotion if !is_production_build else 10)			
@@ -330,10 +344,10 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.STAFF_STARTING_ADMIN, staff_starting_admin)	
 	DEBUG.assign(DEBUG.STAFF_STARTING_SECURITY, staff_starting_security)	
 	DEBUG.assign(DEBUG.STAFF_STARTING_DCLASS, staff_starting_dclass)	
-	
-	
 
-
+	DEBUG.assign(DEBUG.STAFF_MTF_ALPHA, mtf_alpha)	
+	DEBUG.assign(DEBUG.STAFF_MTF_BRAVO, mtf_bravo)	
+	DEBUG.assign(DEBUG.STAFF_MTF_DELTA, mtf_delta)
 # -----------------------------------	
 
 # -----------------------------------	

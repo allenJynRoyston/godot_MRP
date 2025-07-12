@@ -637,16 +637,17 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	GameplayNode.show_only([])
 	await SplashNode.zero()	
 
-	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_ON_CONTAINMENT, 
-			{
-				"room_details": ROOM_UTIL.return_data_via_location(current_location),
-				"scp_details": scp_details,
-				"scp_entry": scp_data[scp_ref],
-				"researchers": researchers
-			}
-		)
-	])
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_EVENTS_SKIP_INITIAL_CONTAINMENT):
+		var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.SCP_ON_CONTAINMENT, 
+				{
+					"room_details": ROOM_UTIL.return_data_via_location(current_location),
+					"scp_details": scp_details,
+					"scp_entry": scp_data[scp_ref],
+					"researchers": researchers
+				}
+			)
+		])
 	
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
@@ -694,17 +695,19 @@ func trigger_breach_event(scp_ref:int) -> void:
 	GameplayNode.show_only([])
 	await SplashNode.zero()
 
-	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_BREACH_EVENT_1  if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
-			{
-				"room_details": ROOM_UTIL.return_data_via_location(current_location),
-				"scp_details": scp_details,
-				"scp_entry": scp_data[scp_ref],
-				"researchers": researchers,
-			}
-		)
-	])
-	
+
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_EVENTS_SKIP_BREACH_EVENTS):
+		var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.SCP_BREACH_EVENT_1  if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
+				{
+					"room_details": ROOM_UTIL.return_data_via_location(current_location),
+					"scp_details": scp_details,
+					"scp_entry": scp_data[scp_ref],
+					"researchers": researchers,
+				}
+			)
+		])
+		
 
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
@@ -753,18 +756,18 @@ func trigger_containment_event(scp_ref:int) -> void:
 	GameplayNode.show_only([])
 	await SplashNode.zero()
 
-	var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-		EVT.TYPE.SCP_CONTAINED_EVENT if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
-			{
-				"room_details": ROOM_UTIL.return_data_via_location(current_location),
-				"scp_details": scp_details,
-				"scp_entry": scp_data[scp_ref],
-				"researchers": researchers,
-			}
-		)
-	])
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_EVENTS_SKIP_CONTAINED_EVENTS):
+		var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+			EVT.TYPE.SCP_CONTAINED_EVENT if !researchers.is_empty() else EVT.TYPE.SCP_NO_STAFF_EVENT, 
+				{
+					"room_details": ROOM_UTIL.return_data_via_location(current_location),
+					"scp_details": scp_details,
+					"scp_entry": scp_data[scp_ref],
+					"researchers": researchers,
+				}
+			)
+		])
 	
-
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
 	
@@ -976,17 +979,16 @@ func assign_researcher(staffing_type:int, location_data:Dictionary = current_loc
 
 # --------------------------------------------------------------------------------------------------	
 func unassign_researcher(researcher_data:Dictionary) -> bool:
-	var confirm:bool = await create_modal("Unassign researcher from this room?", "Researcher will become available.", researcher_data.img_src)
-
-	if confirm:
-		SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
-			if i[0] == researcher_data.uid:
-				i[11].assigned_to_room = {}
-			return i
-		)
-		return true
+	#var confirm:bool = await create_modal("Unassign researcher from this room?", "Researcher will become available.", researcher_data.img_src)
 #
-	return false
+	#if confirm:
+	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
+		if i[0] == researcher_data.uid:
+			i[11].assigned_to_room = {}
+		return i
+	)
+	return true
+
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -1259,3 +1261,20 @@ func increament_story() -> void:
 	# then update
 	GBL.update_and_save_user_profile()	
 # ------------------------------------------------------------------------------	
+
+# -----------------------------------------------------------------------------
+func add_currency_to_adjacent_rooms(_new_room_config:Dictionary, amount:int, resource_ref:int, location:Dictionary) -> Dictionary:
+	var floor:int = location.floor
+	var ring:int = location.ring
+	var room:int = location.room
+	
+	var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
+	for aroom in adjacent_rooms:
+		var room_config_data:Dictionary = _new_room_config.floor[floor].ring[ring].room[aroom]
+		if room_config_data.is_activated:
+			_new_room_config.floor[floor].currencies[resource_ref] += amount
+			_new_room_config.floor[floor].ring[ring].currencies[resource_ref] += amount
+			_new_room_config.floor[floor].ring[ring].room[aroom].currencies[resource_ref] = amount	
+		
+	return _new_room_config
+# -----------------------------------------------------------------------------

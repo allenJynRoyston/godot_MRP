@@ -108,7 +108,7 @@ func on_render_if_update() -> void:
 	
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
-	TitleLabel.text = "THEY'RE ALL OUT TO GET YOU..." if is_paranoid else U.simulate_dyslexia(data.title) if apply_dyslexia else data.title
+	TitleLabel.text = "SUFFERING FROM PARANOIA..." if is_paranoid else U.simulate_dyslexia(data.title) if apply_dyslexia else data.title
 # ----------------------
 
 

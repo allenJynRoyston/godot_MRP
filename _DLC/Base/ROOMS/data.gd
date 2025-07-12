@@ -621,10 +621,14 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	# ------------------------------------------
 	"requires_unlock": false,
 	"can_contain": true,
+	"can_destroy": false,
 	"containment_properties": [
-		#SCP.CONTAINMENT_TYPES.PHYSICAL
+		SCP.CONTAINMENT_TYPES.PHYSICAL
 	],
-	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER, RESEARCHER.SPECIALIZATION.SECURITY],	
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.SECURITY
+	],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -654,9 +658,9 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 
 #region RESOURCES
 # ------------------------------------------------------------------------------ RESOURCES
-var AERD:Dictionary = {
+var MONEY_GEN_1:Dictionary = {
 	# ------------------------------------------
-	"ref": ROOM.REF.AERD,	
+	"ref": ROOM.REF.MONEY_GEN_1,	
 	"name": "ECONOMIC RECLIMATION DIVISION",
 	"shortname": "ECO DIV",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
@@ -697,9 +701,9 @@ var AERD:Dictionary = {
 	# ------------------------------------------		
 }
 
-var RESEARCH_LAB:Dictionary = {
+var RESEARCH_GEN_1:Dictionary = {
 	# ------------------------------------------
-	"ref": ROOM.REF.RESEARCH_LAB,	
+	"ref": ROOM.REF.RESEARCH_GEN_1,	
 	"name": "RESEARCH LAB",
 	"shortname": "R.LAB",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
@@ -734,9 +738,9 @@ var RESEARCH_LAB:Dictionary = {
 	# ------------------------------------------		
 }
 
-var ENGINEERING_BAY:Dictionary = {
+var MATERIAL_GEN_1:Dictionary = {
 	# ------------------------------------------
-	"ref": ROOM.REF.ENGINEERING_BAY,
+	"ref": ROOM.REF.MATERIAL_GEN_1,
 	"name": "ENGINEERING BAY",
 	"shortname": "ENG.BAY",
 	"categories": [ROOM.CATEGORY.RESOURCES],
@@ -771,9 +775,9 @@ var ENGINEERING_BAY:Dictionary = {
 	# ------------------------------------------	
 }
 
-var CORE_ROOM:Dictionary = {
+var CORE_GEN_1:Dictionary = {
 	# ------------------------------------------
-	"ref": ROOM.REF.CORE_ROOM,
+	"ref": ROOM.REF.CORE_GEN_1,
 	"name": "CORE_ROOM",
 	"shortname": "CORE_ROOM",
 	"categories": [ROOM.CATEGORY.RESOURCES],
@@ -790,14 +794,8 @@ var CORE_ROOM:Dictionary = {
 	# ------------------------------------------
 	"costs": {
 		"unlock": 100,
-		"purchase": 200,
+		"purchase": 300,
 	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -808,6 +806,154 @@ var CORE_ROOM:Dictionary = {
 	# ------------------------------------------	
 }
 
+
+var MONEY_GEN_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MONEY_GEN_2,	
+	"name": "MONEY_GEN_2",
+	"shortname": "MONEY_GEN_2",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "+50 MONEY when placed adjacent to other MONEY_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------		
+}
+
+var RESEARCH_GEN_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.RESEARCH_GEN_2,	
+	"name": "RESEARCH_GEN_2",
+	"shortname": "RESEARCH_GEN_2",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "+25 RESEARCH when placed adjacent to other RESEARCH_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------		
+}
+
+var MATERIAL_GEN_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MATERIAL_GEN_2,	
+	"name": "MATERIAL_GEN_2",
+	"shortname": "MATERIAL_GEN_2",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "+10 MATERIAL when placed adjacent to other MATERIAL_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------		
+}
+
+var CORE_GEN_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.CORE_GEN_2,	
+	"name": "CORE_GEN_2",
+	"shortname": "CORE_GEN_2",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "+1 CORE when placed adjacent to other CORE_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 300,
+	},
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------		
+}
 # ------------------------------------------------------------------------------ 
 #endregion
 
@@ -836,9 +982,65 @@ var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
+	"effect": {
+		"description": "Adds +5 available energy to the wing.",
+		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			var floor:int = _item.location.floor
+			var ring:int = _item.location.ring
+			var room:int = _item.location.room
+			var ring_config_data:Dictionary = _new_room_config.floor[floor].ring[ring]
+			_new_room_config.floor[floor].ring[ring].energy.available += 5
+			return _new_room_config,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------	
+}
+
+var ENERGY_SYPHON:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ENERGY_SYPHON,
+	"name": "ENERGY_SYPHON",
+	"shortname": "E.SYPHON",
+	"categories": [ROOM.CATEGORY.ENERGY],
+	"img_src": "res://Media/rooms/research_lab.jpg",
+	"description": "Any unused energy from the corresponding wing is available for this wing.  (0 <- 1, 1 <- 2, etc)",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	# ------------------------------------------	
+	
+	# ------------------------------------------
+	"costs": {
+		"unlock": 50,
+		"purchase": 100,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"effect": {
+		"description": "Syphons unused energy from neighboring wings.",
+		"after_func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			var floor:int = _item.location.floor
+			var ring:int = _item.location.ring
+			var room:int = _item.location.room
+			var ring_config_data:Dictionary = _new_room_config.floor[floor].ring[ring]
+			var adjacent_ring:int = U.min_max(ring + 1, 0, 3, true)
+			var adjacent_energy:Dictionary = _new_room_config.floor[floor].ring[adjacent_ring].energy
+			var syphon_amount:int = adjacent_energy.available - adjacent_energy.used
+
+			_new_room_config.floor[floor].ring[adjacent_ring].energy.available = adjacent_energy.used
+			_new_room_config.floor[floor].ring[ring].energy.available += syphon_amount
+			return _new_room_config,
+	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -1092,6 +1294,7 @@ var SP_CLINIC:Dictionary = {
 # -----------------------------------	
 var list:Array[Dictionary] = [
 	DEBUG_ROOM,
+	
 	# --------------- SPECIALS
 	DIRECTORS_OFFICE, 
 	HQ, 
@@ -1110,13 +1313,16 @@ var list:Array[Dictionary] = [
 	STANDARD_CONTAINMENT_CELL, 
 	
 	# --------------- RESOURCES
-	AERD, RESEARCH_LAB, ENGINEERING_BAY, CORE_ROOM,
+	MONEY_GEN_1,			MONEY_GEN_2,
+	RESEARCH_GEN_1,		RESEARCH_GEN_2,
+	MATERIAL_GEN_1,		MATERIAL_GEN_2,
+	CORE_GEN_1,			CORE_GEN_2,
 	
 	# --------------- RECRUITMENT
 	PRISONER_BLOCK, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
 	
 	# --------------- ENERGY
-	ENERGY_STORAGE,
+	ENERGY_STORAGE, ENERGY_SYPHON,
 	
 	# --------------- UTILITY
 	UI_ASSIST, WEAPONS_RANGE, SCRANTON_REALITY_ANCHOR,

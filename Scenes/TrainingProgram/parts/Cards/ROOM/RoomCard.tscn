@@ -89,6 +89,7 @@ is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="CostPanel" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage" instance=ExtResource("4_8cpo2")]
+visible = false
 layout_mode = 2
 title = "TITLE"
 icon = 31
@@ -160,6 +161,7 @@ is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="VibesContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 2
 
@@ -184,6 +186,65 @@ layout_mode = 2
 title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
+
+[node name="EffectContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer/HBoxContainer" instance=ExtResource("7_esvi2")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer/HBoxContainer"]
+layout_mode = 2
+text = "EFFECT"
+label_settings = ExtResource("8_f84t7")
+
+[node name="EffectDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer" instance=ExtResource("3_uk1cn")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 3
+is_small = true
+content = "Effect description"
+center_text = true
+title = ""
+is_left_side = false
+border_color = Color(0.3672, 0.378, 0.9, 1)
+
+[node name="ContainmentTypes" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes/HBoxContainer" instance=ExtResource("7_esvi2")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes/HBoxContainer"]
+layout_mode = 2
+text = "CONTAINMENT TYPE"
+label_settings = ExtResource("8_f84t7")
+
+[node name="ContainmentDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes" instance=ExtResource("3_uk1cn")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 3
+is_small = true
+content = "PHYSICAL"
+center_text = true
+title = ""
+is_left_side = false
+border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vjof")

@@ -113,6 +113,7 @@ func update() -> void:
 			#
 	# energy
 	Energy.amount = ring_config_data.energy.available - ring_config_data.energy.used
+	Energy.max_amount = ring_config_data.energy.available
 	EnergyTag.val = str(-summary_data.energy_diff)			
 
 	# update specilists

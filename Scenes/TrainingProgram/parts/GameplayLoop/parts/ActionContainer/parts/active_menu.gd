@@ -17,9 +17,8 @@ extends Control
 @onready var List:VBoxContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/List
 
 const MenuBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
-const LabelSettingPreload:LabelSettings = preload("res://Fonts/game/label_small_thick.tres")
 
-const LIST_SIZE:int = 4
+var list_size:int = 5
 
 var tab_index:int = 0 : 
 	set(val):
@@ -54,12 +53,6 @@ var retain_height:bool = true
 var render_table:Dictionary
 var lookup_index:int = 0
 
-
-var hint_border_color:Color = Color(0.337, 0.275, 1.0) : 
-	set(val):
-		hint_border_color = val
-		on_hint_border_color_update()
-
 var control_pos_default:Dictionary
 var control_pos:Dictionary
 
@@ -90,7 +83,6 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
-	on_hint_border_color_update()
 	BtnControls.reveal(false, true)
 	#CardBody.reveal = false
 	GBL.direct_ref["ActiveMenu"] = CardBody
@@ -105,6 +97,7 @@ func _ready() -> void:
 	
 	BtnControls.onUpdate = func(node:Control) -> void:
 		BtnControls.offset = CardBody.global_position + Vector2(10, 15)
+		selected_index = node.index
 		for index in List.get_child_count():
 			var btn:Control = List.get_child(index)
 			btn.is_selected = btn == node
@@ -112,16 +105,20 @@ func _ready() -> void:
 				SelectedNode = node
 				onUpdate.call(options_list[tab_index].items[index])	
 				
+				
 	
 	BtnControls.directional_pref = "UD"
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func activate() -> void:
+func activate(new_list_size:int = 4) -> void:
 	await U.tick()
 	var duration:float = 0
 	
 	control_pos_default[MenuPanel] = MenuPanel.position
+	list_size = new_list_size
+	
+	List.custom_minimum_size.y = list_size * 50
 
 	await U.tick()
 	control_pos[MenuPanel] = {
@@ -179,46 +176,21 @@ func update_checkbox_option(index:int, is_checked:bool) -> void:
 	
 func on_selected_index_update() -> void:
 	if !is_node_ready() or List.get_child_count() == 0:return
-	#for index in List.get_child_count():
-		#if index == selected_index:
-			##Input.warp_mouse(btn_node.global_position + CardBody.global_position)
-			#onUpdate.call(options_list[tab_index].items[index])	
-			#update_hint(options_list[tab_index].items[index])
-
-func update_hint(item:Dictionary) -> void:
-	pass
-	#if "hint" in item:
-		#HintTitle.text = item.title
-		#HintIcon.icon = item.hint.icon
-		#HintDesription.text = item.hint.description
-		#await U.tick()
-		#HintControl.show()
-	#else:
-		#HintControl.hide()
-
-
-func on_hint_border_color_update() -> void:
-	if !is_node_ready():return
-	#var new_stylebox:StyleBoxFlat = HintContainer.get_theme_stylebox('panel').duplicate()
-	#new_stylebox.border_color = hint_border_color		
-	#HintContainer.add_theme_stylebox_override('panel', new_stylebox)	
+	check_list_limit()	
 
 func on_tab_index_update() -> void:
+	if !is_node_ready():return
 	on_options_list_update()
-	await U.tick()
-	#for index in PaginationList.get_child_count():		
-		#var LabelNode:Label = PaginationList.get_child(index) 
-		#LabelNode.modulate = Color(1, 1, 1, 1 if index == tab_index else 0.5)
-		
-	# create a render table
-	await U.tick()
+
 	render_table = {}
 	var count:int = 0
-	for index in range(ceili(options_list[tab_index].items.size() / LIST_SIZE) + 1):
+	for index in range(ceili(options_list[tab_index].items.size() / list_size) + 1):
 		render_table[index] = []
-		for n in range(count, count + LIST_SIZE):
+		for n in range(count, count + list_size):
 			render_table[index].append(n)
 			count += 1
+
+	await U.tick()
 	check_list_limit()	
 
 
@@ -267,7 +239,7 @@ func on_options_list_update() -> void:
 			btn_node.hint_icon = item.hint.icon if item.has("hint") and item.hint.has("icon") else ""
 			btn_node.hint_title = item.hint.title if item.has("hint") and item.hint.has("title") else ""
 
-			if index >= LIST_SIZE:
+			if index >= list_size:
 				btn_node.hide()
 			
 			List.add_child(btn_node)
@@ -286,15 +258,15 @@ func on_options_list_update() -> void:
 		
 func check_list_limit() -> void:
 	for table_index in render_table:
-		if selected_index in  render_table[table_index]:
+		if selected_index in render_table[table_index]:
 			lookup_index = table_index
 			break
-
+	
 	for i in List.get_child_count():
 		var item_node:Control = List.get_child(i)
 		item_node.show() if i in render_table[lookup_index] else item_node.hide()
-		
-	Footerlabel.text = str(lookup_index + 1, "/", render_table.size()) 
+	
+	Footerlabel.text = str(lookup_index + 1, "/", ceili(options_list[tab_index].items.size() * 1.0 / list_size * 1.0) ) 
 
 		
 
@@ -326,12 +298,10 @@ func on_key_press(key:String) -> void:
 		match key:
 			"A":
 				tab_index = U.min_max(tab_index - 1, 0, options_list.size() - 1)
-				await U.tick()
 				selected_index = 0
 				
 			"D":
 				tab_index = U.min_max(tab_index + 1, 0, options_list.size() - 1)
-				await U.tick()
 				selected_index = 0
 # ------------------------------------------------------------------------------
 

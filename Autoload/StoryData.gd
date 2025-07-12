@@ -7,11 +7,19 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"Story section 1"
+			"D-Class 313202, you're finally awake.  My name is Researcher Ambrose and I'm in charge of researching this... thing in front of you.",
+			"Lets start with the good news.  Your job is is extremely simple.  That computer in front of you has some software on it.",
+			"To be really precise, it's the one called Site Director Training Program.",
+			"All you need to do is learn it. Master it. And eventually complete it. That's it.",
+			"You do this for us and we set you free.  Simple as that.",
+			"Now for the bad news.",
+			"You don't comply or you take too long, the bomb attached to your neck detonates.",
+			"It's nothing personal.  We just don't have all day.",
+			"Well... that's it.  Get to it."
 		],
 		"objectives": {
 			"title": "SETUP",
-			"complete_by_day": 20,
+			"complete_by_day": 2,
 			"required":[
 				{
 					"custom": {
@@ -40,8 +48,13 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"Story section 2"
-		],
+			"You've probably already figured this out, but I'm not actually here.  These messages are just recordings.",
+			"Yeah, I know, it's a bit impersonal but it's not like you'd have much to say anyway.",
+			"You see we wiped your memory before we started.  I can't really explain why, you're just going to have to go with it.",
+			"But hey, if you beat this game you'll get your memory back guaranteed.",
+			"For most that's a good enough motivation to finish.",
+			"But you... you're special."
+		],			
 		"objectives": {
 			"title": "SETUP",
 			"complete_by_day": 4,
@@ -126,8 +139,15 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"objectives": {
-			"title": "STAFF UP STAFFING",
-			"complete_by_day": 7,
+			"title": "STAFF UP",
+			"story_message": [
+				"Congratulations D-Class 313202, seems like you're getting the hang of it.",
+				"Now... you've probably noticed that this computer will... lie to you.",
+				"You cannot trust what it says.  Like at all.  It lies a lot.  That's its one defining trait.",
+				"Just focus on beating that game for now.",
+				"It will not make that goal easy."
+			],			
+			"complete_by_day": 10,
 			"required":[
 				# --------------------- CRITERIA BASED OBJECTIVES
 				{
@@ -198,49 +218,12 @@ var chapters:Array = [
 		],
 	},
 	# ----------------------------------------------------------------------------------------------	
-	
-	
-	# ----------------------------------------------------------------------------------------------
-	{
-		"objectives": {
-			"title": "SETUP ECONOMY",
-			"complete_by_day": 14,
-			"required":[
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1000,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.MONEY
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 500,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.SCIENCE
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 250,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.MATERIAL
-					},
-				},
-			],
-			
-		},
-	},
-	# ----------------------------------------------------------------------------------------------		
-	
+
 	# ----------------------------------------------------------------------------------------------
 	{
 		"objectives": {
 			"title": "CONTAIN AN SCP",
-			"complete_by_day": 28,
+			"complete_by_day": 15,
 			"required":[
 				{
 					"criteria": {
@@ -275,7 +258,54 @@ var chapters:Array = [
 			
 		},
 	},
-	# ----------------------------------------------------------------------------------------------			
+	# ----------------------------------------------------------------------------------------------		
+	
+	
+	
+	# ----------------------------------------------------------------------------------------------
+	{
+		"objectives": {
+			"title": "GATHER RESOURCES",
+			"complete_by_day": 25,
+			"required":[
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1000,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 500,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.SCIENCE
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 250,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MATERIAL
+					},
+				},
+				{
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 20,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.CORE
+					},
+				},				
+			],
+			
+		},
+	},
+	# ----------------------------------------------------------------------------------------------		
+			
 ];
 
 

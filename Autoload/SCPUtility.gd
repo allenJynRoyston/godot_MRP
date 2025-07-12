@@ -40,6 +40,17 @@ var SCP_TEMPLATE:Dictionary = {
 		RESOURCE.METRICS.READINESS: 0,
 	},	
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"effect": {},
+	#{
+		#"description": "Effect description",
+		#"effect": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			#return _new_room_config,
+		#"after_effect": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			#return _new_room_config,
+	#},	
+	# ------------------------------------------
 
 	# ------------------------------------------
 	"event": {
@@ -660,6 +671,18 @@ func staff_is_killed(scp_details:Dictionary, staff_details:Dictionary) -> Dictio
 		}
 	}
 # -----------------------------------------------------------
+
+# -----------------------------------------------------------
+func get_containment_type_str(types_arr:Array) -> String:
+	var str:String = ""
+	for i in types_arr.size():
+		var ref = types_arr[i]
+		str += SCP.return_type_data(ref).name
+		if i < types_arr.size() - 1:
+			str += ", "
+	return str
+# -----------------------------------------------------------
+
 
 # ---------------------------------------------	FOR EVENTS
 #enum OPTION {CURRENCY}

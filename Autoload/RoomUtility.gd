@@ -23,6 +23,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"requires_unlock": true,	
 	"own_limit": 99,
 	"unlock_level": 0,
+	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],	
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -32,13 +33,14 @@ var ROOM_TEMPLATE:Dictionary = {
 	},
 	# ------------------------------------------	
 	
-	# ------------------------------------------
-	
-	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],
-	"required_support": [
-		# RESOURCE.PERSONNEL.STAFF
-	],	
-	# ------------------------------------------
+	# ------------------------------------------	
+	"effect": {},
+	 #{
+		#"description": "",
+		#"func": func(new_room_config:Dictionary) -> void:
+			#pass,
+	#},
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"abilities": func() -> Array: 
@@ -292,10 +294,11 @@ func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary
 func get_unlocked_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
 	# start list with everything that's unlocked
 	var ref_list:Array = shop_unlock_purchases 
+	var debug_make_all_available:bool = DEBUG.get_val(DEBUG.GAMPELAY_ALL_ROOMS_AVAILABLE) 
 	
 	# then add the anything that doesn't require an unlock
 	for ref in reference_data:
-		if !reference_data[ref].requires_unlock:
+		if !reference_data[ref].requires_unlock or debug_make_all_available:
 			ref_list.push_back(ref)
 	
 	# weed out duplicates
@@ -342,3 +345,29 @@ func at_own_limit(ref:int) -> bool:
 	
 	return total_count >= room_data.own_limit
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------	
+func find_adjacent_rooms(room:int) -> Array:
+	match room:
+		0:
+			return [1, 2]
+		1:
+			return [0, 3, 4]
+		2:
+			return [0, 4, 5]
+		3:
+			return [1, 6]
+		4:
+			return [2, 6, 1, 7]
+		5:
+			return [2, 7]
+		6:
+			return [4, 3, 8]
+		7:
+			return [5, 8, 4]
+		8:
+			return [7, 6]
+		_:
+			return []
+# ------------------------------------------------------------------------------	

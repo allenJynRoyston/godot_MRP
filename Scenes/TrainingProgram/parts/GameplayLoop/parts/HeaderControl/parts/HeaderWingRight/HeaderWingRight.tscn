@@ -81,7 +81,7 @@ alignment = 1
 [node name="Energy" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_12da0")]
 layout_mode = 2
 icon = 32
-max_amount = 5
+max_amount = 10
 burn_val = "000"
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]

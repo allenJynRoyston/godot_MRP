@@ -159,6 +159,25 @@ title = "CURRENTLY INERT"
 icon = 29
 v_offset = 40
 
+[node name="BreachChanceContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/BreachChanceContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/BreachChanceContainer/HBoxContainer"]
+layout_mode = 2
+text = "BREACH CHANCE:"
+label_settings = ExtResource("6_50nll")
+
+[node name="BreachChanceLabel" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer/CardDrawerImage/BreachChanceContainer/HBoxContainer"]
+layout_mode = 2
+text = "40%"
+label_settings = ExtResource("6_50nll")
+
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/DetailsContainer"]
 z_index = 1
 layout_mode = 2
@@ -210,6 +229,7 @@ is_left_side = true
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="VibesContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer"]
@@ -251,11 +271,11 @@ layout_mode = 2
 text = "EFFECT"
 label_settings = ExtResource("6_50nll")
 
-[node name="CardDrawerEffect" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectsContainer" instance=ExtResource("11_y252v")]
+[node name="EffectDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectsContainer" instance=ExtResource("11_y252v")]
 layout_mode = 2
 size_flags_vertical = 3
 is_small = true
-content = "Description goes here..."
+content = "effect description"
 center_text = true
 title = ""
 border_color = Color(0.735717, 0.247227, 0.9, 1)
@@ -283,6 +303,33 @@ is_small = true
 content = "KETER"
 center_text = true
 title = "ITEM CLASS"
+border_color = Color(0.735717, 0.247227, 0.9, 1)
+
+[node name="ContainmentTypeRequired" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired/HBoxContainer" instance=ExtResource("5_a1y1b")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired/HBoxContainer"]
+layout_mode = 2
+text = "classification"
+label_settings = ExtResource("6_50nll")
+
+[node name="ContainmentTypeDescription" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired" instance=ExtResource("11_y252v")]
+layout_mode = 2
+size_flags_vertical = 3
+is_small = true
+content = "effect description"
+center_text = true
+title = ""
 border_color = Color(0.735717, 0.247227, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]

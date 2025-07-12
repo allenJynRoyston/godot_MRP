@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=28 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
@@ -10,7 +10,7 @@
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="7_td1l6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="8_oju27"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="9_n5dpn"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="9_n5dpn"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="11_8spmr"]
 [ext_resource type="PackedScene" uid="uid://hmrs6dblpe7k" path="res://UI/ResourceRequiredFloatingPanel/ResourceRequiredFloatingPanel.tscn" id="11_fi0y4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
@@ -29,6 +29,22 @@ viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/SubViewpor
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1e555"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_oju27"]
+font = ExtResource("9_n5dpn")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_td1l6"]
+font = ExtResource("9_n5dpn")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dpn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -189,7 +205,7 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
 text = "something goes here"
-label_settings = ExtResource("9_n5dpn")
+label_settings = SubResource("LabelSettings_oju27")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
@@ -198,7 +214,7 @@ visible_characters_behavior = 1
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-label_settings = ExtResource("9_n5dpn")
+label_settings = SubResource("LabelSettings_td1l6")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1

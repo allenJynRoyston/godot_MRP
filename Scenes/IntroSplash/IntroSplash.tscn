@@ -36,7 +36,7 @@ color = Color(0, 0, 0, 0.917647)
 
 [node name="Splash" parent="." instance=ExtResource("2_rj601")]
 layout_mode = 2
-title = "COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING COGNITOHZARD WARNING"
+title = "YOU ARE IN DANGER"
 v_offset = 200
 
 [node name="CenterContainer" type="CenterContainer" parent="."]

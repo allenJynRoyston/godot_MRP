@@ -332,7 +332,9 @@ func start(start_at_ring_level:bool = false) -> void:
 	TutorialBtn.onClick = func() -> void:
 		freeze_inputs = true
 		await lock_actions(true)
-		await GAME_UTIL.start_tutorial()
+		print('load previous message')
+		await U.tick()
+		#await GAME_UTIL.start_tutorial()
 		lock_actions(false)
 		freeze_inputs = false
 	# -------------------------------------
@@ -539,7 +541,6 @@ func show_build_options() -> void:
 		# disable/enable btn
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
-		ActiveMenuNode.hint_border_color = Color.RED if !can_afford else Color(0.337, 0.275, 1.0)
 
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
@@ -566,7 +567,7 @@ func show_build_options() -> void:
 	
 	# ACTIVATE NODE
 	add_child(ActiveMenuNode)
-	await ActiveMenuNode.activate()
+	await ActiveMenuNode.activate(4)
 	ActiveMenuNode.open(true)	
 
 # --------------------------------------------------------------------------------------------------
@@ -775,7 +776,7 @@ func show_facility_updates() -> void:
 						if is_powered:
 							confirm = await GAME_UTIL.create_warning("Remove power from floor %s" % current_location.floor, "Rooms on this floor will be deactivated and any SCP's contained here a be at risk of breaking containment.", "res://Media/images/Defaults/stop_sign.png")						
 						else:
-							confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "" , "", costs)
+							confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "All rings will become usable." , "res://Media/images/Defaults/lightbulb_on.jpg", costs)
 						
 						if confirm:
 							ActiveMenuNode.close()
@@ -990,7 +991,7 @@ func show_settings() -> void:
 	
 	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
 	
-	await ActiveMenuNode.activate()
+	await ActiveMenuNode.activate(3)
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 

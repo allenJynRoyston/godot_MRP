@@ -33,9 +33,12 @@ func _ready() -> void:
 			await ActionContainerNode.before_use()
 			
 			var scp_ref:int = await GAME_UTIL.select_scp_to_contain()
-			await GAME_UTIL.trigger_initial_containment_event(scp_ref)
-
+			
+			if scp_ref != -1:
+				await GAME_UTIL.trigger_initial_containment_event(scp_ref)
+			
 			await ActionContainerNode.after_use()	
+			
 			# unlocks
 			onUnlock.call()			
 	

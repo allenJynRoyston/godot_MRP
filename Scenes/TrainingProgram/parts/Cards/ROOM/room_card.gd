@@ -22,6 +22,12 @@ extends MouseInteractions
 @onready var VibesContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer/CardDrawerVibes
 
+@onready var EffectContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer
+@onready var EffectDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EffectContainer/EffectDescription
+
+@onready var ContainmentTypeContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes
+@onready var ContainmentDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes/ContainmentDescription
+
 # back
 @onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
 
@@ -228,12 +234,20 @@ func on_ref_update() -> void:
 	CardDrawerVibes.show()
 	VibesContainer.hide() if hide_metrics else VibesContainer.show()
 	
+	# -----------
 	CardDrawerCurrency.preview_mode = preview_mode
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
 	CardDrawerCurrency.list = currency_list	
 	CardDrawerCurrency.show()
 	CurrencyContainer.hide() if hide_currency else CurrencyContainer.show()
+
+	# -----------
+	EffectDescription.content = room_details.effect.description if !room_details.effect.is_empty() else ""
+	EffectContainer.show() if !room_details.effect.is_empty() else EffectContainer.hide()
+	
+	ContainmentDescription.content = SCP_UTIL.get_containment_type_str(room_details.containment_properties) if !room_details.is_empty() else ""
+	ContainmentTypeContainer.show() if !room_details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 
 	# panels
 	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()

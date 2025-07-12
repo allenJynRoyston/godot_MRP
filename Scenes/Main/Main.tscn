@@ -179,6 +179,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+reset_userprofile_save = true
+audio_mute = true
 skip_splash = true
 skip_intro = true
 intro_skip_logo = true
@@ -195,7 +197,13 @@ start_at_ring_level = true
 skip_objectives = true
 enable_scp_debug = true
 max_energy = false
-all_personnel = true
+all_rooms_available = true
+all_resources = true
+skip_contained_events = true
+staff_debug = true
+mtf_alpha = true
+mtf_bravo = true
+mtf_delta = true
 
 [node name="OS" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

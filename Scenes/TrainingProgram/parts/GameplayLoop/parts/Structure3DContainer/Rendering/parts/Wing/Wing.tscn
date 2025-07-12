@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
 [ext_resource type="Material" uid="uid://cadagoadb5vbl" path="res://CanvasShader/Dissolve/Dissolve.tres" id="2_6ohhd"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_i1dve"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_6ohhd"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
+[ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
 [ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="6_iutnv"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="7_v5pir"]
@@ -460,7 +460,7 @@ pixel_size = 0.03
 shaded = true
 double_sided = false
 text = "Everything is fine."
-font = ExtResource("3_6ohhd")
+font = ExtResource("4_i1dve")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
 size = Vector2i(2090, 550)
@@ -773,7 +773,7 @@ pixel_size = 0.03
 shaded = true
 double_sided = false
 text = "Everything is fine."
-font = ExtResource("3_6ohhd")
+font = ExtResource("4_i1dve")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
 size = Vector2i(2090, 550)
@@ -1164,7 +1164,7 @@ spot_angle_attenuation = 1.6245
 transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -24.8661, 22.2572, -23.9335)
 projection = 1
 current = true
-size = 21.0
+size = 30.179
 near = 0.007
 far = 333.67
 
