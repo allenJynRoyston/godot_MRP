@@ -1,7 +1,6 @@
-[gd_scene load_steps=24 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=23 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
-[ext_resource type="Material" uid="uid://cadagoadb5vbl" path="res://CanvasShader/Dissolve/Dissolve.tres" id="2_6ohhd"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_i1dve"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
@@ -108,16 +107,6 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_u0dki")
-stretch_mode = 6
-
-[node name="TransitionRect" type="TextureRect" parent="."]
-material = ExtResource("2_6ohhd")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 stretch_mode = 6
 
 [node name="SubViewport" type="SubViewport" parent="."]

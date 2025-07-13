@@ -3,6 +3,11 @@ extends Control
 @onready var TransitionRect:TextureRect = $TransitionRect
 @onready var RenderSubviewport:SubViewport = $SubViewport
 @onready var BGColorRect:ColorRect = $ColorRect
+@onready var MainViewportTexture:TextureRect = $MainViewportTexture
+
+@onready var BorderControl:Control = $BorderControl
+@onready var TopLeftBorder:PanelContainer = $BorderControl/TopLeft
+@onready var BottomRightBorder:PanelContainer = $BorderControl/BottomRight
 
 @onready var OverviewScene:Node3D = $SubViewport/Rendering/OverviewScene
 @onready var OverviewCamera:Camera3D = $SubViewport/Rendering/OverviewScene/OverviewCamera
@@ -12,21 +17,35 @@ extends Control
 @onready var WingScene:Node3D = $SubViewport/Rendering/WingScene
 @onready var WingCamera:Camera3D = $SubViewport/Rendering/WingScene/WingCamera
 @onready var WingSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SubViewport
-@onready var WingNode:Control = $SubViewport/Rendering/WingScene/SubViewport/WingNode
+@onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
+@onready var WingTransitionFloor:Control = $SubViewport/Rendering/WingScene/SubViewport2/WingTransitionFloor
 
 @onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
 @onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
 @onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
 @onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
 
+@onready var TopPanel:PanelContainer = $Top/PanelContainer
+@onready var TopMargin:MarginContainer = $Top/PanelContainer/MarginContainer
+@onready var BottomPanel:PanelContainer = $Bottom/PanelContainer
+@onready var BottomMargin:MarginContainer = $Bottom/PanelContainer/MarginContainer
+@onready var CenterPanel:PanelContainer = $Center/PanelContainer
+@onready var CenterMargin:MarginContainer = $Center/PanelContainer/MarginContainer
+
+var current_location:Dictionary = {}
 var camera_settings:Dictionary = {} 
+var control_pos:Dictionary = {}
 var previous_camera_type:int
 var material_dupe:ShaderMaterial
+
+var previous_floor:int = -1
+var previous_ring:int = 0
 
 # ------------------------------------------------
 func _init() -> void:
 	GBL.register_node(REFS.RENDERING, self)
 	GBL.subscribe_to_process(self)
+	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_audio_data(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	
@@ -34,6 +53,7 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.RENDERING)
 	GBL.unsubscribe_to_process(self)
 	
+	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_audio_data(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	
@@ -71,19 +91,15 @@ func enable_wing(state:bool) -> void:
 	if state:
 		transition()
 		WingScene.show()
-		WingNode.show()
-		WingNode.set_process(true)
+		WingCurrentFloor.show()
+		WingTransitionFloor.show()
+		WingCurrentFloor.set_process(true)
 		WingCamera.make_current()
-		
-		#WingNode.camera_rotate_right()
-		#await U.set_timeout(1.0)
-		#WingNode.camera_rotate_left()
-		#await U.set_timeout(1.0)
-		#WingNode.camera_center()
 	else:
 		WingScene.hide()
-		WingNode.hide()
-		WingNode.set_process(false)
+		WingCurrentFloor.hide()
+		WingTransitionFloor.hide()
+		WingCurrentFloor.set_process(false)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -101,14 +117,103 @@ func enable_generator(state:bool) -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
+func shift_vertically(state:bool, duration:float, current_location:Dictionary) -> void:
+	var distance:int = MainViewportTexture.size.y
+	const pixel_size_a:float = 0.0013
+	const pixel_size_b:float = 0.0012
+	const border_size:int = 200
+	
+	TopLeftBorder.position = Vector2(-border_size, -border_size)
+	BottomRightBorder.position = Vector2(border_size, border_size)
+
+	TopLeftBorder.show()
+	BottomRightBorder.show()
+	WingTransitionFloor.show()
+
+	WingCurrentFloor.set_current_location( current_location )
+	WingTransitionFloor.set_current_location(  {"floor": U.min_max(current_location.floor + (1 if !state else -1), 0, 6, true), "ring": current_location.ring, "room": current_location.room} )	
+		
+	WingCurrentFloor.position = Vector2(0, distance if !state else -distance)
+	WingTransitionFloor.position = Vector2(0, 0)
+	
+	
+	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_b, 0.1, func(val:float) -> void:
+		for sprite in WingCamera.get_children():
+			sprite.pixel_size = val
+	)			
+
+	U.tween_node_property(TopLeftBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
+	U.tween_node_property(BottomRightBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
+
+	U.tween_node_property(WingCurrentFloor, "position:y", 0, duration, 0, Tween.TRANS_SINE)
+	await U.tween_node_property(WingTransitionFloor, "position:y", distance if state else -distance, duration, 0, Tween.TRANS_SINE)
+
+	
+	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_a, 0.1, func(val:float) -> void:
+		for sprite in WingCamera.get_children():
+			sprite.pixel_size = val
+	)	
+
+
+	U.tween_node_property(TopLeftBorder, "position", Vector2(-border_size, -border_size), 0.1, 0, Tween.TRANS_SINE)
+	U.tween_node_property(BottomRightBorder, "position", Vector2(border_size, border_size), 0.1, 0, Tween.TRANS_SINE)
+
+	WingTransitionFloor.hide()
+# ------------------------------------------------
+
+# ------------------------------------------------
+func shift_horizontally(state:bool, duration:float, current_location:Dictionary) -> void:
+	var distance:int = MainViewportTexture.size.x 
+	const pixel_size_a:float = 0.0013
+	const pixel_size_b:float = 0.0012
+	const border_size:int = 200
+		
+	TopLeftBorder.position = Vector2(-border_size, -border_size)
+	BottomRightBorder.position = Vector2(border_size, border_size)
+
+	TopLeftBorder.show()
+	BottomRightBorder.show()
+	WingTransitionFloor.show()
+
+	WingCurrentFloor.set_current_location( current_location )
+	WingTransitionFloor.set_current_location(  {"floor": U.min_max(current_location.floor + (1 if !state else -1), 0, 6, true), "ring": current_location.ring, "room": current_location.room} )	
+	
+	WingCurrentFloor.position = Vector2(distance if !state else -distance, 0)
+	WingTransitionFloor.position = Vector2(0, 0)
+	
+	
+	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_b, 0.1, func(val:float) -> void:
+		for sprite in WingCamera.get_children():
+			sprite.pixel_size = val
+	)			
+
+	U.tween_node_property(TopLeftBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
+	U.tween_node_property(BottomRightBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
+
+	U.tween_node_property(WingCurrentFloor, "position:x", 0, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
+	await U.tween_node_property(WingTransitionFloor, "position:x", distance if state else -distance, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
+
+	
+	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_a, 0.1, func(val:float) -> void:
+		for sprite in WingCamera.get_children():
+			sprite.pixel_size = val
+	)	
+
+
+	U.tween_node_property(TopLeftBorder, "position", Vector2(-border_size, -border_size), 0.1, 0, Tween.TRANS_SINE)
+	U.tween_node_property(BottomRightBorder, "position", Vector2(border_size, border_size), 0.1, 0, Tween.TRANS_SINE)
+
+	WingTransitionFloor.hide()
+# ------------------------------------------------
+
+# ------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
+	if !is_node_ready() or camera_settings.is_empty() or previous_camera_type == camera_settings.type:return
+	previous_camera_type = camera_settings.type
 	BGColorRect.material = material_dupe
 	var new_amount:float = 6.0
-		
-	GBL.add_to_animation_queue(self)
-	
+
 	match camera_settings.type:
 		# --------------------
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -137,8 +242,34 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		material_dupe.set_shader_parameter("zoom", val)
 	)	
 				
+	U.debounce(str(self.name, "_animate_wing"), animate_wing)
 
-	GBL.remove_from_animation_queue(self)
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_current_location_update(new_val:Dictionary) -> void:
+	current_location = new_val
+	U.debounce(str(self.name, "_animate_wing"), animate_wing)
+				#await reveal_panels(false, 0.3)
+
+# ------------------------------------------------
+
+# ------------------------------------------------
+func animate_wing() -> void:
+	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty():return
+	if camera_settings.type == CAMERA.TYPE.WING_SELECT or camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
+		if previous_floor != current_location.floor and !GBL.has_animation_in_queue():
+			GBL.add_to_animation_queue(self)
+			await shift_vertically(previous_floor > current_location.floor, 0.3, current_location)
+			GBL.remove_from_animation_queue(self)
+			
+		if previous_ring != current_location.ring:
+			GBL.add_to_animation_queue(self)
+			await shift_horizontally(previous_ring > current_location.ring, 0.3, current_location)
+			GBL.remove_from_animation_queue(self)
+			
+		previous_floor = current_location.floor
+		previous_ring = current_location.ring
 # ------------------------------------------------
 
 # ------------------------------------------------

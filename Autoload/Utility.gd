@@ -171,20 +171,20 @@ func tween_range(start_at:float, end_at:float, duration:float, callback:Callable
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func inc_floor() -> void:
-	current_location.floor = U.min_max(current_location.floor - 1, 0, room_config.floor.size() - 1, true)
+func inc_floor(wrap_around:bool = true) -> void:
+	current_location.floor = U.min_max(current_location.floor - 1, 0, room_config.floor.size() - 1, wrap_around)
 	SUBSCRIBE.current_location = current_location	
 	
-func dec_floor() -> void:
-	current_location.floor = U.min_max(current_location.floor + 1, 0, room_config.floor.size() - 1, true)
+func dec_floor(wrap_around:bool = true) -> void:
+	current_location.floor = U.min_max(current_location.floor + 1, 0, room_config.floor.size() - 1, wrap_around)
 	SUBSCRIBE.current_location = current_location
 	
-func inc_ring() -> void:
-	current_location.ring = U.min_max(current_location.ring + 1, 0, 3, true)
+func inc_ring(wrap_around:bool = true) -> void:
+	current_location.ring = U.min_max(current_location.ring + 1, 0, 3, wrap_around)
 	SUBSCRIBE.current_location = current_location	
 	
-func dec_ring() -> void:
-	current_location.ring = U.min_max(current_location.ring - 1, 0, 3, true)
+func dec_ring(wrap_around:bool = true) -> void:
+	current_location.ring = U.min_max(current_location.ring - 1, 0, 3, wrap_around)
 	SUBSCRIBE.current_location = current_location		
 # --------------------------------------------------------------------------------------------------	
 

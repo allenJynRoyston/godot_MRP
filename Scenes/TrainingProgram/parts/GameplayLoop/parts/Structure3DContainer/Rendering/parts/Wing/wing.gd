@@ -78,7 +78,6 @@ signal menu_response
 # --------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
-	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	GBL.subscribe_to_control_input(self)
@@ -86,7 +85,6 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
-	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 	GBL.unsubscribe_to_control_input(self)
@@ -107,7 +105,7 @@ func get_preview_viewport() -> SubViewport:
 
 
 # --------------------------------------------------------
-func on_current_location_update(new_val:Dictionary = current_location) -> void:
+func set_current_location(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
 	
@@ -127,27 +125,7 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 	if previous_floor != assigned_location.floor or previous_ring != assigned_location.ring:
 		if camera_tween != null and camera_tween.is_running():
 			camera_tween.stop()		
-			
-		if previous_floor < assigned_location.floor:
-			#MainCamera.rotation_degrees.x = default_camera_rotation.x + 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
-			transition()
-			
-		if previous_floor > assigned_location.floor:
-			#MainCamera.rotation_degrees.x = default_camera_rotation.x - 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)	
-			transition()
-			
-		if previous_ring > assigned_location.ring:
-			#MainCamera.rotation_degrees.y = default_camera_rotation.y - 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
-			transition()
-			
-		if previous_ring < assigned_location.ring:
-			#MainCamera.rotation_degrees.y = default_camera_rotation.y + 5
-			U.debounce(str(self.name, "_animate_camera"), animate_camera, 0.1)
-			transition()
-			
+
 		previous_floor = assigned_location.floor
 		previous_ring = assigned_location.ring
 		previous_emergency_mode = -1
@@ -155,11 +133,6 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		update_nodes()
 		#update_boards()		
 		update_room_lighting()	
-		
-	
-func animate_camera()-> void:
-	camera_tween = create_tween()	
-	#tween_node_property(camera_tween, MainCamera, 'rotation_degrees', default_camera_rotation, 0.3)
 # --------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -170,18 +143,6 @@ func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:
 	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
 	await tween.finished
 # --------------------------------------------------------------------------------------------------		
-
-# ------------------------------------------------
-func transition() -> void:
-	TransitionRect.show()
-	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
-	await U.tween_range(current_val, 1.0, 0.3, func(val:float) -> void:
-		TransitionRect.material.set_shader_parameter("sensitivity", val)
-	).finished	
-	TransitionRect.hide()
-	TransitionRect.material.set_shader_parameter("sensitivity", 0.0)
-# ------------------------------------------------
 
 # --------------------------------------------------------
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -374,7 +335,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			update_camera_size(35)
 		_:
-			update_camera_size(25)
+			update_camera_size(24)
 # --------------------------------------------------------
 
 # --------------------------------------------------------

@@ -7,7 +7,7 @@ extends GameContainer
 @onready var BtnControls:Control = $BtnControls
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
-@onready var ControllerOverlay:Control = $ControllerOverlay
+#@onready var ControllerOverlay:Control = $ControllerOverlay
 #  ---------------------------------------
 
 # NOTIFICATION
@@ -215,13 +215,13 @@ func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
 		btn.onClick = func() -> void:
-			ControllerOverlay.hide()
+			#ControllerOverlay.hide()
 			reveal_notification(false)
 			await lock_actions(true)
 			await GameplayNode.next_day()
 			reveal_notification(true)			
 			lock_actions(false)
-			ControllerOverlay.show()
+			#ControllerOverlay.show()
 	
 	# -------------------------------------
 	if !GameplayNode.is_tutorial:
@@ -268,7 +268,7 @@ func start(start_at_ring_level:bool = false) -> void:
 		show_generator_updates()
 		
 	FacilityActionBtn.onClick = func() -> void:
-		ControllerOverlay.show_directional = false
+		#ControllerOverlay.show_directional = false
 		reveal_floorpreview(false)
 		await lock_actions(true)
 		show_facility_updates()
@@ -298,14 +298,14 @@ func start(start_at_ring_level:bool = false) -> void:
 
 	
 	SettingsBtn.onClick = func() -> void:
-		ControllerOverlay.hide()
+		#ControllerOverlay.hide()
 		NameControl.hide()
 		reveal_notification(false)		
 		await lock_actions(true)
 		show_settings()
 		
 	HintInfoBtn.onClick = func() -> void:
-		ControllerOverlay.hide()
+		# ControllerOverlay.hide()
 		NameControl.hide()
 		GameplayNode.TimelineContainer.show_details(true)
 		reveal_notification(false)
@@ -326,7 +326,7 @@ func start(start_at_ring_level:bool = false) -> void:
 			reveal_notification(true)
 			lock_actions(false)
 			set_backdrop_state(false)
-			ControllerOverlay.show()
+			# ControllerOverlay.show()
 			NameControl.show()
 	
 	TutorialBtn.onClick = func() -> void:
@@ -1039,8 +1039,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
-			ControllerOverlay.hide()
-			ControllerOverlay.show_directional = false
+			#ControllerOverlay.hide()
+			#ControllerOverlay.show_directional = false
 			
 			if camera_settings.is_locked:
 				reveal_floorpreview(false)
@@ -1058,8 +1058,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.WING_SELECT:
 			reveal_floorpreview(false)
 			NameControl.show()
-			ControllerOverlay.show()
-			ControllerOverlay.show_directional = true
+			#ControllerOverlay.show()
+			#ControllerOverlay.show_directional = true
 			
 			for panel in actionpanels:
 				if panel == WingActionPanel:
@@ -1074,8 +1074,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.GENERATOR:
 			reveal_floorpreview(false)
 			NameControl.hide()
-			ControllerOverlay.hide()			
-			ControllerOverlay.show_directional = false
+			#ControllerOverlay.hide()			
+			#ControllerOverlay.show_directional = false
 
 			for panel in actionpanels:
 				if panel == GenActionPanel:
@@ -1122,8 +1122,8 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		# -----------
 		MODE.ACTIONS:
 			NameControl.show()
-			ControllerOverlay.show_directional = true
-			WingActionBtn.is_disabled = !is_powered or in_lockdown
+			# ControllerOverlay.show_directional = true
+			WingActionBtn.is_disabled = !is_powered or in_lockdown or !is_powered
 			WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
 			
 			camera_settings.type = CAMERA.TYPE.WING_SELECT
@@ -1131,7 +1131,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		# -----------
 		MODE.INVESTIGATE:
 			NameControl.hide()
-			ControllerOverlay.show_directional = false
+			# ControllerOverlay.show_directional = false
 			
 			# update mouse
 			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size			
@@ -1295,7 +1295,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		MODE.NONE:
 			BtnControls.reveal(false)
 			RoomDetailsControl.reveal(false) 
-			ControllerOverlay.hide()
+			#ControllerOverlay.hide()
 			
 			reveal_new_message(false)
 			reveal_cardminipanel(false, duration)
@@ -1306,7 +1306,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 			BtnControls.reveal(false)
 			RoomDetailsControl.reveal(false) 
-			ControllerOverlay.show()
+			# ControllerOverlay.show()
 			
 			reveal_cardminipanel(false, duration)
 			await lock_actions(false)
@@ -1331,7 +1331,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			set_backdrop_state(true)	
 			
 			BtnControls.reveal(false)
-			ControllerOverlay.hide()
+			# ControllerOverlay.hide()
 			
 			reveal_action_controls(false)
 			reveal_cardminipanel(true)
@@ -1483,10 +1483,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
+	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
 	if current_mode == MODE.ABILITY:return
 	var key:String = input_data.key
-	is_busy = true
+	is_busy = true	
 	
 	match camera_settings.type:
 		# ----------------------------
@@ -1510,32 +1510,33 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match key:
 				# ----------------------------
 				"W":
-					U.inc_floor()
+					U.inc_floor(false)
 				# ----------------------------
 				"S":
-					U.dec_floor()
+					U.dec_floor(false)
 				# ----------------------------
 				"D":
-					U.inc_ring()
+					U.inc_ring(false)
 				# ----------------------------
 				"A":
-					U.dec_ring()
+					U.dec_ring(false)
 		# ----------------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			match key:
 				# ----------------------------
 				"W":
-					U.room_up()
+					U.room_up(true)
 				# ----------------------------
 				"S":
-					U.room_down()
+					U.room_down(true)
 				# ----------------------------
 				"D":
-					U.room_right()
+					U.room_right(true)
 				# ----------------------------
 				"A":
-					U.room_left()
+					U.room_left(true)
+	
+
 		
-	await U.set_timeout(0.1)
 	is_busy = false
 # --------------------------------------------------------------------------------------------------	

@@ -6,8 +6,8 @@ extends Control
 @onready var UpIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/VBoxContainer/IconBtn
 @onready var DownIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/VBoxContainer/IconBtn2
 
-@onready var FloorLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer/FloorLabel
-@onready var RingLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/HBoxContainer/RingLabel
+@onready var FloorLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer/FloorLabel
+@onready var RingLabel:Label = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer/RingLabel
 
 @export var show_directional:bool = false : 
 	set(val):
@@ -62,6 +62,7 @@ func fade_out ()-> void:
 	
 	tween_node_property(txt_tween_1, FloorLabel, "modulate", Color(1, 1, 1, 0), 0.2)
 	tween_node_property(txt_tween_2, RingLabel, "modulate", Color(1, 1, 1, 0), 0.2)	
+	
 
 func on_show_directionals_update() -> void:
 	if !is_node_ready():return
