@@ -10,7 +10,7 @@
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="7_td1l6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="8_oju27"]
-[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="9_n5dpn"]
+[ext_resource type="FontFile" uid="uid://cl0rds8hm0r81" path="res://Fonts/m5x7.ttf" id="9_n5dpn"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="11_8spmr"]
 [ext_resource type="PackedScene" uid="uid://hmrs6dblpe7k" path="res://UI/ResourceRequiredFloatingPanel/ResourceRequiredFloatingPanel.tscn" id="11_fi0y4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
@@ -30,21 +30,25 @@ viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/SubViewpor
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_oju27"]
+[sub_resource type="LabelSettings" id="LabelSettings_n5dpn"]
+line_spacing = -5.0
 font = ExtResource("9_n5dpn")
-font_size = 24
+font_size = 42
 font_color = Color(0, 0, 0, 1)
-outline_color = Color(0, 0, 0, 0.615686)
+outline_color = Color(0.331019, 0.331019, 0.331019, 1)
 shadow_size = 0
-shadow_offset = Vector2(2, 2)
+shadow_color = Color(0, 0, 0, 0.388235)
+shadow_offset = Vector2(0, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_td1l6"]
+[sub_resource type="LabelSettings" id="LabelSettings_oju27"]
+line_spacing = -5.0
 font = ExtResource("9_n5dpn")
-font_size = 24
+font_size = 42
 font_color = Color(0, 0, 0, 1)
-outline_color = Color(0, 0, 0, 0.615686)
+outline_color = Color(0.331019, 0.331019, 0.331019, 1)
 shadow_size = 0
-shadow_offset = Vector2(2, 2)
+shadow_color = Color(0, 0, 0, 0.388235)
+shadow_offset = Vector2(0, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dpn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -156,7 +160,7 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(550, 0)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -204,8 +208,8 @@ modulate = Color(1, 1, 1, 0.376471)
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-text = "something goes here"
-label_settings = SubResource("LabelSettings_oju27")
+text = "The quick brown fox jumps over the fence."
+label_settings = SubResource("LabelSettings_n5dpn")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
@@ -214,7 +218,7 @@ visible_characters_behavior = 1
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-label_settings = SubResource("LabelSettings_td1l6")
+label_settings = SubResource("LabelSettings_oju27")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
@@ -251,7 +255,7 @@ size_flags_horizontal = 3
 [node name="OptionListContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
 [node name="NoteContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer"]
 visible = false
@@ -276,8 +280,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_wycer")
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 4
 theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
+theme_override_constants/margin_top = 110
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
@@ -291,7 +296,8 @@ reveal = false
 layout_mode = 2
 show_researcher_card = false
 show_scp_card = false
-hide_next_prev_btns = true
+disable_inputs = true
+disable_location = true
 preview_mode = true
 
 [node name="ResourceRequiredFloatingPanel" parent="." instance=ExtResource("11_fi0y4")]

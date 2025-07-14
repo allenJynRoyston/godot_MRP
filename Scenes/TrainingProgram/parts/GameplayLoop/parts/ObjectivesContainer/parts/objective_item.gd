@@ -27,6 +27,8 @@ var bookmarked_objectives:Array = []
 var stylebox_copy:StyleBoxFlat
 var use_color:Color = COLORS.primary_color
 
+
+
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()

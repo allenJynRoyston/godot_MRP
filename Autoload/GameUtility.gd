@@ -284,15 +284,15 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
-	var floor_level:Dictionary = use_config.floor[floor]
-	var ring_level:Dictionary = use_config.floor[floor].ring[ring]
-	var room_level:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	var floor_level_config:Dictionary = use_config.floor[floor]
+	var ring_level_config:Dictionary = use_config.floor[floor].ring[ring]
+	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
 	
-	var is_room_empty:bool = room_level.room_data.is_empty()
-	var is_scp_empty:bool = room_level.scp_data.is_empty()
+	var is_room_empty:bool = room_config_data.room_data.is_empty()
+	var is_scp_empty:bool = room_config_data.scp_data.is_empty()
 	
-	var room_details:Dictionary = {} if is_room_empty else room_level.room_data.details 
-	var scp_details:Dictionary = {} if is_scp_empty else room_level.scp_data.details
+	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
+	var scp_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.details
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -313,11 +313,16 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	
 	# get currency this room is producing (combines room/scp/etc)
 	var currency_list:Array = []
-	for ref in room_level.currencies:
+	for ref in room_config_data.currencies:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-		var amount:int = room_level.currencies[ref]		
+		var amount:int = room_config_data.currencies[ref]		
 		
 		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
+	
+	
+	# check for passive and active abilities, grab their max level; that's what becomes the max level
+	# TODO get
+	var max_upgrade_lvl = 1
 				
 	return {
 		# -----------
@@ -325,9 +330,10 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			"details": room_details,
 			"can_destroy": room_details.can_destroy,
 			"can_contain": room_details.can_contain,
-			"is_activated": false if is_room_empty else room_level.is_activated,
+			"is_activated": false if is_room_empty else room_config_data.is_activated,
 			"metrics": metrics,
-			"abl_lvl": 0, #room_config.abl_lvl + ring_config.abl_lvl,		
+			"max_upgrade_lvl": 1,
+			"abl_lvl": room_config_data.abl_lvl + ring_level_config.abl_lvl,		
 			"currency_list": currency_list
 		} if !is_room_empty else {},
 		
@@ -470,7 +476,7 @@ func trigger_event(event_data:Array) -> Dictionary:
 
 # ---------------------
 func set_onsite_nuke() -> bool:
-	var confirm:bool = await create_modal("Set the onsite nuclear to trigger?", "Panic will ensure.")
+	var confirm:bool = await create_warning("Set the onsite nuclear to trigger?", "The site WILl be destroyed along with everything in it.", "res://Media/images/Defaults/nuke_explosion.jpg")
 	
 	if !confirm:
 		return false
@@ -485,6 +491,23 @@ func set_onsite_nuke() -> bool:
 
 	return false
 # ---------------------
+
+# ---------------------
+func cancel_onsite_nuke() -> bool:
+	var confirm:bool = await create_modal("Cancel the onsite nuclear detonation?", "", "res://Media/images/Defaults/nuke_cancel.jpg")
+	
+	if !confirm:
+		return false
+	
+	# update trigger event
+	base_states.base.onsite_nuke.triggered = false
+	SUBSCRIBE.base_states = base_states		
+	
+
+	return false
+# ---------------------
+
+
 
 # ---------------------
 func set_warning_mode() -> bool:
@@ -602,7 +625,7 @@ func select_scp_to_contain() -> int:
 
 # --------------------------------------------------------------------------------------------------	
 func trigger_initial_containment_event(scp_ref:int) -> void:
-	var SplashNode:Control = await GAME_UTIL.start_splash("WARNING CONTAINMENT IN PROCESS")
+	var SplashNode:Control = await GAME_UTIL.start_splash("CAUTION CONTAINMENT IN PROCESS")
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	
 	# create dict if it doesn't exist
@@ -929,7 +952,7 @@ func hire_researcher(total_options:int) -> bool:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func auto_assign_staff(spec_ref:int, index:int, location_data:Dictionary = current_location) -> void:
+func auto_assign_staff(spec_ref:int, slot:int, location_data:Dictionary = current_location) -> void:
 	var filter_for_spec:Array = [spec_ref]
 	var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)	
 	if available_researchers.is_empty():return
@@ -938,8 +961,7 @@ func auto_assign_staff(spec_ref:int, index:int, location_data:Dictionary = curre
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# add current users
 		if (i[0] in uid):
-			i[11].assigned_to_room = location_data.duplicate()
-			i[11].slot = index
+			i[11] = {"assigned_to_room": location_data.duplicate(), "slot": slot}
 		return i
 	)
 	
@@ -947,7 +969,7 @@ func auto_assign_staff(spec_ref:int, index:int, location_data:Dictionary = curre
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func assign_researcher(staffing_type:int, location_data:Dictionary = current_location) -> bool:
+func assign_researcher(staffing_type:int, slot:int, location_data:Dictionary = current_location) -> bool:
 	var ResearcherGrid:Control = ResearchersGridPreload.instantiate()
 	GameplayNode.add_child(ResearcherGrid)
 	ResearcherGrid.z_index = z_index_lvl
@@ -970,7 +992,7 @@ func assign_researcher(staffing_type:int, location_data:Dictionary = current_loc
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		# add current users
 		if i[0] in uid:
-			i[11].assigned_to_room = location_data.duplicate()
+			i[11] = {"assigned_to_room": location_data.duplicate(), "slot": slot}
 		return i
 	)
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
@@ -984,7 +1006,7 @@ func unassign_researcher(researcher_data:Dictionary) -> bool:
 	#if confirm:
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
 		if i[0] == researcher_data.uid:
-			i[11].assigned_to_room = {}
+			i[11] = {"assigned_to_room": {}, "slot": 0}
 		return i
 	)
 	return true
@@ -1040,54 +1062,21 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> void
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func upgrade_facility(blacklist_self:bool = true) -> bool:
-	var unavailable_rooms:Array = [] if !blacklist_self else [U.location_to_designation(current_location)]
-	var previous_location:Dictionary = {
-		"floor": current_location.floor,
-		"ring": current_location.ring,
-		"room": current_location.room
-	}
+func upgrade_facility(use_location:Dictionary) -> bool:	
+	var current_level:int = base_states.room[U.location_to_designation(use_location)].abl_lvl
+	var next_level:int = current_level + 1
+	var activation_requirements = [{"amount": -(100 * next_level), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]
+	var confirm:bool = await create_modal("Upgrade to %s?" % next_level, "", "res://Media/rooms/construction_yard.jpg", activation_requirements)
 	
-	# determine which rooms are unavailble 
-	var floor:int = current_location.floor
-	var ring:int = current_location.ring
-	for room_index in room_config.floor[floor].ring[ring].room.size():
-		var designation:String = str(current_location.floor, current_location.ring, room_index)
-		
-		# rooms that are empty...
-		if room_config.floor[floor].ring[ring].room[room_index].room_data.is_empty():
-			unavailable_rooms.push_back(designation)
-		else:
-			# ... and rooms that are already at the max level are added to the unavailable list
-			var max_possible_level:int = ROOM_UTIL.get_max_possible_level(room_config.floor[floor].ring[ring].room[room_index].room_data.ref)
-			var current_level:int = base_states.room[designation].abl_lvl
-			if current_level >= max_possible_level:
-				unavailable_rooms.push_back(designation)
-	
-	# update all unavailable rooms
-	SUBSCRIBE.unavailable_rooms = unavailable_rooms
-		
-	# hide UI in actionContainer
-	GameplayNode.show_only([Structure3dContainer])	
-	
-	var activation_requirements = [{"amount": 100, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)}]
-	var confirm:bool = await create_modal("Upgrade room?", "Upgrade room to level X?", "", activation_requirements, true, Color(0, 0, 0, 0))
-	
-	# clear, warp back to previous location and restore ui
-	SUBSCRIBE.unavailable_rooms = []
-	GameplayNode.restore_player_hud()
-	
-	# cancel, warp back to previous location
 	if !confirm:
-		SUBSCRIBE.current_location = previous_location		
 		return false
 		
-	# add
-	base_states.room[U.location_to_designation(current_location)].abl_lvl += 1
+	base_states.room[U.location_to_designation(use_location)].abl_lvl = next_level
+	SUBSCRIBE.base_states = base_states
 	
-	# then warp back to previous location
-	SUBSCRIBE.current_location = previous_location		
-		
+	# allow for data to update before returning
+	await U.tick()
+	
 	return true
 # ------------------------------------------------------------------------------
 

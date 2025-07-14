@@ -1,18 +1,19 @@
 extends Control
 
-@onready var TransitionRect:TextureRect = $TransitionRect
 @onready var RenderSubviewport:SubViewport = $SubViewport
+@onready var TextureOutput:TextureRect = $TextureRect
 
 @onready var NodeContainer:Node3D = $SubViewport/RoomColumn/NodeContainer
 @onready var Column1:Node3D = $SubViewport/RoomColumn/NodeContainer/column1
 @onready var Column2:Node3D = $SubViewport/RoomColumn/NodeContainer/column2
 @onready var Column3:Node3D = $SubViewport/RoomColumn/NodeContainer/column3
-@onready var LeftBoardRoomLabels:Node3D = $SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels
-@onready var RightBoardRoomLabels:Node3D = $SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels
 
 @onready var FloorMesh:MeshInstance3D = $SubViewport/RoomColumn/FloorMesh
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
+
+@onready var LeftBillboardLabel:Label3D = $SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D/LeftWallLabel
+@onready var RightBillboard:Label3D = $SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D/RightWallLabel 
 
 @onready var LeftFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/LeftFloorLabel
 @onready var RightFloorLabel:Label3D = $SubViewport/RoomColumn/FloorMesh/RightFloorLabel
@@ -54,6 +55,11 @@ var menu_index:int = 0
 var default_camera_rotation:Vector3
 var menu_actions:Array = []
 
+var previous_nuke_state:bool = false
+var nuke_is_triggered:bool = false : 
+	set(val):
+		nuke_is_triggered = val
+		on_nuke_is_triggered_update()
 			
 var is_active:bool = false : 
 	set(val):
@@ -96,6 +102,7 @@ func _ready() -> void:
 	on_assigned_location_update()
 	on_is_active_update()
 	on_enable_room_focus()
+	on_nuke_is_triggered_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -121,7 +128,6 @@ func set_current_location(new_val:Dictionary = current_location) -> void:
 # --------------------------------------------------------
 func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void:
 	if !is_node_ready() or assigned_location.is_empty():return
-		
 	if previous_floor != assigned_location.floor or previous_ring != assigned_location.ring:
 		if camera_tween != null and camera_tween.is_running():
 			camera_tween.stop()		
@@ -130,9 +136,26 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		previous_ring = assigned_location.ring
 		previous_emergency_mode = -1
 		
+		var material_duplicate:ShaderMaterial =  TextureOutput.material.duplicate()
+		var outline_color:Color
+		match assigned_location.ring:
+			0:
+				outline_color =  Color(0.318, 0.268, 0.108)
+			1:
+				outline_color = Color(0.108, 0.301, 0.349)
+			2:
+				outline_color =  Color(0.153, 0.313, 0.197)
+			3:
+				outline_color = Color(0.401, 0.177, 0.347)
+			
+		material_duplicate.set_shader_parameter("outline_color", outline_color )
+		TextureOutput.material = material_duplicate
+				
 		update_nodes()
 		#update_boards()		
 		update_room_lighting()	
+		
+	U.debounce(str(self.name, "_update_billboards"), update_billboards)
 # --------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -151,51 +174,24 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	update_nodes()
 	#update_boards()	
 	update_room_lighting(true)	
+	U.debounce(str(self.name, "_update_billboards"), update_billboards)
 # --------------------------------------------------------
 
+# ------------------------------------------------
+func on_base_states_update(new_base_state:Dictionary) -> void:
+	if !is_node_ready() or new_base_state.is_empty():return
+	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
+		nuke_is_triggered = new_base_state.base.onsite_nuke.triggered
+		previous_nuke_state = nuke_is_triggered
+		
+	U.debounce(str(self.name, "_update_billboards"), update_billboards)
+# ------------------------------------------------
 
 # --------------------------------------------------------
 func on_enable_room_focus() -> void:
 	for node in NodeContainer.get_children():
 		node.enable_focus = enable_room_focus
 # --------------------------------------------------------	
-
-# --------------------------------------------------------
-func update_boards() -> void:
-	if !is_node_ready() or room_config.is_empty():return
-	# traverse and mark the wall labels
-	for floor_index in room_config.floor.size():
-		if floor_index == assigned_location.floor:
-			for ring_index in room_config.floor[floor_index].ring.size():
-				if ring_index == assigned_location.ring:
-					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
-						var room_node:Node3D = NodeContainer.get_child(room_index)
-						var ref_index:int = room_node.ref_index
-						var room_extract:Dictionary = GAME_UTIL.extract_room_details({"floor": floor_index, "ring": ring_index, "room": ref_index})
-						var is_room_empty:bool = room_extract.room.is_empty()
-						
-						# ----------------------------------------
-						var left_label_3d:Label3D = LeftBoardRoomLabels.find_child(str(ref_index))
-						var left_status_label:Label3D = left_label_3d.get_child(0)
-						for text_node in [left_label_3d, left_status_label]:
-							text_node.modulate = Color(0.984, 0.439, 0.184) if (is_room_empty or !room_extract.room.is_activated) else Color(0.525, 1, 0.443, 1)
-						left_label_3d.text = "%s  %s" % [room_node.room_number, "EMPTY" if is_room_empty else room_extract.room.details.shortname]
-						left_status_label.text = ""
-						if !room_extract.room.is_empty():
-							left_status_label.text = "NO ISSUES" if room_extract.is_activated else "NOT POWERED"
-				
-						# ----------------------------------------
-						var right_label_3d:Label3D = RightBoardRoomLabels.find_child(str(ref_index))
-						var right_status_label:Label3D = right_label_3d.get_child(0)				
-						for text_node in [right_label_3d, right_status_label]:
-							right_label_3d.modulate = Color(0.984, 0.439, 0.184) if room_extract.scp.is_empty() else Color(0.525, 1, 0.443, 1)		
-						right_label_3d.text =  "%s  %s" % [room_node.room_number, "EMPTY" if room_extract.scp.is_empty() else room_extract.scp.details.name] 
-						right_status_label.text = ""
-						if !room_extract.scp.is_empty():							
-							#if room_extract.scp.is_transfer:
-								#right_status_label.text = "TRANSFERING"
-							right_status_label.text = "CONTAINED" #if !room_extract.scp.testing.is_empty() else "TESTING..."	
-# --------------------------------------------------------
 
 # --------------------------------------------------------
 func update_nodes() -> void:
@@ -230,6 +226,13 @@ func update_nodes() -> void:
 			
 	FloorMesh.mesh.material = material_copy
 # --------------------------------------------------------
+
+# --------------------------------------------------------
+func on_nuke_is_triggered_update() -> void:
+	if !is_node_ready():return
+	
+# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func on_is_active_update() -> void:
@@ -270,7 +273,6 @@ func camera_center() -> void:
 	await U.tween_node_property(MainCamera, "rotation:y", default_camera_rotation.y, 0.5)
 # --------------------------------------------------------
 
-
 # --------------------------------------------------------
 func update_room_lighting(reset_lights:bool = false) -> void:
 	if room_config.is_empty() or current_location.is_empty():return
@@ -285,8 +287,6 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 		for light in lights:
 			light.hide()
 		NoPowerLights.show()
-		LeftBoardRoomLabels.hide()
-		RightBoardRoomLabels.hide()
 		return
 
 	
@@ -297,10 +297,7 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 		await U.set_timeout(0.5)	
 		
 	previous_emergency_mode = emergency_mode		
-	
-	LeftBoardRoomLabels.hide()
-	RightBoardRoomLabels.hide()	
-	
+
 	if in_lockdown:
 		for light in lights:
 			light.hide()
@@ -325,6 +322,26 @@ func update_room_lighting(reset_lights:bool = false) -> void:
 					light.hide()
 				NormalLights.show()
 # --------------------------------------------------------
+
+# --------------------------------------------------------
+func update_billboards() -> void:
+	if assigned_location.is_empty() or room_config.is_empty():return
+
+	LeftBillboardLabel.text = "BE SAFE OR BE SORRY"
+	RightBillboard.text = "EVERYTHING IS FINE"
+	
+	if in_lockdown:
+		RightBillboard.text = "LOCKDOWN - PLEASE SHELTER IN PLACE"
+	if !is_powered:
+		LeftBillboardLabel.text = "NO POWER"
+		RightBillboard.text = "NO POWER"
+	if nuke_is_triggered:
+		LeftBillboardLabel.text = "EVACUATE IMMEDIATELY!"
+		RightBillboard.text = "EVACUATE IMMEDIATELY!"
+	
+	
+# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:

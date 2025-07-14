@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d3uknw4ypees8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_item.gd" id="1_qkbpp"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_dvwty"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_fefqo"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_qkbpp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmabp"]
 bg_color = Color(1, 0.749, 0.2, 1)
@@ -51,5 +51,5 @@ alignment = 1
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Objective"
-label_settings = ExtResource("5_fefqo")
+label_settings = ExtResource("3_qkbpp")
 autowrap_mode = 3

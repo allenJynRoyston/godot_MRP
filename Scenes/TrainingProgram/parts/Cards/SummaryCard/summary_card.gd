@@ -99,7 +99,8 @@ func update_room_label() -> void:
 
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:
 		node.abl_lvl = abl_lvl
-
+	
+	CardDrawerName.title = "NAME"
 	CardDrawerName.content = room_details.name
 	
 var previous_room_ref:int
@@ -107,7 +108,8 @@ func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
 
 	if room_ref == -1:
-		CardDrawerName.content = "EMPTY"		
+		CardDrawerName.title = ""
+		CardDrawerName.content = "BUILD MODE"		
 		PersonnelContainer.hide()		
 		AbilityContainer.hide()
 		PassiveContainer.hide()

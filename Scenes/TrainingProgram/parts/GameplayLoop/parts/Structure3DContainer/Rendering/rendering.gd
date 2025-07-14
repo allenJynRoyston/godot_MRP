@@ -2,8 +2,11 @@ extends Control
 
 @onready var TransitionRect:TextureRect = $TransitionRect
 @onready var RenderSubviewport:SubViewport = $SubViewport
-@onready var BGColorRect:ColorRect = $ColorRect
 @onready var MainViewportTexture:TextureRect = $MainViewportTexture
+
+@onready var BGColorRect:ColorRect = $BGColorRect
+@onready var MaterialRect:ColorRect = $ColorRect
+@onready var NukeSplashContainer:Control = $NukeSplashContainer
 
 @onready var BorderControl:Control = $BorderControl
 @onready var TopLeftBorder:PanelContainer = $BorderControl/TopLeft
@@ -19,6 +22,8 @@ extends Control
 @onready var WingSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SubViewport
 @onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
 @onready var WingTransitionFloor:Control = $SubViewport/Rendering/WingScene/SubViewport2/WingTransitionFloor
+@onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/WingCamera/Sprite3D
+@onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/WingCamera/Sprite3D2
 
 @onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
 @onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
@@ -32,14 +37,22 @@ extends Control
 @onready var CenterPanel:PanelContainer = $Center/PanelContainer
 @onready var CenterMargin:MarginContainer = $Center/PanelContainer/MarginContainer
 
+const SplashPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn")
+
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {} 
 var control_pos:Dictionary = {}
-var previous_camera_type:int
+var previous_camera_type:int = -1
 var material_dupe:ShaderMaterial
 
 var previous_floor:int = -1
 var previous_ring:int = 0
+
+var previous_nuke_state:bool = false
+var nuke_is_triggered:bool = false : 
+	set(val):
+		nuke_is_triggered = val
+		on_nuke_is_triggered_update()
 
 # ------------------------------------------------
 func _init() -> void:
@@ -48,6 +61,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_audio_data(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
+	SUBSCRIBE.subscribe_to_base_states(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.RENDERING)
@@ -56,9 +70,12 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_audio_data(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
+	SUBSCRIBE.unsubscribe_to_base_states(self)
+	
 	
 func _ready() -> void:
-	material_dupe = BGColorRect.material.duplicate(true)
+	material_dupe = MaterialRect.material.duplicate(true)
+	on_nuke_is_triggered_update()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -171,6 +188,7 @@ func shift_horizontally(state:bool, duration:float, current_location:Dictionary)
 	TopLeftBorder.position = Vector2(-border_size, -border_size)
 	BottomRightBorder.position = Vector2(border_size, border_size)
 
+	WingSpriteB.show()
 	TopLeftBorder.show()
 	BottomRightBorder.show()
 	WingTransitionFloor.show()
@@ -199,11 +217,19 @@ func shift_horizontally(state:bool, duration:float, current_location:Dictionary)
 			sprite.pixel_size = val
 	)	
 
-
 	U.tween_node_property(TopLeftBorder, "position", Vector2(-border_size, -border_size), 0.1, 0, Tween.TRANS_SINE)
 	U.tween_node_property(BottomRightBorder, "position", Vector2(border_size, border_size), 0.1, 0, Tween.TRANS_SINE)
-
+	
+	WingSpriteB.hide()
 	WingTransitionFloor.hide()
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_base_states_update(new_base_state:Dictionary) -> void:
+	if !is_node_ready() or new_base_state.is_empty():return
+	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
+		nuke_is_triggered = new_base_state.base.onsite_nuke.triggered
+		previous_nuke_state = nuke_is_triggered
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -211,7 +237,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or previous_camera_type == camera_settings.type:return
 	previous_camera_type = camera_settings.type
-	BGColorRect.material = material_dupe
+	MaterialRect.material = material_dupe
 	var new_amount:float = 6.0
 
 	match camera_settings.type:
@@ -255,6 +281,30 @@ func on_current_location_update(new_val:Dictionary) -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
+func on_nuke_is_triggered_update() -> void:
+	if !is_node_ready():return
+	for child in NukeSplashContainer.get_children():
+		child.queue_free()
+	
+	
+	
+	BGColorRect.color = Color(1, 0, 0, 0.5) if nuke_is_triggered else Color(0.184, 0.193, 0.212) 	
+	material_dupe.set_shader_parameter("line_color", Color.ORANGE_RED)	
+	material_dupe.set_shader_parameter("angle", 0.5 if nuke_is_triggered else 0 )	
+	material_dupe.set_shader_parameter("speed", 5 if nuke_is_triggered else 0.2 )	
+
+	
+	if nuke_is_triggered:
+		for index in range(0, 10):
+			var splash_node:Control = SplashPreload.instantiate()
+			splash_node.title = "NUCLEAR DETONATION IMMINENT EVACUATE BASE IMMEDIATELY NUCLEAR DETONATION IMMINENT EVACUATE BASE IMMEDIATELY"
+			splash_node.auto_start = true
+			splash_node.v_offset = index * 150
+			NukeSplashContainer.add_child(splash_node)
+# ------------------------------------------------
+
+
+# ------------------------------------------------
 func animate_wing() -> void:
 	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty():return
 	if camera_settings.type == CAMERA.TYPE.WING_SELECT or camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
@@ -275,7 +325,7 @@ func animate_wing() -> void:
 # ------------------------------------------------
 var time_accum: float = 0.0
 func on_process_update(delta: float) -> void:
-	if !is_node_ready() or !is_visible_in_tree():return
+	if !is_node_ready() or !is_visible_in_tree() or nuke_is_triggered:return
 	var hue := fmod(time_accum * 0.01, 1.0)  # Adjust 0.1 to control speed
 	var color := Color.from_hsv(hue, 1.0, 1.0)
 	time_accum += delta  # Accumulate time in seconds	
@@ -283,7 +333,7 @@ func on_process_update(delta: float) -> void:
 # ------------------------------------------------
 
 func on_audio_data_update(new_val:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or new_val.is_empty():return
+	if !is_node_ready() or !is_visible_in_tree() or new_val.is_empty()  or nuke_is_triggered:return
 	var new_audio_data:Array = new_val.data
 	var music_position:float = new_val.pos
 	var bass_level:float = new_audio_data[10]

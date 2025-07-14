@@ -7,7 +7,7 @@ extends GameContainer
 @onready var ContentPanel:PanelContainer = $ModalControl/PanelContainer
 @onready var ContentMargin:MarginContainer = $ModalControl/PanelContainer/MarginContainer2
 
-@onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect
+@onready var ImageTextureRect:TextureRect = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/PanelContainer/MarginContainer/ImageTextureRect
 @onready var TitleLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/TitleLabel
 @onready var SubLabel:Label = $ModalControl/PanelContainer/MarginContainer2/VBoxContainer/SubLabel
 @onready var Splash:Control = $Splash

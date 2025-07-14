@@ -24,11 +24,11 @@ extends MouseInteractions
 @onready var BackImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackImage
 #@onready var AssignedTo:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/AssignedTo
 
-@onready var BackTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackTrait
-@onready var BackMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer2/BackMood
+@onready var BackTrait:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer2/HBoxContainer2/BackTrait
+@onready var BackMood:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer2/HBoxContainer2/BackMood
 
-@onready var BackHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Health
-@onready var BackSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/HBoxContainer/Sanity
+@onready var BackHealth:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer/HBoxContainer2/BackHealth
+@onready var BackSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer/HBoxContainer2/BackSanitty
 
 @export var card_border_color:Color = Color(0.0, 0.638, 0.337) : 
 	set(val): 
@@ -209,9 +209,9 @@ func update_nodes(researcher_details:Dictionary) -> void:
 	for node in [FrontTrait, BackTrait]:
 		node.content = researcher_details.trait.details.name
 	for node in [FrontHealth, BackHealth]:
-		node.content = str(researcher_details.health.current)
+		node.content = str("HP ", researcher_details.health.current)
 	for node in [FrontSanity, BackSanity]:
-		node.content = str(researcher_details.sanity.current)
+		node.content = str("SP ", researcher_details.sanity.current)
 	
 	match researcher_details.status:
 		RESEARCHER.STATUS.INSANE:
@@ -230,13 +230,6 @@ func update_nodes(researcher_details:Dictionary) -> void:
 			StatusPanel.show()
 		_:
 			StatusPanel.hide()
-	
-	#if !researcher_details.props.assigned_to_room.is_empty():
-		#var extract_data:Dictionary = GAME_UTIL.extract_room_details(researcher_details.props.assigned_to_room)
-		#if extract_data.is_empty():return
-		###AssignedTo.content = extract_data.room.details.name
-	##else:
-		##AssignedTo.content = "None"
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

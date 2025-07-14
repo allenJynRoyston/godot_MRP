@@ -3,7 +3,7 @@ extends MouseInteractions
 @onready var RootPanel:PanelContainer = $"."
 @onready var IconBtn:Control = $MarginContainer/HBoxContainer/SVGIcon
 
-@onready var PropertyLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PropertyLabel
+@onready var PropertyLabel:Label = $Control/PropertyLabel
 @onready var TitleLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleLabel
 
 var index:int
@@ -103,7 +103,7 @@ func on_render_if_update() -> void:
 		return
 		
 	is_available = render_if.is_available	 
-	PropertyLabel.text = "(%s)" % render_if.property
+	PropertyLabel.text = "%s (%s)" % [render_if.property, render_if.current_amount]
 	
 	
 func on_data_update() -> void:

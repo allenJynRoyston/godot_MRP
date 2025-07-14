@@ -24,6 +24,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_l733j")
+title = "CONTAINMENT BREACH IN PROGRESS"
 
 [node name="ColorRect" type="ColorRect" parent="."]
 visible = false

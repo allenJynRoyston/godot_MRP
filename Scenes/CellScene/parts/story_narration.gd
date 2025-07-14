@@ -145,13 +145,14 @@ func fill_message() -> void:
 			break
 		match letter:
 			".":
-				await U.set_timeout(0.4)
+				await U.set_timeout(0.1)
 			",":
-				await U.set_timeout(0.2)
+				await U.set_timeout(0.1)
 			":":
-				await U.set_timeout(0.2)	
+				await U.set_timeout(0.1)	
 			_:
-				await U.tick()
+				await U.set_timeout(0.01)	
+				
 		TopLabel.visible_characters = count
 	
 	BtnControls.c_btn_title = "CLOSE"

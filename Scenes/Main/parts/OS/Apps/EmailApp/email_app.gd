@@ -6,38 +6,38 @@ extends AppWrapper
 @onready var TransitionScreen:Control = $TransitionScreen
 
 var email_data:Array[Dictionary] = [
-	{
-		"title": "INSTALL THIS",
-		"from": "@unknown",
-		"date": "unknown",
-		"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
-		"attachment": {
-			"title": "Site_Director_Training_Program.exe",
-			"is_installed": func() -> bool:
-				return Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM in GBL.find_node(REFS.OS_LAYOUT).apps_installed,
-			"onClick": func(attachment:Dictionary) -> void:
-				events.install.call({
-					"type": "download", 
-					"installer_data": {
-						"filename": attachment.title,
-						"duration": 3,
-						"ref": Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM
-					}
-				}),
-		}
-
-	},	
+	#{
+		#"title": "INSTALL THIS",
+		#"from": "@unknown",
+		#"date": "unknown",
+		#"content": "This is urgent.  You are in danger, and the danger is real.  But I need you to stay calm and do not panic.  You've trained for this and you will be fine.  First things first, download and install the program attached.  It will help you with your cuerent situation.  VERY IMPORTANT:  DO NOT venture out into the darkness.  It will kill you.  It will [REMOVE ALL YOUR PROGRESS - ESSENTIALLY A HARD RESET].",
+		#"attachment": {
+			#"title": "Site_Director_Training_Program.exe",
+			#"is_installed": func() -> bool:
+				#return Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM in GBL.find_node(REFS.OS_LAYOUT).apps_installed,
+			#"onClick": func(attachment:Dictionary) -> void:
+				#events.install.call({
+					#"type": "download", 
+					#"installer_data": {
+						#"filename": attachment.title,
+						#"duration": 3,
+						#"ref": Layout.APPS.SITE_DIRECTOR_TRAINING_PROGRAM
+					#}
+				#}),
+		#}
+#
+	#},	
 	{
 		"title": "TEST 2",
 		"from": "@unknown",
 		"date": "unknown",
-		"content": "SOMETHING ABOUT THIS SHOULD RESTORE YOUR MEMORY."
+		"content": "it lies to you"
 	},
 	{
 		"title": "TEST 3",
 		"from": "@unknown",
 		"date": "unknown",
-		"content": "Somethig something something."
+		"content": "it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you it lies to you"
 	}	
 ]
 

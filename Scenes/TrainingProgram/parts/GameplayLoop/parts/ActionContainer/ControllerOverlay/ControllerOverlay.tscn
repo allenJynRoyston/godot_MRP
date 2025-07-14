@@ -69,6 +69,7 @@ is_hoverable = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = -200
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CenterContainer/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2

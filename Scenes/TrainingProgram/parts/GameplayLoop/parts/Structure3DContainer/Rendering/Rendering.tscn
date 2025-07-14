@@ -45,7 +45,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cucwc")
 
-[node name="ColorRect2" type="ColorRect" parent="."]
+[node name="BGColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,6 +63,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.185383, 0.185383, 0.185383, 1)
+
+[node name="NukeSplashContainer" type="Control" parent="."]
+modulate = Color(1, 1, 1, 0.176471)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.190241
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(960, 540)
 
 [node name="MainViewportTexture" type="TextureRect" parent="."]
 layout_mode = 0

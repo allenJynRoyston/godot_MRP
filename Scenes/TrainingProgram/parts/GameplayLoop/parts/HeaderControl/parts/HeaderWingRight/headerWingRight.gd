@@ -98,7 +98,7 @@ func update() -> void:
 	var summary_data:Dictionary = {}
 	
 	
-	MTFContainer.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else MTFContainer.hide()
+	MTFContainer.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.MTF_BARRICKS) else MTFContainer.hide()
 	
 	
 	## update everything else

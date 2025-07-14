@@ -209,7 +209,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 
 
 # --------------------------------------------------------------------------------------------------	
-func start(start_at_ring_level:bool = false) -> void:	
+func start() -> void:	
 	is_started = true
 	
 	# -------------------------------------
@@ -342,10 +342,6 @@ func start(start_at_ring_level:bool = false) -> void:
 	# -------------------------------------
 	current_mode = MODE.ACTIONS
 	# -------------------------------------	
-
-	if start_at_ring_level:
-		camera_settings.type = CAMERA.TYPE.WING_SELECT
-		SUBSCRIBE.camera_settings = camera_settings
 		
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)
 
@@ -614,7 +610,7 @@ func show_generator_updates() -> void:
 				{
 					"title": "???",
 					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
+						"icon": SVGS.TYPE.QUESTION_MARK,
 						"title": "HINT",
 						"description": "???"
 					},
@@ -625,7 +621,7 @@ func show_generator_updates() -> void:
 				{
 					"title": "???",
 					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
+						"icon": SVGS.TYPE.QUESTION_MARK,
 						"title": "HINT",
 						"description": "???"
 					},
@@ -636,7 +632,7 @@ func show_generator_updates() -> void:
 				{
 					"title": "???",
 					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
+						"icon": SVGS.TYPE.QUESTION_MARK,
 						"title": "HINT",
 						"description": "???"
 					},
@@ -780,14 +776,14 @@ func show_facility_updates() -> void:
 						
 						if confirm:
 							ActiveMenuNode.close()
-							camera_settings.type = CAMERA.TYPE.WING_SELECT
-							SUBSCRIBE.camera_settings = camera_settings	
-							await U.set_timeout(0.3)
 							if !is_powered:
 								GAME_UTIL.activate_floor(current_location.floor)
 							else:
 								GAME_UTIL.deactivate_floor(current_location.floor)
-							return
+							await U.set_timeout(0.7)
+							camera_settings.type = CAMERA.TYPE.WING_SELECT
+							SUBSCRIBE.camera_settings = camera_settings	
+							return			
 							
 						ActiveMenuNode.unlock(),
 				},
@@ -808,11 +804,16 @@ func show_facility_updates() -> void:
 			"title": "PERSONNEL MANAGEMENT",
 			"items": [
 				{
-					"title": "VIEW PROFILES",
+					"title": "VIEW PROFILES" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
+					"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
 					"hint": {
 						"icon": SVGS.TYPE.INVESTIGATE,
 						"title": "HINT",
 						"description": "View personnel records"
+					} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
+						"icon": SVGS.TYPE.QUESTION_MARK,
+						"title": "HINT",
+						"description": "???"
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
@@ -822,13 +823,17 @@ func show_facility_updates() -> void:
 						ActiveMenuNode.unlock(),
 				},
 				{
-					"title": "PROMOTE",
+					"title": "PROMOTE" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
+					"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
 					"hint": {
 						"icon": SVGS.TYPE.INVESTIGATE,
 						"title": "HINT",
-						"description": "Promote a staff member."
+						"description": "Promote a researcher, security officer or administrator."
+					} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
+						"icon": SVGS.TYPE.QUESTION_MARK,
+						"title": "HINT",
+						"description": "???"
 					},
-					"is_disabled": true,
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
 						
@@ -1033,8 +1038,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
 	
-
-	
 	match camera_settings.type:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -1123,7 +1126,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		MODE.ACTIONS:
 			NameControl.show()
 			# ControllerOverlay.show_directional = true
-			WingActionBtn.is_disabled = !is_powered or in_lockdown or !is_powered
+			WingActionBtn.is_disabled = !is_powered or in_lockdown
 			WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
 			
 			camera_settings.type = CAMERA.TYPE.WING_SELECT
@@ -1154,7 +1157,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
 			
 			# set button states
-			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated
+			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated or !is_powered
 			DeconstructBtn.is_disabled = !can_deconstruct or nuke_activated
 			AbilityBtn.is_disabled = !can_take_action 
 	
@@ -1350,6 +1353,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			var is_powered:bool = room_config.floor[current_location.floor].is_powered
 			var is_room_empty:bool = extract_room_data.room.is_empty()
 			var room_name:String = extract_room_data.room.details.name if !is_room_empty else "EMPTY"
+			var abl_lvl:int = extract_room_data.room.abl_lvl if !is_room_empty else -1
+			var max_upgrade_lvl:int = extract_room_data.room.max_upgrade_lvl if !is_room_empty else -1
 
 			BtnControls.itemlist = SummaryCard.get_ability_btns()
 			BtnControls.item_index = 0
@@ -1366,12 +1371,10 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				# ----------------------
 				if "ability_data" in node:
 					BtnControls.a_btn_title = "USE"
-					
 					BtnControls.hide_c_btn = true
 					
 					RoomDetailsControl.cycle_to_room(true)
 					RoomDetailsControl.show()				
-					await U.tick()
 					RoomDetailsControl.show_room_card = true
 					RoomDetailsControl.show_scp_card = false
 					RoomDetailsControl.show_researcher_card = false
@@ -1383,7 +1386,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
 					
 					BtnControls.a_btn_title = "ASSIGN" if node.researcher.is_empty() else "UNASSIGN"
-					
 					BtnControls.hide_c_btn = !node.researcher.is_empty() and available_researchers.size() > 0
 					BtnControls.disable_c_btn = available_researchers.is_empty()
 					BtnControls.c_btn_title = "AUTO ASSIGN"
@@ -1393,11 +1395,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 						RoomDetailsControl.show()
 						RoomDetailsControl.researcher_uid = node.researcher.uid 
 
-					
 					RoomDetailsControl.hide() if node.researcher.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1
 					RoomDetailsControl.cycle_to_reseacher(true)
-					await U.tick()
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = false
 					RoomDetailsControl.show_researcher_card = true
@@ -1411,19 +1411,27 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					BtnControls.c_btn_title = "DEBUG EVENT"
 					BtnControls.onCBtn = func() -> void:
 						show_events_debug()
-						
+					
 					RoomDetailsControl.hide() if node.scp_ref == -1 else RoomDetailsControl.show()
 					RoomDetailsControl.scp_ref = node.scp_ref 
 					RoomDetailsControl.cycle_to_scp(true)
-					await U.tick()
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = true
 					RoomDetailsControl.show_researcher_card = false
 					return
 				
+				# on nametag
+				BtnControls.hide_c_btn = is_room_empty
+				BtnControls.disable_c_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
+				BtnControls.c_btn_title = "UPGRADE" if abl_lvl < max_upgrade_lvl else "AT MAX LEVEL"
+				BtnControls.onCBtn = func() -> void:
+					BtnControls.reveal(false)
+					await GAME_UTIL.upgrade_facility(current_location)
+					BtnControls.reveal(true)
+					on_current_mode_update()
+				
 				RoomDetailsControl.cycle_to_room(true)
 				RoomDetailsControl.show()				
-				await U.tick()
 				RoomDetailsControl.show_room_card = true
 				RoomDetailsControl.show_scp_card = false
 				RoomDetailsControl.show_researcher_card = false
@@ -1431,7 +1439,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.onBack = func() -> void:
 				RoomDetailsControl.cycle_to_room(true)
 				RoomDetailsControl.show()				
-				await U.tick()
+
 				RoomDetailsControl.show_room_card = true
 				RoomDetailsControl.show_scp_card = false
 				RoomDetailsControl.show_researcher_card = false

@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxkkni8jbnrqq"]
+[gd_scene load_steps=10 format=3 uid="uid://cxkkni8jbnrqq"]
 
 [ext_resource type="Script" uid="uid://b121casmumllb" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/detail_panel.gd" id="1_ifskr"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_8ajdb"]
 [ext_resource type="PackedScene" uid="uid://cey4msk4p7tpa" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/RoomCard.tscn" id="2_xwi2o"]
 [ext_resource type="PackedScene" uid="uid://dmgj730nihsve" path="res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn" id="3_xwi2o"]
 [ext_resource type="PackedScene" uid="uid://boomisn56mb2k" path="res://Scenes/TrainingProgram/parts/Cards/RESEARCHER/ResearcherCard.tscn" id="4_8kq0r"]
@@ -17,31 +16,7 @@ colors = PackedColorArray(0, 0, 0, 0, 0.133196, 0.133196, 0.133196, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xwi2o"]
 gradient = SubResource("Gradient_e52w3")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qemqr"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v48pi"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wo0v0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rdky"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
@@ -96,53 +71,8 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="PrevBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
-visible = false
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_qemqr")
-title = "PREV"
-assigned_key = "L1"
-icon = 28
-hide_icon_panel = true
-
-[node name="FlipBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_v48pi")
-title = "FLIP"
-assigned_key = "F"
-icon = 56
-hide_icon_panel = true
-
-[node name="NextBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
-visible = false
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_wo0v0")
-title = "NEXT"
-assigned_key = "R1"
-icon = 27
-hide_icon_panel = true
-
 [node name="HBoxContainer" type="HBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="IconBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8ajdb")]
-visible = false
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-icon = 28
-is_hoverable = false
 
 [node name="CardContainer" type="VBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -162,10 +92,19 @@ size_flags_horizontal = 2
 layout_mode = 2
 size_flags_horizontal = 2
 
-[node name="IconBtn2" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_8ajdb")]
+[node name="HBoxContainer2" type="HBoxContainer" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer"]
 visible = false
-custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 28
-flip_h = true
-is_hoverable = false
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="FlipBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_3rdky")
+title = "FLIP"
+assigned_key = "F"
+icon = 56
+hide_icon_panel = true
+is_disabled = false

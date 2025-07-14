@@ -6,7 +6,7 @@ var DEBUG_ROOM:Dictionary = {
 	"name": "DEBUG_ROOM",
 	"shortname": "DEBUG_ROOM",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Debug room.",
 	"requires_unlock": false,	
 	# ------------------------------------------
@@ -49,9 +49,9 @@ var DEBUG_ROOM:Dictionary = {
 		return [
 			#ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
 			#ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),		
-			ABL.get_ability(ABL.REF.UPGRADE_FACILITY),
-			ABL.get_ability(ABL.REF.SET_WARNING_MODE),
-			ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),
+			#ABL.get_ability(ABL.REF.UPGRADE_FACILITY),
+			#ABL.get_ability(ABL.REF.SET_WARNING_MODE),
+			#ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),
 			
 			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
 			#ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
@@ -70,7 +70,10 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE_LVL_1, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MATERIAL_LVL_1, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
 			#ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
@@ -91,7 +94,7 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"name": "DIRECTORS OFFICE",
 	"shortname": "D.OFFICE",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "The site directors office.",
 	# ------------------------------------------
 
@@ -150,7 +153,7 @@ var HQ:Dictionary = {
 	"name": "HEADQUARTERS",
 	"shortname": "HQ",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Base headquarters.",
 		
 	# ------------------------------------------
@@ -204,7 +207,7 @@ var HR_DEPARTMENT:Dictionary = {
 	"name": "HR DEPARTMENT",
 	"shortname": "HR",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "A one-stop shop for recruitment.",
 	# ------------------------------------------
 
@@ -238,7 +241,7 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	"name": "OPERATIONS_SUPPORT",
 	"shortname": "OP.SUPPORT",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Can recruit additional specilized personnel.",
 	# ------------------------------------------
 
@@ -275,7 +278,7 @@ var GENERATOR_SUBSTATION:Dictionary = {
 	"name": "GENERATOR_SUBSTATION",
 	"shortname": "GEN.SUBSTAITON",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Can make adjustments to the power generator.",
 	# ------------------------------------------
 
@@ -310,7 +313,7 @@ var	PROBABILITY_ROOM:Dictionary = {
 	"name": "PROBABILITY_ROOM",
 	"shortname": "PROBABILITY_ROOM",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "PROBABILITY_ROOM description",
 	# ------------------------------------------
 
@@ -345,7 +348,7 @@ var CHRONO_ROOM:Dictionary = {
 	"name": "CHRONO_ROOM",
 	"shortname": "CHRONO_ROOM",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "CHRONO_ROOM description.",
 	# ------------------------------------------
 
@@ -380,7 +383,7 @@ var NUCLEAR_FAILSAFE:Dictionary = {
 	"name": "NUCLEAR_FAILSAFE",
 	"shortname": "NUKEFAILSAFE",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "NUCLEAR_FAILSAFE description",
 	# ------------------------------------------
 
@@ -388,8 +391,6 @@ var NUCLEAR_FAILSAFE:Dictionary = {
 	"own_limit": 1,	
 	"requires_unlock": false,
 	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER, 
-		RESEARCHER.SPECIALIZATION.SECURITY, 
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],
 	# ------------------------------------------
@@ -402,9 +403,9 @@ var NUCLEAR_FAILSAFE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
+	"abilities": func() -> Array: 
 		return [
-
+			ABL.get_ability(ABL.REF.CANCEL_NUCLEAR_DETONATION)
 		],	
 	# ------------------------------------------	
 }
@@ -419,7 +420,7 @@ var PRISONER_BLOCK:Dictionary = {
 	"name": "PRISONER BLOCK",
 	"shortname": "P.BLOCK",
 	"categories": [ROOM.CATEGORY.RECRUITMENT],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "A prisoner block designed specifically to house D-Class personel.",
 	# ------------------------------------------
 
@@ -451,7 +452,7 @@ var ADMIN_OFFICE:Dictionary = {
 	"name": "ADMIN OFFICE",
 	"shortname": "A.OFFICE",
 	"categories": [ROOM.CATEGORY.RECRUITMENT],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "A prisoner block designed specifically to house D-Class personel.",
 	# ------------------------------------------
 
@@ -483,7 +484,7 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"name": "SECURITY DEPARTMENT",
 	"shortname": "SEC.DPT",
 	"categories": [ROOM.CATEGORY.RECRUITMENT],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Supplies security.",
 	# ------------------------------------------
 	
@@ -515,7 +516,7 @@ var ACADEMIC_OUTREACH:Dictionary = {
 	"name": "ACADEMIC OUTREACH",
 	"shortname": "ACA OUTREACH",
 	"categories": [ROOM.CATEGORY.RECRUITMENT],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Supplies security.",
 	# ------------------------------------------
 	
@@ -541,13 +542,47 @@ var ACADEMIC_OUTREACH:Dictionary = {
 	# ------------------------------------------
 }
 
+var MTF_BARRICKS:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MTF_BARRICKS,
+	"name": "MTF_BARRICKS",
+	"shortname": "MTF_BARRICKS",
+	"categories": [ROOM.CATEGORY.RECRUITMENT],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Trains and houses specialized Mobile Taskforce Teams (MTF).",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN,		
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+		RESEARCHER.SPECIALIZATION.SECURITY, 
+	],	
+	# ------------------------------------------	
+
+	# ------------------------------------------
+	"costs": {
+		"unlock": 500,
+		"purchase": 2000,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.TRAIN_MTF),
+		],		
+	# ------------------------------------------
+}
+
+
 var MINIERAL_MINING:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.MINIERAL_MINING,
 	"name": "MINERAL MINING",
 	"shortname": "MIN.MINING",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Mines minerals which can be converted to other resources, can only be placed on the bottom floor.",
 	# ------------------------------------------
 	
@@ -579,7 +614,7 @@ var GEOTHERMAL_POWER:Dictionary = {
 	"name": "GEOTHERMAL POWER",
 	"shortname": "GEO.POWER",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Mines minerals which can be converted to other resources, can only be placed on the bottom floor.",
 	# ------------------------------------------
 	
@@ -615,7 +650,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"name": "STANDARD CONTAINMENT",
 	"shortname": "S.CONTAINMENT",
 	"categories": [ROOM.CATEGORY.CONTAINMENT],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Containment cell used to house anamolous objects.",
 		
 	# ------------------------------------------
@@ -664,7 +699,7 @@ var MONEY_GEN_1:Dictionary = {
 	"name": "ECONOMIC RECLIMATION DIVISION",
 	"shortname": "ECO DIV",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "A covert unit used to sustain Foundation operations through unofficial financial channels.",
 	# ------------------------------------------
 
@@ -673,9 +708,6 @@ var MONEY_GEN_1:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER, 
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
 	"costs": {
 		"unlock": 100,
 		"purchase": 200,
@@ -691,12 +723,52 @@ var MONEY_GEN_1:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.MONEY_HACK, 1),
+			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1),
 		],	
 			
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
+		],	
+	# ------------------------------------------		
+}
+
+var MONEY_GEN_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MONEY_GEN_2,	
+	"name": "MONEY_GEN_2",
+	"shortname": "MONEY_GEN_2",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "+50 MONEY when placed adjacent to other MONEY_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	"costs": {
+		"unlock": 250,
+		"purchase": 600,
+	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 100,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0,
+	},		
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1, 1),
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
 		],	
 	# ------------------------------------------		
 }
@@ -707,7 +779,7 @@ var RESEARCH_GEN_1:Dictionary = {
 	"name": "RESEARCH LAB",
 	"shortname": "R.LAB",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "A covert unit used to sustain Foundation operations through unofficial financial channels.",
 	# ------------------------------------------
 
@@ -715,131 +787,28 @@ var RESEARCH_GEN_1:Dictionary = {
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.RESEARCHER, 
 		RESEARCHER.SPECIALIZATION.RESEARCHER
-	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
+	],
 	"costs": {
 		"unlock": 100,
 		"purchase": 200,
 	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 50,
+		RESOURCE.CURRENCY.CORE: 0,
+	},	
 	# ------------------------------------------
 		
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			#ABL.get_ability(ABL.REF.SCIENCE_HACK, 1),
+			ABL.get_ability(ABL.REF.INSTANT_SCIENCE_LVL_1, 1),
 		],	
 			
 	"passive_abilities": func() -> Array: 
 		return [
-			#ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE),
-		],	
-	# ------------------------------------------		
-}
-
-var MATERIAL_GEN_1:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.MATERIAL_GEN_1,
-	"name": "ENGINEERING BAY",
-	"shortname": "ENG.BAY",
-	"categories": [ROOM.CATEGORY.RESOURCES],
-	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "Utilize technicians to increase safety and readiness.",
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER
-	],	
-	# ------------------------------------------
-		
-	# ------------------------------------------
-	"costs": {
-		"unlock": 100,
-		"purchase": 200,
-	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
-		],	
-	# ------------------------------------------	
-}
-
-var CORE_GEN_1:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.CORE_GEN_1,
-	"name": "CORE_ROOM",
-	"shortname": "CORE_ROOM",
-	"categories": [ROOM.CATEGORY.RESOURCES],
-	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "CORE_ROOM description.",
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER
-	],	
-	# ------------------------------------------
-		
-	# ------------------------------------------
-	"costs": {
-		"unlock": 100,
-		"purchase": 300,
-	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
-		],	
-	# ------------------------------------------	
-}
-
-
-var MONEY_GEN_2:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.MONEY_GEN_2,	
-	"name": "MONEY_GEN_2",
-	"shortname": "MONEY_GEN_2",
-	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "+50 MONEY when placed adjacent to other MONEY_GEN_2.",
-	# ------------------------------------------
-
-	# ------------------------------------------
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER, 
-		RESEARCHER.SPECIALIZATION.ADMIN
-	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
-	"costs": {
-		"unlock": 100,
-		"purchase": 300,
-	},
-	# ------------------------------------------
-		
-	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			
-		],	
-			
-	"passive_abilities": func() -> Array: 
-		return [
-			
+			ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE_LVL_1),
 		],	
 	# ------------------------------------------		
 }
@@ -850,7 +819,7 @@ var RESEARCH_GEN_2:Dictionary = {
 	"name": "RESEARCH_GEN_2",
 	"shortname": "RESEARCH_GEN_2",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "+25 RESEARCH when placed adjacent to other RESEARCH_GEN_2.",
 	# ------------------------------------------
 
@@ -859,13 +828,16 @@ var RESEARCH_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER, 
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 250,
+		"purchase": 600,
 	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 50,
+		RESOURCE.CURRENCY.CORE: 0,
+	},		
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -877,6 +849,45 @@ var RESEARCH_GEN_2:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			
+		],	
+	# ------------------------------------------		
+}
+
+var MATERIAL_GEN_1:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MATERIAL_GEN_1,
+	"name": "ENGINEERING BAY",
+	"shortname": "ENG.BAY",
+	"categories": [ROOM.CATEGORY.RESOURCES],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Utilize technicians to increase safety and readiness.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	"costs": {
+		"unlock": 100,
+		"purchase": 200,
+	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 10,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0,
+	},	
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INSTANT_MATERIAL_LVL_1, 1),
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MATERIAL_LVL_1),
 		],	
 	# ------------------------------------------		
 }
@@ -887,7 +898,7 @@ var MATERIAL_GEN_2:Dictionary = {
 	"name": "MATERIAL_GEN_2",
 	"shortname": "MATERIAL_GEN_2",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "+10 MATERIAL when placed adjacent to other MATERIAL_GEN_2.",
 	# ------------------------------------------
 
@@ -896,13 +907,16 @@ var MATERIAL_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER, 
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 250,
+		"purchase": 600,
 	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 20,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 0,
+	},		
 	# ------------------------------------------
 		
 	# ------------------------------------------
@@ -918,14 +932,94 @@ var MATERIAL_GEN_2:Dictionary = {
 	# ------------------------------------------		
 }
 
+
+var CORE_GEN_1:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.CORE_GEN_1,
+	"name": "CORE_ROOM",
+	"shortname": "CORE_ROOM",
+	"categories": [ROOM.CATEGORY.RESOURCES],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "CORE_ROOM description.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	"costs": {
+		"unlock": 100,
+		"purchase": 200,
+	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 1,
+	},	
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INSTANT_CORE_LVL_1, 1),
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1),
+		],	
+	# ------------------------------------------		
+}
+
 var CORE_GEN_2:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.CORE_GEN_2,	
 	"name": "CORE_GEN_2",
 	"shortname": "CORE_GEN_2",
 	"categories": [ROOM.CATEGORY.RESOURCES],	
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "+1 CORE when placed adjacent to other CORE_GEN_2.",
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	"costs": {
+		"unlock": 250,
+		"purchase": 600,
+	},
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.CORE: 2,
+	},		
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
+		],	
+			
+	"passive_abilities": func() -> Array: 
+		return [
+			
+		],	
+	# ------------------------------------------		
+}
+
+var MONEY_CONVERTER:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MONEY_CONVERTER,	
+	"name": "MONEY_CONVERTER",
+	"shortname": "MONEY_CONVERTER",
+	"categories": [ROOM.CATEGORY.RESOURCES],	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Convert MONEY into other resources.",
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -945,12 +1039,9 @@ var CORE_GEN_2:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			
-		],	
-			
-	"passive_abilities": func() -> Array: 
-		return [
-			
+			ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_SCIENCE),
+			ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_MATERIAL),
+			ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_CORE),
 		],	
 	# ------------------------------------------		
 }
@@ -964,7 +1055,7 @@ var ENERGY_STORAGE:Dictionary = {
 	"name": "ENERGY STORAGE",
 	"shortname": "E.STORAGE",
 	"categories": [ROOM.CATEGORY.ENERGY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Utilize technicians to increase safety and readiness.",
 	# ------------------------------------------
 	
@@ -1008,7 +1099,7 @@ var ENERGY_SYPHON:Dictionary = {
 	"name": "ENERGY_SYPHON",
 	"shortname": "E.SYPHON",
 	"categories": [ROOM.CATEGORY.ENERGY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Any unused energy from the corresponding wing is available for this wing.  (0 <- 1, 1 <- 2, etc)",
 	# ------------------------------------------
 	
@@ -1061,7 +1152,7 @@ var UI_ASSIST:Dictionary = {
 	"name": "UI_ASSIST",
 	"shortname": "UI.ASSIST",
 	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Containment breaches are less likely to occur, however...",	
 	# ------------------------------------------
 
@@ -1081,12 +1172,6 @@ var UI_ASSIST:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
-	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.PREDICTIVE_TIMELINE),
@@ -1101,8 +1186,8 @@ var STAFF_ROOM:Dictionary = {
 	"name": "STAFF ROOM",
 	"shortname": "STF ROOM",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "Utilize technicians to increase safety and readiness.",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Increases MORALE while offering optional team-bonding experiences.",
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -1120,7 +1205,7 @@ var STAFF_ROOM:Dictionary = {
 	
 	# ------------------------------------------
 	"metrics": {
-		RESOURCE.METRICS.MORALE: 2,
+		RESOURCE.METRICS.MORALE: 1,
 	},	
 	# ------------------------------------------
 	
@@ -1128,6 +1213,44 @@ var STAFF_ROOM:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			ABL.get_ability(ABL.REF.HAPPY_HOUR),
+			ABL.get_ability(ABL.REF.UNHAPPY_HOUR),
+		],	
+	# ------------------------------------------	
+}
+
+var CAFETERIA:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.CAFETERIA,
+	"name": "CAFETERIA",
+	"shortname": "CAFETERIA",
+	"categories": [ROOM.CATEGORY.UTILITY],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Increases READINESS and...",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	# ------------------------------------------
+		
+	# ------------------------------------------
+	"costs": {
+		"unlock": 100,
+		"purchase": 200,
+	},
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"metrics": {
+		RESOURCE.METRICS.READINESS: 1,
+	},	
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"abilities": func() -> Array: 
+		return [
+			
 		],	
 	# ------------------------------------------	
 }
@@ -1138,7 +1261,7 @@ var WEAPONS_RANGE:Dictionary = {
 	"name": "WEAPONS RANGE",
 	"shortname": "W.RANGE",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Increases security and provides training.",	
 	# ------------------------------------------
 
@@ -1155,13 +1278,7 @@ var WEAPONS_RANGE:Dictionary = {
 		"purchase": 100,
 	},
 	# ------------------------------------------
-	
-	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
+
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
@@ -1177,30 +1294,25 @@ var SCRANTON_REALITY_ANCHOR:Dictionary = {
 	"name": "SCRANTON REALITY ANCHOR",
 	"shortname": "SRA",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
-	"description": "Containment breaches are less likely to occur, however...",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Containment breaches are less likely to occur, but are expensive and fault prone.",	
 	# ------------------------------------------
 
 	# ------------------------------------------
 	"unlock_level": 1,		
 	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER
+		RESEARCHER.SPECIALIZATION.RESEARCHER,
+		RESEARCHER.SPECIALIZATION.SECURITY
 	],	
 	# ------------------------------------------	
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 500,
+		"purchase": 1000,
 	},
 	# ------------------------------------------
-	
-	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
+
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
@@ -1215,7 +1327,7 @@ var HP_CLINIC:Dictionary = {
 	"name": "HP_CLINIC",
 	"shortname": "HP_CLINIC",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "HP_CLINIC description",	
 	# ------------------------------------------
 
@@ -1234,12 +1346,6 @@ var HP_CLINIC:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
-	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 
@@ -1253,7 +1359,7 @@ var SP_CLINIC:Dictionary = {
 	"name": "SP_CLINIC",
 	"shortname": "SRA",
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"img_src": "res://Media/rooms/research_lab.jpg",
+	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "SP_CLINIC description",	
 	# ------------------------------------------
 
@@ -1272,18 +1378,13 @@ var SP_CLINIC:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	#"required_personnel": [
-		#RESOURCE.PERSONNEL.TECHNICIANS
-	#],
-	# ------------------------------------------
-	
-	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
 
 		],	
 	# ------------------------------------------	
 }
+
 
 # ------------------------------------------------------------------------------ 
 #endregion
@@ -1313,13 +1414,21 @@ var list:Array[Dictionary] = [
 	STANDARD_CONTAINMENT_CELL, 
 	
 	# --------------- RESOURCES
-	MONEY_GEN_1,			MONEY_GEN_2,
-	RESEARCH_GEN_1,		RESEARCH_GEN_2,
-	MATERIAL_GEN_1,		MATERIAL_GEN_2,
-	CORE_GEN_1,			CORE_GEN_2,
+	MONEY_GEN_1,			
+	RESEARCH_GEN_1,
+	MATERIAL_GEN_1,	
+	CORE_GEN_1,
+	
+	MONEY_GEN_2,
+	RESEARCH_GEN_2,
+	MATERIAL_GEN_2,
+	CORE_GEN_2,
+	
+	MONEY_CONVERTER,
 	
 	# --------------- RECRUITMENT
 	PRISONER_BLOCK, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
+	MTF_BARRICKS,
 	
 	# --------------- ENERGY
 	ENERGY_STORAGE, ENERGY_SYPHON,
@@ -1327,6 +1436,7 @@ var list:Array[Dictionary] = [
 	# --------------- UTILITY
 	UI_ASSIST, WEAPONS_RANGE, SCRANTON_REALITY_ANCHOR,
 	HP_CLINIC, SP_CLINIC,
+	STAFF_ROOM, CAFETERIA
 	
 	
 ]

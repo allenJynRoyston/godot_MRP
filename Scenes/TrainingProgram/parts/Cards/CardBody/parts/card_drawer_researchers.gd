@@ -43,7 +43,7 @@ func on_required_staffing_update() -> void:
 			await ActionContainerNode.before_use()
 			# perform the ability
 			if new_btn.researcher.is_empty():
-				await GAME_UTIL.assign_researcher(required_staffing[index])
+				await GAME_UTIL.assign_researcher(required_staffing[index], index)
 			else:
 				await GAME_UTIL.unassign_researcher(new_btn.researcher)
 			# unlocks

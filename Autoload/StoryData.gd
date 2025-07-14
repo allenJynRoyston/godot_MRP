@@ -7,15 +7,14 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"D-Class 313202, you're finally awake.  My name is Researcher Ambrose and I'm in charge of researching this... thing in front of you.",
-			"Lets start with the good news.  Your job is is extremely simple.  That computer in front of you has some software on it.",
-			"To be really precise, it's the one called Site Director Training Program.",
-			"All you need to do is learn it. Master it. And eventually complete it. That's it.",
-			"You do this for us and we set you free.  Simple as that.",
-			"Now for the bad news.",
-			"You don't comply or you take too long, the bomb attached to your neck detonates.",
-			"It's nothing personal.  We just don't have all day.",
-			"Well... that's it.  Get to it."
+			"D-Class 313202, you're finally awake. I'm Researcher Ambrose. I'm overseeing the study of... whatever that is in front of you.",
+			"Good news first — your job's pretty simple. That computer right there has a piece of software on it.",
+			"Specifically, it’s called the Site Director Training Program.",
+			"All you have to do is learn it. That’s it.",
+			"You complete the program, we let you walk free. Simple.",
+			"Now, the bad news.",
+			"If you refuse, or take too long? The bomb around your neck goes off.",
+			"Well... that's all you need to know for now. Get to work."
 		],
 		"objectives": {
 			"title": "SETUP",

@@ -122,7 +122,6 @@ layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_6kgnm")
 content = "0"
-center_text = true
 title = "LVL"
 border_color = Color(1, 0.74902, 0.2, 1)
 
@@ -212,9 +211,7 @@ layout_mode = 2
 size_flags_vertical = 3
 is_small = true
 content = "Effect description"
-center_text = true
 title = ""
-is_left_side = false
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="ContainmentTypes" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
@@ -241,9 +238,7 @@ layout_mode = 2
 size_flags_vertical = 3
 is_small = true
 content = "PHYSICAL"
-center_text = true
 title = ""
-is_left_side = false
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
@@ -258,7 +253,6 @@ layout_mode = 2
 size_flags_vertical = 3
 is_small = true
 content = "-"
-center_text = true
 title = "DESCRIPTION"
 is_left_side = false
 border_color = Color(0.3672, 0.378, 0.9, 1)

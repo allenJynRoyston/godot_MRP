@@ -29,8 +29,8 @@ extends MouseInteractions
 @onready var ContainmentTypeDescription:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypeRequired/ContainmentTypeDescription
 
 # back
-@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/CardDrawerDescription
-
+@onready var CardDrawerBackImage:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer/CardDrawerImage
+@onready var CardDrawerDescription:Control = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/VBoxContainer/CardDrawerDescription
 
 @export var ref:int = -1: 
 	set(val):

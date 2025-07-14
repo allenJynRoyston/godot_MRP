@@ -4,10 +4,11 @@ enum REF {
 	EVAL_SCP, 
 	
 	# site director
-	TRIGGER_ONSITE_NUKE,
+	TRIGGER_ONSITE_NUKE, CANCEL_NUCLEAR_DETONATION,
 	
 	# hire
 	HIRE_RESEARCHERS, HIRE_SECURITY, HIRE_ADMIN, HIRE_DCLASS,	
+	TRAIN_MTF,
 	
 	# personell
 	CLONE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
@@ -23,10 +24,15 @@ enum REF {
 	HAPPY_HOUR, UNHAPPY_HOUR,
 	
 	# resource gain
-	MONEY_HACK, SCIENCE_HACK, 
+	INSTANT_MONEY_LVL_1,
+	INSTANT_SCIENCE_LVL_1,
+	INSTANT_MATERIAL_LVL_1,
+	INSTANT_CORE_LVL_1,
 	
 	# scp containment 
-	CONVERT_TO_SCIENCE, CONVERT_TO_MONEY
+	CONVERT_MONEY_INTO_SCIENCE,
+	CONVERT_MONEY_INTO_MATERIAL,
+	CONVERT_MONEY_INTO_CORE,
 }
 
 # ---------------------------------
@@ -43,12 +49,23 @@ var EVAL_SCP:Dictionary = {
 # ---------------------------------
 var TRIGGER_ONSITE_NUKE:Dictionary = {
 	"name": "TRIGGER ONSITE NUKE",
-	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING:  this action cannot be undone and will result in a game over.",
+	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING: this action cannot be canceled (unless you have a NUCLEAR FAILSAFE facility.)",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.set_onsite_nuke(),
 }
+
+var CANCEL_NUCLEAR_DETONATION:Dictionary = {
+	"name": "CANCEL_NUCLEAR_DETONATION",
+	"description": "Cancels the onsite nuclear detonation",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.cancel_onsite_nuke(),
+}
+
+
 
 var SET_WARNING_MODE:Dictionary = {
 	"name": "SET WARNING MODE",
@@ -82,7 +99,8 @@ var UPGRADE_FACILITY:Dictionary = {
 	"description": "Upgrade a facility and unlock additional properties.",
 	"cooldown_duration":  3, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.upgrade_facility(),	
+		return false
+		#return await GAME_UTIL.upgrade_facility(),	
 }
 
 # ---------------------------------
@@ -166,6 +184,23 @@ var HIRE_DCLASS:Dictionary = {
 		return confirm
 }
 
+var TRAIN_MTF:Dictionary = {
+	"name": "TRAIN_MTF",
+	"description": "Train an MTF squad.",
+	"cooldown_duration":  7, 
+	"effect": func() -> bool:
+		var costs := [{"amount": 400, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Train an MTF squad?", "", "", costs )
+		
+		if confirm:
+			print("add an mtf squad")
+			#for item in RESEARCHER_UTIL.generate_new_researcher_hires(5, RESEARCHER.SPECIALIZATION.DCLASS):
+				#hired_lead_researchers_arr.push_back(item)
+			#SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr
+			
+		return confirm
+}
+
 var ADD_TRAIT:Dictionary = {
 	"name": "ADD TRAIT",
 	"description": "Allows a researcher to gain a new trait.",
@@ -230,17 +265,20 @@ var UNHAPPY_HOUR:Dictionary = {
 		return true,
 }
 
-var MONEY_HACK:Dictionary = {
-	"name": "MONEY HACK", 
-	"description": "Gain +25% of your current MONEY.",
+# -------------------------------------------------------------------------------------------------- RESOURCE GAIN
+var INSTANT_MONEY_LVL_1:Dictionary = {
+	"name": "INSTANT_MONEY_LVL_1", 
+	"description": "Gain +200 MONEY instantly..",
 	"science_cost": 50,
-	"cooldown_duration":  1, 
+	"cooldown_duration":  3, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [{"amount": 200, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
-var SCIENCE_HACK:Dictionary = {
+var INSTANT_SCIENCE_LVL_1:Dictionary = {
 	"name": "SCIENCE HACK", 
 	"description": "Gain +25% of your current SCIENCE.",
 	"science_cost": 0,
@@ -250,8 +288,29 @@ var SCIENCE_HACK:Dictionary = {
 		return true,
 }
 
-var CONVERT_MONEY_TO_SCIENCE:Dictionary = {
-	"name": "CONVERT TO SCIENCE", 
+var INSTANT_MATERIAL_LVL_1:Dictionary = {
+	"name": "SCIENCE HACK", 
+	"description": "Gain +25% of your current SCIENCE.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func() -> bool:
+		await U.set_timeout(0.5)
+		return true,
+}
+
+var INSTANT_CORE_LVL_1:Dictionary = {
+	"name": "SCIENCE HACK", 
+	"description": "Gain +25% of your current SCIENCE.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func() -> bool:
+		await U.set_timeout(0.5)
+		return true,
+}
+
+
+var CONVERT_MONEY_INTO_SCIENCE:Dictionary = {
+	"name": "CONVERT_MONEY_INTO_SCIENCE", 
 	"description": "Convert MONEY into SCIENCE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
@@ -260,9 +319,19 @@ var CONVERT_MONEY_TO_SCIENCE:Dictionary = {
 		return true,
 }
 
-var CONVERT_SCIENCE_TO_MONEY:Dictionary = {
-	"name": "CONVERT TO MONEY", 
-	"description": "Convert SCIENCE into MONEY.",
+var CONVERT_MONEY_INTO_MATERIAL:Dictionary = {
+	"name": "CONVERT_MONEY_INTO_MATERIAL", 
+	"description": "Convert MONEY into MATERIAL",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func() -> bool:
+		await U.set_timeout(0.5)
+		return true,
+}
+
+var CONVERT_MONEY_INTO_CORE:Dictionary = {
+	"name": "CONVERT_MONEY_INTO_CORE", 
+	"description": "Convert MONEY into CORE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
@@ -281,6 +350,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = TRIGGER_ONSITE_NUKE
+		REF.CANCEL_NUCLEAR_DETONATION:
+			ability = CANCEL_NUCLEAR_DETONATION
 		REF.SET_WARNING_MODE:
 			ability = SET_WARNING_MODE
 		REF.SET_DANGER_MODE:
@@ -303,6 +374,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = HIRE_ADMIN
 		REF.HIRE_DCLASS:
 			ability = HIRE_DCLASS
+		REF.TRAIN_MTF:
+			ability = TRAIN_MTF
 		# -----------------------------
 		
 		# -----------------------------
@@ -324,14 +397,21 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# -----------------------------
 
 		# -----------------------------
-		REF.MONEY_HACK:
-			ability = MONEY_HACK
-		REF.SCIENCE_HACK:
-			ability = SCIENCE_HACK
-		REF.CONVERT_TO_SCIENCE:
-			ability = CONVERT_MONEY_TO_SCIENCE
-		REF.CONVERT_TO_MONEY:
-			ability = CONVERT_SCIENCE_TO_MONEY
+		REF.INSTANT_MONEY_LVL_1:
+			ability = INSTANT_MONEY_LVL_1
+		REF.INSTANT_SCIENCE_LVL_1:
+			ability = INSTANT_SCIENCE_LVL_1
+		REF.INSTANT_MATERIAL_LVL_1:
+			ability = INSTANT_MATERIAL_LVL_1
+		REF.INSTANT_CORE_LVL_1:
+			ability = INSTANT_CORE_LVL_1			
+			
+		REF.CONVERT_MONEY_INTO_SCIENCE:
+			ability = CONVERT_MONEY_INTO_SCIENCE
+		REF.CONVERT_MONEY_INTO_MATERIAL:
+			ability = CONVERT_MONEY_INTO_MATERIAL
+		REF.CONVERT_MONEY_INTO_CORE:
+			ability = CONVERT_MONEY_INTO_CORE			
 		# -----------------------------	
 
 	

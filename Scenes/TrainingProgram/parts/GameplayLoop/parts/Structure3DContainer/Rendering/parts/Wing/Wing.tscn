@@ -1,12 +1,57 @@
-[gd_scene load_steps=23 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=24 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_i1dve"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
 [ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="6_iutnv"]
 [ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="7_v5pir"]
+
+[sub_resource type="Shader" id="Shader_n8dix"]
+code = "shader_type canvas_item;
+
+uniform float outline_thickness : hint_range(0.0, 10.0) = 1.0;
+uniform vec4 outline_color = vec4(0.0, 0.0, 0.0, 1.0); // Outline color (default black)
+uniform vec4 base_color = vec4(1.0, 1.0, 1.0, 1.0);     // Tint color (default white / no tint)
+
+void fragment() {
+    // Fetch the current texture color
+    vec4 tex_color = texture(TEXTURE, UV);
+
+    // Tint the texture color with the base color
+    vec4 output_color = tex_color * base_color;
+
+    // Proceed only if the pixel is opaque
+    if (tex_color.a > 0.1) {
+        // Use TEXTURE_PIXEL_SIZE for UV space calculations
+        vec2 texel_size = TEXTURE_PIXEL_SIZE * outline_thickness;
+
+        // Check surrounding pixels for transparency (to detect edges)
+        bool is_edge = false;
+        is_edge = is_edge || (texture(TEXTURE, UV + vec2(-texel_size.x, 0.0)).a < 0.1);
+        is_edge = is_edge || (texture(TEXTURE, UV + vec2(texel_size.x, 0.0)).a < 0.1);
+        is_edge = is_edge || (texture(TEXTURE, UV + vec2(0.0, -texel_size.y)).a < 0.1);
+        is_edge = is_edge || (texture(TEXTURE, UV + vec2(0.0, texel_size.y)).a < 0.1);
+
+        // If it's an edge pixel, use the outline color instead
+        if (is_edge) {
+            output_color = outline_color;
+        }
+    } else {
+        // Fully transparent background
+        output_color = vec4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    // Final output
+    COLOR = output_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qq608"]
+shader = SubResource("Shader_n8dix")
+shader_parameter/outline_thickness = 10.0
+shader_parameter/outline_color = Vector4(0.5, 0.5, 0, 1)
+shader_parameter/base_color = Vector4(1, 1, 1, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_u0dki"]
 viewport_path = NodePath("SubViewport")
@@ -103,6 +148,7 @@ grow_vertical = 2
 script = ExtResource("1_qq608")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_qq608")
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -131,6 +177,7 @@ shaded = true
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
 text = "FLOOR 1"
+font = ExtResource("4_i1dve")
 font_size = 240
 outline_size = 0
 uppercase = true
@@ -143,6 +190,7 @@ shaded = true
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
 text = "wing a"
+font = ExtResource("4_i1dve")
 font_size = 240
 outline_size = 0
 uppercase = true
@@ -163,279 +211,6 @@ spot_attenuation = -3.11
 spot_angle = 8.39
 spot_angle_attenuation = 1.41421
 
-[node name="RightBoardRoomLabels" type="Node3D" parent="SubViewport/RoomColumn/RightBoard"]
-transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, 0.941055, 2.47272, 0.522508)
-visible = false
-
-[node name="0" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.708123, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.984314, 0.439216, 0.184314, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="2" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -2.36723, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="5" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -4.04931, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="1" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -0.708123, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  Research Lab"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="4" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -2.36723, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="7" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -4.04931, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="3" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.708123, 1.90735e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="6" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -2.36723, 4.76837e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="8" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -4.04931, 3.8147e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/RightBoardRoomLabels/8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
 [node name="MsgBoard" type="Node3D" parent="SubViewport/RoomColumn/RightBoard"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.564634)
 
@@ -443,7 +218,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.564634)
 transparent = false
 texture = SubResource("ViewportTexture_fjg3y")
 
-[node name="Label3D" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
+[node name="RightWallLabel" type="Label3D" parent="SubViewport/RoomColumn/RightBoard/MsgBoard/Sprite3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0361191)
 pixel_size = 0.03
 shaded = true
@@ -466,289 +241,6 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15.233
 mesh = SubResource("BoxMesh_n6uvr")
 skeleton = NodePath("../../..")
 
-[node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard"]
-transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, -8.96184, -3.3019, 0.399371)
-pixel_size = 0.003
-shaded = true
-modulate = Color(0.572549, 0.572549, 0.572549, 0.52549)
-text = "directory"
-font_size = 200
-uppercase = true
-line_spacing = 20.0
-
-[node name="LeftBoardRoomLabels" type="Node3D" parent="SubViewport/RoomColumn/LeftBoard"]
-transform = Transform3D(1, 0, -1.06581e-14, 0, 1, 0, 1.06581e-14, 0, 1, -0.0527551, 2.66723, 0.517871)
-visible = false
-
-[node name="0" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.708123, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.984314, 0.439216, 0.184314, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="2" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -2.36723, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="5" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -4.04931, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 3
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="1" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -0.708123, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  Research Lab"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="4" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -2.36723, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="7" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.642, -4.04931, 0)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="3" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.708123, 1.90735e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="6" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -2.36723, 4.76837e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
-[node name="8" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -4.04931, 3.8147e-06)
-pixel_size = 0.025
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "x  room name"
-font = ExtResource("2_i1dve")
-font_size = 16
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-autowrap_mode = 2
-width = 150.0
-
-[node name="Status" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/LeftBoardRoomLabels/8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-pixel_size = 0.035
-shaded = true
-modulate = Color(0.524946, 1, 0.445033, 1)
-outline_modulate = Color(1, 1, 1, 0)
-text = "RESEARCHING"
-font = ExtResource("2_i1dve")
-font_size = 8
-outline_size = 0
-horizontal_alignment = 0
-uppercase = true
-line_spacing = 20.0
-width = 150.0
-
 [node name="MsgBoard" type="Node3D" parent="SubViewport/RoomColumn/LeftBoard"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.98023e-08, 0, 0.564634)
 
@@ -756,7 +248,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.98023e-08, 0, 0.564634)
 transparent = false
 texture = SubResource("ViewportTexture_fjg3y")
 
-[node name="Label3D" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
+[node name="LeftWallLabel" type="Label3D" parent="SubViewport/RoomColumn/LeftBoard/MsgBoard/Sprite3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0361191)
 pixel_size = 0.03
 shaded = true

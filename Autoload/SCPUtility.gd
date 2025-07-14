@@ -606,21 +606,25 @@ func get_render_from_metrics(ref:int, staff_details:Dictionary, vibes:Dictionary
 	var is_threshold_met:bool = available_amount >= threshold_amount
 	var property:String
 	var lockout:bool = false 
+	var current_amount:int = 0
 	var hint_description:String = "%s must be at least %s (Currently at %s)." % [property, threshold_amount, available_amount]
 	
 	match ref:
 		RESOURCE.METRICS.MORALE:
 			property = "MORALE"
+			current_amount = vibes[RESOURCE.METRICS.MORALE]
 			if !staff_details.is_empty() and  staff_details.mood.ref == RESEARCHER.MOODS.DEPRESSED:
 				lockout = true
 				hint_description = "Unavailable due to current mood."
 		RESOURCE.METRICS.SAFETY:
 			property = "SAFETY"
+			current_amount = vibes[RESOURCE.METRICS.SAFETY]
 			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.FRIGHTENED:
 				lockout = true
 				hint_description = "Unavailable due to current mood."			
 		RESOURCE.METRICS.READINESS:
 			property = "READINESS"
+			current_amount = vibes[RESOURCE.METRICS.READINESS]
 			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.RELUCTANT:
 				lockout = true
 				hint_description = "Unavailable due to current mood."
@@ -628,6 +632,7 @@ func get_render_from_metrics(ref:int, staff_details:Dictionary, vibes:Dictionary
 	return {
 		"lockout": lockout,
 		"property": property,
+		"current_amount": current_amount,
 		"is_available": is_threshold_met,
 		"hint_description": hint_description
 	}

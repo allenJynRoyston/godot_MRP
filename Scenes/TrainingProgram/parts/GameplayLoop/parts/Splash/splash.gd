@@ -10,27 +10,32 @@ extends Control
 
 var control_pos:Dictionary
 
-@export var title:String = "CONTAINMENT BREACH IN PROGRESS" : 
+@export var title:String = "SPLASH" : 
 	set(val):
 		title = val
 		on_title_update()
 
 @export var v_offset:int = 0
 
+@export var auto_start:bool = false
 
 # --------------------------------	
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	set_process(false)
 	on_title_update()
+	if auto_start:
+		await U.tick()
+		await activate(true)
+		start(true)
 # --------------------------------	
 
 # --------------------------------	
-func activate() -> void:
+func activate(use_vset:bool = false) -> void:
 	await U.tick()
 	
 	control_pos[MainPanel] = {
-		"zero": 0,
+		"zero": 0 if !use_vset else v_offset,
 		"show": 200  + v_offset,
 		"hide": -MainMargin.size.y
 	}

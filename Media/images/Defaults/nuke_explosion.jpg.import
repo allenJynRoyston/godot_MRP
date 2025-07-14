@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://duwmfv5tsr03h"
-path="res://.godot/imported/research_lab.jpg-a61314ec97fcd902f13b10bcf7e5815a.ctex"
+uid="uid://bghi06wtrgipr"
+path="res://.godot/imported/nuke_explosion.jpg-c19bad2bf1c52088361ad1b80f177038.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Media/rooms/research_lab.jpg"
-dest_files=["res://.godot/imported/research_lab.jpg-a61314ec97fcd902f13b10bcf7e5815a.ctex"]
+source_file="res://Media/images/Defaults/nuke_explosion.jpg"
+dest_files=["res://.godot/imported/nuke_explosion.jpg-c19bad2bf1c52088361ad1b80f177038.ctex"]
 
 [params]
 

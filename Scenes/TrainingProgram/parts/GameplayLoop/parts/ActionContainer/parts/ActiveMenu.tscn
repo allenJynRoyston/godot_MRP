@@ -13,16 +13,17 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_o0to0"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1lsc"]
-bg_color = Color(0, 0, 0, 0)
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epm40"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aa1g3"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -63,10 +64,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_epm40")
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 0
 
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
@@ -82,10 +83,10 @@ size = Vector2i(250, 200)
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(250, 200)
 offset_right = 250.0
-offset_bottom = 200.0
+offset_bottom = 314.0
 
 [node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_l1lsc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_epm40")
 
 [node name="MarginContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer" index="0"]
 theme_override_constants/margin_left = 10

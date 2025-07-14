@@ -15,6 +15,7 @@ extends MouseInteractions
 #front
 @onready var CardDrawerImage:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/CardDrawerImage
 @onready var CardDrawerName:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/HBoxContainer2/CardDrawerName
+@onready var CardDrawerLevel:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/HBoxContainer2/CardDrawerLevel
 
 @onready var CurrencyContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer/CardDrawerCurrency
@@ -156,7 +157,6 @@ func on_resources_data_update(new_val:Dictionary) -> void:
 	
 func on_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty():return	
-		
 	if ref == -1:
 		InactivePanel.hide()
 		CostPanel.hide()
@@ -202,10 +202,10 @@ func on_ref_update() -> void:
 	CardBody.modulate = Color(1, 1, 1, 1)
 	
 	var abl_lvl:int = 0
-	if !use_location.is_empty():
-		var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
-		var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
+	#if !use_location.is_empty():
+	var ring_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]	
+	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
 	var hide_currency:bool = true
 	for item in currency_list:
@@ -222,6 +222,7 @@ func on_ref_update() -> void:
 			break
 			
 	# -----------
+	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated

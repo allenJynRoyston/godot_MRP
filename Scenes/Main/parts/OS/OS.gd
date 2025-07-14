@@ -20,6 +20,7 @@ class_name Layout
 @onready var Installer:PanelContainer = $NodeControl/Installer
 @onready var NotificationContainer:PanelContainer = $NodeControl/NotificationContainer
 
+@onready var HeaderControls:Control = $HeaderControls
 @onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
 
 const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/AppItem.tscn")
@@ -377,6 +378,7 @@ func _ready() -> void:
 	set_physics_process(false)	
 	
 	# hide
+	HeaderControls.hide()
 	PauseContainer.hide()
 	AudioVisualizer.hide()
 	
@@ -432,6 +434,7 @@ func start() -> void:
 		
 	await render_desktop_icons()	
 	Taskbar.activate()
+	HeaderControls.show()
 		
 	if skip_to_game:
 		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)

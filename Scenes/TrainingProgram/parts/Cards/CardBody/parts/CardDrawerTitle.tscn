@@ -20,7 +20,6 @@ size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("1_gah0o")
 script = ExtResource("1_w7cv4")
 content = "NAMETAG"
-center_text = null
 title = "LABEL"
 is_left_side = true
 

@@ -366,6 +366,8 @@ layout_mode = 2
 
 [node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
 layout_mode = 2
+show_scp_card = false
+hide_next_prev_btns = true
 
 [node name="ActionControls" type="Control" parent="."]
 layout_mode = 2

@@ -413,6 +413,18 @@ func on_current_instruction_update() -> void:
 			ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 			reveal_outputtexture(true, 0.3)
 		
+	if "scp_ref" in current_instruction:
+		RoomDetails.scp_ref = current_instruction.scp_ref
+		RoomDetails.show_scp_card = true
+		RoomDetails.show_room_card = false
+		RoomDetails.show_researcher_card = false
+		RoomDetails.ScpCard.flip = true
+		RoomDetails.disable_inputs = true
+		await U.set_timeout(0.3)
+		RoomDetails.reveal(true)
+		
+		
+		
 	if "selected_staff" in current_instruction:
 		if ResearcherCard.uid != current_instruction.selected_staff.uid:
 			ResearcherCard.uid = current_instruction.selected_staff.uid

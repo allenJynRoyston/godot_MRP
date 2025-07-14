@@ -12,7 +12,7 @@ extends PanelContainer
 
 const SetupContainedPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn")
 
-enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, GAME_WON, GAME_LOST }
+enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, NUKE_DETONATION, GAME_WON, GAME_LOST }
 
 var options:Dictionary = {}
 var is_tutorial:bool = false
@@ -490,6 +490,16 @@ func start_new_game() -> void:
 	# -----------------------
 	SetupContainer.subtitle = "Finalizing deployment protocols..."
 	SetupContainer.progressbar_val = 0.7
+	
+	# swap wing and then back to floor to fix the scenes
+	camera_settings.type = CAMERA.TYPE.WING_SELECT
+	SUBSCRIBE.camera_settings = camera_settings		
+	if !DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
+		await U.tick()
+		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
+		SUBSCRIBE.camera_settings = camera_settings		
+
+	
 	await U.set_timeout(duration)
 	# 4.) reset any nodes
 	for node in get_all_container_nodes():
@@ -522,10 +532,7 @@ func start_new_game() -> void:
 	GAME_UTIL.mark_current_objectives()
 	
 	# start actionContainer or start at ring level
-	if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
-		ActionContainer.start(true)		
-	else:
-		ActionContainer.start()
+	ActionContainer.start()
 		
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
 	# clear all quicksaves/restorespoints/aftersetup
@@ -729,6 +736,12 @@ func next_day() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
 	
+	if base_states.base.onsite_nuke.triggered:
+		var res:bool = await GAME_UTIL.create_warning("ONSITE NUCLEAR DEVICE IS ACTIVE!", "Game will end if you continue.", "res://Media/images/Defaults/stop_sign.png")
+		if res:
+			current_phase = PHASE.NUKE_DETONATION
+		return
+	
 	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
 		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "res://Media/images/Defaults/stop_sign.png")
 		if res:
@@ -904,11 +917,7 @@ func on_current_phase_update() -> void:
 			# hide objectives
 			show_marked_objectives = false
 			
-			#if camera_settings_snapshot.type != CAMERA.TYPE.WING_SELECT:
-				#camera_settings.type = CAMERA.TYPE.WING_SELECT
-				#SUBSCRIBE.camera_settings = camera_settings	
-				#await U.set_timeout(0.5)
-			#
+
 			#
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await U.set_timeout(0.5)
@@ -999,6 +1008,15 @@ func on_current_phase_update() -> void:
 			
 			# next
 			current_phase = PHASE.CONCLUDE
+		# ------------------------	
+		PHASE.NUKE_DETONATION:
+			PhaseAnnouncement.start("NUCLEAR DETONATION IMMINENT")
+			await show_only([Structure3dContainer])
+			PhaseAnnouncement.end()
+			
+			await U.set_timeout(2.0)
+			
+			current_phase = PHASE.GAME_LOST
 		# ------------------------
 		PHASE.CONCLUDE:
 			# CHECK IF SCENARIO DATA IS COMPLETE

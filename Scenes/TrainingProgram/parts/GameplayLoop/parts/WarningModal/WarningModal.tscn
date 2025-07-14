@@ -1,12 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://cwnspteeyje6q"]
+[gd_scene load_steps=13 format=3 uid="uid://cwnspteeyje6q"]
 
 [ext_resource type="Script" uid="uid://c57unpcppvd0n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/WarningModal/warning_modal.gd" id="1_q3rcv"]
 [ext_resource type="PackedScene" uid="uid://loky6w15vqbn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn" id="2_w10ti"]
 [ext_resource type="Texture2D" uid="uid://ch8kmv3c7uul0" path="res://Media/images/Defaults/redacted.png" id="2_wo0rv"]
-[ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_2qvr3"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_2qvr3"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="4_w10ti"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_2qvr3"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="5_dt46u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="9_0amot"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75o2t"]
@@ -41,87 +40,6 @@ shader_parameter/blur_radius = 3.715
 shader_parameter/blur_direction = Vector2(0.5, 0.5)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kq5a2"]
-
-[sub_resource type="Shader" id="Shader_q3rcv"]
-code = "shader_type canvas_item;
-
-// Horizontal (Y-based scanline) controls
-uniform bool enable_horizontal = true;
-uniform float amplitude_h : hint_range(0.0, 50.0) = 20.0;
-uniform float frequency_h : hint_range(0.0, 10.0) = 5.0;
-uniform float speed_h : hint_range(0.0, 10.0) = 1.0;
-uniform float opacity_h : hint_range(0.0, 1.0) = 1.0;
-uniform int step_count_h : hint_range(1, 128) = 8;
-
-// Vertical (X-based columnline) controls
-uniform bool enable_vertical = true;
-uniform float amplitude_v : hint_range(0.0, 50.0) = 20.0;
-uniform float frequency_v : hint_range(0.0, 10.0) = 5.0;
-uniform float speed_v : hint_range(0.0, 10.0) = 1.0;
-uniform float opacity_v : hint_range(0.0, 1.0) = 1.0;
-uniform int step_count_v : hint_range(1, 128) = 8;
-
-void fragment() {
-    float offset_x = 0.0;
-    float offset_y = 0.0;
-
-    // Horizontal distortion (Y-axis based)
-    if (enable_horizontal) {
-        float y_px = floor(FRAGCOORD.y);
-        float wave_h = sin(y_px * frequency_h * 0.01 + TIME * speed_h);
-        float stepped_wave_h = floor(wave_h * float(step_count_h)) / float(step_count_h);
-        offset_x = stepped_wave_h * (amplitude_h * SCREEN_PIXEL_SIZE.x);
-    }
-
-    // Vertical distortion (X-axis based)
-    if (enable_vertical) {
-        float x_px = floor(FRAGCOORD.x);
-        float wave_v = sin(x_px * frequency_v * 0.01 + TIME * speed_v);
-        float stepped_wave_v = floor(wave_v * float(step_count_v)) / float(step_count_v);
-        offset_y = stepped_wave_v * (amplitude_v * SCREEN_PIXEL_SIZE.y);
-    }
-
-    vec2 distorted_uv = UV + vec2(offset_x, offset_y);
-
-    vec4 tex_color = texture(TEXTURE, distorted_uv);
-
-    // Apply opacity blending
-    float final_opacity = 1.0;
-    if (enable_horizontal && enable_vertical) {
-        final_opacity = mix(opacity_h, opacity_v, 0.5);
-    } else if (enable_horizontal) {
-        final_opacity = opacity_h;
-    } else if (enable_vertical) {
-        final_opacity = opacity_v;
-    }
-
-    tex_color.a *= final_opacity;
-
-    COLOR = tex_color;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_j1ebr"]
-shader = SubResource("Shader_q3rcv")
-shader_parameter/enable_horizontal = true
-shader_parameter/amplitude_h = 11.532
-shader_parameter/frequency_h = 1.855
-shader_parameter/speed_h = 1.0
-shader_parameter/opacity_h = 1.0
-shader_parameter/step_count_h = 4
-shader_parameter/enable_vertical = false
-shader_parameter/amplitude_v = 20.0
-shader_parameter/frequency_v = 5.0
-shader_parameter/speed_v = 1.0
-shader_parameter/opacity_v = 1.0
-shader_parameter/step_count_v = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dt46u"]
-bg_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_q3rcv"]
-font = ExtResource("4_2qvr3")
-font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_dt46u"]
 font = ExtResource("5_2qvr3")
@@ -181,53 +99,25 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="ImageTextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
-material = SubResource("ShaderMaterial_j1ebr")
-custom_minimum_size = Vector2(300, 400)
+[node name="PanelContainer" type="PanelContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = ExtResource("3_2qvr3")
+
+[node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="ImageTextureRect" type="TextureRect" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 2
+size_flags_horizontal = 4
 texture = ExtResource("2_wo0rv")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect"]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -126.0
-offset_bottom = 59.0
-grow_horizontal = 0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="PanelContainer" type="PanelContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect/MarginContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dt46u")
-
-[node name="MarginContainer" type="MarginContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect/MarginContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect/MarginContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "SCP-1047"
-label_settings = SubResource("LabelSettings_q3rcv")
-
-[node name="Label2" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer/ImageTextureRect/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "ITEM CLASS: KETER"
-label_settings = ExtResource("5_dt46u")
-horizontal_alignment = 1
 
 [node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)

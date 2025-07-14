@@ -23,8 +23,11 @@ enum REF {
 	
 	MEMETIC_SHILEDING,
 	
-	GENERATE_MONEY,
-	GENERATE_SCIENCE,
+	# ------------------- GENERATE
+	GENERATE_MONEY_LVL_1,
+	GENERATE_SCIENCE_LVL_1,
+	GENERATE_MATERIAL_LVL_1,
+	GENERATE_CORE_LVL_1	
 }
 
 # ---------------------------------
@@ -179,10 +182,10 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 }
 # ---------------------------------
 
-# ---------------------------------
-var GENERATE_MONEY:Dictionary = {
+# -------------------------------------------------------------------------------------------------- GENERATE RESOURCES
+var GENERATE_MONEY_LVL_1:Dictionary = {
 	"name": "GENERATE MONEY",
-	"description": "Room generates money.",
+	"description": "Room generates MONEY.",
 	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
@@ -190,6 +193,35 @@ var GENERATE_MONEY:Dictionary = {
 	}
 }
 
+var GENERATE_SCIENCE_LVL_1:Dictionary = {
+	"name": "GENERATE SCIENCE",
+	"description": "Room generates SCIENCE.",
+	"lvl_required": 0,
+	"energy_cost": 2,
+	"currencies":{
+		RESOURCE.CURRENCY.SCIENCE: 25
+	}
+}
+
+var GENERATE_MATERIAL_LVL_1:Dictionary = {
+	"name": "GENERATE MATERIAL",
+	"description": "Room generates MATERIAL.",
+	"lvl_required": 0,
+	"energy_cost": 2,
+	"currencies":{
+		RESOURCE.CURRENCY.MATERIAL: 10
+	}
+}
+
+var GENERATE_CORE_LVL_1:Dictionary = {
+	"name": "GENERATE CORE",
+	"description": "Room generates CORE.",
+	"lvl_required": 0,
+	"energy_cost": 3,
+	"currencies":{
+		RESOURCE.CURRENCY.CORE: 1
+	}
+}
 
 
 # ---------------------------------
@@ -207,6 +239,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = UPGRADE_ABL_LVL
 		REF.ADDITIONAL_STORE_UNLOCKS:
 			ability = ADDITIONAL_STORE_UNLOCKS
+			
 		# ------------------	
 		REF.SUPPLY_SECURITY:
 			ability = SUPPLY_SECURITY
@@ -216,11 +249,13 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = SUPPLY_TECHNICIANS
 		REF.SUPPLY_DCLASS:
 			ability = SUPPLY_DCLASS
+			
 		# ------------------
 		REF.FIREARM_TRAINING:
 			ability = FIREARM_TRAINING
 		REF.HEAVY_WEAPONS_TRAINING:
 			ability = HEAVY_WEAPONS_TRAINING
+			
 		# ------------------
 		REF.TECH_SUPPORT:
 			ability = TECH_SUPPORT
@@ -232,10 +267,18 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = GENERATE_RESEARCH_FROM_SCP
 		REF.GENERATE_MONEY_FROM_SCP:
 			ability = GENERATE_MONEY_FROM_SCP
-		# ------------------
-		REF.GENERATE_MONEY:
-			ability = GENERATE_MONEY
-	
+			
+		# ------------------ GENERATE
+		REF.GENERATE_MONEY_LVL_1:
+			ability = GENERATE_MONEY_LVL_1
+		REF.GENERATE_SCIENCE_LVL_1:
+			ability = GENERATE_SCIENCE_LVL_1
+		REF.GENERATE_MATERIAL_LVL_1:
+			ability = GENERATE_MATERIAL_LVL_1			
+		REF.GENERATE_CORE_LVL_1:
+			ability = GENERATE_CORE_LVL_1
+			
+			
 	ability.ref = ref
 	ability.lvl_required = lvl_required
 	return ability

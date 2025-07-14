@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://esr6voh1ktor"]
+[gd_scene load_steps=9 format=3 uid="uid://esr6voh1ktor"]
 
 [ext_resource type="Script" uid="uid://cgujlcmqxres4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/success_roll.gd" id="1_ep8x5"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="2_i156o"]
@@ -7,6 +7,8 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_naahg"]
 bg_color = Color(0, 0, 0, 0.796078)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i156o"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgoj8"]
 bg_color = Color(0, 0.727551, 0.104814, 1)
@@ -43,6 +45,7 @@ theme_override_constants/separation = 100
 
 [node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_i156o")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2

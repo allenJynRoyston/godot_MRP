@@ -68,7 +68,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 		# add additional props and send to event
 		props.selected_staff = selected_staff
 		props.vibes = vibes
-		
+
 		# build seequence		
 		var sequence:Array = []
 		for item in event_data:
@@ -94,6 +94,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 						"subtitle": scp_details.nickname,
 						"img_src": scp_details.img_src,
 						"selected_staff": selected_staff,
+						"scp_ref": scp_details.ref,
 						"text": story_text,
 						"options": options
 					}
