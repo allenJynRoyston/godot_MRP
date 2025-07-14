@@ -92,7 +92,6 @@ func transition() -> void:
 # ------------------------------------------------
 func enable_overview(state:bool) -> void:
 	if state:
-		transition()
 		OverviewScene.show()
 		OverviewNode.show()
 		OverviewNode.set_process(true)
@@ -106,7 +105,6 @@ func enable_overview(state:bool) -> void:
 # ------------------------------------------------
 func enable_wing(state:bool) -> void:
 	if state:
-		transition()
 		WingScene.show()
 		WingCurrentFloor.show()
 		WingTransitionFloor.show()
@@ -122,7 +120,6 @@ func enable_wing(state:bool) -> void:
 # ------------------------------------------------
 func enable_generator(state:bool) -> void:
 	if state:
-		transition()
 		GeneratorScene.show()
 		GeneratorNode.show()
 		GeneratorNode.set_process(true)
@@ -237,63 +234,65 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or previous_camera_type == camera_settings.type:return
 	previous_camera_type = camera_settings.type
-	MaterialRect.material = material_dupe
+	transition()
+	
 	var new_amount:float = 6.0
 
 	match camera_settings.type:
 		# --------------------
 		CAMERA.TYPE.FLOOR_SELECT:
-			await enable_overview(true)
+			enable_overview(true)
 			enable_wing(false)
 			enable_generator(false)
 		# --------------------	
 		CAMERA.TYPE.WING_SELECT:
-			await enable_wing(true)			
+			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)
 			new_amount = 3.0
 		# --------------------		
 		CAMERA.TYPE.ROOM_SELECT:
-			await enable_wing(true)			
+			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)			
 		# --------------------	
 		CAMERA.TYPE.GENERATOR:
-			await enable_generator(true)
+			enable_generator(true)
 			enable_overview(false)
 			enable_wing(false)
 
-
+	
+	MaterialRect.material = material_dupe
 	U.tween_range(material_dupe.get_shader_parameter("zoom"), new_amount, 0.5, func(val:float) -> void:
 		material_dupe.set_shader_parameter("zoom", val)
 	)	
 				
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
-
 # ------------------------------------------------
 
 # ------------------------------------------------
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
-				#await reveal_panels(false, 0.3)
-
 # ------------------------------------------------
+
+# --------------------------------------------------------
+func set_wing_camera_size(new_size:int) -> void:
+	for node in [WingCurrentFloor, WingTransitionFloor]:
+		node.update_camera_size(new_size)
+# --------------------------------------------------------
 
 # ------------------------------------------------
 func on_nuke_is_triggered_update() -> void:
 	if !is_node_ready():return
 	for child in NukeSplashContainer.get_children():
 		child.queue_free()
-	
-	
-	
+
 	BGColorRect.color = Color(1, 0, 0, 0.5) if nuke_is_triggered else Color(0.184, 0.193, 0.212) 	
 	material_dupe.set_shader_parameter("line_color", Color.ORANGE_RED)	
 	material_dupe.set_shader_parameter("angle", 0.5 if nuke_is_triggered else 0 )	
 	material_dupe.set_shader_parameter("speed", 5 if nuke_is_triggered else 0.2 )	
 
-	
 	if nuke_is_triggered:
 		for index in range(0, 10):
 			var splash_node:Control = SplashPreload.instantiate()
@@ -302,7 +301,6 @@ func on_nuke_is_triggered_update() -> void:
 			splash_node.v_offset = index * 150
 			NukeSplashContainer.add_child(splash_node)
 # ------------------------------------------------
-
 
 # ------------------------------------------------
 func animate_wing() -> void:
@@ -332,6 +330,7 @@ func on_process_update(delta: float) -> void:
 	material_dupe.set_shader_parameter("line_color", color)
 # ------------------------------------------------
 
+# ------------------------------------------------
 func on_audio_data_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or new_val.is_empty()  or nuke_is_triggered:return
 	var new_audio_data:Array = new_val.data
@@ -339,3 +338,4 @@ func on_audio_data_update(new_val:Dictionary) -> void:
 	var bass_level:float = new_audio_data[10]
 	var normalized:float = clamp((bass_level - 0.5) / 0.1, 0.1, 1)
 	material_dupe.set_shader_parameter("glow_strength", normalized + 0.5)
+# ------------------------------------------------

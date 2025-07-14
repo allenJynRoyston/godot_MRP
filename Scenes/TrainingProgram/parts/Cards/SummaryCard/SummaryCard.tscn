@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=18 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_s7sdo"]
@@ -7,13 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="5_djb7u"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="6_4uruu"]
 [ext_resource type="PackedScene" uid="uid://dy0x4w2beaa05" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerResearchers.tscn" id="6_ihy8r"]
+[ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="6_uh585"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_wqrfb"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_ihy8r"]
 [ext_resource type="PackedScene" uid="uid://bwdoedxrhp17b" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerScp.tscn" id="7_wi2bx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wi2bx"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_wi2bx"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_wqrfb"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqrfb"]
@@ -52,19 +53,19 @@ script = ExtResource("1_pe6gu")
 
 [node name="CardBody" parent="." instance=ExtResource("2_s7sdo")]
 layout_mode = 2
-card_size = Vector2(275, 70)
+card_size = Vector2(275, 450)
 border_color = Color(0.337255, 0.27451, 1, 1)
 auto_color_panels = false
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_wi2bx")
+texture = SubResource("ViewportTexture_wqrfb")
 
 [node name="SubViewport" parent="CardBody" index="1"]
-size = Vector2i(275, 70)
+size = Vector2i(275, 450)
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(275, 70)
-offset_bottom = 568.0
+custom_minimum_size = Vector2(275, 450)
+offset_bottom = 472.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxEmpty_wqrfb")
@@ -76,22 +77,69 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
-[node name="RoomDetails" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
+[node name="EmptyContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
 layout_mode = 2
-theme_override_constants/separation = -5
+theme_override_constants/separation = 5
 
-[node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetails" instance=ExtResource("4_djb7u")]
-custom_minimum_size = Vector2(0, 40)
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer/HBoxContainer"]
+layout_mode = 2
+text = "DETAILS"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+
+[node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer/MarginContainer" instance=ExtResource("4_djb7u")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 0
 is_small = true
-center_text = true
-title = "NAME"
-border_color = Color(1, 0.74902, 0.2, 1)
+content = "EMPTY SPACE"
+center_text = false
+title = ""
 
-[node name="PersonnelContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="RoomDetailsContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer/HBoxContainer"]
+layout_mode = 2
+text = "DETAILS"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="UpgradeBtn" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer" instance=ExtResource("6_uh585")]
+layout_mode = 2
+title = "UPGRADE TO LVL 1"
+icon = 24
+energy_cost = 0
+show_energy_cost = false
+is_checked = false
+show_checked_panel = false
+
+[node name="PersonnelContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
 theme_override_constants/separation = -3
 
@@ -112,34 +160,6 @@ label_settings = ExtResource("6_wqrfb")
 
 [node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer" instance=ExtResource("6_ihy8r")]
 layout_mode = 2
-title = ""
-is_left_side = true
-
-[node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
-layout_mode = 2
-theme_override_constants/separation = -3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer"]
-layout_mode = 2
-
-[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
-custom_minimum_size = Vector2(15, 15)
-layout_mode = 2
-icon = 37
-icon_color = Color(1, 1, 1, 1)
-icon_size = Vector2(15, 15)
-
-[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer"]
-layout_mode = 2
-text = "PROGRAMS"
-label_settings = ExtResource("6_wqrfb")
-
-[node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer" instance=ExtResource("5_djb7u")]
-layout_mode = 2
-size_flags_vertical = 3
-title = ""
-is_left_side = true
-border_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="PassiveContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
 layout_mode = 2
@@ -164,11 +184,31 @@ label_settings = ExtResource("6_wqrfb")
 layout_mode = 2
 size_flags_vertical = 3
 ability_type = 1
-title = ""
-is_left_side = true
-border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="ScpContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+[node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/HBoxContainer"]
+layout_mode = 2
+text = "PROGRAMS"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="CardDrawerActiveAbilities" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer" instance=ExtResource("5_djb7u")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScpContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
 layout_mode = 2
 theme_override_constants/separation = -3
 
@@ -189,9 +229,13 @@ label_settings = ExtResource("6_wqrfb")
 
 [node name="CardDrawerScp" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer" instance=ExtResource("7_wi2bx")]
 layout_mode = 2
-title = ""
-is_left_side = true
-border_color = Color(1, 0.74902, 0.2, 1)
+
+[node name="CheckBtn" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 6
+icon = 50
+icon_color = Color(0.05, 0.05, 0.05, 0.7)
 
 [node name="BusyPanel" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer" index="1"]
 visible = false

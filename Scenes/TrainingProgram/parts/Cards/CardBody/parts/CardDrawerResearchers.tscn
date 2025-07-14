@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dy0x4w2beaa05"]
+[gd_scene load_steps=3 format=3 uid="uid://dy0x4w2beaa05"]
 
 [ext_resource type="Script" uid="uid://cwkhrlrei1wjc" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_researchers.gd" id="1_c7ied"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_oyllc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7ied"]
 
@@ -12,30 +11,10 @@ offset_bottom = 50.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_c7ied")
 script = ExtResource("1_c7ied")
-title = "RESEARCHERS"
-border_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_top = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "RESEARCHERS "
-label_settings = ExtResource("2_oyllc")
-horizontal_alignment = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="List" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="List" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2

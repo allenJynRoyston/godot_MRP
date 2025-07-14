@@ -101,7 +101,6 @@ func update_all() -> void:
 		var designation:String = U.location_to_designation(use_location)
 		is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false	
 		
-		
 		# check if it has enough energy to work
 		if !is_active: 
 			var energy:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].energy

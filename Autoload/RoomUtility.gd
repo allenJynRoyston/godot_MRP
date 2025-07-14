@@ -186,7 +186,10 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 ## ------------------------------------------------------------------------------
-func get_max_possible_level(ref:int) -> int:
+func get_max_level(ref:int) -> int:
+	if ref == -1:
+		return -1
+	
 	var room_data:Dictionary = return_data(ref)	
 	var max_lvl:int = 0
 	for abl in room_data.abilities.call():

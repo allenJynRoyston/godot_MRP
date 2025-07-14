@@ -1,13 +1,29 @@
-[gd_scene load_steps=10 format=3 uid="uid://djsn4cx2hq8q4"]
+[gd_scene load_steps=9 format=3 uid="uid://djsn4cx2hq8q4"]
 
 [ext_resource type="Script" uid="uid://duc5pofg8524s" path="res://UI/Buttons/RoomPassiveAbilityBtn/room_passive_ability_btn.gd" id="1_4sylx"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_f8eie"]
 [ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_f8eie"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_jg673"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="3_axmus"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_onoaw"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jg673"]
+bg_color = Color(1, 0.749, 0.2, 0.7)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_axmus"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_f8eie"]
+font = ExtResource("2_jg673")
+font_color = Color(0.05, 0.05, 0.05, 0.7)
+outline_size = 2
+outline_color = Color(0.185383, 0.185383, 0.185383, 0.498039)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axmus"]
 bg_color = Color(1, 1, 1, 0)
@@ -16,18 +32,12 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_pnxkg"]
-font = ExtResource("2_jg673")
-font_color = Color(0.827451, 0.827451, 0.827451, 1)
-outline_size = 8
-outline_color = Color(0.162066, 0.162066, 0.162066, 1)
-
 [node name="RoomPassiveAbilityBtn" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 194.0
 offset_bottom = 29.0
 size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("1_f8eie")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jg673")
 script = ExtResource("1_4sylx")
 panel_color = Color(0.275367, 0.56172, 0.999992, 1)
 
@@ -62,13 +72,14 @@ alignment = 1
 custom_minimum_size = Vector2(15, 25)
 layout_mode = 2
 text = "99"
-label_settings = ExtResource("3_axmus")
+label_settings = SubResource("LabelSettings_f8eie")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer/CostAndCooldown/MarginContainer/HBoxContainer" instance=ExtResource("3_onoaw")]
 layout_mode = 2
 icon = 32
+icon_color = Color(0.05, 0.05, 0.05, 0.7)
 
 [node name="Name" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -92,5 +103,5 @@ is_negative = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-label_settings = SubResource("LabelSettings_pnxkg")
+label_settings = SubResource("LabelSettings_f8eie")
 vertical_alignment = 1

@@ -319,10 +319,9 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		
 		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
 	
-	
 	# check for passive and active abilities, grab their max level; that's what becomes the max level
-	# TODO get
-	var max_upgrade_lvl = 1
+	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
+	
 				
 	return {
 		# -----------
@@ -332,7 +331,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			"can_contain": room_details.can_contain,
 			"is_activated": false if is_room_empty else room_config_data.is_activated,
 			"metrics": metrics,
-			"max_upgrade_lvl": 1,
+			"max_upgrade_lvl": max_upgrade_lvl,
 			"abl_lvl": room_config_data.abl_lvl + ring_level_config.abl_lvl,		
 			"currency_list": currency_list
 		} if !is_room_empty else {},
@@ -952,10 +951,10 @@ func hire_researcher(total_options:int) -> bool:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func auto_assign_staff(spec_ref:int, slot:int, location_data:Dictionary = current_location) -> void:
+func auto_assign_staff(spec_ref:int, slot:int, location_data:Dictionary = current_location) -> String:
 	var filter_for_spec:Array = [spec_ref]
 	var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)	
-	if available_researchers.is_empty():return
+	if available_researchers.is_empty():return ""
 	var uid:String = available_researchers[0][0]
 	
 	hired_lead_researchers_arr = hired_lead_researchers_arr.map(func(i):
@@ -966,6 +965,8 @@ func auto_assign_staff(spec_ref:int, slot:int, location_data:Dictionary = curren
 	)
 	
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr	
+	
+	return uid
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	

@@ -34,8 +34,6 @@ extends Control
 		assigned_location = val
 		on_assigned_location_update()
 
-enum MENU_TYPE {RESEARCHER, ROOM, SCP, WING}
-
 const TransitionShader:ShaderMaterial = preload("res://CanvasShader/Dissolve/Dissolve.tres")
 
 var designation:String
@@ -45,10 +43,7 @@ var camera_settings:Dictionary = {}
 var resources_data:Dictionary = {} 
 var previous_floor:int = -1
 var previous_ring:int = -1
-var is_setup:bool = false
 var node_refs:Dictionary = {}
-#var node_ref_positions:Dictionary = {}
-var camera_size_arr:Array = [20, 24, 28, 32, 36]
 var freeze_input:bool = false 
 var room_config:Dictionary = {}
 var menu_index:int = 0
@@ -56,10 +51,7 @@ var default_camera_rotation:Vector3
 var menu_actions:Array = []
 
 var previous_nuke_state:bool = false
-var nuke_is_triggered:bool = false : 
-	set(val):
-		nuke_is_triggered = val
-		on_nuke_is_triggered_update()
+var nuke_is_triggered:bool = false 
 			
 var is_active:bool = false : 
 	set(val):
@@ -78,8 +70,6 @@ var in_brownout:bool = false
 var emergency_mode:ROOM.EMERGENCY_MODES
 
 var camera_tween:Tween 
-
-signal menu_response
 
 # --------------------------------------------------------
 func _init() -> void:
@@ -102,7 +92,6 @@ func _ready() -> void:
 	on_assigned_location_update()
 	on_is_active_update()
 	on_enable_room_focus()
-	on_nuke_is_triggered_update()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -158,40 +147,6 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 	U.debounce(str(self.name, "_update_billboards"), update_billboards)
 # --------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------		
-func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
-	if duration == 0:
-		duration = 0.02
-		
-	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
-	await tween.finished
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------
-func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	room_config = new_val
-	if !is_node_ready() or room_config.is_empty():return	
-	update_nodes()
-	#update_boards()	
-	update_room_lighting(true)	
-	U.debounce(str(self.name, "_update_billboards"), update_billboards)
-# --------------------------------------------------------
-
-# ------------------------------------------------
-func on_base_states_update(new_base_state:Dictionary) -> void:
-	if !is_node_ready() or new_base_state.is_empty():return
-	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
-		nuke_is_triggered = new_base_state.base.onsite_nuke.triggered
-		previous_nuke_state = nuke_is_triggered
-		
-	U.debounce(str(self.name, "_update_billboards"), update_billboards)
-# ------------------------------------------------
-
-# --------------------------------------------------------
-func on_enable_room_focus() -> void:
-	for node in NodeContainer.get_children():
-		node.enable_focus = enable_room_focus
-# --------------------------------------------------------	
 
 # --------------------------------------------------------
 func update_nodes() -> void:
@@ -228,10 +183,40 @@ func update_nodes() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func on_nuke_is_triggered_update() -> void:
-	if !is_node_ready():return
-	
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	if !is_node_ready() or room_config.is_empty():return	
+	update_nodes()
+	#update_boards()	
+	update_room_lighting(true)	
+	U.debounce(str(self.name, "_update_billboards"), update_billboards)
 # --------------------------------------------------------
+
+# ------------------------------------------------
+func on_base_states_update(new_base_state:Dictionary) -> void:
+	if !is_node_ready() or new_base_state.is_empty():return
+	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
+		nuke_is_triggered = new_base_state.base.onsite_nuke.triggered
+		previous_nuke_state = nuke_is_triggered
+		
+	U.debounce(str(self.name, "_update_billboards"), update_billboards)
+# ------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------		
+func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD) -> void:
+	if duration == 0:
+		duration = 0.02
+		
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_delay(delay)
+	await tween.finished
+# --------------------------------------------------------------------------------------------------		
+
+
+# --------------------------------------------------------
+func on_enable_room_focus() -> void:
+	for node in NodeContainer.get_children():
+		node.enable_focus = enable_room_focus
+# --------------------------------------------------------	
 
 
 # --------------------------------------------------------
@@ -339,21 +324,20 @@ func update_billboards() -> void:
 		LeftBillboardLabel.text = "EVACUATE IMMEDIATELY!"
 		RightBillboard.text = "EVACUATE IMMEDIATELY!"
 	
-	
 # --------------------------------------------------------
 
 
-# --------------------------------------------------------
-func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
-	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
-	
-	match camera_settings.type:
-		CAMERA.TYPE.ROOM_SELECT:
-			update_camera_size(35)
-		_:
-			update_camera_size(24)
-# --------------------------------------------------------
+## --------------------------------------------------------
+#func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
+	#camera_settings = new_val
+	#if !is_node_ready() or camera_settings.is_empty():return
+	#
+	#match camera_settings.type:
+		#CAMERA.TYPE.ROOM_SELECT:
+			#update_camera_size(35)
+		#_:
+			#update_camera_size(24)
+## --------------------------------------------------------
 
 # --------------------------------------------------------
 func update_camera_size(val:int) -> void:
@@ -361,18 +345,10 @@ func update_camera_size(val:int) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-func on_select() -> void:
-	menu_actions[menu_index].onSelect.call()
-
-func on_back() -> void:
-	menu_response.emit({"action": ACTION.ROOM_NODE.BACK})
-# --------------------------------------------------------
-
-# --------------------------------------------------------
 func _process(delta: float) -> void:
 	if !is_node_ready():return
-	#if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
-	for child in DangerSpotlights.get_children():
-		child.find_child("Spotlight").rotate_x(0.1)
-		child.find_child("Spotlight").rotate_y(0.01)
+	if in_lockdown or emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
+		for child in DangerSpotlights.get_children():
+			child.find_child("Spotlight").rotate_x(0.1)
+			child.find_child("Spotlight").rotate_y(0.01)
 # --------------------------------------------------------

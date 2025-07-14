@@ -861,7 +861,7 @@ func show_facility_updates() -> void:
 	
 	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
-	await ActiveMenuNode.activate()
+	await ActiveMenuNode.activate(2)
 	ActiveMenuNode.open()	
 # --------------------------------------------------------------------------------------------------
 
@@ -1257,10 +1257,11 @@ func lock_panel_btn_state(state:bool, panels:Array) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func check_action_btn_state() -> void:
-	var at_least_one_floor_available:bool = GAME_UTIL.get_activated_floor_count()	> 0
-	GotoWingBtn.is_disabled = !at_least_one_floor_available
-	GotoGeneratorBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)	
-	FacilityEndTurnBtn.is_disabled = !at_least_one_floor_available
+	var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
+	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)	
+	GotoWingBtn.show() if has_one_floor_activated else GotoWingBtn.hide()
+	GotoGeneratorBtn.show() if has_generator_prerequisite else GotoGeneratorBtn.hide()
+	FacilityEndTurnBtn.is_disabled = !has_one_floor_activated
 
 func lock_actions(state:bool) -> void:
 	if state:
@@ -1292,6 +1293,7 @@ func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
 	var duration:float = 0.0 if skip_animation else 0.3
+	var RenderNode:Control = GBL.find_node(REFS.RENDERING)
 	
 	
 	match current_mode:
@@ -1304,6 +1306,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			reveal_cardminipanel(false, duration)
 		# --------------
 		MODE.ACTIONS:
+			RenderNode.set_wing_camera_size(28)
+			
 			enable_room_focus(false)
 			set_backdrop_state(false)	
 
@@ -1316,6 +1320,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 		# --------------
 		MODE.INVESTIGATE:
+			RenderNode.set_wing_camera_size(35)
+			
 			NewMessageBtn.is_disabled = true
 		
 			InvestigateBackBtn.onClick = func() -> void:
@@ -1360,17 +1366,15 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.item_index = 0
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
-
+		
 			BtnControls.onUpdate = func(node:Control) -> void:
-				# toggle is selected
 				for _node in BtnControls.itemlist:
-					if "is_selected" in _node:
-						_node.is_selected = _node == node
+					_node.is_selected = _node == node
+
 				BtnControls.hide_c_btn = true
-				
 				# ----------------------
-				if "ability_data" in node:
-					BtnControls.a_btn_title = "USE"
+				if node.ref_data.type == "active_ability":
+					BtnControls.a_btn_title = "ACTIVATE"
 					BtnControls.hide_c_btn = true
 					
 					RoomDetailsControl.cycle_to_room(true)
@@ -1380,40 +1384,52 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					RoomDetailsControl.show_researcher_card = false
 					return
 				# ----------------------
-				if "researcher" in node:
+				if node.ref_data.type == "passive_ability":
+					BtnControls.a_btn_title = "ENABLE"
+					BtnControls.hide_c_btn = true
+					
+					RoomDetailsControl.cycle_to_room(true)
+					RoomDetailsControl.show()				
+					RoomDetailsControl.show_room_card = true
+					RoomDetailsControl.show_scp_card = false
+					RoomDetailsControl.show_researcher_card = false
+					return					
+				## ----------------------
+				if node.ref_data.type == "researcher":
 					# check if there are any available researchers
 					var filter_for_spec:Array = [extract_room_data.room.details.required_staffing[node.index]]
 					var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
+					var node_researcher_data = node.ref_data.data
 					
-					BtnControls.a_btn_title = "ASSIGN" if node.researcher.is_empty() else "UNASSIGN"
-					BtnControls.hide_c_btn = !node.researcher.is_empty() and available_researchers.size() > 0
+					BtnControls.a_btn_title = "ASSIGN" if node_researcher_data.is_empty() else "UNASSIGN"
+					BtnControls.hide_c_btn = !node_researcher_data.is_empty() and available_researchers.size() > 0
 					BtnControls.disable_c_btn = available_researchers.is_empty()
 					BtnControls.c_btn_title = "AUTO ASSIGN"
 					BtnControls.onCBtn = func() -> void:
 						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-						GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
+						var new_uid:String = GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
 						RoomDetailsControl.show()
-						RoomDetailsControl.researcher_uid = node.researcher.uid 
+						RoomDetailsControl.researcher_uid = new_uid
 
-					RoomDetailsControl.hide() if node.researcher.is_empty() else RoomDetailsControl.show()
-					RoomDetailsControl.researcher_uid = node.researcher.uid if !node.researcher.is_empty() else -1
+					RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
+					RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1
 					RoomDetailsControl.cycle_to_reseacher(true)
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = false
 					RoomDetailsControl.show_researcher_card = true
 					return
-				# ----------------------
-				if "scp_ref" in node:
+				## ----------------------
+				if node.ref_data.type == "scp":
 					BtnControls.a_btn_title = "CONTAIN"
 					
 					BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
-					BtnControls.disable_c_btn = node.scp_ref == -1
+					BtnControls.disable_c_btn = node.ref_data.data.is_empty()
 					BtnControls.c_btn_title = "DEBUG EVENT"
 					BtnControls.onCBtn = func() -> void:
 						show_events_debug()
 					
-					RoomDetailsControl.hide() if node.scp_ref == -1 else RoomDetailsControl.show()
-					RoomDetailsControl.scp_ref = node.scp_ref 
+					RoomDetailsControl.hide() if node.ref_data.data.is_empty() else RoomDetailsControl.show()
+					RoomDetailsControl.scp_ref = -1 if node.ref_data.data.is_empty() else node.ref_data.data.ref
 					RoomDetailsControl.cycle_to_scp(true)
 					RoomDetailsControl.show_room_card = false
 					RoomDetailsControl.show_scp_card = true

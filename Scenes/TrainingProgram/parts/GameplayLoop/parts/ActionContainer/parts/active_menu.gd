@@ -192,6 +192,9 @@ func on_tab_index_update() -> void:
 
 	await U.tick()
 	check_list_limit()	
+	CardControlBody.size = Vector2(1, 1)
+	CardBodySubviewport.size = CardControlBody.size
+		
 
 
 func on_options_list_update() -> void:
@@ -310,10 +313,3 @@ func on_control_input_release_update() -> void:
 	if !is_node_ready():return
 	wait_for_release = false
 # ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
-func _process(delta: float) -> void:
-	if !is_node_ready():return
-	CardBodySubviewport.size = CardControlBody.size
-# ------------------------------------------------------------------------------
-	#

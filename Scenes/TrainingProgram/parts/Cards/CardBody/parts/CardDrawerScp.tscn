@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwdoedxrhp17b"]
+[gd_scene load_steps=4 format=3 uid="uid://bwdoedxrhp17b"]
 
 [ext_resource type="Script" uid="uid://c3mdqgb5unwur" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_scp.gd" id="1_dy7w8"]
-[ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_urot6"]
-[ext_resource type="PackedScene" uid="uid://drucry14qot6f" path="res://UI/Buttons/ScpBtn/ScpBtn.tscn" id="3_urot6"]
+[ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="2_dy7w8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_urot6"]
 
@@ -16,28 +15,11 @@ script = ExtResource("1_dy7w8")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "TITLE LABEL "
-label_settings = ExtResource("2_urot6")
-horizontal_alignment = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
-layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 13
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="SummaryBtn" parent="MarginContainer" instance=ExtResource("2_dy7w8")]
 layout_mode = 2
-
-[node name="ScpBtn" parent="MarginContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_urot6")]
-layout_mode = 2
+icon = 29
