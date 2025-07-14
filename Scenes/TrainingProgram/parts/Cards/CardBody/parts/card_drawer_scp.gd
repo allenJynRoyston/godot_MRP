@@ -84,4 +84,5 @@ func lock_btns(state:bool) -> void:
 	pass
 
 func get_btns() -> Array:	
-	return [SummaryBtn]
+	
+	return [SummaryBtn] if SummaryBtn.is_visible_in_tree() else []

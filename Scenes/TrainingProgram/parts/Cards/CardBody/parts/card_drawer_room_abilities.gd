@@ -227,4 +227,8 @@ func lock_btns(state:bool) -> void:
 
 
 func get_btns() -> Array:	
-	return List.get_children()
+	var btn_list:Array = []
+	for item in List.get_children():
+		if item.is_visible_in_tree():
+			btn_list.push_back(item)
+	return btn_list
