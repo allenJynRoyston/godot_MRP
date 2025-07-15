@@ -63,7 +63,7 @@ var DIRECTORS_OFFICE_EVENT:Dictionary = {
 		
 		# reference self
 		var timeline:Dictionary = props.timeline
-		print("timeline: ", timeline)	
+	
 	
 		return [
 			# ---------

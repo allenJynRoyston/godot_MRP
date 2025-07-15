@@ -183,6 +183,7 @@ size_flags_vertical = 3
 ability_type = 1
 
 [node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = -3
 

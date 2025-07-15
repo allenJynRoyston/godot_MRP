@@ -99,7 +99,7 @@ func on_room_ref_update() -> void:
 		UpgradeBtn.title = "BUILD MODE"		
 		UpgradeBtn.is_selected = true
 		PersonnelContainer.hide()		
-		AbilityContainer.hide()
+		#AbilityContainer.hide()
 		PassiveContainer.hide()
 		ScpContinaer.hide()
 		await U.tick()
@@ -160,7 +160,7 @@ func on_room_ref_update() -> void:
 	EmptyContainer.hide()
 	RoomDetailsContainer.show() if !room_details.is_empty() else RoomDetailsContainer.hide()
 	PersonnelContainer.show() if required_staffing.size() > 0 and !preview_mode else PersonnelContainer.hide()	
-	AbilityContainer.show() if show_abilities else AbilityContainer.hide()
+	# AbilityContainer.show() if show_abilities else AbilityContainer.hide()
 	PassiveContainer.show() if show_passives else PassiveContainer.hide()
 	ScpContinaer.show() if show_scp else ScpContinaer.hide()
 

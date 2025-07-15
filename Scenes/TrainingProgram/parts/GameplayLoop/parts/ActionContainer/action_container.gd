@@ -51,8 +51,11 @@ extends GameContainer
 @onready var FacilityEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer/FacilityEndTurnBtn
 
 # WING ACTION PANELS
+# FaciiltyProgramBtn.on
+
 @onready var WingActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
 @onready var WingActionBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingActionBtn
+@onready var ProgramBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/ProgramBtn
 @onready var WingEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingEndTurnBtn
 
 # GENERATION ACTION PANEL
@@ -260,6 +263,10 @@ func start() -> void:
 		current_mode = MODE.INVESTIGATE	
 		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
+	
+	ProgramBtn.onClick = func() -> void:
+		
+		show_ability_list()
 	# -------------------------------------
 	
 	# -------------------------------------
@@ -295,7 +302,6 @@ func start() -> void:
 		reveal_notification(true)		
 		lock_actions(false)
 		on_current_mode_update()
-
 	
 	SettingsBtn.onClick = func() -> void:
 		#ControllerOverlay.hide()
@@ -579,6 +585,69 @@ func show_build_options() -> void:
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate(4)
 	ActiveMenuNode.open(true)	
+
+# --------------------------------------------------------------------------------------------------
+					#"index": index, 
+					#"location": location,
+					#"ability": ability, 
+					#"room_details": room_details, 
+# --------------------------------------------------------------------------------------------------
+func show_ability_list() -> void:
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+	
+	var update_list:Callable = func() -> void:
+		await U.tick()
+		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_abilities().map(func(x): return {
+			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			"is_disabled": x.on_cooldown,
+			"hint": {
+				"icon": SVGS.TYPE.ENERGY,
+				"title": "HINT",
+				"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			},			
+		}) )
+		
+
+	var items:Array = GAME_UTIL.get_list_of_abilities().map(func(x): 
+		return {
+			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			"is_disabled": x.on_cooldown,
+			"hint": {
+				"icon": SVGS.TYPE.ENERGY,
+				"title": "HINT",
+				"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			},
+			"is_togglable": false,
+			"action": func() -> void:
+				await ActiveMenuNode.lock()
+				await GAME_UTIL.use_active_ability(x.ability, x.room_details.ref, x.index, x.location)
+				await update_list.call()
+				ActiveMenuNode.unlock(),
+		}
+	)
+		
+	var options:Array = [
+		{
+			"title": "ABILITIES",
+			"items": items,
+		}
+	]
+
+	ActiveMenuNode.onClose = func() -> void:			
+		set_backdrop_state(false)
+		await lock_actions(false)		
+		on_camera_settings_update()
+		GameplayNode.show_marked_objectives = true
+	
+	ActiveMenuNode.use_color = Color.WHITE
+	ActiveMenuNode.options_list = options
+	
+	GameplayNode.show_marked_objectives = false
+	lock_actions(true)
+	set_backdrop_state(true)
+	add_child(ActiveMenuNode)
+	await ActiveMenuNode.activate()
+	ActiveMenuNode.open()	
 
 # --------------------------------------------------------------------------------------------------
 
@@ -1109,6 +1178,10 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if current_location.is_empty() or room_config.is_empty() or camera_settings.type == CAMERA.TYPE.FLOOR_SELECT or is_in_transition:return
 	
+	var filtered:Array = purchased_facility_arr.filter(func(x): 
+		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
+	)
+	
 	# update room details control
 	RoomDetailsControl.use_location = current_location
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
@@ -1141,6 +1214,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			NameControl.show()
 			# ControllerOverlay.show_directional = true
 			WingActionBtn.is_disabled = !is_powered or in_lockdown
+			ProgramBtn.is_disabled = GAME_UTIL.get_list_of_abilities().is_empty()
 			WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
 			
 			camera_settings.type = CAMERA.TYPE.WING_SELECT
@@ -1429,11 +1503,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 						RoomDetailsControl.show()
 						RoomDetailsControl.researcher_uid = new_uid
 					
-					BtnControls.onAction = func() -> void:
-						await BtnControls.reveal(false)
-						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-						await GAME_UTIL.assign_researcher(researcher_details.specialization.ref, node.index)
-						BtnControls.reveal(true)
+					#BtnControls.onAction = func() -> void:
+						#await BtnControls.reveal(false)
+						#var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
+						#await GAME_UTIL.assign_researcher(researcher_details.specialization.ref, node.index)
+						#BtnControls.reveal(true)
 
 					RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1

@@ -1001,6 +1001,12 @@ func on_current_phase_update() -> void:
 					if event_data.timeline.has("emergency_mode"):
 						base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = event_data.timeline.emergency_mode
 						SUBSCRIBE.base_states = base_states
+						
+						# open music player, no music selected
+						SUBSCRIBE.music_data = {
+							"selected": MUSIC.TRACK.SCP_CONTAINMENT_BREACH,
+						}
+						
 						await U.set_timeout(1.5)
 					
 					await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(

@@ -1278,3 +1278,36 @@ func add_currency_to_adjacent_rooms(_new_room_config:Dictionary, amount:int, res
 		
 	return _new_room_config
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+func get_list_of_abilities(use_location:Dictionary = current_location) -> Array:
+	var list:Array = []
+	for item in purchased_facility_arr:
+		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+		var abilities:Array = room_details.abilities.call()
+		var location:Dictionary = item.location
+		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]
+		var is_activated:bool = room_config_data.is_activated		
+
+		for index in abilities.size():
+			var ability:Dictionary = abilities[index]
+			var include:bool = use_location.floor == location.floor and use_location.ring == location.ring
+			var room_designation:String = str(location.floor, location.ring, location.room)
+			var ability_uid:String = str(room_details.ref, index)
+			var abilities_on_cooldown:Dictionary = base_states.room[room_designation].ability_on_cooldown
+						
+			var cooldown_val:int = 0 if ability_uid not in abilities_on_cooldown else abilities_on_cooldown[ability_uid]		
+			var on_cooldown:bool = cooldown_val > 0 
+			
+			if is_activated and include:
+				list.push_back({
+					"index": index, 
+					"location": location,
+					"ability": ability, 
+					"room_details": room_details, 
+					"cooldown_val": cooldown_val, 
+					"on_cooldown": on_cooldown
+				})
+	
+	return list
+# -----------------------------------------------------------------------------

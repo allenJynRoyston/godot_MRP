@@ -292,6 +292,20 @@ func on_action() -> void:
 		onAction.call()
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func remap_data(new_data:Array) -> void:
+	for index in List.get_child_count():
+		var btn_node:Control = List.get_child(index)
+		var properties:Dictionary = new_data[index]
+		if properties.has("title"):
+			btn_node.title = properties.title
+		if properties.has("is_disabled"):
+			btn_node.is_disabled = properties.is_disabled
+		if properties.has("hint"):	
+			btn_node.hint_title =  properties.hint.title
+			btn_node.hint_icon =  properties.hint.icon
+			btn_node.hint_description =  properties.hint.description		
+# ------------------------------------------------------------------------------
 				
 # ------------------------------------------------------------------------------
 func on_key_press(key:String) -> void:

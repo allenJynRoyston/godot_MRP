@@ -61,7 +61,7 @@ func update_node() -> void:
 
 	SummaryBtn.hint_title = "HINT"
 	SummaryBtn.hint_icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
-	SummaryBtn.hint_description = "Requires activation" if !is_activated else ("Containment cell is empty." if is_scp_empty else scp_details.description.call(scp_details))
+	SummaryBtn.hint_description = "Requires activation" if !is_activated else ("Containment cell is empty." if is_scp_empty else scp_details.abstract.call(scp_details))
 	
 	SummaryBtn.icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
 	SummaryBtn.use_alt = is_scp_empty and is_activated

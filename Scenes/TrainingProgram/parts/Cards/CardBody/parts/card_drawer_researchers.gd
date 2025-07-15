@@ -116,6 +116,12 @@ func update_node() -> void:
 				
 				SummaryBtnNode.icon = SVGS.TYPE.WARNING	
 
+				SummaryBtnNode.onClick = func() -> void:
+					onLock.call()
+					await ActionContainerNode.before_use()
+					await GAME_UTIL.assign_researcher(required_slot.ref, index, use_location)
+					onUnlock.call()
+					await ActionContainerNode.after_use()	
 
 			else:	
 				SummaryBtnNode.ref_data = {

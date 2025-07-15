@@ -338,7 +338,7 @@ func check_if_passive_is_active(ref:ABL_P.REF) -> bool:
 					
 	return false
 # ------------------------------------------------------------------------------		
-
+	
 # ------------------------------------------------------------------------------
 func has_prerequisites(ref:int, arr:Array) -> bool:
 	var room_data:Dictionary = return_data(ref)
