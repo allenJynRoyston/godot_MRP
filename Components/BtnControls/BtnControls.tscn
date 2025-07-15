@@ -104,12 +104,12 @@ size_flags_vertical = 8
 theme_override_constants/separation = 10
 
 [node name="BBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList" instance=ExtResource("2_re623")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
 title = "BACK"
 assigned_key = "B"
 icon = 28
+is_flashing = false
 allow_hint = false
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -119,21 +119,21 @@ size_flags_vertical = 8
 
 [node name="CBtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
 visible = false
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
 title = "INFO"
 assigned_key = "R"
 icon = 23
+is_flashing = false
 allow_hint = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "NEXT"
 assigned_key = "E"
 icon = 27
+is_flashing = false
 allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControlPanel/BtnMarginContainer"]

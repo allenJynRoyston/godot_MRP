@@ -1384,11 +1384,15 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			BtnControls.onUpdate = func(node:Control) -> void:
 				for _node in BtnControls.itemlist:
 					_node.is_selected = _node == node
-
+					
+				BtnControls.onAction = func() -> void:pass
 				BtnControls.hide_c_btn = true
+				BtnControls.hide_a_btn = false
+				BtnControls.disable_active_btn = false
+				
 				# ----------------------
 				if node.ref_data.type == "active_ability":
-					BtnControls.a_btn_title = "ACTIVATE"
+					BtnControls.a_btn_title = "USE"
 					BtnControls.hide_c_btn = true
 					
 					RoomDetailsControl.cycle_to_room(true)
@@ -1424,6 +1428,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 						var new_uid:String = GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
 						RoomDetailsControl.show()
 						RoomDetailsControl.researcher_uid = new_uid
+					
+					BtnControls.onAction = func() -> void:
+						await BtnControls.reveal(false)
+						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
+						await GAME_UTIL.assign_researcher(researcher_details.specialization.ref, node.index)
+						BtnControls.reveal(true)
 
 					RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
 					RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1
@@ -1449,16 +1459,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 					RoomDetailsControl.show_scp_card = true
 					RoomDetailsControl.show_researcher_card = false
 					return
-				
+
+
 				# on nametag
-				BtnControls.hide_c_btn = is_room_empty
-				BtnControls.disable_c_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
-				BtnControls.c_btn_title = "UPGRADE" if abl_lvl < max_upgrade_lvl else "AT MAX LEVEL"
-				BtnControls.onCBtn = func() -> void:
-					BtnControls.reveal(false)
-					await GAME_UTIL.upgrade_facility(current_location)
-					BtnControls.reveal(true)
-					on_current_mode_update()
+				BtnControls.hide_a_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
+				BtnControls.disable_active_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
+				BtnControls.a_btn_title = "UPGRADE" if abl_lvl < max_upgrade_lvl else "AT MAX LEVEL"
 				
 				RoomDetailsControl.cycle_to_room(true)
 				RoomDetailsControl.show()				
