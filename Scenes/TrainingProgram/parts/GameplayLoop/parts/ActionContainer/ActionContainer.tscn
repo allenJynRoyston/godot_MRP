@@ -55,18 +55,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah17n"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_58xi4"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
@@ -211,6 +199,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah17n"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_en8v0"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
@@ -310,7 +310,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
-bg_color = Color(0.895094, 1, 0.895094, 1)
+bg_color = Color(0.303438, 1, 0.303438, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3de1l"]
 
@@ -493,18 +493,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "ACTIONS"
 assigned_key = "E"
 icon = 29
-is_flashing = false
-is_disabled = false
-allow_hint = false
-
-[node name="ProgramBtn" parent="ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
-title = "PROGRAMS"
-assigned_key = "R"
-icon = 6
 is_flashing = false
 is_disabled = false
 allow_hint = false
@@ -858,6 +846,18 @@ title = "ACTIONS"
 assigned_key = "E"
 icon = 10
 is_flashing = false
+allow_hint = false
+
+[node name="ProgramBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
+title = "PROGRAMS"
+assigned_key = "R"
+icon = 6
+is_flashing = false
+is_disabled = false
 allow_hint = false
 
 [node name="BuildBtn" parent="InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]

@@ -55,7 +55,7 @@ extends GameContainer
 
 @onready var WingActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
 @onready var WingActionBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingActionBtn
-@onready var ProgramBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/ProgramBtn
+@onready var ProgramBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ProgramBtn
 @onready var WingEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingEndTurnBtn
 
 # GENERATION ACTION PANEL
@@ -265,7 +265,6 @@ func start() -> void:
 		SUBSCRIBE.camera_settings = camera_settings
 	
 	ProgramBtn.onClick = func() -> void:
-		
 		show_ability_list()
 	# -------------------------------------
 	
@@ -633,17 +632,19 @@ func show_ability_list() -> void:
 		}
 	]
 
-	ActiveMenuNode.onClose = func() -> void:			
+	ActiveMenuNode.onClose = func() -> void:	
 		set_backdrop_state(false)
-		await lock_actions(false)		
+		await reveal_cardminipanel(false)
 		on_camera_settings_update()
-		GameplayNode.show_marked_objectives = true
+		reveal_cardminipanel(true)
+		lock_investigate(false)
+		
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
-	GameplayNode.show_marked_objectives = false
-	lock_actions(true)
+	reveal_cardminipanel(false)	
+	lock_investigate(true)
 	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
