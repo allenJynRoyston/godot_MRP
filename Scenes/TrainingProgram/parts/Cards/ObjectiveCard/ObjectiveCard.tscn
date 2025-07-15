@@ -1,29 +1,30 @@
-[gd_scene load_steps=13 format=3 uid="uid://d33nsdab6tg1o"]
+[gd_scene load_steps=14 format=3 uid="uid://d33nsdab6tg1o"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_fauax"]
-[ext_resource type="Script" uid="uid://b4b20axee6byi" path="res://Scenes/TrainingProgram/parts/Cards/ObjectiveCard/objective_card.gd" id="1_ykk6s"]
+[ext_resource type="Script" uid="uid://b4b20axee6byi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_card.gd" id="1_ykk6s"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_bviwu"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_pjqb0"]
 [ext_resource type="PackedScene" uid="uid://bf3827l1mdr17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn" id="4_vnmty"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="5_pjqb0"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ykk6s"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pjqb0"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_mbx5t"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_pjqb0"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbx5t"]
-bg_color = Color(0.0497766, 0.0497766, 0.0497766, 1)
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rakey"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mbx5t"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbx5t"]
+bg_color = Color(0.131379, 0.131379, 0.131379, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rakey"]
 bg_color = Color(1, 1, 1, 0)
@@ -37,6 +38,16 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 10
 shadow_color = Color(1, 1, 1, 0)
 shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyy12"]
+bg_color = Color(1, 0.749, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_15trp"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -53,7 +64,7 @@ corner_radius_bottom_left = 8
 [node name="ObjectiveCard" type="PanelContainer"]
 offset_right = 275.0
 offset_bottom = 425.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_ykk6s")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pjqb0")
 script = ExtResource("1_ykk6s")
 
 [node name="CardBody" parent="." instance=ExtResource("1_fauax")]
@@ -63,7 +74,7 @@ border_color = Color(0.337255, 0.27451, 1, 1)
 auto_color_panels = false
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_mbx5t")
+texture = SubResource("ViewportTexture_pjqb0")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(300, 140)
@@ -71,19 +82,24 @@ size = Vector2i(300, 140)
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(300, 140)
 offset_right = 300.0
-offset_bottom = 202.0
+offset_bottom = 270.0
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_mbx5t")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rakey")
+
+[node name="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer" index="0"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_bviwu")]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbx5t")
 is_small = true
 content = "Must be complete by day XX"
-center_text = true
 title = ""
-border_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle"]
 layout_mode = 2
@@ -92,17 +108,21 @@ layout_mode = 2
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 28
+icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(30, 30)
 
-[node name="PanelContainer" type="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_mbx5t")
+text = "something"
+label_settings = ExtResource("5_pjqb0")
+horizontal_alignment = 1
 
 [node name="NextIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer" instance=ExtResource("4_pjqb0")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 icon = 27
+icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(30, 30)
 
 [node name="MarginContainer" type="MarginContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
@@ -135,7 +155,7 @@ label_settings = ExtResource("5_pjqb0")
 
 [node name="ObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Required"]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 5
 
 [node name="ObjectiveItem" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Required/ObjectiveItemList" instance=ExtResource("4_vnmty")]
 modulate = Color(1, 1, 1, 1)
@@ -165,6 +185,28 @@ label_settings = ExtResource("5_pjqb0")
 [node name="OptionalObjectiveItemList" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Optional"]
 layout_mode = 2
 theme_override_constants/separation = 3
+
+[node name="Complete" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Complete"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Complete/HBoxContainer" instance=ExtResource("4_pjqb0")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Complete/HBoxContainer"]
+layout_mode = 2
+text = "OPTIONAL"
+label_settings = ExtResource("5_pjqb0")
+
+[node name="CompleteByObjective" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/MarginContainer/VBoxContainer/Complete" instance=ExtResource("4_vnmty")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cyy12")
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_15trp")

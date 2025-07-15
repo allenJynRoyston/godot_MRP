@@ -202,7 +202,7 @@ func update_node() -> void:
 					SummaryBtnNode.show_checked_panel = true
 					SummaryBtnNode.is_checked = is_active
 					
-					SummaryBtnNode.show_energy_cost = true
+					SummaryBtnNode.show_energy_cost = is_activated
 					SummaryBtnNode.energy_cost = ability.energy_cost
 					
 					SummaryBtnNode.hide_icon = true

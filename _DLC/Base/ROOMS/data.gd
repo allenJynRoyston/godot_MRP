@@ -96,6 +96,10 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "The site directors office.",
+	"event_trigger": {
+		"ref": EVT.TYPE.DIRECTORS_OFFICE,
+		"day": 2
+	},
 	# ------------------------------------------
 
 	# ------------------------------------------

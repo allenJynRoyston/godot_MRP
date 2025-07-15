@@ -24,7 +24,7 @@ var chapters:Array = [
 					"custom": {
 						"title": "Supply power to AT LEAST 1 floor.",
 						"count_str": func(amount:int) -> String:
-							return "(Required floors activated: %s/1.)" % [amount],
+							return "Required 1 FLOOR to be activated.",
 						"you_have": func() -> int: 
 							return GAME_UTIL.get_activated_floor_count(),
 						"is_completed": func() -> bool:

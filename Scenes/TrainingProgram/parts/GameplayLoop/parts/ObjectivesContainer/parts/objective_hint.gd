@@ -70,7 +70,7 @@ func on_is_expired_update() -> void:
 
 func on_cost_update() -> void:
 	if !is_node_ready():return
-	CostLabel.text = "UNLOCK WITH %s %s." % [cost, "CORE" if cost < 2 else "CORES"]
+	CostLabel.text = "UNLOCK HINT WITH %s %s." % [cost, "CORE" if cost < 2 else "CORES"]
 
 func on_title_update() -> void:
 	if !is_node_ready():return

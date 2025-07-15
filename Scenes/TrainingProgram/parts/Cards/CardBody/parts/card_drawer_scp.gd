@@ -48,11 +48,9 @@ func update_node() -> void:
 	var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 
 	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	var is_activated:bool = room_config_data.is_activated
-	
+	var is_activated:bool = room_config_data.is_activated	
 	var is_room_empty:bool = room_config_data.room_data.is_empty()
 	var is_scp_empty:bool = room_config_data.scp_data.is_empty()
-	
 	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
 	var scp_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.details
 
@@ -60,8 +58,15 @@ func update_node() -> void:
 		"type": 'scp',
 		"data": scp_details
 	}
+
+	SummaryBtn.hint_title = "HINT"
+	SummaryBtn.hint_icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
+	SummaryBtn.hint_description = "Requires activation" if !is_activated else ("Containment cell is empty." if is_scp_empty else scp_details.description.call(scp_details))
+	
+	SummaryBtn.icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
+	SummaryBtn.use_alt = is_scp_empty and is_activated
 	SummaryBtn.is_disabled = !is_activated
-	SummaryBtn.title = "ASSIGN SCP" if is_scp_empty else scp_details.name
+	SummaryBtn.title = "UNAVAILABLE" if !is_activated else  "ASSIGN SCP" if is_scp_empty else scp_details.name 
 	SummaryBtn.onClick = func() -> void:
 		if !is_scp_empty:return
 		

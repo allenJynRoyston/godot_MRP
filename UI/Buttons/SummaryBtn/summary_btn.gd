@@ -134,8 +134,8 @@ func update_font_color() -> void:
 	var energy_label_duplicate:LabelSettings = CostLabelSettingsPreload.duplicate()
 	var use_color:Color = COLORS.disabled_color if is_disabled else COLORS.primary_black
 
-	if use_alt:
-		use_color = Color.WHITE
+	#if use_alt:
+		#use_color = Color.WHITE
 		
 	use_color.a = 1 if is_selected else 0.7
 				
@@ -155,7 +155,7 @@ func on_panel_color_update() -> void:
 	var use_color:Color = COLORS.primary_black if is_disabled else COLORS.primary_color 
 
 	if use_alt:
-		use_color = COLORS.disabled_color
+		use_color = use_color.lightened(1.0)
 
 	use_color.a = 1 if is_selected else 0.7		
 

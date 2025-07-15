@@ -5,6 +5,10 @@ enum TYPE {
 	GAME_OVER,
 	# -------------
 	
+	# -------------
+	DIRECTORS_OFFICE,
+	# -------------
+	
 	# ------------
 	SCP_ON_CONTAINMENT,
 	SCP_BREACH_EVENT_1,
@@ -15,7 +19,6 @@ enum TYPE {
 	# ------------
 	
 	# ------------
-	
 	OBJECTIVE_REWARD,
 	# ------------
 

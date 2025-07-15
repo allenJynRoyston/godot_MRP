@@ -11,7 +11,11 @@ extends BtnBase
 		on_is_naked_update()
 		
 
-var content:String = "Objective"
+var content:String = "Objective" : 
+	set(val):
+		content = val
+		on_content_update()
+		
 var you_have:String = ""
 var is_optional:bool = false
 var is_completed:bool = false
@@ -25,6 +29,7 @@ var is_selected:bool = false :
 
 var bookmarked_objectives:Array = []
 var stylebox_copy:StyleBoxFlat
+var content_label_settings:LabelSettings
 var use_color:Color = COLORS.primary_color
 
 
@@ -43,6 +48,7 @@ func _ready() -> void:
 	super._ready()
 	var you_have_str:String = "Objective complete" if is_expired else you_have
 	stylebox_copy = RootPanel.get_theme_stylebox('panel').duplicate()		
+	content_label_settings = ContentLabel.label_settings.duplicate()
 
 
 	ContentLabel.text = "Upcoming..." if is_upcoming else ("OPTIONAL: \r%s" % content) if is_optional else content
@@ -66,9 +72,14 @@ func _ready() -> void:
 	
 	on_is_selected_update()
 	on_bookmarked_objectives_update()
+	on_content_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_content_update() -> void:
+	if !is_node_ready():return	
+	ContentLabel.text = str(content)
+	
 func on_bookmarked_objectives_update(new_val:Array = bookmarked_objectives) -> void:
 	bookmarked_objectives = new_val
 	
@@ -79,10 +90,14 @@ func on_is_naked_update() -> void:
 func on_is_selected_update() -> void:
 	var new_stylebox:StyleBoxFlat = stylebox_copy.duplicate()	
 	var text_color:Color = COLORS.primary_black if !is_naked else Color.WHITE
-	var content_label_settings:LabelSettings = ContentLabel.label_settings.duplicate()
+	var content_label_settings:LabelSettings = content_label_settings.duplicate()
 	
 	new_stylebox.bg_color = use_color if !is_naked else Color.TRANSPARENT
 	new_stylebox.shadow_color = stylebox_copy.shadow_color if !is_naked else Color.TRANSPARENT
+		
+	if is_naked:
+		content_label_settings.shadow_color = Color.BLACK
+		content_label_settings.shadow_offset = Vector2(2, 2)
 	
 	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
 	IconBtn.icon_color = text_color

@@ -83,7 +83,7 @@ size = Vector2i(250, 200)
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(250, 200)
 offset_right = 250.0
-offset_bottom = 314.0
+offset_bottom = 318.0
 
 [node name="PanelContainer" parent="MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_epm40")

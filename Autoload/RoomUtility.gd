@@ -18,6 +18,14 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"event_trigger": {},
+	#{
+		#"ref": EVT.TYPE.DIRECTORS_OFFICE,
+		#"day": 10
+	#},	
+	# ------------------------------------------
+	
+	# ------------------------------------------
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": true,	

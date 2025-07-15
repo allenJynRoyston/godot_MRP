@@ -107,34 +107,30 @@ func update_node() -> void:
 			
 			# fill btn slots
 			if researcher.is_empty():
-				#SummaryBtnNode.use_alt = true
-				SummaryBtnNode.title = "ASSIGN %s" % [required_slot.name]
+				SummaryBtnNode.use_alt = true
+				SummaryBtnNode.title = "REQUIRES %s" % [required_slot.name]
 				SummaryBtnNode.ref_data = {
 					"type": 'researcher', 
 					"data": {}
 				}
+				
+				SummaryBtnNode.icon = SVGS.TYPE.WARNING	
 
-				#SummaryBtnNode.icon = SVGS.TYPE.PLUS
-				#SummaryBtnNode.hint_title = "HINT"
-				#SummaryBtnNode.hint_icon = SVGS.TYPE.CONVERSATION
-				#SummaryBtnNode.hint_description = "This room requires a %s to be activated." % required_slot.name
-				#SummaryBtnNode.onClick = func() -> void:
-					#onLock.call()
-					#await ActionContainerNode.before_use()
-					#await GAME_UTIL.assign_researcher(required_staffing[index], index)
-					#onUnlock.call()
-					#await ActionContainerNode.after_use()			
+
 			else:	
 				SummaryBtnNode.ref_data = {
 					"type": "researcher", 
 					"data": researcher
 				}			
-				SummaryBtnNode.use_alt = false
-				SummaryBtnNode.title = researcher.name
-				SummaryBtnNode.icon = SVGS.TYPE.STAFF
+
 				SummaryBtnNode.hint_title = "HINT"
 				SummaryBtnNode.hint_icon = SVGS.TYPE.CONVERSATION
 				SummaryBtnNode.hint_description = "This room requires a %s to be activated." % required_slot.name
+				
+				SummaryBtnNode.use_alt = false
+				SummaryBtnNode.title = researcher.name
+				SummaryBtnNode.icon = SVGS.TYPE.STAFF				
+				
 				SummaryBtnNode.onClick = func() -> void:
 					onLock.call()
 					await ActionContainerNode.before_use()

@@ -3,6 +3,7 @@ extends GameContainer
 @onready var BtnControls:Control = $BtnControls
 @onready var TransitionScreen:Control = $TransitionScreen
 
+@onready var CurrentObjective:Label = $HintControl/PanelContainer/MarginContainer/VBoxContainer/CurrentObjective
 @onready var ObjectivePanel:PanelContainer = $ObjectivesControl/PanelContainer
 @onready var ObjectiveMargin:MarginContainer = $ObjectivesControl/PanelContainer/MarginContainer
 @onready var ObjectiveCard:Control = $ObjectivesControl/PanelContainer/MarginContainer/ObjectiveCard
@@ -16,7 +17,6 @@ extends GameContainer
 
 @onready var Days:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Days
 @onready var Cores:Control = $ResourceControl/PanelContainer/MarginContainer/VBoxContainer/Cores
-
 
 signal mode_updated
 
@@ -52,7 +52,7 @@ func _ready() -> void:
 		await BtnControls.reveal(false)
 		
 		var activation_requirements = [{"amount": -(purchase_hint.cost), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)}]
-		var confirm:bool = await GAME_UTIL.create_modal("Purchase hint #%s" % (hint_index + 1), "", "", activation_requirements)
+		var confirm:bool = await GAME_UTIL.create_modal("Purchase hint #%s" % (hint_index + 1), "", "res://Media/images/Defaults/hint.png", activation_requirements)
 		
 		if confirm:
 			if purchase_hint.uid not in SUBSCRIBE.hints_unlocked:
@@ -69,9 +69,10 @@ func _ready() -> void:
 	BtnControls.onUpdate = func(node:Control) -> void:
 		current_objective = objectives[objective_index].list[node.index]
 		current_hints = objectives[objective_index].list[node.index].hints
-		build_hints(current_hints)
+		build_hints(current_hints, current_objective)
 		ObjectiveCard.set_selected_node(node)
-	
+		
+
 	BtnControls.onDirectional = func(key:String):
 		var story_progress:Dictionary = GBL.active_user_profile.story_progress
 		
@@ -163,7 +164,7 @@ func clear_hints() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func build_hints(hints:Array = current_hints) -> void:
+func build_hints(hints:Array = current_hints, current_objective:Dictionary = {}) -> void:
 	clear_hints()
 	var is_upcoming:bool = objective_index > story_progress.on_chapter 
 	var is_expired:bool = objective_index < story_progress.on_chapter 	
@@ -182,7 +183,8 @@ func build_hints(hints:Array = current_hints) -> void:
 		new_hint.has_more = false
 		new_hint.title = "None"
 		HintList.add_child(new_hint)
-	
+			
+			
 	# build hint list
 	for index in hints.size():
 		var hint:Dictionary = hints[index]
@@ -209,6 +211,12 @@ func build_hints(hints:Array = current_hints) -> void:
 		HintList.add_child(new_hint)
 	
 	BtnControls.hide_a_btn = is_upcoming or is_expired or already_completed
+	
+	if current_objective.is_empty():
+		CurrentObjective.text = "UPCOMING..."
+	else:
+		CurrentObjective.text = current_objective.title
+		
 
 	if !already_completed:
 		check_for_next_hint(current_hints)
@@ -241,6 +249,7 @@ func on_objective_index_update() -> void:
 	ObjectiveCard.is_upcoming = is_upcoming
 	ObjectiveCard.is_expired = is_expired
 	ObjectiveCard.objectives = current_objectives
+	ObjectiveCard.complete_by_day = current_objectives.complete_by_day
 	
 	if is_upcoming:
 		ObjectiveCard.title = "UPCOMING OBJECTIVES"

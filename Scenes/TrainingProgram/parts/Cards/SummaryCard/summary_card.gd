@@ -106,6 +106,7 @@ func on_room_ref_update() -> void:
 		CardControlBody.size = Vector2(1, 1)		
 		return
 	
+	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
 	var is_activated:bool = false	
 	var show_passives:bool = false
@@ -113,14 +114,23 @@ func on_room_ref_update() -> void:
 	var show_researchers:bool = false	
 	var show_scp:bool = room_details.can_contain and !preview_mode 
 	var required_staffing:Array = room_details.required_staffing
-
+	var abl_lvl:int = extract_room_data.room.abl_lvl 
+	var max_upgrade_lvl:int = extract_room_data.room.max_upgrade_lvl 
+	var at_max_level:bool = abl_lvl >= max_upgrade_lvl
+	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		is_activated = extract_data.room.is_activated
 	
-
 	# attach researcher data
 	UpgradeBtn.title = room_details.name
+	UpgradeBtn.icon = SVGS.TYPE.DELETE if at_max_level else SVGS.TYPE.SETTINGS
+	UpgradeBtn.hide_icon = false
+	UpgradeBtn.hint_title = "HINT"
+	UpgradeBtn.hint_icon =  SVGS.TYPE.SETTINGS
+	UpgradeBtn.hint_description = "Room is at max level." if at_max_level else "Room can be upgraded to level %s." % (abl_lvl + 1)
+
+	
 	CardDrawerResearchers.room_details = room_details
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.required_staffing = required_staffing
@@ -146,7 +156,6 @@ func on_room_ref_update() -> void:
 	# card drawer scp
 	CardDrawerScp.use_location = use_location
 	
-		
 	# hide container
 	EmptyContainer.hide()
 	RoomDetailsContainer.show() if !room_details.is_empty() else RoomDetailsContainer.hide()

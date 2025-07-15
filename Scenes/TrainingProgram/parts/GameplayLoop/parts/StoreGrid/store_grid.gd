@@ -160,7 +160,7 @@ func unlock_room(ref:int) -> void:
 	if confirm:
 		ROOM_UTIL.add_to_unlocked_list(room_details.ref)
 		ROOM_UTIL.calculate_unlock_cost(room_details.ref)
-
+		
 		GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
 		
 		made_changes = true

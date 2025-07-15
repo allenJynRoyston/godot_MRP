@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://528j86gp5aj2"]
 
 [ext_resource type="Script" uid="uid://dq5icchnwt717" path="res://UI/WindowUI/Loading/loading.gd" id="1_5j372"]
-[ext_resource type="Texture2D" uid="uid://ciyxen7577ylg" path="res://Media/images/Defaults/orange_software.png" id="2_1rmxq"]
+[ext_resource type="Texture2D" uid="uid://dmcleesxba74q" path="res://Media/images/Defaults/game_controller.png" id="3_eidsy"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_vp5h5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5hsv"]
@@ -42,12 +42,18 @@ layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "BEST EXPERIENCED WITH A CONTROLLER"
+label_settings = SubResource("LabelSettings_eidsy")
+horizontal_alignment = 1
+
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(600, 300)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("2_1rmxq")
+texture = ExtResource("3_eidsy")
 expand_mode = 1
 stretch_mode = 5
 

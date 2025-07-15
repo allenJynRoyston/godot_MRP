@@ -3,6 +3,8 @@ extends PanelContainer
 @onready var MousePointer:TextureRect = $FinalComposition/MousePointer
 @onready var Output:TextureRect = $FinalOutput/Output
 @onready var Gamelayer:SubViewport = $GameLayer
+@onready var MusicShaderViewport:SubViewport = $MusicShader
+
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
 @onready var CellScene:PanelContainer = $GameLayer/CellScene
 @onready var OSViewport:SubViewport = $OS
@@ -564,7 +566,15 @@ func set_monitor_overlay(state:bool) -> void:
 # -----------------------------------	
 
 # -----------------------------------	
+func no_shader_effects(instant:bool = false) -> void:
+	await use_focus_shader_settings(instant)
+	FinalCompositeTextureRect.texture.viewport_path = Gamelayer.get_path()
+# -----------------------------------	
+
+# -----------------------------------	
 func use_focus_shader_settings(instant:bool = false) -> void:
+	FinalCompositeTextureRect.texture.viewport_path = MusicShaderViewport.get_path()
+	
 	var duration:float = 0.7 if !instant else 0
 	# set new color 
 	for item in color_rect_arr:

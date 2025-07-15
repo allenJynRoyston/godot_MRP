@@ -299,24 +299,6 @@ var app_list:Array[Dictionary] = [
 							"key": "crt_effect",
 							"value": GBL.active_user_profile.graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
-						},
-						{
-							"title": "SCREEN BEND", 
-							"key": "screen_bend",
-							"value": GBL.active_user_profile.graphics.shaders.screen_bend,
-							"hint_description": "Enable/Disable screen bend effect."
-						},
-						{
-							"title": "SCREEN BURN", 
-							"key": "screen_burn",
-							"value": GBL.active_user_profile.graphics.shaders.screen_burn,
-							"hint_description": "Enable/Disable screen burn effect."
-						},
-						{
-							"title": "MONITOR OVERLAY", 
-							"key": "monitor_overlay",
-							"value": GBL.active_user_profile.graphics.shaders.monitor_overlay,
-							"hint_description": "Enable/Disable monitor overlay color."
 						}
 					]
 				),
@@ -518,7 +500,7 @@ func check_graphics_settings(instant:bool = false) -> void:
 	if use_crt_effect:
 		GBL.find_node(REFS.MAIN).use_full_shader_settings(instant) 
 	else:
-		GBL.find_node(REFS.MAIN).use_focus_shader_settings(instant)	
+		GBL.find_node(REFS.MAIN).no_shader_effects(instant)	
 
 func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting

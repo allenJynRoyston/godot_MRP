@@ -29,7 +29,7 @@ theme_override_constants/margin_right = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 alignment = 2
 
 [node name="ListContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]

@@ -32,11 +32,11 @@ colors = PackedColorArray(0, 0, 0, 0.356863, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_q76y8"]
 gradient = SubResource("Gradient_q3i3u")
-fill_from = Vector2(0.762195, 0)
+fill_from = Vector2(0.5, 0)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ixlt"]
-bg_color = Color(0, 0, 0, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud5c"]
+bg_color = Color(1, 1, 1, 0)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -45,6 +45,7 @@ border_color = Color(1, 1, 1, 0)
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 10
+shadow_color = Color(1, 1, 1, 0)
 shadow_offset = Vector2(0, 2)
 
 [node name="MarkedObjectivesContainer" type="PanelContainer"]
@@ -107,6 +108,7 @@ size_flags_horizontal = 8
 theme_override_constants/separation = -10
 
 [node name="ObjectiveItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/ObjectiveList" instance=ExtResource("1_sed7y")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_2ixlt")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud5c")
 is_naked = true

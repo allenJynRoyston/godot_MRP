@@ -232,10 +232,12 @@ theme_override_constants/separation = 20
 alignment = 2
 
 [node name="TaskbarBtn" parent="HeaderControls/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_tw6u7")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_fxpyd")
 title = "TASKBAR"
 assigned_key = "BACKSPACE"
 icon = 67
+is_flashing = false
 is_disabled = false

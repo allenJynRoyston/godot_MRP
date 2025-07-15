@@ -993,13 +993,28 @@ func on_current_phase_update() -> void:
 					await GAME_UTIL.trigger_containment_event(event_final_containment[index])						
 			
 			# CHECK FOR TIMELINE EVENTS			
-			#var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day)	
-			#if timeline_filter.size() > 0:
-				#for item in timeline_filter:
-					#if "event" in item and !item.event.is_empty():
-						#await check_events(item.event.scp_ref, item.event.event_ref, {"event_count": item.event.event_count, "use_location": item.event.use_location})
-						# open music player, no music selected
-			
+			var timeline_filter:Array = timeline_array.filter(func(i): return i.day == progress_data.day and !i.event.is_empty())	
+			if timeline_filter.size() > 0:
+				for item in timeline_filter:
+					var event_data:Dictionary = EVENT_UTIL.return_data(item.event.ref)
+					var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
+					if event_data.timeline.has("emergency_mode"):
+						base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = event_data.timeline.emergency_mode
+						SUBSCRIBE.base_states = base_states
+						await U.set_timeout(1.5)
+					
+					await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+						item.event.ref,
+							{
+								"timeline": event_data.timeline,
+								"onSelection": func(selection:Dictionary) -> void:
+									print(selection),
+							}
+						)
+					])	
+					
+					base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = previous_emergency_mode
+					SUBSCRIBE.base_states = base_states
 			
 			# restore previous music and location
 			SUBSCRIBE.music_data = {

@@ -68,7 +68,6 @@ func on_room_config_update(new_val:Dictionary) -> void:
 		btn.you_have = objective.count_str.call(objective.you_have.call())
 		btn.is_completed = objective.is_completed.call()
 		btn._ready()
-	
 # --------------------------------------------------------------------------------------------------	
 
 	
@@ -87,7 +86,6 @@ func on_bookmarked_objectives_update(new_val:Array) -> void:
 		new_btn.you_have = objective.count_str.call(objective.you_have.call())
 		new_btn.is_completed = objective.is_completed.call()
 		ObjectiveList.add_child(new_btn)		
-	
 # --------------------------------------------------------------------------------------------------	
 
 

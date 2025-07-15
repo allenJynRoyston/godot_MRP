@@ -1,10 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://hlplj21egi7y"]
+[gd_scene load_steps=7 format=3 uid="uid://hlplj21egi7y"]
 
 [ext_resource type="Script" uid="uid://b5qtjuvt377w1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TimelineContainer/parts/TimelineItem/timeline_list_item.gd" id="1_vk7wp"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="1_x3h3b"]
-[ext_resource type="LabelSettings" uid="uid://d0wal13o44wsq" path="res://Scenes/TrainingProgram/parts/Cards/RoomMiniCard/SmallContentFont.tres" id="2_wet1r"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="2_0j34y"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_wet1r"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_wet1r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_617rb"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0j34y"]
+font = ExtResource("2_wet1r")
+outline_size = 2
+outline_color = Color(0.185383, 0.185383, 0.185383, 0.498039)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="ActionQueueListItem" type="PanelContainer"]
 offset_right = 40.0
@@ -18,25 +26,29 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_constants/separation = 1
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "TITLE"
-label_settings = ExtResource("2_wet1r")
+label_settings = ExtResource("2_0j34y")
 horizontal_alignment = 2
+autowrap_mode = 3
 
 [node name="DescriptionLabel" type="Label" parent="HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Description goes here"
-label_settings = ExtResource("2_wet1r")
+label_settings = SubResource("LabelSettings_0j34y")
 horizontal_alignment = 2
+autowrap_mode = 3
 
-[node name="IconBtn" parent="HBoxContainer" instance=ExtResource("1_x3h3b")]
-custom_minimum_size = Vector2(25, 25)
+[node name="IconBtn" parent="HBoxContainer" instance=ExtResource("3_wet1r")]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-size_flags_horizontal = 0
-icon = 3
-is_hoverable = false
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(30, 30)

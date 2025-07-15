@@ -417,6 +417,20 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 				# update
 				if confirm:
 					ROOM_UTIL.add_room(x.details.ref)
+					if !x.details.event_trigger.is_empty():
+						var event_data:Dictionary = EVENT_UTIL.return_data(x.details.event_trigger.ref)
+						
+						GAME_UTIL.add_timeline_item({
+							"title": event_data.timeline.title,
+							"icon": event_data.timeline.icon,
+							"description": event_data.timeline.description,
+							"day": progress_data.day + x.details.event_trigger.day,
+							"location": current_location.duplicate(),
+							"event": {
+								"ref": x.details.event_trigger.ref
+							},
+							
+						})
 					ActiveMenuNode.close()
 					return
 				

@@ -1,10 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bf3827l1mdr17"]
+[gd_scene load_steps=6 format=3 uid="uid://bf3827l1mdr17"]
 
 [ext_resource type="Script" uid="uid://d3uknw4ypees8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_item.gd" id="1_qkbpp"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_dvwty"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_qkbpp"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_qkbpp"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmabp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qkbpp"]
 bg_color = Color(1, 0.749, 0.2, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -14,13 +14,21 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="LabelSettings" id="LabelSettings_wmabp"]
+font = ExtResource("3_qkbpp")
+font_color = Color(0.0497766, 0.0497766, 0.0497766, 1)
+outline_size = 2
+outline_color = Color(0.185383, 0.185383, 0.185383, 0.498039)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
 [node name="ObjectiveItem" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.7)
 custom_minimum_size = Vector2(100, 50)
 offset_right = 253.0
 offset_bottom = 50.0
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_wmabp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qkbpp")
 script = ExtResource("1_qkbpp")
 hint_title = "HINT"
 
@@ -51,5 +59,5 @@ alignment = 1
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Objective"
-label_settings = ExtResource("3_qkbpp")
+label_settings = SubResource("LabelSettings_wmabp")
 autowrap_mode = 3

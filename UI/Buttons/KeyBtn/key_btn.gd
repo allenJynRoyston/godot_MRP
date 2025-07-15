@@ -28,6 +28,8 @@ extends BtnBase
 	set(val):
 		primary_color = val
 		on_panel_color_update()		
+		
+@export var is_flashing:bool = false 
 	
 #@export var text_active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) :
 	#set(val): 
@@ -49,6 +51,7 @@ extends BtnBase
 		hide_icon_panel = val
 		on_hide_icon_panel_update()
 
+var stylebox_copy:StyleBoxFlat
 var is_pressed:bool = false
 var btn_delay:float = 0.2
 
@@ -115,20 +118,20 @@ func on_is_disabled_updated() -> void:
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var new_stylebox:StyleBoxFlat = StyleBoxFlat.new()
-	new_stylebox.bg_color = primary_color
-	new_stylebox.corner_radius_bottom_left = 5
-	new_stylebox.corner_radius_bottom_right = 5
-	new_stylebox.corner_radius_top_left = 5
-	new_stylebox.corner_radius_top_right = 5
+	var stylebox_copy = StyleBoxFlat.new()
+	stylebox_copy.bg_color = primary_color
+	stylebox_copy.corner_radius_bottom_left = 5
+	stylebox_copy.corner_radius_bottom_right = 5
+	stylebox_copy.corner_radius_top_left = 5
+	stylebox_copy.corner_radius_top_right = 5
 	
-	new_stylebox.border_width_bottom = 2
-	new_stylebox.border_width_left = 2
-	new_stylebox.border_width_right = 2
-	new_stylebox.border_width_top = 2
-	new_stylebox.border_color = Color.WHITE if is_focused else Color.BLACK
+	stylebox_copy.border_width_bottom = 2
+	stylebox_copy.border_width_left = 2
+	stylebox_copy.border_width_right = 2
+	stylebox_copy.border_width_top = 2
+	stylebox_copy.border_color = Color.WHITE if is_focused else Color.BLACK
 		
-	RootPanel.add_theme_stylebox_override("panel", new_stylebox)
+	RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
 		
 
 func on_title_update() -> void:
@@ -158,3 +161,15 @@ func on_control_input_release_update() -> void:
 	if !is_node_ready():return
 	is_pressed = false
 # ------------------------------------------------------------------------------	
+
+# --------------------------------		
+var time:float = 0
+var speed:float = 5.0
+func _process(delta: float) -> void:
+	if !is_flashing:return
+	time += delta
+	var value := (sin(time * speed) + 1.2) / 2.0  # Oscillates smoothly between 0 and 1
+	var stylebox_copy = StyleBoxFlat.new()
+	stylebox_copy.bg_color = Color(1 - value, 1, 1 - value)
+	RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
+# --------------------------------

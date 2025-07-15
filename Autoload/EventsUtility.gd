@@ -47,6 +47,76 @@ var GAME_OVER:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
+var DIRECTORS_OFFICE_EVENT:Dictionary = {
+	"timeline": {
+		"title": "THE RAID",
+		"icon": SVGS.TYPE.DANGER,
+		"description": "The facility will be raided by an unknown paramilitary force.",
+		"emergency_mode": ROOM.EMERGENCY_MODES.DANGER,
+	},
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+		
+		# reference self
+		var timeline:Dictionary = props.timeline
+		print("timeline: ", timeline)	
+	
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "THE RAID",
+					"img_src": "res://Media/images/Events/raid.png",
+					"text": [
+						"THE RAID EVENT"
+					],
+					"options": [
+						# ----------------------------------------- NON-RESPONSE
+						{
+							"include": true,
+							"title": "OPTION A.",
+							"val": {
+								"response": "RESPONSE A HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION B.",
+							"val": {
+								"response": "RESPONSE B HERE",
+							},
+							"onSelected": onSelected
+						},
+						{
+							"include": true,
+							"title": "OPTION C.",
+							"val": {
+								"response": "RESPONSE C HERE",
+							},
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+					
+				return {
+					"text": [
+						option_selected.selected.response
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
 var SCP_ON_CONTAINMENT:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
 		var event_ref:int = EVT.TYPE.SCP_ON_CONTAINMENT
@@ -838,6 +908,9 @@ var reference_data:Dictionary = {
 	# ------------------
 	EVT.TYPE.GAME_OVER: GAME_OVER,
 	# ------------------
+	
+	# ------------------ 	
+	EVT.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE_EVENT,
 	
 	# ------------------ 
 	EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,

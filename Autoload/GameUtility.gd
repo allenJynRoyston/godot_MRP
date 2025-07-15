@@ -48,10 +48,21 @@ func mark_current_objectives() -> void:
 	var objectives:Array = STORY.get_objectives()
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
-	
 	var bookmarked_objectives:Array = []
+	
 	for objective in current_objectives.list:
 		bookmarked_objectives.push_back(objective)
+	
+	bookmarked_objectives.push_back({
+		"title": "Complete all objectives by day %s" % current_objectives.complete_by_day,
+		"is_optional": false,
+		"count_str": func(_val):
+			return "",
+		"you_have": func():
+			return 99,
+		"is_completed": func():
+			return false,
+	})
 		
 	SUBSCRIBE.bookmarked_objectives = bookmarked_objectives
 # ------------------------------------------------------------------------------
@@ -406,7 +417,6 @@ func reset_room(use_location:Dictionary = current_location) -> bool:
 # -----------------------------------
 func add_objectives_to_timeline(objectives:Array = []) -> void:
 	for objective in objectives:
-		
 		GAME_UTIL.add_timeline_item({
 			"title": "Objectives deadline",
 			"icon": SVGS.TYPE.INFO,
