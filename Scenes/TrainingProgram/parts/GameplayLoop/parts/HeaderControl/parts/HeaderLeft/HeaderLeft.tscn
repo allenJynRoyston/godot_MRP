@@ -80,28 +80,24 @@ alignment = 1
 layout_mode = 2
 icon = 31
 amount = 123
-max_amount = -1
 burn_val = "0000"
 
 [node name="Research" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
 layout_mode = 2
 icon = 44
 amount = 123
-max_amount = -1
 burn_val = "0000"
 
 [node name="Material" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
 layout_mode = 2
 icon = 40
 amount = 123
-max_amount = -1
 burn_val = "0000"
 
 [node name="Core" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
 layout_mode = 2
 icon = 39
 amount = 123
-max_amount = -1
 burn_val = "0000"
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]

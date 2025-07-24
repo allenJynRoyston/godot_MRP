@@ -96,7 +96,7 @@ func on_music_data_update(music_data:Dictionary) -> void:
 	if previously_selected != music_data.selected:
 		previously_selected = music_data.selected
 		
-		track_data = MUSIC.track_list[music_data.selected]
+		track_data = OS_AUDIO.track_data[0].list[music_data.selected]
 		# set to loop	
 		play_track()
 

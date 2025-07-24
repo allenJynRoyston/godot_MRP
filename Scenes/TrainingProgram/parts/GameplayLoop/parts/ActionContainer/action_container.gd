@@ -1466,75 +1466,69 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				BtnControls.disable_active_btn = false
 				
 				# ----------------------
-				if node.ref_data.type == "active_ability":
-					BtnControls.a_btn_title = "USE"
-					BtnControls.hide_c_btn = true
-					
-					RoomDetailsControl.cycle_to_room(true)
-					RoomDetailsControl.show()				
-					RoomDetailsControl.show_room_card = true
-					RoomDetailsControl.show_scp_card = false
-					RoomDetailsControl.show_researcher_card = false
-					return
-				# ----------------------
-				if node.ref_data.type == "passive_ability":
-					BtnControls.a_btn_title = "ENABLE"
-					BtnControls.hide_c_btn = true
-					
-					RoomDetailsControl.cycle_to_room(true)
-					RoomDetailsControl.show()				
-					RoomDetailsControl.show_room_card = true
-					RoomDetailsControl.show_scp_card = false
-					RoomDetailsControl.show_researcher_card = false
-					return					
-				## ----------------------
-				if node.ref_data.type == "researcher":
-					# check if there are any available researchers
-					var filter_for_spec:Array = [extract_room_data.room.details.required_staffing[node.index]]
-					var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
-					var node_researcher_data = node.ref_data.data
-					
-					BtnControls.a_btn_title = "ASSIGN" if node_researcher_data.is_empty() else "UNASSIGN"
-					BtnControls.hide_c_btn = !node_researcher_data.is_empty() and available_researchers.size() > 0
-					BtnControls.disable_c_btn = available_researchers.is_empty()
-					BtnControls.c_btn_title = "AUTO ASSIGN"
-					BtnControls.onCBtn = func() -> void:
-						var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-						var new_uid:String = GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
-						RoomDetailsControl.show()
-						RoomDetailsControl.researcher_uid = new_uid
-					
-					#BtnControls.onAction = func() -> void:
-						#await BtnControls.reveal(false)
-						#var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-						#await GAME_UTIL.assign_researcher(researcher_details.specialization.ref, node.index)
-						#BtnControls.reveal(true)
-
-					RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
-					RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1
-					RoomDetailsControl.cycle_to_reseacher(true)
-					RoomDetailsControl.show_room_card = false
-					RoomDetailsControl.show_scp_card = false
-					RoomDetailsControl.show_researcher_card = true
-					return
-				## ----------------------
-				if node.ref_data.type == "scp":
-					BtnControls.a_btn_title = "CONTAIN"
-					
-					BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
-					BtnControls.disable_c_btn = node.ref_data.data.is_empty()
-					BtnControls.c_btn_title = "DEBUG EVENT"
-					BtnControls.onCBtn = func() -> void:
-						show_events_debug()
-					
-					RoomDetailsControl.hide() if node.ref_data.data.is_empty() else RoomDetailsControl.show()
-					RoomDetailsControl.scp_ref = -1 if node.ref_data.data.is_empty() else node.ref_data.data.ref
-					RoomDetailsControl.cycle_to_scp(true)
-					RoomDetailsControl.show_room_card = false
-					RoomDetailsControl.show_scp_card = true
-					RoomDetailsControl.show_researcher_card = false
-					return
-
+				match node.ref_data.type:
+					"active_ability":
+						BtnControls.a_btn_title = "USE"
+						BtnControls.hide_c_btn = true
+						
+						RoomDetailsControl.cycle_to_room(true)
+						RoomDetailsControl.show()				
+						RoomDetailsControl.show_room_card = true
+						RoomDetailsControl.show_scp_card = false
+						RoomDetailsControl.show_researcher_card = false
+						return
+					# ----------------------
+					"passive_ability":
+						BtnControls.a_btn_title = "ENABLE"
+						BtnControls.hide_c_btn = true
+						
+						RoomDetailsControl.cycle_to_room(true)
+						RoomDetailsControl.show()				
+						RoomDetailsControl.show_room_card = true
+						RoomDetailsControl.show_scp_card = false
+						RoomDetailsControl.show_researcher_card = false
+						return					
+					# ----------------------
+					"researcher":
+						# check if there are any available researchers
+						var filter_for_spec:Array = [extract_room_data.room.details.required_staffing[node.index]]
+						var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
+						var node_researcher_data = node.ref_data.data
+						
+						BtnControls.a_btn_title = "ASSIGN" if node_researcher_data.is_empty() else "UNASSIGN"
+						BtnControls.hide_c_btn = !node_researcher_data.is_empty() and available_researchers.size() > 0
+						BtnControls.disable_c_btn = available_researchers.is_empty()
+						BtnControls.c_btn_title = "AUTO ASSIGN"
+						BtnControls.onCBtn = func() -> void:
+							var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
+							var new_uid:String = GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
+							RoomDetailsControl.show()
+							RoomDetailsControl.researcher_uid = new_uid
+						
+						RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
+						RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1
+						RoomDetailsControl.cycle_to_reseacher(true)
+						RoomDetailsControl.show_room_card = false
+						RoomDetailsControl.show_scp_card = false
+						RoomDetailsControl.show_researcher_card = true
+						return
+					# ----------------------
+					"scp":
+						BtnControls.a_btn_title = "CONTAIN"
+						
+						BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
+						BtnControls.disable_c_btn = node.ref_data.data.is_empty()
+						BtnControls.c_btn_title = "DEBUG EVENT"
+						BtnControls.onCBtn = func() -> void:
+							show_events_debug()
+						
+						RoomDetailsControl.hide() if node.ref_data.data.is_empty() else RoomDetailsControl.show()
+						RoomDetailsControl.scp_ref = -1 if node.ref_data.data.is_empty() else node.ref_data.data.ref
+						RoomDetailsControl.cycle_to_scp(true)
+						RoomDetailsControl.show_room_card = false
+						RoomDetailsControl.show_scp_card = true
+						RoomDetailsControl.show_researcher_card = false
+						return
 
 				# on nametag
 				BtnControls.hide_a_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
@@ -1542,7 +1536,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				BtnControls.a_btn_title = "UPGRADE" if abl_lvl < max_upgrade_lvl else "AT MAX LEVEL"
 				
 				RoomDetailsControl.cycle_to_room(true)
-				RoomDetailsControl.show()				
+				RoomDetailsControl.show()
 				RoomDetailsControl.show_room_card = true
 				RoomDetailsControl.show_scp_card = false
 				RoomDetailsControl.show_researcher_card = false

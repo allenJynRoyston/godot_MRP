@@ -180,12 +180,12 @@ var default_save_profiles:Dictionary = {
 		"read_emails": [],
 		"tracks_unlocked": [],
 		"apps_installed": [],
+		"store_purchases": [],
 		"media_player": {
 			"enable_visulizer": true	
 		},
 		"currency": {
-			"amount": 0,
-			"spent": 0
+			"amount": 25
 		}
 	},
 	"snapshots": {

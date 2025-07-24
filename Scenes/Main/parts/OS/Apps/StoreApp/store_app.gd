@@ -1,32 +1,31 @@
 extends AppWrapper
 
 @onready var LoadingComponent:PanelContainer = $LoadingComponent
-@onready var EmailComponent:PanelContainer = $EmailComponent
+@onready var StoreComponent:PanelContainer = $StoreComponent
 @onready var PauseContainer:PanelContainer = $PauseContainer
 @onready var TransitionScreen:Control = $TransitionScreen
 
-
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	EmailComponent.markAsRead = func(index:int) -> void:
-		events.mark.call(index)
-		EmailComponent.read_emails = events.fetch_read_emails.call()
-		
-	EmailComponent.onBackToDesktop = func() -> void:
+	# events
+	StoreComponent.onBackToDesktop = func() -> void:
 		await pause()
 		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()
+	
+	StoreComponent.onMakePurchase = func(uid:String, cost:int) -> void:
+		events.make_purchase.call(uid, cost)
+		StoreComponent.purchased = events.fetch_purchases.call()
 		
-	await U.tick()
-	EmailComponent.read_emails = events.fetch_read_emails.call()
-
-
+	# fetch purchased
+	StoreComponent.purchased = events.fetch_purchases.call()
+	
 func start(fast_load:bool) -> void:
 	LoadingComponent.loading_text = str(details.title).to_upper()
 	await LoadingComponent.start(fast_load)
 	await TransitionScreen.start(0.7, true)
 
 	# start app
-	EmailComponent.start()
+	StoreComponent.start()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -40,17 +39,17 @@ func on_taskbar_is_open_update(state:bool) -> void:
 func pause() -> void:
 	if !is_paused:
 		is_paused = true
-		await EmailComponent.pause()
+		await StoreComponent.pause()
 		if is_visible_in_tree():
 			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
 		PauseContainer.show()
-		EmailComponent.hide()
+		StoreComponent.hide()
 	#
 func unpause() -> void:
 	if is_paused:
 		is_paused = false
 		PauseContainer.hide()
-		EmailComponent.show()
+		StoreComponent.show()
 		await U.set_timeout(0.3)
-		EmailComponent.unpause()
+		StoreComponent.unpause()
 # ------------------------------------------------------------------------------

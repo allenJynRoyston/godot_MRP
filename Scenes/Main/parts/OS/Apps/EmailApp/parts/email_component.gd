@@ -5,20 +5,18 @@ extends PanelContainer
 @onready var List:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
 @onready var WaitContainer:Control = $WaitContainer
 
-@onready var EmailContentContainer:PanelContainer = $HBoxContainer/EmailContentContainer
-@onready var EmailContent:MarginContainer = $HBoxContainer/EmailContentContainer/EmailContent
-@onready var SubjectLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer/SubjectLabel
-@onready var FromLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2/FromLabel
-@onready var DateLabel:Label = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3/DateLabel
-@onready var EmailContentRichText:RichTextLabel = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/EmailContentRichText
-@onready var AttachmentContainer:PanelContainer = $HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/AttachmentContainer
+@onready var EmailContentContainer:PanelContainer = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer
+@onready var EmailContent:MarginContainer = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent
+@onready var SubjectLabel:Label = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer/SubjectLabel
+@onready var FromLabel:Label = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2/FromLabel
+@onready var DateLabel:Label = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3/DateLabel
+@onready var EmailContentRichText:RichTextLabel = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/EmailContentRichText
+@onready var AttachmentContainer:PanelContainer = $HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/AttachmentContainer
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
+const SummaryBtnPreload:PackedScene = preload("res://UI/Buttons/SummaryBtn/SummaryBtn.tscn")
 
-var email_data:Array[Dictionary] = [] : 
-	set(val):
-		email_data = val
-		on_email_data_update()
+var email_data:Array[Dictionary] = OS_EMAIL.email_data
+var tab_index:int = 0
 
 var read_emails:Array = [] : 
 	set(val):
@@ -51,7 +49,7 @@ func _ready() -> void:
 			n.is_selected = node == n
 			if node == n:
 				selected_node = node
-				var item:Dictionary = email_data[index]
+				var item:Dictionary = email_data[tab_index].list[index]
 				parse_email(item, index)
 				
 				BtnControls.hide_a_btn = sidebar_list.is_empty()	
@@ -59,7 +57,7 @@ func _ready() -> void:
 	BtnControls.onAction = func() -> void:
 		if selected_node == null:return
 		var index:int = selected_node.index
-		var item:Dictionary = email_data[index]
+		var item:Dictionary = email_data[tab_index].list[index]
 		
 		if index not in read_emails:
 			markAsRead.call(index)
@@ -96,26 +94,22 @@ func parse_email(data:Dictionary, index:int) -> void:
 	if index not in read_emails:
 		markAsRead.call(index)
 
-func on_read_emails_update() -> void:
-	for index in read_emails:
-		var node:Control = List.get_child(index)
-		node.is_checked  = true
-	
 func on_email_data_update() -> void:
 	if !is_node_ready():return
 	for node in List.get_children():
 		node.queue_free()
 	
 	email_list = []
-	for index in email_data.size():
-		var item:Dictionary = email_data[index]
-		var new_btn:Control = TextBtnPreload.instantiate()
+	for index in email_data[tab_index].list.size():
+		var item:Dictionary = email_data[tab_index].list[index]
+		var new_btn:Control = SummaryBtnPreload.instantiate()
 		new_btn.index = index
 		new_btn.title = item.title
-		new_btn.display_checkmark = true
-		new_btn.is_checked = index in read_emails
-		new_btn.is_hoverable = false
-		#new_btn.COLOR_A = Color.GREEN
+
+		new_btn.show_checked_panel = true		
+		new_btn.hide_icon = true
+		new_btn.fill = true			
+		new_btn.use_alt = index not in read_emails
 		
 		email_list.push_back(new_btn)
 		List.add_child(new_btn)
@@ -123,3 +117,9 @@ func on_email_data_update() -> void:
 	BtnControls.itemlist = email_list
 	BtnControls.item_index = 0
 # ------------------------------------------------------------------------------
+
+func on_read_emails_update() -> void:
+	for index in read_emails:
+		var node:Control = List.get_child(index)
+		node.use_alt = false
+		node.is_checked = true

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://xg4yluhcvvy4"]
+
+[ext_resource type="Script" uid="uid://cabogsf0gn6eq" path="res://Scenes/Main/parts/OS/Apps/StoreApp/store_app.gd" id="1_dhnql"]
+[ext_resource type="PackedScene" uid="uid://uwjd2noo0bpv" path="res://Scenes/Main/parts/OS/Apps/StoreApp/parts/StoreComponent.tscn" id="2_wd8uk"]
+[ext_resource type="PackedScene" uid="uid://528j86gp5aj2" path="res://UI/WindowUI/Loading/Loading.tscn" id="3_ucm14"]
+[ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="4_q7qhc"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_p2rma"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fh1d2"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="StoreApp" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fh1d2")
+script = ExtResource("1_dhnql")
+
+[node name="StoreComponent" parent="." instance=ExtResource("2_wd8uk")]
+layout_mode = 2
+
+[node name="LoadingComponent" parent="." instance=ExtResource("3_ucm14")]
+layout_mode = 2
+loading_text = "Loading EMAILS..."
+
+[node name="PauseContainer" parent="." instance=ExtResource("4_q7qhc")]
+visible = false
+layout_mode = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("5_p2rma")]
+layout_mode = 2

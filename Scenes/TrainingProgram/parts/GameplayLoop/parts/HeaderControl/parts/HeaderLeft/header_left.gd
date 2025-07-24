@@ -104,7 +104,6 @@ func update() -> void:
 	var current_vibe:Dictionary = GAME_UTIL.get_vibes_summary(current_location)	
 	var summary_data:Dictionary = {}
 	
-	
 	VibesContainer.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else VibesContainer.hide()
 	
 	## update everything else
@@ -128,10 +127,10 @@ func update() -> void:
 	VibeReadiness.value = str(current_vibe[RESOURCE.METRICS.READINESS])	
 
 	# update economy
-	CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] 
-	MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] 
-	ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] 
-	CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]	
+	CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] + resources_data[RESOURCE.CURRENCY.MONEY].diff
+	MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] + resources_data[RESOURCE.CURRENCY.MATERIAL].diff
+	ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] + resources_data[RESOURCE.CURRENCY.SCIENCE].diff
+	CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]	+ resources_data[RESOURCE.CURRENCY.CORE].diff
 	
 	# update metrics
 	MoraleTag.val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]

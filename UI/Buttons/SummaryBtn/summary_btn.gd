@@ -11,6 +11,10 @@ extends Control
 @onready var EnergyIcon:Control = $MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer/SVGIcon
 @onready var EnergyCostLabel:Label = $MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
 
+@onready var CostPanel:PanelContainer = $MarginContainer/HBoxContainer/CostPanel
+@onready var CostIcon:Control = $MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CostIcon
+@onready var CostLabel:Label = $MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel
+
 @onready var CheckboxPanel:PanelContainer = $MarginContainer/HBoxContainer/CheckboxPanel
 @onready var CheckboxIcon:Control = $MarginContainer/HBoxContainer/CheckboxPanel/MarginContainer/HBoxContainer/CheckBtn
 
@@ -52,7 +56,7 @@ extends Control
 @export var show_energy_cost:bool = false : 
 	set(val):
 		show_energy_cost = val
-		on_show_cost_update()
+		on_show_energy_cost_update()
 		
 @export var is_checked:bool = false : 
 	set(val):
@@ -63,6 +67,21 @@ extends Control
 	set(val):
 		show_checked_panel = val
 		is_show_checked_panel_update()
+		
+@export var cost_val:int = 0 : 
+	set(val):
+		cost_val = val
+		on_cost_val_update()
+
+@export var show_cost:bool = false : 
+	set(val):
+		show_cost = val
+		on_show_cost_update()
+				
+@export var fill:bool = false : 
+	set(val):
+		fill = val
+		on_fill_update()		
 		
 	
 @export var hint_icon:SVGS.TYPE = SVGS.TYPE.INFO
@@ -87,11 +106,13 @@ func _ready() -> void:
 	on_hide_icon_update()
 	on_icon_update()
 	on_title_update()
-	on_show_cost_update()
 	on_cost_update()
 	on_is_checked_update()	
 	is_show_checked_panel_update()
-	update_all()
+	on_fill_update()
+	on_cost_val_update()
+	on_show_cost_update()
+	update_all()	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -103,8 +124,13 @@ func on_is_disabled_update() -> void:
 
 func on_use_alt_update() -> void:
 	U.debounce(str(self, "_update_all"), update_all)
-
-func on_show_cost_update() -> void:
+	
+func on_fill_update() -> void:
+	if !is_node_ready():return
+	TitlePanel.size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
+	$".".size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
+	
+func on_show_energy_cost_update() -> void:
 	if !is_node_ready():return
 	EnergyPanel.show() if show_energy_cost else EnergyPanel.hide()
 
@@ -115,6 +141,14 @@ func on_cost_update() -> void:
 func on_is_checked_update() -> void:
 	if !is_node_ready():return
 	CheckboxIcon.icon = SVGS.TYPE.CHECKBOX if is_checked else SVGS.TYPE.EMPTY_CHECKBOX
+
+func on_cost_val_update() -> void:
+	if !is_node_ready():return
+	CostLabel.text = str(cost_val)
+	
+func on_show_cost_update() -> void:
+	if !is_node_ready():return
+	CostPanel.show() if show_cost else CostPanel.hide()
 
 func is_show_checked_panel_update() -> void:
 	if !is_node_ready():return
@@ -144,8 +178,9 @@ func update_font_color() -> void:
 	
 	TitleLabel.label_settings = label_duplicate	
 	EnergyCostLabel.label_settings = energy_label_duplicate
+	CostLabel.label_settings = energy_label_duplicate
 	
-	for node in [Icon, CheckboxIcon, EnergyIcon]:
+	for node in [Icon, CheckboxIcon, EnergyIcon, CostIcon]:
 		node.icon_color = use_color
 
 
@@ -161,7 +196,7 @@ func on_panel_color_update() -> void:
 
 	new_stylebox.bg_color = use_color
 	
-	for panel in [IconPanel, TitlePanel, EnergyPanel, CheckboxPanel]:
+	for panel in [IconPanel, TitlePanel, EnergyPanel, CheckboxPanel, CostPanel]:
 		panel.add_theme_stylebox_override("panel", new_stylebox)
 
 func on_icon_update() -> void:

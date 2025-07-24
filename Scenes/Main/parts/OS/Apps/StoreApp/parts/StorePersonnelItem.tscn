@@ -1,0 +1,166 @@
+[gd_scene load_steps=6 format=3 uid="uid://b0j6wdywnl5ws"]
+
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="1_lqn14"]
+[ext_resource type="Script" uid="uid://btr27u1gngdmt" path="res://Scenes/Main/parts/OS/Apps/StoreApp/parts/store_personnel_item.gd" id="2_uthu4"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="3_qvyhm"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_7y7cd"]
+thickness = 2
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7y7cd"]
+
+[node name="StorePersonnelItem" type="PanelContainer"]
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("1_lqn14")
+script = ExtResource("2_uthu4")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+label_settings = ExtResource("3_qvyhm")
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_7y7cd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AdminLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ADMINISTRATORS"
+label_settings = ExtResource("3_qvyhm")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7y7cd")
+
+[node name="AdminBurnLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+modulate = Color(1, 1, 1, 0.141176)
+layout_mode = 2
+text = "00"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="AdminCountLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ResearcherLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RESEARCHERS"
+label_settings = ExtResource("3_qvyhm")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7y7cd")
+
+[node name="ResearcherBurnLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/PanelContainer"]
+modulate = Color(1, 1, 1, 0.141176)
+layout_mode = 2
+text = "00"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ResearcherCountLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/PanelContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SecurityLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SECURITY"
+label_settings = ExtResource("3_qvyhm")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7y7cd")
+
+[node name="SecurityBurnLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3/PanelContainer"]
+modulate = Color(1, 1, 1, 0.141176)
+layout_mode = 2
+text = "00"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SecurityCountLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3/PanelContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="DClassLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "D-CLASS"
+label_settings = ExtResource("3_qvyhm")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7y7cd")
+
+[node name="DClassBurnLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4/PanelContainer"]
+modulate = Color(1, 1, 1, 0.141176)
+layout_mode = 2
+text = "00"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="DClassCountLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer4/PanelContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = ExtResource("3_qvyhm")
+horizontal_alignment = 2
+vertical_alignment = 1

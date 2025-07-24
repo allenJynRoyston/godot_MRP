@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bqjgyfcx1odqb" path="res://Media/images/Boxart/stdr_boxart.png" id="2_i2vsh"]
 [ext_resource type="Material" uid="uid://2toh1uf8l10m" path="res://Shader/ReColor/ReColor.tres" id="2_jqr35"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="2_kkl0i"]
-[ext_resource type="Shader" uid="uid://dmse66p6sjwyj" path="res://Scenes/TrainingProgram/parts/LogoScreen/hv_interupt.gdshader" id="2_qbek0"]
+[ext_resource type="Shader" path="res://Scenes/TrainingProgram/parts/LogoScreen/hv_interupt.gdshader" id="2_qbek0"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="3_n7hac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kp6tv"]

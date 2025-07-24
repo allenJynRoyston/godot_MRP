@@ -30,7 +30,7 @@ signal is_complete
 func start() -> void:
 	
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.OS_STARTUP_SFX,
+		"selected": OS_AUDIO.TRACK.OS_STARTUP_SFX,
 	}
 	
 	show()	

@@ -113,7 +113,7 @@ func on_current_mode_update() -> void:
 		MODE.DISPLAY_LOGO:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_LOGO):
 				SUBSCRIBE.music_data = {
-					"selected": MUSIC.TRACK.INTRO,
+					"selected": OS_AUDIO.TRACK.INTRO,
 				}	
 					
 				# fade in

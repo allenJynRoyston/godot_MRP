@@ -22,7 +22,7 @@ func on_data_update() -> void:
 		var author_list:Dictionary = {}
 		var all_tracks:Array = []
 		
-		for index in MUSIC.track_list.size():
+		for index in OS_AUDIO.track_list.size():
 			var item:Dictionary = data.music_track_list[index]
 			var details:Dictionary = item.details
 			

@@ -23,6 +23,8 @@ extends MouseInteractions
 @onready var ScpContinaer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer
 @onready var CardDrawerScp:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpContainer/CardDrawerScp
 
+@onready var node_list:Array = [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]
+
 @export var preview_mode:bool = false 
 
 var use_location:Dictionary 
@@ -56,7 +58,6 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	BusyPanel.hide()
-	var node_list:Array = [CardDrawerActiveAbilities, CardDrawerPassiveAbilities, CardDrawerResearchers, CardDrawerScp]
 	
 	for node in node_list:
 		node.preview_mode = preview_mode
@@ -70,7 +71,6 @@ func _ready() -> void:
 		node.onUnlock = func() -> void:
 			for child in node_list:
 				child.lock_btns(false)
-				
 				
 	on_room_ref_update()
 # ------------------------------------------------------------------------------
@@ -99,13 +99,14 @@ func on_room_ref_update() -> void:
 		UpgradeBtn.title = "BUILD MODE"		
 		UpgradeBtn.is_selected = true
 		PersonnelContainer.hide()		
-		#AbilityContainer.hide()
+		AbilityContainer.hide()
 		PassiveContainer.hide()
 		ScpContinaer.hide()
 		await U.tick()
 		CardControlBody.size = Vector2(1, 1)		
 		return
-	
+
+	var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)	
 	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
 	var is_activated:bool = false	
@@ -123,14 +124,24 @@ func on_room_ref_update() -> void:
 		is_activated = extract_data.room.is_activated
 	
 	# attach researcher data
-	UpgradeBtn.title = room_details.name
+	UpgradeBtn.title = "%s - LVL %s" % [room_details.name, abl_lvl if !at_max_level else "MAX"]
 	UpgradeBtn.icon = SVGS.TYPE.DELETE if at_max_level else SVGS.TYPE.SETTINGS
-	UpgradeBtn.hide_icon = false
+	UpgradeBtn.hide_icon = at_max_level
+
 	UpgradeBtn.hint_title = "HINT"
 	UpgradeBtn.hint_icon =  SVGS.TYPE.SETTINGS
-	UpgradeBtn.hint_description = "Room is at max level." if at_max_level else "Room can be upgraded to level %s." % (abl_lvl + 1)
+	UpgradeBtn.hint_description = "Room is at max level." if at_max_level else "Room can be upgraded to level %s." % (abl_lvl + 1)			
+		
+	UpgradeBtn.onClick = func() -> void:
+		if preview_mode or !is_visible_in_tree():return	
+		for node in node_list:
+			node.onLock.call()
+		await ActionContainerNode.before_use()
+		await GAME_UTIL.upgrade_facility()
+		ActionContainerNode.after_use()
+		for node in node_list:
+			node.onUnlock.call()
 
-	
 	CardDrawerResearchers.room_details = room_details
 	CardDrawerResearchers.use_location = use_location			
 	CardDrawerResearchers.required_staffing = required_staffing
@@ -160,7 +171,7 @@ func on_room_ref_update() -> void:
 	EmptyContainer.hide()
 	RoomDetailsContainer.show() if !room_details.is_empty() else RoomDetailsContainer.hide()
 	PersonnelContainer.show() if required_staffing.size() > 0 and !preview_mode else PersonnelContainer.hide()	
-	# AbilityContainer.show() if show_abilities else AbilityContainer.hide()
+	AbilityContainer.show() if show_abilities else AbilityContainer.hide()
 	PassiveContainer.show() if show_passives else PassiveContainer.hide()
 	ScpContinaer.show() if show_scp else ScpContinaer.hide()
 

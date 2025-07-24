@@ -1,11 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://btxy5mypwrlao"]
+[gd_scene load_steps=16 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" uid="uid://cytp5e5onlqj6" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_yu6nn"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_ym770"]
-[ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="3_yu6nn"]
+[ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="4_yu6nn"]
 [ext_resource type="PackedScene" uid="uid://b2xiva1hpi0f4" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/EmailAttachment.tscn" id="5_mf5du"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="5_urpie"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_bd68s"]
+[ext_resource type="Texture2D" uid="uid://b5kx3tbx204ia" path="res://Media/images/boombox.png" id="7_0st5x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eybqo"]
 bg_color = Color(0.345946, 0.345946, 0.345946, 1)
@@ -22,8 +24,9 @@ outline_color = Color(0.886275, 0.647059, 0, 0.337255)
 shadow_size = 2
 shadow_color = Color(1, 0.74902, 0.2, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yu6nn"]
-bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_tougv"]
+color = Color(1, 0.745178, 0.380506, 1)
+thickness = 3
 
 [sub_resource type="LabelSettings" id="LabelSettings_ym770"]
 font = ExtResource("3_ym770")
@@ -92,16 +95,50 @@ layout_mode = 2
 [node name="List" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextBtn" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("3_yu6nn")]
+[node name="SummaryBtn" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("4_yu6nn")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yu6nn")
+size_flags_horizontal = 3
+hide_icon = true
+is_checked = true
+show_checked_panel = true
+fill = true
 
-[node name="EmailContentContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="EmailContent" type="MarginContainer" parent="HBoxContainer/EmailContentContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "NETMAIL"
+label_settings = ExtResource("5_urpie")
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_tougv")
+
+[node name="EmailContentContainer" type="PanelContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EmailContent" type="MarginContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -110,59 +147,59 @@ theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Subject:"
 label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
-[node name="SubjectLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
+[node name="SubjectLabel" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Label"
 label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "From:"
 label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
-[node name="FromLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
+[node name="FromLabel" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Label"
 label_settings = SubResource("LabelSettings_ym770")
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "Date:"
 label_settings = SubResource("LabelSettings_ym770")
 uppercase = true
 
-[node name="DateLabel" type="Label" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
+[node name="DateLabel" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "Label"
 label_settings = SubResource("LabelSettings_ym770")
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 50
 theme_override_styles/separator = SubResource("StyleBoxFlat_yy1hf")
 
-[node name="EmailContentRichText" type="RichTextLabel" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="EmailContentRichText" type="RichTextLabel" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.41598, 0.41598, 0.41598, 1)
@@ -172,13 +209,21 @@ bbcode_enabled = true
 text = "Lorem ipsum odor amet, consectetuer adipiscing elit."
 fit_content = true
 
-[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 theme_override_styles/separator = SubResource("StyleBoxEmpty_tvy7c")
 
-[node name="AttachmentContainer" parent="HBoxContainer/EmailContentContainer/EmailContent/VBoxContainer" instance=ExtResource("5_mf5du")]
+[node name="AttachmentContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer/EmailContent/VBoxContainer" instance=ExtResource("5_mf5du")]
 layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7_0st5x")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="BtnControl" parent="." instance=ExtResource("6_bd68s")]
 layout_mode = 2

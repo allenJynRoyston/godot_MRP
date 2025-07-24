@@ -47,8 +47,8 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"abilities": func() -> Array: 
 		return [
-			#ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),	
-			#ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 0),		
+			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),
+			ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 1),
 			#ABL.get_ability(ABL.REF.UPGRADE_FACILITY),
 			#ABL.get_ability(ABL.REF.SET_WARNING_MODE),
 			#ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),

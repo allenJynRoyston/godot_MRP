@@ -27,29 +27,19 @@ const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/A
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
 const EmailAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/EmailApp/EmailApp.tscn")
 const MediaPlayerAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/MediaPlayerApp.tscn")
-
+const StoreAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/StoreApp/StoreApp.tscn")
 
 enum APPS {
 	SITE_DIRECTOR_TRAINING_PROGRAM, 
 	SETTINGS, 
 	MUSIC_PLAYER, 
 	EMAIL, 
+	STORE
 }
-
-
 
 # -----------------------------------
 #region SAVABLE DATA
-var 	os_setting:Dictionary = {
-	"read_emails": [],
-	"tracks_unlocked": [],
-	"apps_installed": [],
-	"currency": {
-		"amount": 0,
-		"spent": 0
-	}
-}
-
+var os_setting:Dictionary = {}
 var apps_installing:Array = []
 var has_started:bool = false
 
@@ -264,6 +254,65 @@ var app_list:Array[Dictionary] = [
 		},
 	},
 	# ----------
+	
+	# ----------
+	{
+		"details": {
+			"ref": APPS.STORE,
+			"title": "Store",
+			"icon": SVGS.TYPE.MONEY,
+			"app": StoreAppPreload
+		},
+		"installed": func() -> bool:
+			return true,
+		"events": {
+			"open": func(data:Dictionary) -> void:
+				var options:Array = []
+				if data.ref not in running_apps_list.map(func(i): return i.ref):
+					open_options(
+						# ------- BTNS
+						[
+							{
+								"title": "LAUNCH...",
+								"onClick": func(_options:Dictionary) -> void:
+									await open_app(data, _options),
+								
+							}
+						],
+						# ------- OPTIONS
+						options
+					)
+				else:
+					open_options(
+						# ------- BTNS
+						[
+							{
+								"title": "RESUME",
+								"onClick": func(_options:Dictionary) -> void:
+									open_app(data),
+							},
+							{
+								"title": "FORCE QUIT",
+								"onClick": func(_options:Dictionary) -> void:
+									close_app(data.ref),
+							}
+						],
+						# ------- OPTIONS
+						options
+					),
+			"fetch_purchases": func() -> Array:
+				return os_setting.store_purchases,
+			"make_purchase": func(uid:String, cost:int) -> void:
+				if uid not in os_setting.store_purchases:
+					os_setting.store_purchases.push_back(uid)					
+					os_setting.currency.amount -= cost
+				else:
+					os_setting.store_purchases.erase(uid)
+					os_setting.currency.amount += cost
+				save_state(0.2),
+		},
+	},
+	# ----------	
 	
 	# ----------
 	{
@@ -506,6 +555,7 @@ func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
 	GBL.update_and_save_user_profile()
 	
+	print(GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting.currency	)
 	await simulate_wait(duration)
 
 func load_state() -> void:

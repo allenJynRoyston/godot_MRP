@@ -55,6 +55,27 @@ var show_resources:bool = false :
 
 # ------------------------------------------------------------------------------ 
 #region INITIAL DATA
+var starting_data:Dictionary = {
+	"diff": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	},
+	"resources": {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	},
+	"personnel": {
+		RESEARCHER.SPECIALIZATION.ADMIN: 0,
+		RESEARCHER.SPECIALIZATION.RESEARCHER: 0,
+		RESEARCHER.SPECIALIZATION.SECURITY: 0,
+		RESEARCHER.SPECIALIZATION.DCLASS: 0,
+	}
+}
+		
 var initial_values:Dictionary = {
 	# ----------------------------------
 	"current_location": func() -> Dictionary:
@@ -78,30 +99,30 @@ var initial_values:Dictionary = {
 	# ----------------------------------
 	"resource_diff": func() -> Dictionary:
 		return { 
-			RESOURCE.CURRENCY.MONEY: 0,
-			RESOURCE.CURRENCY.MATERIAL: 0,
-			RESOURCE.CURRENCY.SCIENCE: 0,
-			RESOURCE.CURRENCY.CORE: 0
+			RESOURCE.CURRENCY.MONEY: starting_data.diff[RESOURCE.CURRENCY.MONEY],
+			RESOURCE.CURRENCY.MATERIAL: starting_data.diff[RESOURCE.CURRENCY.SCIENCE],
+			RESOURCE.CURRENCY.SCIENCE: starting_data.diff[RESOURCE.CURRENCY.MATERIAL],
+			RESOURCE.CURRENCY.CORE: starting_data.diff[RESOURCE.CURRENCY.CORE],
 		},
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": 300 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 9999, 
+				"amount": 500 + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 9999, 
 				"diff": 0,
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 100 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1000, 
+				"amount": 100 + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1000, 
 				"diff": 0,
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 50 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 500, 
+				"amount": 50 + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 500, 
 				"diff": 0,
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 25 if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 100, 
+				"amount": 25 + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 100, 
 				"diff": 0,
 				"capacity": 100
 			},						
@@ -376,6 +397,9 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
+	
+	# assign
+	GAME_UTIL.assign_nodes()		
 
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	for node in get_all_container_nodes():
@@ -407,9 +431,6 @@ func start() -> void:
 	GAME_UTIL.disable_taskbar(true)
 	show()
 	
-	# assign
-	GAME_UTIL.assign_nodes()	
-		
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
@@ -427,7 +448,7 @@ func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	var duration:float = 0.02 if skip_progress_screen else 0.5
-
+	
 	# skip_progress_screen assign set to true after the first load screen
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, true)	
 
@@ -449,7 +470,7 @@ func start_new_game() -> void:
 	
 	# start game music
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.GAME_TRACK_ONE,
+		"selected": OS_AUDIO.TRACK.GAME_TRACK_ONE,
 	}		
 	
 	# 1.) loading game data config
@@ -474,13 +495,13 @@ func start_new_game() -> void:
 		var staff_debug:bool = DEBUG.get_val(DEBUG.STAFF_DEBUG)
 		
 		var staff_list:Array = []
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires(3 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_ADMIN), RESEARCHER.SPECIALIZATION.ADMIN):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (3 + starting_data.personnel[RESEARCHER.SPECIALIZATION.ADMIN]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_ADMIN), RESEARCHER.SPECIALIZATION.ADMIN):
 			staff_list.push_back(item)		
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires(1 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_RESEARCHERS), RESEARCHER.SPECIALIZATION.RESEARCHER):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (1 + starting_data.personnel[RESEARCHER.SPECIALIZATION.RESEARCHER]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_RESEARCHERS), RESEARCHER.SPECIALIZATION.RESEARCHER):
 			staff_list.push_back(item)
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires(1 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_SECURITY), RESEARCHER.SPECIALIZATION.SECURITY):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (1 + starting_data.personnel[RESEARCHER.SPECIALIZATION.SECURITY]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_SECURITY), RESEARCHER.SPECIALIZATION.SECURITY):
 			staff_list.push_back(item)
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires(0 if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_DCLASS), RESEARCHER.SPECIALIZATION.DCLASS):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (0 + starting_data.personnel[RESEARCHER.SPECIALIZATION.DCLASS]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_DCLASS), RESEARCHER.SPECIALIZATION.DCLASS):
 			staff_list.push_back(item)
 		staff_list.reverse()
 		
@@ -526,8 +547,6 @@ func start_new_game() -> void:
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
 
-
-			
 	# then build marked objectives
 	GAME_UTIL.mark_current_objectives()
 	
@@ -887,17 +906,18 @@ func on_current_phase_update() -> void:
 	match current_phase:
 		# ------------------------
 		PHASE.STARTUP:
-			if true:
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
+			
+			if chapter.has("tutorial"):
 				show_only([Structure3dContainer])
-				var story_progress:Dictionary = GBL.active_user_profile.story_progress
-				var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
-				if chapter.has("tutorial"):
-					await GAME_UTIL.add_dialogue(chapter.tutorial)
+				await GAME_UTIL.add_dialogue(chapter.tutorial)
 					
 				
 			# show objectives
-			#if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
-			await GAME_UTIL.open_objectives()
+			if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
+				await GAME_UTIL.open_objectives()
+				
 			current_phase = PHASE.PLAYER
 		# ------------------------
 		PHASE.PLAYER:
@@ -957,7 +977,7 @@ func on_current_phase_update() -> void:
 			# CHECK FOR SCP BREACH EVENTS
 			var event_breach_refs:Array = []
 			var event_final_containment:Array = []
-			var previous_track:MUSIC.TRACK = SUBSCRIBE.music_data.selected
+			var previous_track:OS_AUDIO.TRACK = SUBSCRIBE.music_data.selected
 
 			for ref in scp_data:
 				var data:Dictionary = scp_data[ref]
@@ -1004,7 +1024,7 @@ func on_current_phase_update() -> void:
 						
 						# open music player, no music selected
 						SUBSCRIBE.music_data = {
-							"selected": MUSIC.TRACK.SCP_CONTAINMENT_BREACH,
+							"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
 						}
 						
 						await U.set_timeout(1.5)
@@ -1244,13 +1264,16 @@ func parse_restore_data() -> void:
 # ------------------------------------------------------------------------------
 # NOTE: THIS IS THE MAIN LOGIC THAT HAPPENS WHEN GAMEPLAY ESSENTIAL DATA IS UPDATED
 # ------------------------------------------------------------------------------
-
 func update_room_config(force_setup:bool = false) -> void:
 	if !setup_complete:return
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
 	var resource_diff:Dictionary = initial_values.resource_diff.call()
+
+	# add to starting diff to resources_diff
+	for key in resource_diff:
+		resources_data[key].diff = resource_diff[key]
 
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
@@ -1290,10 +1313,7 @@ func update_room_config(force_setup:bool = false) -> void:
 			var amount:int = floor_level.currencies[key]
 			resource_diff[key] += amount
 	
-	# add to diff in resource data
-	for key in resource_diff:
-		resources_data[key].diff = resource_diff[key]
-	
+
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals

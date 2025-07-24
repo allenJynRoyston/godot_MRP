@@ -6,9 +6,7 @@ extends AppWrapper
 @onready var TransitionScreen:Control = $TransitionScreen
 
 # ------------------------------------------------------------------------------
-func _ready() -> void:
-	MediaPlayerMain.music_track_list = MUSIC.track_list
-	
+func _ready() -> void:	
 	MediaPlayerMain.onBackToDesktop = func() -> void:
 		await pause()
 		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()

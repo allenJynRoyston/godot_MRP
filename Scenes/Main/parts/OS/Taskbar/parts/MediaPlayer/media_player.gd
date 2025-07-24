@@ -23,7 +23,7 @@ var frame_counter: int = 0
 var spectrum:AudioEffectSpectrumAnalyzerInstance
 
 var hover_nodes:Array = []
-var track_list:Array = MUSIC.track_list
+var track_data:Array = OS_AUDIO.track_data
 var selected_track:int = 0
 var scroll_name:bool = false
 		
@@ -52,15 +52,15 @@ func _ready() -> void:
 
 # --------------------------------------	
 func on_pause() -> void:
-	if track_list.is_empty():return	
+	if track_data.is_empty():return	
 	GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing = !GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing
 	on_pause_or_play_update()	
 # --------------------------------------	
 
 # --------------------------------------	
 func on_next() -> void:
-	if track_list.is_empty():return
-	selected_track = (selected_track + 1) % track_list.size()
+	if track_data.is_empty():return
+	selected_track = (selected_track + 1) % track_data[0].size()
 	SUBSCRIBE.music_data = {
 		"selected": selected_track,
 	}
@@ -91,7 +91,7 @@ func on_music_data_update(new_val:Dictionary) -> void:
 # --------------------------------------	
 func update_track_data() -> void:
 	if selected_track == null:return	
-	var track_data:Dictionary = track_list[selected_track]
+	var track_data:Dictionary = track_data[0].list[selected_track]
 	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
 	TrackNameLabel.text = "%s by %s" % [details.name, details.author]
 	

@@ -141,7 +141,6 @@ func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void
 		TextureOutput.material = material_duplicate
 				
 		update_nodes()
-		#update_boards()		
 		update_room_lighting()	
 		
 	U.debounce(str(self.name, "_update_billboards"), update_billboards)
@@ -161,13 +160,10 @@ func update_nodes() -> void:
 
 	for node in NodeContainer.get_children():
 		node_refs[node.name] = node.get_marker()
-		#node_ref_positions[node.name] = node.position
 		
 		node.onFocus = func(room_data:Dictionary) -> void:
 			node_location = node.global_position
-			#CursorLabelSprite.global_position = node.global_position - Vector3(0, -2, 0)
-			#CursorLabelSprite.position.z = -2
-				
+
 	var material_copy:StandardMaterial3D = FloorMesh.mesh.material
 	match assigned_location.ring:
 		0:
@@ -211,13 +207,11 @@ func tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:
 	await tween.finished
 # --------------------------------------------------------------------------------------------------		
 
-
 # --------------------------------------------------------
 func on_enable_room_focus() -> void:
 	for node in NodeContainer.get_children():
 		node.enable_focus = enable_room_focus
 # --------------------------------------------------------	
-
 
 # --------------------------------------------------------
 func on_is_active_update() -> void:
@@ -237,12 +231,11 @@ func reset_node(room:int, state:bool) -> void:
 func get_room_position(room_index:int) -> Vector2:
 	if node_refs.is_empty():
 		return Vector2(-1, -1)
-		
+
 	var RoomNode:Node3D = node_refs[str(room_index)]
 	var viewport := MainCamera.get_viewport()
 	var screen_position := MainCamera.unproject_position(RoomNode.global_position)
-	
-	
+
 	# Convert screen position to Control node's local space
 	return screen_position / self.size
 # --------------------------------------------------------
@@ -325,19 +318,6 @@ func update_billboards() -> void:
 		RightBillboard.text = "EVACUATE IMMEDIATELY!"
 	
 # --------------------------------------------------------
-
-
-## --------------------------------------------------------
-#func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
-	#camera_settings = new_val
-	#if !is_node_ready() or camera_settings.is_empty():return
-	#
-	#match camera_settings.type:
-		#CAMERA.TYPE.ROOM_SELECT:
-			#update_camera_size(35)
-		#_:
-			#update_camera_size(24)
-## --------------------------------------------------------
 
 # --------------------------------------------------------
 func update_camera_size(val:int) -> void:

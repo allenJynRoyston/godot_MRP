@@ -37,7 +37,7 @@ func start() -> void:
 
 	# play music
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.GAME_MAIN_MENU,
+		"selected": OS_AUDIO.TRACK.GAME_MAIN_MENU,
 	}	
 
 	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT QUICKSAVE, 
@@ -93,18 +93,27 @@ func force_save_and_quit() -> void:
 # ---------------------------------------------
 func start_game(filedata:Dictionary) -> void:
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
+	
+	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+	var starting_data:Dictionary = OS_STORE.calc_starting_data()
+		
+	# set parameters
 	GameplayLoopNode.options = options
+	GameplayLoopNode.starting_data = starting_data
+	
+	# set events
 	GameplayLoopNode.onGameOver = on_game_over	
 	GameplayLoopNode.onExitGame = on_exit_game
+	
 	# set loaded data
 	GBL.loaded_gameplay_data = filedata
 		
 	# fade out
+	add_child(GameplayLoopNode)	
 	transition_node(TitleScreen, false)		
 	await transition_node(LogoScreen, false)	
 	await U.set_timeout(0.3)
 	
-	add_child(GameplayLoopNode)
 	GameplayLoopNode.start()	
 
 

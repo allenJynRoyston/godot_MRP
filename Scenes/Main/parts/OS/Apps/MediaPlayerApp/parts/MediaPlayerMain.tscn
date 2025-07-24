@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://5ra6miceqhv7"]
+[gd_scene load_steps=11 format=3 uid="uid://5ra6miceqhv7"]
 
 [ext_resource type="Script" uid="uid://kmom1pmj4erj" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/parts/media_player_main.gd" id="1_nyf86"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_8cl27"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_nyf86"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_nyf86"]
 [ext_resource type="Texture2D" uid="uid://b5kx3tbx204ia" path="res://Media/images/boombox.png" id="5_8cl27"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_h37dp"]
 
@@ -17,6 +18,12 @@ outline_size = 8
 outline_color = Color(0.886275, 0.647059, 0, 0.337255)
 shadow_size = 2
 shadow_color = Color(1, 0.74902, 0.2, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nyf86"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_8cl27"]
+color = Color(1, 0.745178, 0.380506, 1)
+thickness = 3
 
 [node name="MediaPlayerMain" type="PanelContainer"]
 anchors_preset = 15
@@ -64,12 +71,37 @@ layout_mode = 2
 [node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nyf86")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer2"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/PanelContainer2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer2/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 1
+text = "MEDIA PLAYER"
+label_settings = ExtResource("3_nyf86")
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_8cl27")
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("5_8cl27")
 expand_mode = 1
 stretch_mode = 5

@@ -88,7 +88,7 @@ func start(use_fast_animation:bool = false) -> void:
 	TextureRender.texture = RenderSubviewport.get_texture()
 
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.LOADING
+		"selected": OS_AUDIO.TRACK.LOADING
 	}
 	
 	fast_animation = use_fast_animation

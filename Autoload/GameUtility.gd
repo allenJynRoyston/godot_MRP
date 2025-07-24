@@ -652,7 +652,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	# update music
 	var previous_track:int = SUBSCRIBE.music_data.selected
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.SCP_INITIAL_CONTAINMENT,
+		"selected": OS_AUDIO.TRACK.SCP_INITIAL_CONTAINMENT,
 	}
 	
 	# Check for initial breach event
@@ -684,7 +684,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
 	
-	# then revert music...
+	# then revert OS_AUDIO...
 	SUBSCRIBE.music_data = {
 		"selected": previous_track
 	}			
@@ -712,7 +712,7 @@ func trigger_breach_event(scp_ref:int) -> void:
 	
 	# open music player, no music selected
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.SCP_CONTAINMENT_BREACH,
+		"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
 	}
 	
 	SUBSCRIBE.current_location = data.location
@@ -772,7 +772,7 @@ func trigger_containment_event(scp_ref:int) -> void:
 	
 	# open music player, no music selected
 	SUBSCRIBE.music_data = {
-		"selected": MUSIC.TRACK.SCP_FINAL_CONTAINMENT,
+		"selected": OS_AUDIO.TRACK.SCP_FINAL_CONTAINMENT,
 	}	
 	
 	SUBSCRIBE.current_location = data.location
@@ -1073,7 +1073,7 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> void
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func upgrade_facility(use_location:Dictionary) -> bool:	
+func upgrade_facility(use_location:Dictionary = current_location) -> bool:	
 	var current_level:int = base_states.room[U.location_to_designation(use_location)].abl_lvl
 	var next_level:int = current_level + 1
 	var activation_requirements = [{"amount": -(100 * next_level), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]

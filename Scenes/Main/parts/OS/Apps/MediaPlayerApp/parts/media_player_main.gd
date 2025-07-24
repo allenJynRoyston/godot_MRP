@@ -4,17 +4,14 @@ extends PanelContainer
 @onready var BtnControls:Control = $BtnControl
 @onready var TrackList:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
 
-const TextBtnPreload:PackedScene = preload("res://UI/Buttons/ItemBtn/ItemBtn.tscn")
+const SummaryBtnPreload:PackedScene = preload("res://UI/Buttons/SummaryBtn/SummaryBtn.tscn")
 
+var music_data:Dictionary
+var track_data:Array = OS_AUDIO.track_data
+var tab_index:int = 0
+var SelectedNode:Control 
 var MediaPlayerNode:Control 
 var onBackToDesktop:Callable = func() -> void:pass
-var selected_node:Control 
-var track_id:int = 0
-var music_data:Dictionary
-var music_track_list:Array :
-	set(val): 
-		music_track_list = val
-		on_music_track_list_update()
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -41,16 +38,26 @@ func _ready() -> void:
 			var n:Control = TrackList.get_child(index)
 			n.is_selected = node == n
 			if node == n:
-				selected_node = node
-				track_id = index
+				SelectedNode = node
 
 	
 	BtnControls.onAction = func() -> void:
+		if SelectedNode == null:return
+		var item:Dictionary = track_data[tab_index].list[SelectedNode.index]
+		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+		var track_ref:int = item.details.ref
+		var is_unlocked:bool = item.is_unlocked.call(os_settings)
+		
+		# still locked, so do nothing...
+		if !is_unlocked:
+			return
+		
+		# else, pause music and start next track
 		MediaPlayerNode.on_pause()
 		
 		# open music player, no music selected
 		SUBSCRIBE.music_data = {
-			"selected": track_id,
+			"selected": track_ref
 		}
 
 
@@ -70,24 +77,36 @@ func unpause() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_music_track_list_update() -> void:
+	if !is_node_ready():return
+	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting	
+	
+	for item in TrackList.get_children():
+		item.queue_free()
+		
+	for index in track_data[tab_index].list.size():
+		var new_btn:PanelContainer = SummaryBtnPreload.instantiate()		
+		var item:Dictionary = track_data[tab_index].list[index]
+		var is_unlocked:bool = item.is_unlocked.call(os_settings)
+		
+		new_btn.index = index
+		new_btn.title = item.details.name if is_unlocked else "???"
+		
+		new_btn.show_checked_panel = true		
+		new_btn.hide_icon = true
+		new_btn.fill = true			
+
+		TrackList.add_child(new_btn)
+	
+	on_music_data_update()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	music_data = new_val
 	if !is_node_ready() or music_data.is_empty():return
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)
 		n.is_checked = index == music_data.selected
-		
-
-func on_music_track_list_update() -> void:
-	if !is_node_ready():return
-	for item in TrackList.get_children():
-		item.queue_free()
-		
-	for item in music_track_list:
-		var new_btn:PanelContainer = TextBtnPreload.instantiate()
-		new_btn.title = item.details.name
-		new_btn.display_checkmark = true
-		new_btn.is_checked = false
-		TrackList.add_child(new_btn)
-	
+		n.use_alt = index == music_data.selected
 # ------------------------------------------------------------------------------

@@ -110,7 +110,6 @@ func build_list() -> void:
 						new_btn.onClick = func() -> void:pass
 						NodeList.push_back(new_btn)
 						
-		
 		U.debounce(str(self, "_update_node"), update_node)	
 
 func update_node() -> void:
