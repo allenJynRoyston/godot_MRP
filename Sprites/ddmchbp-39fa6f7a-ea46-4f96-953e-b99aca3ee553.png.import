@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bloi4jipjjtxa"
 path.s3tc="res://.godot/imported/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png-ddf2049fadb1f8f373baab971baa9770.s3tc.ctex"
+path.etc2="res://.godot/imported/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png-ddf2049fadb1f8f373baab971baa9770.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Sprites/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png"
-dest_files=["res://.godot/imported/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png-ddf2049fadb1f8f373baab971baa9770.s3tc.ctex"]
+dest_files=["res://.godot/imported/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png-ddf2049fadb1f8f373baab971baa9770.s3tc.ctex", "res://.godot/imported/ddmchbp-39fa6f7a-ea46-4f96-953e-b99aca3ee553.png-ddf2049fadb1f8f373baab971baa9770.etc2.ctex"]
 
 [params]
 

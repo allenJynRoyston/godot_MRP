@@ -29,9 +29,7 @@ COLORS="*res://Autoload/enums/COLORS.gd"
 ACTION="*res://Autoload/enums/ACTIONS.gd"
 RESEARCHER="*res://Autoload/enums/RESEARCHER.gd"
 CAMERA="*res://Autoload/enums/CAMERA.gd"
-OS_STORE="*res://Autoload/enums/OS_STORE.gd"
-OS_AUDIO="*res://Autoload/enums/OS_AUDIO.gd"
-OS_EMAIL="*res://Autoload/enums/OS_EMAIL.gd"
+TIER="*res://Autoload/enums/TIER.gd"
 RD="*res://Autoload/enums/RD.gd"
 TUTORIAL="*res://Autoload/enums/TUTORIAL.gd"
 CONDITIONALS="*res://Autoload/enums/CONDITIONALS.gd"
@@ -53,11 +51,15 @@ SCP_UTIL="*res://Autoload/SCPUtility.gd"
 GAME_UTIL="*res://Autoload/GameUtility.gd"
 SCENARIO_UTIL="*res://Autoload/ScenarioUtility.gd"
 EVT="*res://Autoload/enums/EVENTS.gd"
+MUSIC="*res://Autoload/enums/MUSIC.gd"
 ABL="*res://Autoload/AbilitiesActive.gd"
 ABL_P="*res://Autoload/AbilitiesPassive.gd"
 Debug="*res://debug.gd"
 DEBUG="*res://Autoload/Debug.gd"
 STORY="*res://Autoload/StoryData.gd"
+OS_STORE="*res://Autoload/enums/OS_STORE.gd"
+OS_AUDIO="*res://Autoload/enums/OS_AUDIO.gd"
+OS_EMAIL="*res://Autoload/enums/OS_EMAIL.gd"
 
 [display]
 
@@ -81,3 +83,5 @@ enabled=PackedStringArray("res://addons/csg_converter/plugin.cfg", "res://addons
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_s3tc_bptc=true
+textures/vram_compression/import_etc2_astc=true

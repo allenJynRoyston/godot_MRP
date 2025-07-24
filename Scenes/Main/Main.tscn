@@ -175,7 +175,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-reset_userprofile_save = true
 skip_splash = true
 skip_intro = true
 intro_skip_logo = true

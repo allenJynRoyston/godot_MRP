@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://5ra6miceqhv7"]
+[gd_scene load_steps=12 format=3 uid="uid://5ra6miceqhv7"]
 
 [ext_resource type="Script" uid="uid://kmom1pmj4erj" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/parts/media_player_main.gd" id="1_nyf86"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_8cl27"]
@@ -6,6 +6,8 @@
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_nyf86"]
 [ext_resource type="Texture2D" uid="uid://b5kx3tbx204ia" path="res://Media/images/boombox.png" id="5_8cl27"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_h37dp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8cl27"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp5dc"]
 bg_color = Color(0, 0, 0, 1)
@@ -19,7 +21,8 @@ outline_color = Color(0.886275, 0.647059, 0, 0.337255)
 shadow_size = 2
 shadow_color = Color(1, 0.74902, 0.2, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nyf86"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyf86"]
+bg_color = Color(0.162066, 0.162066, 0.162066, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_8cl27"]
 color = Color(1, 0.745178, 0.380506, 1)
@@ -31,6 +34,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8cl27")
 script = ExtResource("1_nyf86")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -47,9 +51,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_cp5dc")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer"]
@@ -72,7 +76,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_nyf86")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nyf86")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer2"]
 layout_mode = 2

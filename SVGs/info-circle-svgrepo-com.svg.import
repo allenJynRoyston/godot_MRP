@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dsecx0uwupwl"
 path.s3tc="res://.godot/imported/info-circle-svgrepo-com.svg-bb5551fc94643ed5ba15a24b4496fb92.s3tc.ctex"
+path.etc2="res://.godot/imported/info-circle-svgrepo-com.svg-bb5551fc94643ed5ba15a24b4496fb92.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://SVGs/info-circle-svgrepo-com.svg"
-dest_files=["res://.godot/imported/info-circle-svgrepo-com.svg-bb5551fc94643ed5ba15a24b4496fb92.s3tc.ctex"]
+dest_files=["res://.godot/imported/info-circle-svgrepo-com.svg-bb5551fc94643ed5ba15a24b4496fb92.s3tc.ctex", "res://.godot/imported/info-circle-svgrepo-com.svg-bb5551fc94643ed5ba15a24b4496fb92.etc2.ctex"]
 
 [params]
 
