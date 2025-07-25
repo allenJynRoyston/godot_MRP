@@ -81,6 +81,15 @@ var ROOM_TEMPLATE:Dictionary = {
 	},	
 	# ------------------------------------------
 	
+	# ------------------------------------------
+	"personnel_capacity": {
+		RESEARCHER.SPECIALIZATION.ADMIN: 0, 
+		RESEARCHER.SPECIALIZATION.RESEARCHER: 0, 
+		RESEARCHER.SPECIALIZATION.SECURITY: 0, 
+		RESEARCHER.SPECIALIZATION.DCLASS: 0, 
+	}
+	# ------------------------------------------
+	
 }
 
 var reference_data:Dictionary = {}

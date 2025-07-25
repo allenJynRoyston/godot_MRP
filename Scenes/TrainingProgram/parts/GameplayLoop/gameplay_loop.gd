@@ -55,27 +55,8 @@ var show_resources:bool = false :
 
 # ------------------------------------------------------------------------------ 
 #region INITIAL DATA
-var starting_data:Dictionary = {
-	"diff": {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	},
-	"resources": {
-		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.CORE: 0
-	},
-	"personnel": {
-		RESEARCHER.SPECIALIZATION.ADMIN: 0,
-		RESEARCHER.SPECIALIZATION.RESEARCHER: 0,
-		RESEARCHER.SPECIALIZATION.SECURITY: 0,
-		RESEARCHER.SPECIALIZATION.DCLASS: 0,
-	}
-}
-		
+var starting_data:Dictionary
+
 var initial_values:Dictionary = {
 	# ----------------------------------
 	"current_location": func() -> Dictionary:
@@ -107,22 +88,22 @@ var initial_values:Dictionary = {
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": 500 + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 9999, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MONEY] + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 9999, 
 				"diff": 0,
 				"capacity": 9999
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": 100 + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1000, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1000, 
 				"diff": 0,
 				"capacity": 1000
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": 50 + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 500, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 500, 
 				"diff": 0,
 				"capacity": 500
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount": 25 + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 100, 
+				"amount":starting_data.starting_resources[RESOURCE.CURRENCY.CORE] + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 100, 
 				"diff": 0,
 				"capacity": 100
 			},						
@@ -160,10 +141,10 @@ var initial_values:Dictionary = {
 					RESOURCE.PERSONNEL.DCLASS: false	
 				},
 				"staff_capacity": {
-					RESEARCHER.SPECIALIZATION.ADMIN: 9,
-					RESEARCHER.SPECIALIZATION.RESEARCHER: 9,
-					RESEARCHER.SPECIALIZATION.SECURITY: 9,
-					RESEARCHER.SPECIALIZATION.DCLASS: 9,
+					RESEARCHER.SPECIALIZATION.ADMIN: 0,
+					RESEARCHER.SPECIALIZATION.RESEARCHER: 0,
+					RESEARCHER.SPECIALIZATION.SECURITY: 0,
+					RESEARCHER.SPECIALIZATION.DCLASS: 0,
 				},
 				"room_unlock_val": 0,
 				"buffs": [],
@@ -495,13 +476,13 @@ func start_new_game() -> void:
 		var staff_debug:bool = DEBUG.get_val(DEBUG.STAFF_DEBUG)
 		
 		var staff_list:Array = []
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (3 + starting_data.personnel[RESEARCHER.SPECIALIZATION.ADMIN]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_ADMIN), RESEARCHER.SPECIALIZATION.ADMIN):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.ADMIN] + starting_data.personnel[RESEARCHER.SPECIALIZATION.ADMIN]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_ADMIN), RESEARCHER.SPECIALIZATION.ADMIN):
 			staff_list.push_back(item)		
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (1 + starting_data.personnel[RESEARCHER.SPECIALIZATION.RESEARCHER]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_RESEARCHERS), RESEARCHER.SPECIALIZATION.RESEARCHER):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.RESEARCHER] + starting_data.personnel[RESEARCHER.SPECIALIZATION.RESEARCHER]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_RESEARCHERS), RESEARCHER.SPECIALIZATION.RESEARCHER):
 			staff_list.push_back(item)
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (1 + starting_data.personnel[RESEARCHER.SPECIALIZATION.SECURITY]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_SECURITY), RESEARCHER.SPECIALIZATION.SECURITY):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.SECURITY] + starting_data.personnel[RESEARCHER.SPECIALIZATION.SECURITY]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_SECURITY), RESEARCHER.SPECIALIZATION.SECURITY):
 			staff_list.push_back(item)
-		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (0 + starting_data.personnel[RESEARCHER.SPECIALIZATION.DCLASS]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_DCLASS), RESEARCHER.SPECIALIZATION.DCLASS):
+		for item in RESEARCHER_UTIL.generate_new_researcher_hires( (starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.DCLASS] + starting_data.personnel[RESEARCHER.SPECIALIZATION.DCLASS]) if !staff_debug else DEBUG.get_val(DEBUG.STAFF_STARTING_DCLASS), RESEARCHER.SPECIALIZATION.DCLASS):
 			staff_list.push_back(item)
 		staff_list.reverse()
 		
@@ -1613,15 +1594,23 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room		
-		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		
+		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		var required_staffing:Array = room_details.required_staffing
 		var assigned_to_room_count:int = hired_lead_researchers_arr.filter(func(x): 
 			var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
 			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		).size()
+		room_config_data.is_activated = assigned_to_room_count >= required_staffing.size() 
 		
-		room_config.is_activated = assigned_to_room_count >= required_staffing.size() 
+		# if activated, then check if room has additional properties
+		if room_config_data.is_activated:
+			for key in room_details.personnel_capacity:
+				var amount:int = room_details.personnel_capacity[key]
+				new_room_config.base.staff_capacity[key] += amount
+
 
 
 func room_calculate(new_room_config:Dictionary) -> void:

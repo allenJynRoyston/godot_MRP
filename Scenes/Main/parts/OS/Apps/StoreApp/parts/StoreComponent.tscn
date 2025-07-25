@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://uwjd2noo0bpv"]
+[gd_scene load_steps=19 format=3 uid="uid://uwjd2noo0bpv"]
 
 [ext_resource type="Script" uid="uid://ch5jdm4t2ujk8" path="res://Scenes/Main/parts/OS/Apps/StoreApp/parts/store_component.gd" id="1_wqkf0"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_83bqm"]
@@ -8,6 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="5_nouqp"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="6_fulfa"]
 [ext_resource type="PackedScene" uid="uid://4yp3dbhux2i3" path="res://Scenes/Main/parts/OS/Apps/StoreApp/parts/StoreResourceItem.tscn" id="7_dolkk"]
+[ext_resource type="PackedScene" uid="uid://boqoftsfla8vk" path="res://Components/CostPanel/CostPanel.tscn" id="7_ek13x"]
+[ext_resource type="PackedScene" uid="uid://gh5hfdolakbr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/Economy.tscn" id="7_nouqp"]
+[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="8_1tpkh"]
+[ext_resource type="PackedScene" uid="uid://cfmfs2x81vts1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/Personnel.tscn" id="9_fulfa"]
 [ext_resource type="PackedScene" uid="uid://b0j6wdywnl5ws" path="res://Scenes/Main/parts/OS/Apps/StoreApp/parts/StorePersonnelItem.tscn" id="9_nouqp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nouqp"]
@@ -140,34 +144,95 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "STORE"
 label_settings = ExtResource("6_fulfa")
 vertical_alignment = 1
 
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="CostPanel" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer" instance=ExtResource("7_ek13x")]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = 71
+title = "HACK"
+amount = 20
+small = true
+
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_41o8u")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 50
+theme_override_constants/separation = 20
+alignment = 1
 
-[node name="Economy" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_dolkk")]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-header = "STARTING ECONOMY"
+theme_override_constants/separation = 20
 
-[node name="Income" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_dolkk")]
+[node name="HeaderEconomy" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer" instance=ExtResource("7_nouqp")]
 layout_mode = 2
-header = "STARTING INCOME"
+size_flags_horizontal = 3
+header = "ECONOMY"
 
-[node name="Personnel" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("9_nouqp")]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
 layout_mode = 2
-header = "STARTING PERSONNEL"
+theme_override_constants/separation = 10
+
+[node name="EconomyTally" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("7_dolkk")]
+layout_mode = 2
+header = "BONUS"
+
+[node name="IncomeTally" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer" instance=ExtResource("7_dolkk")]
+layout_mode = 2
+header = "INCOME"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HeaderPersonnel" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3" instance=ExtResource("9_fulfa")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PersonnelTally" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3/HBoxContainer2" instance=ExtResource("9_nouqp")]
+layout_mode = 2
+header = "BONUS"
+
+[node name="PersonnelMaxTally" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3/HBoxContainer2" instance=ExtResource("9_nouqp")]
+layout_mode = 2
+header = "capacity"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HeaderVibes" parent="HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource("8_1tpkh")]
+layout_mode = 2
+size_flags_horizontal = 3
+header = "VIBES"
+morale_tag_val = 0
 
 [node name="BtnControl" parent="." instance=ExtResource("5_dolkk")]
 layout_mode = 2

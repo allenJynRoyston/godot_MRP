@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cey4msk4p7tpa"]
+[gd_scene load_steps=20 format=3 uid="uid://cey4msk4p7tpa"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_soqd8"]
 [ext_resource type="Script" uid="uid://c2g08ld7dokr2" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/room_card.gd" id="1_tq8sf"]
@@ -10,10 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://dmxs2kvip2i80" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardStatus.tscn" id="7_f84t7"]
 [ext_resource type="PackedScene" uid="uid://car8yud4yb0pj" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerVibes.tscn" id="7_p42hl"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="8_f84t7"]
+[ext_resource type="PackedScene" uid="uid://xxv0yuw2m0nr" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerPersonnelCapacity.tscn" id="11_6kgnm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tq8sf"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_f84t7"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_6kgnm"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nu0ye"]
@@ -58,14 +59,14 @@ card_size = Vector2(275, 430)
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="TextureRect" parent="CardBody" index="0"]
-texture = SubResource("ViewportTexture_f84t7")
+texture = SubResource("ViewportTexture_6kgnm")
 
 [node name="SubViewport" parent="CardBody" index="1"]
 size = Vector2i(275, 430)
 
 [node name="CardBody" parent="CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(275, 430)
-offset_bottom = 430.0
+offset_bottom = 434.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nu0ye")
 
 [node name="PanelContainer" parent="CardBody/SubViewport/Control/CardBody/Front" index="0"]
@@ -186,7 +187,28 @@ title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="EffectContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+[node name="PersonnelCapacity" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity/HBoxContainer" instance=ExtResource("7_esvi2")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity/HBoxContainer"]
+layout_mode = 2
+text = "PERSONNEL CAPACITY"
+label_settings = ExtResource("8_f84t7")
+
+[node name="CardDrawerPersonnelCapacity" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity" instance=ExtResource("11_6kgnm")]
+layout_mode = 2
+
+[node name="EffectContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
 visible = false
 layout_mode = 2
 
@@ -214,7 +236,7 @@ content = "Effect description"
 title = ""
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
-[node name="ContainmentTypes" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+[node name="ContainmentTypes" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ContainmentTypes"]

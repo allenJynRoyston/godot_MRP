@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfmfs2x81vts1"]
+
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_fjdgl"]
+[ext_resource type="Script" uid="uid://bjcwgus7irih4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/personnel.gd" id="2_s72um"]
+[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_x2axq"]
+[ext_resource type="PackedScene" uid="uid://dkvs5b20lf3pa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/PersonnelItem/PersonnelItem.tscn" id="4_ukuep"]
+
+[node name="Personnel" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 40)
+theme_override_styles/panel = ExtResource("1_fjdgl")
+script = ExtResource("2_s72um")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "PERSONNEL"
+label_settings = ExtResource("3_x2axq")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Admin" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+value = 1
+max_val = 10
+title = "ADMIN"
+capacity_val = null
+capacity_only = null
+
+[node name="Researchers" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+value = 1
+max_val = 10
+title = "RESEARCHER"
+capacity_val = null
+capacity_only = null
+
+[node name="Security" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+value = 1
+max_val = 10
+title = "SECURITY"
+capacity_val = null
+capacity_only = null
+
+[node name="DClass" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+value = 1
+max_val = 10
+title = "DCLASS"
+capacity_val = null
+capacity_only = null

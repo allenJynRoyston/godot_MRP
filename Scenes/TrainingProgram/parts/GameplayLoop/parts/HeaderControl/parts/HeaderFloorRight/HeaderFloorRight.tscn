@@ -1,9 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://d4epcxrwe7nax"]
+[gd_scene load_steps=4 format=3 uid="uid://d4epcxrwe7nax"]
 
 [ext_resource type="Script" uid="uid://dld37lxy32n5w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderFloorRight/HeaderFloorRight.gd" id="1_3kf8t"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_7vnha"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_7dtmk"]
-[ext_resource type="PackedScene" uid="uid://dkvs5b20lf3pa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/PersonnelItem/PersonnelItem.tscn" id="6_3kf8t"]
+[ext_resource type="PackedScene" uid="uid://cfmfs2x81vts1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/Personnel.tscn" id="2_2lin6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hfg5"]
 
@@ -48,59 +46,5 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="Personnel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right"]
-custom_minimum_size = Vector2(100, 40)
+[node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("2_2lin6")]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_7vnha")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "PERSONNEL"
-label_settings = ExtResource("3_7dtmk")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Admin" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_3kf8t")]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-value = 1
-max_val = 10
-title = "ADMIN"
-
-[node name="Researchers" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_3kf8t")]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-value = 1
-max_val = 10
-title = "RESEARCHER"
-
-[node name="Security" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_3kf8t")]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-value = 1
-max_val = 10
-title = "SECURITY"
-
-[node name="DClass" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_3kf8t")]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-value = 1
-max_val = 10
-title = "DCLASS"

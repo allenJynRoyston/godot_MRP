@@ -5,10 +5,16 @@ extends PanelContainer
 @onready var List:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
 @onready var WaitContainer:Control = $WaitContainer
 @onready var StoreContentContainer:Control = $HBoxContainer/StoreContentContainer
+@onready var CostPanel:PanelContainer = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer/CostPanel
 
-@onready var Economy:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer/Economy
-@onready var Income:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer/Income
-@onready var Personnel:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/HBoxContainer/Personnel
+@onready var Economy:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer/EconomyTally
+@onready var Income:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer/IncomeTally
+@onready var Personnel:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3/HBoxContainer2/PersonnelTally
+@onready var PersonnelMax:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3/HBoxContainer2/PersonnelMaxTally
+
+@onready var HeaderEconomy:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer/HeaderEconomy
+@onready var HeaderVibes:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HeaderVibes
+@onready var HeaderPersonnel:Control = $HBoxContainer/StoreContentContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/VBoxContainer3/HeaderPersonnel
 
 const SummaryBtnPreload:PackedScene = preload("res://UI/Buttons/SummaryBtn/SummaryBtn.tscn")
 
@@ -40,9 +46,6 @@ func _ready() -> void:
 		
 	BtnControls.onBack = func() -> void:
 		onBackToDesktop.call()
-	
-	BtnControls.onUpdate = func(node:Control) -> void:
-		WaitContainer.hide()
 	
 	BtnControls.onUpdate = func(node:Control) -> void:
 		StoreContentContainer.show()
@@ -144,6 +147,13 @@ func on_purchased_update() -> void:
 		btn_node.use_alt = uid not in purchased
 		btn_node.is_checked = uid in purchased
 		btn_node.is_disabled = uid not in purchased and item.cost > currency.amount
+		
+		if item.has("hint"):
+			btn_node.hint_title = "HINT"
+			btn_node.hint_description = item.hint.description
+			btn_node.hint_icon = item.hint.icon
+			
+	CostPanel.amount = os_settings.currency.amount
 
 	# UPDATE PANELS
 	Economy.money_val = starting_data.resources[RESOURCE.CURRENCY.MONEY]
@@ -160,6 +170,38 @@ func on_purchased_update() -> void:
 	Personnel.researcher_val = starting_data.personnel[RESEARCHER.SPECIALIZATION.RESEARCHER]
 	Personnel.security_val = starting_data.personnel[RESEARCHER.SPECIALIZATION.SECURITY]
 	Personnel.dclass_val = starting_data.personnel[RESEARCHER.SPECIALIZATION.DCLASS]	
+	
+	PersonnelMax.admin_val = starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.ADMIN]
+	PersonnelMax.researcher_val = starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.RESEARCHER]
+	PersonnelMax.security_val = starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.SECURITY]
+	PersonnelMax.dclass_val = starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.DCLASS]		
+	
+	
+	# HEADER (ECONOMY)
+	HeaderEconomy.money_val = starting_data.resources[RESOURCE.CURRENCY.MONEY] + starting_data.starting_resources[RESOURCE.CURRENCY.MONEY]
+	HeaderEconomy.money_income = starting_data.diff[RESOURCE.CURRENCY.MONEY]
+
+	HeaderEconomy.research_val = starting_data.resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE]
+	HeaderEconomy.researcher_income = starting_data.diff[RESOURCE.CURRENCY.SCIENCE]
+	
+	HeaderEconomy.material_val = starting_data.resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL]
+	HeaderEconomy.material_income = starting_data.diff[RESOURCE.CURRENCY.MATERIAL]
+	
+	HeaderEconomy.core_val = starting_data.resources[RESOURCE.CURRENCY.CORE] + starting_data.starting_resources[RESOURCE.CURRENCY.CORE]
+	HeaderEconomy.core_income = starting_data.diff[RESOURCE.CURRENCY.CORE]		
+	
+	# HEADER (ECONOMY)
+	HeaderPersonnel.admin_count = starting_data.personnel[RESEARCHER.SPECIALIZATION.ADMIN] + starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.ADMIN]
+	HeaderPersonnel.admin_max_count = starting_data.starting_personnel_capacity[RESEARCHER.SPECIALIZATION.ADMIN] + starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.ADMIN]
+	
+	HeaderPersonnel.researcher_count = starting_data.personnel[RESEARCHER.SPECIALIZATION.RESEARCHER] + starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.RESEARCHER]
+	HeaderPersonnel.researcher_max_count = starting_data.starting_personnel_capacity[RESEARCHER.SPECIALIZATION.RESEARCHER] + starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.RESEARCHER]
+	
+	HeaderPersonnel.security_count = starting_data.personnel[RESEARCHER.SPECIALIZATION.SECURITY] + starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.SECURITY]
+	HeaderPersonnel.security_max_count = starting_data.starting_personnel_capacity[RESEARCHER.SPECIALIZATION.SECURITY] + starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.SECURITY]
+	
+	HeaderPersonnel.dclass_count = starting_data.personnel[RESEARCHER.SPECIALIZATION.DCLASS] + starting_data.starting_personnel[RESEARCHER.SPECIALIZATION.DCLASS]
+	HeaderPersonnel.dclass_max_count = starting_data.starting_personnel_capacity[RESEARCHER.SPECIALIZATION.DCLASS] + starting_data.personnel_capacity[RESEARCHER.SPECIALIZATION.DCLASS]
 # ------------------------------------------------------------------------------
 
 	

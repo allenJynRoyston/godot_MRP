@@ -3,24 +3,27 @@ extends Control
 @onready var RootPanel:PanelContainer = $PanelContainer
 @onready var MarginPanel:MarginContainer = $PanelContainer/MarginContainer
 
-@onready var CurrencyMoney:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
-@onready var CurrencyMaterials:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Material
-@onready var CurrencyResearch:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Research
-@onready var CurrencyCore:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Core
+@onready var Economy:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Economy
+@onready var Vibes:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Vibes
 
-@onready var CurrenyTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CurrencyTag
-@onready var MaterialTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MaterialTag
-@onready var ScienceTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ScienceTag
-@onready var CoreTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
+#@onready var CurrencyMoney:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Money
+#@onready var CurrencyMaterials:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Material
+#@onready var CurrencyResearch:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Research
+#@onready var CurrencyCore:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer/Core
+#
+#@onready var CurrenyTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CurrencyTag
+#@onready var MaterialTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MaterialTag
+#@onready var ScienceTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ScienceTag
+#@onready var CoreTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/CoreTag
 
-@onready var VibesContainer:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes
-@onready var VibeMorale:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeMorale
-@onready var VibeSafety:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeSafety
-@onready var VibeReadiness:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeReadiness
-
-@onready var MoraleTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MoraleTag
-@onready var SafetyTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
-@onready var ReadinessTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
+#@onready var VibesContainer:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes
+#@onready var VibeMorale:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeMorale
+#@onready var VibeSafety:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeSafety
+#@onready var VibeReadiness:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/VibeReadiness
+#
+#@onready var MoraleTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/MoraleTag
+#@onready var SafetyTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/SafetyTag
+#@onready var ReadinessTag:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/ReadinessTag
 
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {}
@@ -104,7 +107,7 @@ func update() -> void:
 	var current_vibe:Dictionary = GAME_UTIL.get_vibes_summary(current_location)	
 	var summary_data:Dictionary = {}
 	
-	VibesContainer.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else VibesContainer.hide()
+	#Vibes.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else Vibes.hide()
 	
 	## update everything else
 	match camera_settings.type:
@@ -115,26 +118,26 @@ func update() -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			summary_data = GAME_UTIL.get_room_summary(current_location)		
 	
-	# update economy
-	CurrencyMoney.amount = resources_data[RESOURCE.CURRENCY.MONEY].amount
-	CurrencyResearch.amount = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
-	CurrencyMaterials.amount = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
-	CurrencyCore.amount = resources_data[RESOURCE.CURRENCY.CORE].amount	
+	# update amounts
+	Economy.money_val = resources_data[RESOURCE.CURRENCY.MONEY].amount
+	Economy.research_val = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+	Economy.material_val = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
+	Economy.core_val = resources_data[RESOURCE.CURRENCY.CORE].amount	
 	
-	# update vibes
-	VibeMorale.value = str(current_vibe[RESOURCE.METRICS.MORALE])
-	VibeSafety.value = str(current_vibe[RESOURCE.METRICS.SAFETY])
-	VibeReadiness.value = str(current_vibe[RESOURCE.METRICS.READINESS])	
+	# update income
+	Economy.money_income = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] + resources_data[RESOURCE.CURRENCY.MONEY].diff
+	Economy.researcher_income = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] + resources_data[RESOURCE.CURRENCY.SCIENCE].diff	
+	Economy.material_income = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] + resources_data[RESOURCE.CURRENCY.MATERIAL].diff
+	Economy.core_income = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]	+ resources_data[RESOURCE.CURRENCY.CORE].diff
 
-	# update economy
-	CurrenyTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] + resources_data[RESOURCE.CURRENCY.MONEY].diff
-	MaterialTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] + resources_data[RESOURCE.CURRENCY.MATERIAL].diff
-	ScienceTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] + resources_data[RESOURCE.CURRENCY.SCIENCE].diff
-	CoreTag.val = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]	+ resources_data[RESOURCE.CURRENCY.CORE].diff
-	
+	# update vibes
+	Vibes.morale_val = str(current_vibe[RESOURCE.METRICS.MORALE])
+	Vibes.safety_val = str(current_vibe[RESOURCE.METRICS.SAFETY])
+	Vibes.readiness_val = str(current_vibe[RESOURCE.METRICS.READINESS])	
+
 	# update metrics
-	MoraleTag.val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
-	SafetyTag.val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
-	ReadinessTag.val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
+	Vibes.morale_tag_val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
+	Vibes.safety_tag_val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
+	Vibes.readiness_tag_val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
 	
 # -----------------------------------------------

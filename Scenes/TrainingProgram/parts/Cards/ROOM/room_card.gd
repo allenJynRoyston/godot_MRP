@@ -20,6 +20,9 @@ extends MouseInteractions
 @onready var CurrencyContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer
 @onready var CardDrawerCurrency:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer/CardDrawerCurrency
 
+@onready var PersonnelCapacityContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity
+@onready var CardDrawerPersonnelCapacity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity/CardDrawerPersonnelCapacity
+
 @onready var VibesContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer
 @onready var CardDrawerVibes:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer/CardDrawerVibes
 
@@ -174,11 +177,13 @@ func on_ref_update() -> void:
 		
 		CardDrawerCurrency.hide()
 		CardDrawerVibes.hide()
+		PersonnelCapacityContainer.hide()
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_activated:bool = preview_mode
 	var metrics:Dictionary = room_details.metrics
+	var personnel_capacity:Dictionary = room_details.personnel_capacity
 	var currency_list:Array = []
 
 	# has location
@@ -221,6 +226,13 @@ func on_ref_update() -> void:
 			hide_metrics = false
 			break
 			
+	var hide_personnel_capacity:bool = true
+	for key in personnel_capacity:
+		var amount:int = personnel_capacity[key] if is_activated else 0
+		if amount != 0:
+			hide_personnel_capacity = false
+			break
+			
 	# -----------
 	CardDrawerLevel.content = str(abl_lvl)
 	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
@@ -250,10 +262,13 @@ func on_ref_update() -> void:
 	ContainmentDescription.content = SCP_UTIL.get_containment_type_str(room_details.containment_properties) if !room_details.is_empty() else ""
 	ContainmentTypeContainer.show() if !room_details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 
+	# -----------	
+	PersonnelCapacityContainer.hide() if hide_personnel_capacity else PersonnelCapacityContainer.show()
+	CardDrawerPersonnelCapacity.personnel_capacity = personnel_capacity
 	# panels
 	InactivePanel.show() if (!is_activated and !preview_mode) else InactivePanel.hide()
 	CostPanel.hide()
-
+	
 	# show cost panel
 	if show_cost or show_research_cost:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= room_details.costs.purchase
@@ -278,8 +293,9 @@ func on_ref_update() -> void:
 		CostPanel.amount = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else 0
 		CostPanel.icon = SVGS.TYPE.RESEARCH
 		CostPanel.use_color = use_color
-		
 	
+
+
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

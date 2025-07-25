@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://btxy5mypwrlao"]
+[gd_scene load_steps=18 format=3 uid="uid://btxy5mypwrlao"]
 
 [ext_resource type="Script" uid="uid://cytp5e5onlqj6" path="res://Scenes/Main/parts/OS/Apps/EmailApp/parts/email_component.gd" id="1_w0o0s"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_yu6nn"]
@@ -29,6 +29,8 @@ shadow_color = Color(1, 0.74902, 0.2, 1)
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_tougv"]
 color = Color(1, 0.745178, 0.380506, 1)
 thickness = 3
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0st5x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ym770"]
 font = ExtResource("3_ym770")
@@ -140,6 +142,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_tougv")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0st5x")
 
 [node name="EmailContent" type="MarginContainer" parent="HBoxContainer/PanelContainer2/MarginContainer/VBoxContainer/EmailContentContainer"]
 layout_mode = 2

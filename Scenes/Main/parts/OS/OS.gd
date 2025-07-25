@@ -555,7 +555,6 @@ func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
 	GBL.update_and_save_user_profile()
 	
-	print(GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting.currency	)
 	await simulate_wait(duration)
 
 func load_state() -> void:

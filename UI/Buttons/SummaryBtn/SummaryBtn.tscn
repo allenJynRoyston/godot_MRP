@@ -49,7 +49,6 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="IconPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3wkh5")

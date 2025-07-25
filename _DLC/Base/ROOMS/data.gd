@@ -434,6 +434,12 @@ var PRISONER_BLOCK:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],	
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"personnel_capacity": {
+		RESEARCHER.SPECIALIZATION.DCLASS: 5, 
+	},	
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"costs": {

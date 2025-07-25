@@ -6,7 +6,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_xqbyf"]
+[sub_resource type="LabelSettings" id="LabelSettings_me31e"]
 font = ExtResource("3_me31e")
 font_size = 28
 font_color = Color(0.05, 0.05, 0.05, 1)
@@ -21,7 +21,8 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_ykt78")
-max_val = null
+capacity_val = null
+capacity_only = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -38,7 +39,6 @@ alignment = 1
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "TITLE"
 label_settings = ExtResource("2_g5v65")
 horizontal_alignment = 1
 
@@ -47,10 +47,18 @@ layout_mode = 2
 theme_override_constants/separation = -1
 alignment = 1
 
+[node name="Capacity" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 1
+text = "+0"
+label_settings = SubResource("LabelSettings_me31e")
+horizontal_alignment = 1
+
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_xqbyf")
+label_settings = SubResource("LabelSettings_me31e")
 horizontal_alignment = 1
 
 [node name="Max" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]

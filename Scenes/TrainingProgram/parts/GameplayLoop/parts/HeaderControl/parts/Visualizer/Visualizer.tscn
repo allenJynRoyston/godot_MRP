@@ -34,7 +34,7 @@ theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VisulizerPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="FloorVisualizer" type="VBoxContainer" parent="VisulizerPanel/MarginContainer/HBoxContainer"]

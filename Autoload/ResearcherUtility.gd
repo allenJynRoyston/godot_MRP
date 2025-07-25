@@ -358,8 +358,9 @@ func get_spec_count(ref:RESEARCHER.SPECIALIZATION) -> int:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_spec_capacity_count(ref:RESEARCHER.SPECIALIZATION) -> int:
-	return room_config.base.staff_capacity[ref]	
+func get_spec_capacity_count(ref:RESEARCHER.SPECIALIZATION) -> int:	
+	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	return room_config.base.staff_capacity[ref] + OS_STORE.starting_data.starting_personnel_capacity[ref] + GameplayNode.starting_data.personnel_capacity[ref]
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------	

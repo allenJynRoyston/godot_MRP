@@ -185,7 +185,7 @@ var default_save_profiles:Dictionary = {
 			"enable_visulizer": true	
 		},
 		"currency": {
-			"amount": 25
+			"amount": 100
 		}
 	},
 	"snapshots": {

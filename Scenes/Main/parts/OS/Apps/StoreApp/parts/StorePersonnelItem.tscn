@@ -48,7 +48,7 @@ theme_override_constants/separation = 20
 [node name="AdminLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ADMINISTRATORS"
+text = "ADMIN"
 label_settings = ExtResource("3_qvyhm")
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
@@ -79,7 +79,7 @@ theme_override_constants/separation = 20
 [node name="ResearcherLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "RESEARCHERS"
+text = "RESEARCHER"
 label_settings = ExtResource("3_qvyhm")
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2"]

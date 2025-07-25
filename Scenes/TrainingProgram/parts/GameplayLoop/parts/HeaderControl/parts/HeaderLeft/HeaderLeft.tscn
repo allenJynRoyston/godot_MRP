@@ -1,11 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccu56yntif2r1"]
+[gd_scene load_steps=5 format=3 uid="uid://ccu56yntif2r1"]
 
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_j4ms0"]
 [ext_resource type="Script" uid="uid://cmfetnavdvnoq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderLeft/header_left.gd" id="1_jivws"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="2_jivws"]
-[ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="4_6xxio"]
-[ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="4_jivws"]
-[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="5_8ouhm"]
+[ext_resource type="PackedScene" uid="uid://gh5hfdolakbr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/Economy.tscn" id="2_0reg5"]
+[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="3_tqcdw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hfg5"]
 
@@ -40,174 +37,13 @@ theme_override_constants/separation = 25
 z_index = 1
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_constants/separation = 20
 
-[node name="Left" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Economy" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_0reg5")]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_constants/separation = 10
+header = "ECONOMY"
 
-[node name="Currencies" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left"]
-custom_minimum_size = Vector2(0, 60)
+[node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_tqcdw")]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("1_j4ms0")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "ECONOMY"
-label_settings = ExtResource("2_jivws")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="Money" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
-layout_mode = 2
-icon = 31
-amount = 123
-burn_val = "0000"
-
-[node name="Research" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
-layout_mode = 2
-icon = 44
-amount = 123
-burn_val = "0000"
-
-[node name="Material" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
-layout_mode = 2
-icon = 40
-amount = 123
-burn_val = "0000"
-
-[node name="Core" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_jivws")]
-layout_mode = 2
-icon = 39
-amount = 123
-burn_val = "0000"
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -3
-theme_override_constants/margin_bottom = -30
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="CurrencyTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="ScienceTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="MaterialTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="CoreTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Currencies/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="Vibes" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left"]
-layout_mode = 2
-theme_override_styles/panel = ExtResource("1_j4ms0")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = -15
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "VIBE"
-label_settings = ExtResource("2_jivws")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 3
-theme_override_constants/margin_bottom = -7
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = -3
-alignment = 1
-
-[node name="VibeMorale" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("5_8ouhm")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VibeSafety" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("5_8ouhm")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-metric = 1
-title = "SAFETY"
-
-[node name="VibeReadiness" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("5_8ouhm")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-metric = 2
-title = "READINESS"
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -3
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = -30
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="MoraleTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="SafetyTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
-
-[node name="ReadinessTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Left/Vibes/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("4_6xxio")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 1
+header = "VIBES"
+morale_tag_val = 0

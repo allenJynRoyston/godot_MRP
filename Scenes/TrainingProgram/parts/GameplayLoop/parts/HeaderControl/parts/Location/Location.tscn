@@ -33,11 +33,11 @@ theme_override_constants/margin_top = 20
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 alignment = 1
 
 [node name="Floor" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
-custom_minimum_size = Vector2(75, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 
@@ -54,7 +54,7 @@ label_settings = ExtResource("3_j0hl6")
 horizontal_alignment = 1
 
 [node name="Wing" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
-custom_minimum_size = Vector2(75, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 
@@ -71,7 +71,7 @@ label_settings = ExtResource("3_j0hl6")
 horizontal_alignment = 1
 
 [node name="Room" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
-custom_minimum_size = Vector2(75, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 

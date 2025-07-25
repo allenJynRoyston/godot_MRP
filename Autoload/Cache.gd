@@ -182,6 +182,9 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 		
 		SVGS.TYPE.FROZEN:
 			texture = load("res://SVGs/ice-svgrepo-com.svg")
+		SVGS.TYPE.OS_CURRENCY:
+			texture = load("res://SVGs/hack_currency.svg")
+			
 	svg_cache.push_back({
 		"key": key, 
 		"texture": texture
