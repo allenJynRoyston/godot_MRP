@@ -6,10 +6,11 @@ extends PanelContainer
 @onready var MusicShaderViewport:SubViewport = $MusicShader
 
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
-@onready var CellScene:PanelContainer = $GameLayer/CellScene
-@onready var OSViewport:SubViewport = $OS
-@onready var OSNode:PanelContainer = $OS/OSPanel
 @onready var OSTexture:TextureRect = $GameLayer/OSTexture
+@onready var OSViewport:SubViewport = $OS
+@onready var OsScene:PanelContainer = $OS/OSPanel
+@onready var CellScene:PanelContainer = $GameLayer/CellScene
+@onready var ArticleScene:PanelContainer = $GameLayer/ArticleScene
 @onready var TransitionScreen:Control = $GameLayer/TransitionScreen
 
 # TEXT RECTS with SHADERSs
@@ -28,7 +29,7 @@ extends PanelContainer
 @onready var MusicShaderTexture:TextureRect = $MusicShader/MusicShaderTexture
 
 # ENUMS
-enum LAYER {CELLBLOCK_LAYER, OS_lAYER, GAMEPLAY_LAYER}
+enum LAYER {CELLBLOCK_LAYER, OS_lAYER, SCP_LAYER, GAMEPLAY_LAYER}
 enum SHADER_PROFILE {NONE, ALL}
 
 # CONSTS
@@ -262,10 +263,14 @@ func _ready() -> void:
 	assign_debugs()
 
 	# assign functions
-	CellScene.onLogin = func() -> void:
-		start_os_layer()
+	CellScene.gotoOs = func() -> void:
+		current_layer = LAYER.OS_lAYER		
+
+		
+	CellScene.gotoScp = func() -> void:
+		current_layer = LAYER.SCP_LAYER	
 	
-	OSNode.onBack = func() -> void:
+	OsScene.onBack = func() -> void:
 		current_layer = LAYER.CELLBLOCK_LAYER
 		
 	# get default parameters
@@ -385,24 +390,12 @@ func start() -> void:
 	await U.tick()
 	
 	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
-		CellScene.skip_to_login()
+		CellScene.skip_to_os()
 		return
 		
 	# apply fast forward
 	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )		
 # -----------------------------------			
-
-# -----------------------------------		
-func start_os_layer() -> void:
-	current_layer = LAYER.OS_lAYER		
-	if !OSNode.has_started:
-		OSNode.start()	
-	else:
-		OSNode.resume()
-		
-	await U.tick()
-	OSNode.show()
-# -----------------------------------
 
 # -----------------------------------	
 func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
@@ -464,7 +457,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_node:Control) -> void:
-	for node in [CellScene, OSNode]:
+	for node in [CellScene, OsScene, ArticleScene]:
 		if node == use_node:
 			node.z_index = 1
 			node.show()
@@ -474,7 +467,7 @@ func switch_to_node(use_node:Control) -> void:
 				node.switch_to()
 		else: 
 			node.z_index = -1
-			if node == CellScene:
+			if node == CellScene or node == ArticleScene:
 				node.hide()
 			node.set_process(false)
 			node.set_physics_process(false)
@@ -485,7 +478,7 @@ func switch_to_node(use_node:Control) -> void:
 		CellScene:
 			shader_profile = SHADER_PROFILE.NONE
 				
-		OSNode:
+		OsScene:
 			shader_profile = SHADER_PROFILE.ALL
 			
 # -----------------------------------	
@@ -497,16 +490,38 @@ func on_current_layer_update() -> void:
 
 	match current_layer:
 		# -----------
+		LAYER.OS_lAYER:
+			# switch nodes
+			switch_to_node(OsScene)
+			
+			# start scene
+			if !OsScene.has_started:
+				OsScene.start()	
+			else:
+				OsScene.resume()
+				
+			# update audio
+			if GBL.find_node(REFS.AUDIO) != null:
+				GBL.find_node(REFS.AUDIO).change_bus('Master')
+				
+		# -----------
 		LAYER.CELLBLOCK_LAYER:
+			# switch nodes
 			switch_to_node(CellScene)
+			
+			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
-	
+
 		# -----------
-		LAYER.OS_lAYER:
-			switch_to_node(OSNode)
+		LAYER.SCP_LAYER:
+			# switch nodes
+			switch_to_node(ArticleScene)
+			
+			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
-				GBL.find_node(REFS.AUDIO).change_bus('Master')	
+				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
+
 # -----------------------------------	
 
 # -----------------------------------		

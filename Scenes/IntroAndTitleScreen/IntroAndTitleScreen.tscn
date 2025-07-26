@@ -1,12 +1,11 @@
-[gd_scene load_steps=28 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=19 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
-[ext_resource type="Script" uid="uid://cbyqr6lnfrevh" path="res://Scenes/IntroAndTitleScreen/camera_3d.gd" id="2_r577g"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
-[ext_resource type="Script" uid="uid://dt3k1f4p0t5j7" path="res://Scenes/IntroAndTitleScreen/spot_light_3d.gd" id="3_shiyv"]
 [ext_resource type="Texture2D" uid="uid://ctxpqywam2krt" path="res://Media/images/GameLogo/game_logo.png" id="3_yi28m"]
 [ext_resource type="PackedScene" uid="uid://d26ruk5g28ttk" path="res://Scenes/IntroSplash/IntroSplash.tscn" id="4_6bd6i"]
+[ext_resource type="PackedScene" uid="uid://bso3mupgofbc6" path="res://Scenes3D/OutsideRender/OutsideRender.tscn" id="4_bxtjv"]
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_yi28m"]
@@ -15,59 +14,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
-
-[sub_resource type="World3D" id="World3D_f7wb2"]
-
-[sub_resource type="Environment" id="Environment_f7wb2"]
-ambient_light_energy = 2.88
-tonemap_mode = 3
-tonemap_exposure = 0.62
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_anisotropy = 0.69
-volumetric_fog_length = 60.0
-volumetric_fog_detail_spread = 0.574348
-volumetric_fog_ambient_inject = 1.48
-volumetric_fog_temporal_reprojection_amount = 0.822
-adjustment_enabled = true
-adjustment_brightness = 0.81
-adjustment_contrast = 1.09
-adjustment_saturation = 0.44
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_cetvo"]
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_4urbo"]
-exposure_multiplier = 1.282
-dof_blur_far_enabled = true
-dof_blur_far_distance = 18.96
-dof_blur_far_transition = -1.0
-dof_blur_near_enabled = true
-dof_blur_near_distance = 9.74
-dof_blur_amount = 0.13
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_f7wb2"]
-top_radius = 0.2
-bottom_radius = 0.2
-height = 20.0
-
-[sub_resource type="BoxMesh" id="BoxMesh_cetvo"]
-size = Vector3(1, 0.5, 0.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_4urbo"]
-size = Vector3(25, 25, 25)
-
-[sub_resource type="FogMaterial" id="FogMaterial_x2mjg"]
-density = 0.08
-albedo = Color(0.611798, 0.906677, 0.646921, 1)
-emission = Color(0.629675, 0.629675, 0.629675, 1)
-height_falloff = 2.21914e-05
-edge_fade = 1.49285
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_5hhmy"]
-size = Vector2(200, 200)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_pusk1"]
 viewport_path = NodePath("Title/RenderSubviewport")
@@ -78,6 +24,8 @@ font_size = 180
 outline_size = 6
 outline_color = Color(0.695503, 0.695503, 0.695503, 1)
 shadow_offset = Vector2(5, 5)
+
+[sub_resource type="World3D" id="World3D_f7wb2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bxtjv"]
 
@@ -142,164 +90,6 @@ stretch_mode = 5
 [node name="Title" type="Control" parent="."]
 layout_mode = 2
 
-[node name="RenderSubviewport" type="SubViewport" parent="Title"]
-own_world_3d = true
-world_3d = SubResource("World3D_f7wb2")
-size = Vector2i(1920, 1080)
-
-[node name="Node3D" type="Node3D" parent="Title/RenderSubviewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95709, 0, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Title/RenderSubviewport/Node3D"]
-environment = SubResource("Environment_f7wb2")
-camera_attributes = SubResource("CameraAttributesPractical_cetvo")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Title/RenderSubviewport/Node3D/WorldEnvironment"]
-transform = Transform3D(0.65317, -0.308163, 0.691668, 0.518263, 0.847903, -0.111645, -0.552062, 0.431389, 0.713534, 6.94894, 14.1197, 0)
-light_color = Color(0.18375, 0.0603779, 0.0415957, 1)
-light_energy = 7.652
-
-[node name="Camera3D" type="Camera3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.412262, 0, 0.911065, 0, 1, 0, -0.911065, 0, 0.412262, 21.413, 5.62823, 6.41911)
-attributes = SubResource("CameraAttributesPractical_4urbo")
-current = true
-fov = 50.0
-size = 6.263
-far = 455.57
-script = ExtResource("2_r577g")
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(-0.19108, -0.938445, -0.287767, 0.611456, -0.343139, 0.713005, -0.76786, -0.0397157, 0.639385, -2.6244, 39.6553, 33.4136)
-light_color = Color(0.17916, 0.288964, 0.502391, 1)
-light_energy = 2.438
-light_indirect_energy = 6.034
-light_volumetric_fog_energy = 7.112
-shadow_enabled = true
-spot_range = 76.891
-spot_attenuation = 0.55
-spot_angle = 26.8
-spot_angle_attenuation = 1.07177
-
-[node name="StreetLight" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -8.02295, 4.84705, 11.3713)
-mesh = SubResource("CylinderMesh_f7wb2")
-skeleton = NodePath("../Camera3D")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D/StreetLight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
-mesh = SubResource("BoxMesh_cetvo")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight/MeshInstance3D"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, 0.104377, -0.747431, -0.00199175)
-shadow_enabled = true
-omni_range = 1.03679
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight/MeshInstance3D/OmniLight3D"]
-transform = Transform3D(0.977431, 0, -0.211257, 0.211045, -0.0447179, 0.976453, -0.00944695, -0.999, -0.0437086, -0.0611372, 0.2667, 0.0496647)
-light_color = Color(0.913725, 0.956863, 0.866667, 1)
-light_energy = 10.169
-light_volumetric_fog_energy = 1.898
-shadow_enabled = true
-spot_range = 27.3943
-spot_attenuation = 1.22
-spot_angle = 32.6
-
-[node name="StreetLight2" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.5405, 4.84705, 5.52364)
-mesh = SubResource("CylinderMesh_f7wb2")
-skeleton = NodePath("../Camera3D")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D/StreetLight2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
-mesh = SubResource("BoxMesh_cetvo")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight2/MeshInstance3D"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, 0.104377, -0.747431, -0.00199175)
-shadow_enabled = true
-omni_range = 1.03679
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight2/MeshInstance3D/OmniLight3D"]
-transform = Transform3D(0.977431, 0, -0.211257, 0.211045, -0.0447179, 0.976453, -0.00944695, -0.999, -0.0437086, -0.0611372, 0.2667, 0.0496647)
-light_color = Color(0.913725, 0.956863, 0.866667, 1)
-light_energy = 10.169
-light_volumetric_fog_energy = 1.898
-shadow_enabled = true
-spot_range = 27.3943
-spot_attenuation = 1.22
-spot_angle = 32.6
-
-[node name="StreetLight3" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, 8.58521, 4.84705, 12.7042)
-mesh = SubResource("CylinderMesh_f7wb2")
-skeleton = NodePath("../Camera3D")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D/StreetLight3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
-mesh = SubResource("BoxMesh_cetvo")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight3/MeshInstance3D"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, 0.104377, -0.747431, -0.00199175)
-shadow_enabled = true
-omni_range = 1.03679
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Title/RenderSubviewport/Node3D/StreetLight3/MeshInstance3D/OmniLight3D"]
-transform = Transform3D(0.977431, 0, -0.211257, 0.211045, -0.0447179, 0.976453, -0.00944695, -0.999, -0.0437086, -0.0611372, 0.2667, 0.0496647)
-light_color = Color(0.913725, 0.956863, 0.866667, 1)
-light_energy = 10.169
-light_volumetric_fog_energy = 1.898
-shadow_enabled = true
-spot_range = 27.3943
-spot_attenuation = 1.22
-spot_angle = 32.6
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -3.61857, 8.85668, -36.1537)
-mesh = SubResource("BoxMesh_4urbo")
-skeleton = NodePath("../MeshInstance3D")
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="Title/RenderSubviewport/Node3D/MeshInstance3D2"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, -21.9136, 0, -9.70996)
-light_color = Color(0.987147, 0.443517, 0.321597, 1)
-light_energy = 3.595
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 1.36
-shadow_enabled = true
-shadow_normal_bias = 3.022
-omni_range = 45.171
-omni_attenuation = -0.573
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Title/RenderSubviewport/Node3D/MeshInstance3D2"]
-transform = Transform3D(0.950768, -0.00303964, -0.30989, -0.210836, 0.726529, -0.65399, 0.227132, 0.687129, 0.69012, 12.8626, 7.93022, -1.14441e-05)
-light_color = Color(1, 1, 0.827451, 1)
-light_energy = 3.697
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 2.079
-light_specular = 4.994
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Title/RenderSubviewport/Node3D/MeshInstance3D2/OmniLight3D"]
-transform = Transform3D(0.0624522, 0.843295, -0.533809, 0.994038, -0.100458, -0.042405, -0.0893853, -0.527978, -0.844541, 2.99777, 1.97368, -2.65471)
-light_color = Color(0.99725, 0.990936, 0.926255, 1)
-light_energy = 0.025
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 4.056
-light_specular = 0.0
-shadow_enabled = true
-spot_range = 67.001
-spot_attenuation = -1.02
-spot_angle = 12.53
-spot_angle_attenuation = 4.92456
-script = ExtResource("3_shiyv")
-
-[node name="FogVolume" type="FogVolume" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(0.557977, 0, 0.829856, 0, 1, 0, -0.829856, 0, 0.557977, -40.0327, 23.6746, -12.0295)
-size = Vector3(263.881, 97.7256, 126.246)
-material = SubResource("FogMaterial_x2mjg")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Title/RenderSubviewport/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.76729, -41.4409)
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_5hhmy")
-
 [node name="MarginContainer" type="MarginContainer" parent="Title"]
 layout_mode = 1
 anchors_preset = 15
@@ -312,6 +102,8 @@ grow_vertical = 2
 material = ExtResource("4_ryx00")
 layout_mode = 2
 texture = SubResource("ViewportTexture_pusk1")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CenterContainer" type="CenterContainer" parent="Title/MarginContainer"]
 layout_mode = 2
@@ -340,6 +132,13 @@ layout_mode = 2
 z_index = 1
 layout_mode = 2
 color = Color(0, 0, 0, 1)
+
+[node name="RenderSubviewport" type="SubViewport" parent="Title"]
+own_world_3d = true
+world_3d = SubResource("World3D_f7wb2")
+size = Vector2i(1920, 1080)
+
+[node name="OutsideRender" parent="Title/RenderSubviewport" instance=ExtResource("4_bxtjv")]
 
 [node name="Credits" type="Control" parent="."]
 layout_mode = 2

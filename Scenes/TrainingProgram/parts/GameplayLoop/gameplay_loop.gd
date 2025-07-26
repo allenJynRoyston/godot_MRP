@@ -1,11 +1,11 @@
 extends PanelContainer
 
-@onready var HeaderControl:Control = $HeaderControl
-@onready var Structure3dContainer:Control = $Structure3DContainer
+@onready var Structure3dContainer:PanelContainer = $Structure3DContainer
 @onready var TimelineContainer:PanelContainer = $TimelineContainer
 @onready var MarkedObjectivesContainer:PanelContainer = $MarkedObjectivesContainer
 @onready var ActionContainer:PanelContainer = $ActionContainer
 @onready var LineDrawContainer:PanelContainer = $LineDrawContainer
+@onready var HeaderControl:PanelContainer = $HeaderControl
 @onready var PhaseAnnouncement:PanelContainer = $PhaseAnnouncement
 @onready var ToastContainer:PanelContainer = $ToastContainer
 @onready var WaitContainer:PanelContainer = $WaitContainer
@@ -378,9 +378,6 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
-	
-	# assign
-	GAME_UTIL.assign_nodes()		
 
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	for node in get_all_container_nodes():
@@ -394,8 +391,7 @@ func _ready() -> void:
 	capture_default_showing_state()
 
 	await U.tick()
-		
-	LineDrawContainer.show()
+
 	show_only([])
 
 func exit_to_titlescreen() -> void:
@@ -409,14 +405,13 @@ func exit_game() -> void:
 # ------------------------------------------------------------------------------	START GAME
 #region START GAME
 func start() -> void:
-	GAME_UTIL.disable_taskbar(true)
 	show()
 	
 	# initially all animation speed is set to 0 but after this is all ready, set animation speed
 	set_process(true)
 	set_physics_process(true)		
 		
-	await U.tick()
+	await U.tick()	
 	start_new_game()
 
 func restart_game() -> void:
@@ -426,6 +421,12 @@ func restart_game() -> void:
 	start_new_game()
 
 func start_new_game() -> void:
+	# assign and disable 
+	GAME_UTIL.assign_nodes()
+	await U.tick()
+	GAME_UTIL.disable_taskbar(true)	
+	
+
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	var duration:float = 0.02 if skip_progress_screen else 0.5
@@ -696,7 +697,7 @@ func restore_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func capture_default_showing_state() -> void:
-	for node in get_all_container_nodes():
+	for node in get_all_container_nodes():		
 		showing_states[node] = node.is_showing
 # ------------------------------------------------------------------------------
 

@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://vyv5jxl3butn"]
+
+[ext_resource type="Script" uid="uid://dtd3t8g62ipu5" path="res://Scenes/CellScene/lighting/custom_spot_light.gd" id="1_pcfd6"]
+
+[node name="CustomSpotlight" type="Node3D"]
+script = ExtResource("1_pcfd6")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_energy = 0.1
+light_volumetric_fog_energy = 10.889
+light_specular = 0.278
+omni_range = 4.0
+omni_shadow_mode = 0
+
+[node name="Cone" type="SpotLight3D" parent="OmniLight3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.0143679, 0.013)
+light_energy = 4.0
+light_volumetric_fog_energy = 0.727
+light_specular = 1.955
+shadow_enabled = true
+spot_range = 4.0
+spot_attenuation = 0.09
+spot_angle = 47.59
+spot_angle_attenuation = 0.707107
+
+[node name="ReverseShadow" type="SpotLight3D" parent="OmniLight3D/Cone"]
+light_energy = 4.0
+light_volumetric_fog_energy = 0.727
+light_negative = true
+light_specular = 1.955
+spot_range = 4.0
+spot_attenuation = 0.09
+spot_angle = 47.59
+spot_angle_attenuation = 0.707107
+
+[node name="Godray" type="SpotLight3D" parent="OmniLight3D/Cone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.51926e-09, 0.000133619)
+light_energy = 0.2
+light_volumetric_fog_energy = 11.556
+light_specular = 2.222
+shadow_enabled = true
+distance_fade_length = 0.0
+spot_range = 4.0
+spot_attenuation = -0.67
+spot_angle = 20.0
+spot_angle_attenuation = 2.37842

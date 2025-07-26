@@ -1,0 +1,183 @@
+[gd_scene load_steps=13 format=3 uid="uid://urjnikfy6y5j"]
+
+[ext_resource type="PackedScene" uid="uid://bs1arpnwcdcdb" path="res://Scenes/CellScene/assets/DeskModel.tscn" id="1_01n06"]
+[ext_resource type="Script" uid="uid://dewg4p4ytk67q" path="res://Scenes/CellScene/parts/cell_render.gd" id="1_baq1p"]
+[ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="2_c3rb4"]
+[ext_resource type="PackedScene" uid="uid://cn0xg7d7kbnlb" path="res://Scenes/CellScene/assets/ComputerModel.tscn" id="2_epicg"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="3_65whp"]
+[ext_resource type="PackedScene" uid="uid://b0u4ro8hbibl1" path="res://Scenes/CellScene/assets/CellModel.tscn" id="3_c3rb4"]
+[ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_65whp"]
+
+[sub_resource type="Environment" id="Environment_0c7qq"]
+background_energy_multiplier = 0.0
+ssr_enabled = true
+ssao_enabled = true
+sdfgi_read_sky_light = false
+fog_light_color = Color(0.157016, 0.174262, 0.201375, 1)
+fog_light_energy = 2.6
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.125
+volumetric_fog_emission = Color(0.0418844, 0.00556447, 0.0375506, 1)
+volumetric_fog_length = 124.23
+volumetric_fog_ambient_inject = 2.83
+volumetric_fog_sky_affect = 0.0
+volumetric_fog_temporal_reprojection_amount = 0.797
+adjustment_enabled = true
+adjustment_contrast = 1.12
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_65whp"]
+particle_flag_rotate_y = true
+particle_flag_damping_as_friction = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -372.0
+angle_max = 348.0
+flatness = 1.0
+gravity = Vector3(1, 0, -1)
+tangential_accel_min = -1.67
+tangential_accel_max = -2.23517e-06
+turbulence_noise_speed_random = 0.1
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.168
+turbulence_initial_displacement_min = -53.0
+turbulence_initial_displacement_max = 54.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c3rb4"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(0.396889, 0.396889, 0.396889, 1)
+albedo_texture = ExtResource("2_c3rb4")
+texture_repeat = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_1a7c7"]
+lightmap_size_hint = Vector2i(2, 2)
+material = SubResource("StandardMaterial3D_c3rb4")
+size = Vector2(0.02, 0.02)
+
+[sub_resource type="SphereMesh" id="SphereMesh_epicg"]
+flip_faces = true
+radius = 15.0
+height = 30.0
+
+[node name="CellRender" type="Node3D"]
+script = ExtResource("1_baq1p")
+enable_emergency_lighting = true
+enable_dust_particles = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0c7qq")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0724058, -0.208737, 2.3066)
+current = true
+fov = 70.0
+near = 0.001
+far = 250.0
+
+[node name="DustParticles" type="GPUParticles3D" parent="Camera3D"]
+transform = Transform3D(2.02969, 0, -4.61936e-07, 0, 0.931609, 0, 1.63913e-07, 0, 1.07234, 0.0724064, 0.025548, -0.929103)
+cast_shadow = 0
+gi_mode = 0
+amount = 5000
+lifetime = 3.0
+speed_scale = 0.1
+explosiveness = 0.5
+randomness = 1.0
+fixed_fps = 60
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
+process_material = SubResource("ParticleProcessMaterial_65whp")
+draw_pass_1 = SubResource("QuadMesh_1a7c7")
+
+[node name="Structure" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.78405)
+
+[node name="CellModel" parent="Structure" instance=ExtResource("3_c3rb4")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, -0.0300815, 6.75784)
+
+[node name="Desk" parent="Structure/CellModel" instance=ExtResource("1_01n06")]
+transform = Transform3D(-0.476115, 0, 0.879383, 0, 1, 0, -0.879383, 0, -0.476115, -0.3062, -0.786448, 1.35966)
+
+[node name="ComputerModel" parent="Structure/CellModel/Desk" instance=ExtResource("2_epicg")]
+transform = Transform3D(0.963472, 0, 0.267811, 0, 1, 0, -0.267811, 0, 0.963472, -0.278307, 0.0543795, 0.00963604)
+
+[node name="Desk2" parent="Structure/CellModel" instance=ExtResource("1_01n06")]
+transform = Transform3D(0.872428, 0, 0.488743, 0, 1, 0, -0.488743, 0, 0.872428, -0.18678, -0.786448, -1.52475)
+
+[node name="ComputerModel" parent="Structure/CellModel/Desk2" instance=ExtResource("2_epicg")]
+transform = Transform3D(0.996971, 0, -0.0777804, 0, 1, 0, 0.0777804, 0, 0.996971, -0.236125, 0.0458773, 0.0353321)
+
+[node name="OutsideWall" type="MeshInstance3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.56512)
+mesh = SubResource("SphereMesh_epicg")
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="AmbientLighting" type="Node3D" parent="Lighting"]
+visible = false
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lighting/AmbientLighting"]
+transform = Transform3D(-0.21284, -0.0334736, -0.976514, 0.0181468, 0.999105, -0.0382033, 0.976919, -0.0258518, -0.212042, -3.9299, 0.0463338, 0.353823)
+light_color = Color(0.67, 0.736, 1, 1)
+light_energy = 12.111
+light_volumetric_fog_energy = 5.182
+shadow_enabled = true
+spot_range = 7.633
+spot_attenuation = 0.72
+spot_angle = 15.42
+spot_angle_attenuation = 1.07177
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting/AmbientLighting"]
+transform = Transform3D(-0.854354, -0.166537, -0.492286, -0.302996, 0.929228, 0.211493, 0.422224, 0.329851, -0.844349, 0, 2.28125, -5.12804)
+light_color = Color(0.586517, 0.643759, 0.857073, 1)
+light_volumetric_fog_energy = 8.111
+shadow_enabled = true
+
+[node name="EmergencyLighting" type="Node3D" parent="Lighting"]
+visible = false
+
+[node name="Sirens" parent="Lighting/EmergencyLighting" instance=ExtResource("4_65whp")]
+transform = Transform3D(1, 0, 0, 0, 0.874814, 0.484459, 0, -0.484459, 0.874814, -3.77533, -0.333475, -2.1964)
+fast_speed = 3.0
+slow_speed = -6.0
+siren_color_1 = Color(0.635567, 0.0522366, 2.40654e-07, 1)
+
+[node name="CustomSpotlight" parent="Lighting/EmergencyLighting" instance=ExtResource("3_65whp")]
+transform = Transform3D(-0.628067, 0.688398, -0.362823, -0.0367494, 0.439498, 0.897491, 0.777291, 0.577019, -0.250736, 0.878339, 0.485821, 2.24891)
+light_color = Color(0.963711, 0.944357, 0.858216, 1)
+godray_color = Color(0.995497, 0.951754, 0.969064, 1)
+godray_energy = 2.0
+spot_range = 3.5
+spot_energy = 0.2
+omni_range = 0.0
+enable_debug = true
+
+[node name="InterogationLighting" type="Node3D" parent="Lighting"]
+visible = false
+
+[node name="CustomSpotlight3" parent="Lighting/InterogationLighting" instance=ExtResource("3_65whp")]
+transform = Transform3D(0.980271, -0.197657, 0, 0.19698, 0.976913, 0.0827038, -0.016347, -0.0810722, 0.996574, -1.21871, 1.45482, 0.573168)
+light_color = Color(1, 0.67, 0.67, 1)
+godray_color = Color(0.776411, 0.409267, 0.111463, 1)
+godray_energy = 5.0
+spot_range = 3.5
+spot_energy = 1.0
+
+[node name="LowLevelLighting" type="Node3D" parent="Lighting"]
+visible = false
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Lighting/LowLevelLighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7803, -0.0650684)
+light_color = Color(1, 0.79, 0.79, 1)
+omni_range = 0.394
+omni_shadow_mode = 0
+
+[node name="CustomSpotlight" parent="Lighting/LowLevelLighting/OmniLight3D" instance=ExtResource("3_65whp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.078862, -0.252471)
+godray_color = Color(0.897754, 0.989961, 0.960274, 1)
+godray_energy = 4.0
+spot_range = 4.2
+spot_energy = 1.0
+omni_range = 10.0

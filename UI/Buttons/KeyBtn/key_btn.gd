@@ -4,7 +4,6 @@ extends BtnBase
 @onready var RootPanel:PanelContainer = $"."
 @onready var IconPanelContainer:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer
 @onready var IconBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/IconBtn
-@onready var IndicatorBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/NewIndicatorBtn
 
 @onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
 @onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/KeyLabel

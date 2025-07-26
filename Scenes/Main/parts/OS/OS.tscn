@@ -205,8 +205,6 @@ layout_mode = 1
 layout_mode = 2
 offset = Vector2(5, 5)
 a_btn_title = "SELECT"
-b_btn_title = "EXIT"
-hide_b_btn = true
 
 [node name="HeaderControls" type="Control" parent="."]
 z_index = 100

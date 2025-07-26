@@ -4,10 +4,7 @@ extends PanelContainer
 @onready var Splash:Control = $Splash
 @onready var BtnControls:Control = $BtnControls
 @onready var FadeOut:ColorRect = $ColorRect2
-@onready var TransitionScreen:Control = $TransitionScreen
 @onready var RiskLabel:Label = $CenterContainer/VBoxContainer/HBoxContainer/RiskLabel
-
-@onready var TitleHeader:Control = $MarginContainer/VBoxContainer/KeyBtn/VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
 
 var time:float = 0.0
 var speed:float = 5.0  

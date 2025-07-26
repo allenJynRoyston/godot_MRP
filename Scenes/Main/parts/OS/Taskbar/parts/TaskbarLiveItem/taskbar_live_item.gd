@@ -6,7 +6,7 @@ extends MouseInteractions
 #@onready var CloseButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/PanelContainer/MarginContainer2/CloseBtn
 #@onready var MinButton:Control = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer/MarginContainer2/MinBtn
 
-@onready var MinButtonContainer:PanelContainer = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer
+#@onready var MinButtonContainer:PanelContainer = $MarginContainer/HBoxContainer/HBoxContainer/MinBtnContainer
 
 var data:Dictionary = {} : 
 	set(val):

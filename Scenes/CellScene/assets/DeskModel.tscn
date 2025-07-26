@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bs1arpnwcdcdb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_nkjs4"]
+size = Vector3(2, 0.1, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_g2nsq"]
+size = Vector3(0.1, 1.2, 0.7)
+
+[node name="Desk" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_nkjs4")
+skeleton = NodePath("")
+
+[node name="Leg" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.912642, -0.597858, -0.00805819)
+mesh = SubResource("BoxMesh_g2nsq")
+
+[node name="Leg2" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.942206, -0.597858, -0.00805819)
+mesh = SubResource("BoxMesh_g2nsq")

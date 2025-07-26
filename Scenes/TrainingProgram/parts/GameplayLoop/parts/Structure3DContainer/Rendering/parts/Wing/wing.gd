@@ -4,10 +4,6 @@ extends Control
 @onready var TextureOutput:TextureRect = $TextureRect
 
 @onready var NodeContainer:Node3D = $SubViewport/RoomColumn/NodeContainer
-@onready var Column1:Node3D = $SubViewport/RoomColumn/NodeContainer/column1
-@onready var Column2:Node3D = $SubViewport/RoomColumn/NodeContainer/column2
-@onready var Column3:Node3D = $SubViewport/RoomColumn/NodeContainer/column3
-
 @onready var FloorMesh:MeshInstance3D = $SubViewport/RoomColumn/FloorMesh
 @onready var CursorLabelSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorLabelSprite
 @onready var CursorMenuSprite:Sprite3D = $SubViewport/RoomColumn/MainCamera/CursorMenuSprite
@@ -20,7 +16,6 @@ extends Control
 
 @onready var StatusLabel:Label3D = $SubViewport/RoomColumn/MainCamera/StatusLabel
 @onready var MainCamera:Camera3D = $SubViewport/RoomColumn/MainCamera
-@onready var AccentLights:DirectionalLight3D = $SubViewport/RoomColumn/MainCamera/AccentLights
 
 @onready var NoPowerLights:Node3D = $SubViewport/RoomColumn/NoPowerLights
 @onready var NormalLights:Node3D = $SubViewport/RoomColumn/NormalLights

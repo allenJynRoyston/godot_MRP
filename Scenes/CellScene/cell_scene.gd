@@ -6,17 +6,18 @@ extends PanelContainer
 @onready var StoryNarration:Control = $StoryNarration
 
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
-@onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
+#@onready var SceneCamera:Camera3D = $RenderSubviewport/Node3D/Camera3D
 
-@onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
-@onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
+#@onready var SceneAnimationPlayer:AnimationPlayer = $RenderSubviewport/Node3D/SceneAnimationPlayer
+#@onready var ScreenTextureRect:TextureRect = $RenderSubviewport/Node3D/Desk/Screen/Sprite3D/SubViewport/TextureRect
 
 enum MODE {INIT, START, START_AT_SCREEN}
 
 var MAIN_NODE:Control
 var control_pos:Dictionary = {}
 
-var onLogin:Callable = func():pass
+var gotoOs:Callable = func():pass
+var gotoScp:Callable = func():pass
 
 # new values
 var story_progress:Dictionary = {}
@@ -62,10 +63,6 @@ func _ready() -> void:
 	# 
 	BtnControls.onDirectional = func(key:String):
 		if !is_visible_in_tree() or !is_node_ready() or !allow_replay:return
-		#var story_progress:Dictionary = GBL.active_user_profile.story_progress
-		#var max_story_val:int = mini(story_progress.current_story_val, STORY.chapters.size() - 1)
-		
-		#pass
 		match key:
 			"A":
 				print("look left")
@@ -74,8 +71,8 @@ func _ready() -> void:
 		
 		check_btn_states()
 	
-	original_fov = SceneCamera.fov
-	original_rotation_degrees = SceneCamera.rotation_degrees
+	#original_fov = SceneCamera.fov
+	#original_rotation_degrees = SceneCamera.rotation_degrees
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -94,8 +91,8 @@ func start(use_fast_animation:bool = false) -> void:
 	fast_animation = use_fast_animation
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
 		
-	SceneAnimationPlayer.active = true
-	SceneAnimationPlayer.play("LightsOn")
+	#SceneAnimationPlayer.active = true
+	#SceneAnimationPlayer.play("LightsOn")
 	BtnControls.reveal(true)
 
 func end() -> void:
@@ -167,7 +164,8 @@ func check_btn_states() -> void:
 		BtnControls.onAction = func() -> void:
 			BtnControls.reveal(false)		
 			await zoom_into_screen(false)
-			onLogin.call()
+			gotoOs.call()
+			#gotoScp.call()
 	
 	else:
 		# modify on action so it skips
@@ -182,22 +180,23 @@ func check_btn_states() -> void:
 
 # ---------------------------------------------
 func zoom_into_screen(state:bool, duration:float = 2.0) -> void:
-	if state:
-		U.tween_node_property(SceneCamera, "fov", 77, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
-		await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7 if !fast_animation else 0.3, duration/2)	
-	else:
-		U.tween_node_property(SceneCamera, "rotation_degrees:y", original_rotation_degrees.y, 1.0 if !fast_animation else 0.3)	
-		U.tween_node_property(SceneCamera, "fov", 23, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
-		await U.set_timeout(duration - 0.6)
+	return
+	#if state:
+		#U.tween_node_property(SceneCamera, "fov", 77, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
+		#await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7 if !fast_animation else 0.3, duration/2)	
+	#else:
+		#U.tween_node_property(SceneCamera, "rotation_degrees:y", original_rotation_degrees.y, 1.0 if !fast_animation else 0.3)	
+		#U.tween_node_property(SceneCamera, "fov", 23, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
+		#await U.set_timeout(duration - 0.6)
 # ---------------------------------------------
 
 # ---------------------------------------------
-func skip_to_login() -> void:
+func skip_to_os() -> void:
 	await BtnControls.reveal(false)		
-	onLogin.call()
+	gotoOs.call()
 
 func switch_to() -> void:		
-	ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture
+	#ScreenTextureRect.texture = 	GBL.find_node(REFS.MAIN).OSTexture.texture
 		
 	await zoom_into_screen(true)	
 	BtnControls.reveal(true)

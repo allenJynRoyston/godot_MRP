@@ -1,11 +1,10 @@
-[gd_scene load_steps=24 format=3 uid="uid://bl0fcbjjnqeux"]
+[gd_scene load_steps=19 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
 [ext_resource type="PackedScene" uid="uid://dl5qwg47wln3a" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/SpinLight.tscn" id="6_iutnv"]
-[ext_resource type="FontFile" uid="uid://cmbf3fsdcpk2b" path="res://Fonts/Ac437_IBM_Model3x_Alt2.ttf" id="7_v5pir"]
 
 [sub_resource type="Shader" id="Shader_n8dix"]
 code = "shader_type canvas_item;
@@ -75,6 +74,8 @@ sdfgi_cascades = 1
 glow_enabled = true
 fog_enabled = true
 volumetric_fog_enabled = true
+volumetric_fog_density = 0.0206
+volumetric_fog_albedo = Color(0, 0, 0, 1)
 adjustment_enabled = true
 adjustment_contrast = 1.5
 
@@ -124,20 +125,6 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l2d6o"]
 material = SubResource("StandardMaterial3D_ygf5b")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wqj7c"]
-transparency = 1
-albedo_color = Color(0.137255, 0.137255, 0.137255, 0.917647)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_d0f4m"]
-material = SubResource("StandardMaterial3D_wqj7c")
-size = Vector2(50, 50)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_10m8w"]
-viewport_path = NodePath("ControlSubViewport")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_yhbag"]
-viewport_path = NodePath("ControlMenuSubviewport")
-
 [node name="Wing" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -166,7 +153,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 environment = SubResource("Environment_ngmdl")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08621, 0)
 layers = 16
 mesh = SubResource("BoxMesh_kw1d3")
 
@@ -325,13 +312,13 @@ room_number = 3
 ref_index = 8
 
 [node name="NormalLights" type="Node3D" parent="SubViewport/RoomColumn"]
-visible = false
 
 [node name="SpinLight" parent="SubViewport/RoomColumn/NormalLights" instance=ExtResource("6_iutnv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7636, 3.23014, 0)
 
 [node name="Frontlights" type="OmniLight3D" parent="SubViewport/RoomColumn/NormalLights"]
 transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-09, 0, 7.45058e-09, 1, -0.42984, 26.3554, -14.8911)
+visible = false
 light_volumetric_fog_energy = 0.02
 light_specular = 0.448
 shadow_enabled = true
@@ -349,22 +336,22 @@ omni_range = 32.8872
 omni_attenuation = -1.0
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 1, -0.128158, -0.969475, 3.71244)
 size = Vector3(32.5796, 3, 39.2004)
 material = SubResource("FogMaterial_0edq6")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/RoomColumn/NormalLights"]
-transform = Transform3D(0.603547, -0.780252, -0.164128, -0.260789, -0.387705, 0.884123, -0.753473, -0.490807, -0.437479, 0.107867, 14.8846, -8.56863)
+transform = Transform3D(0.62343, -0.751909, -0.214402, -0.306854, -0.487504, 0.817423, -0.719149, -0.443816, -0.534651, -9.39152, 17.1848, -20.278)
 light_color = Color(0.996723, 1, 0.762783, 1)
-light_energy = 0.05
+light_energy = 0.272
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.1
 shadow_enabled = true
 distance_fade_shadow = 0.0
-spot_range = 23.56
-spot_attenuation = -2.21
-spot_angle = 59.2
-spot_angle_attenuation = 1.23114
+spot_range = 40.0
+spot_attenuation = -0.94
+spot_angle = 66.7
+spot_angle_attenuation = 1.14869
 
 [node name="CautionLights" type="Node3D" parent="SubViewport/RoomColumn"]
 visible = false
@@ -648,49 +635,3 @@ current = true
 size = 30.179
 near = 0.007
 far = 333.67
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, -2.98023e-08, -1, 0, 1, -2.98023e-08, 0, 3.93685e-06, -65.0989)
-visible = false
-mesh = SubResource("PlaneMesh_d0f4m")
-
-[node name="CursorLabelSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, -1)
-visible = false
-cast_shadow = 0
-gi_mode = 0
-pixel_size = 0.0025
-no_depth_test = true
-fixed_size = true
-alpha_cut = 3
-texture_filter = 1
-texture = SubResource("ViewportTexture_10m8w")
-
-[node name="CursorMenuSprite" type="Sprite3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, -11.7579)
-visible = false
-gi_mode = 0
-pixel_size = 0.003
-double_sided = false
-no_depth_test = true
-fixed_size = true
-texture = SubResource("ViewportTexture_yhbag")
-
-[node name="StatusLabel" type="Label3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(0.999999, 0, 0, 0, 1, 1.78814e-07, 0, 0, 1, 9.53674e-07, 10.513, -0.703798)
-visible = false
-outline_modulate = Color(0, 1, 0, 1)
-text = "
-"
-font = ExtResource("7_v5pir")
-font_size = 150
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/RoomColumn/MainCamera"]
-transform = Transform3D(-0.779338, 0, -0.626604, 0, 1, 0, 0.626604, 0, -0.779338, 0, 0, 0)
-visible = false
-layers = 512
-light_energy = 4.596
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.0
-light_cull_mask = 4293918720
-sky_mode = 1

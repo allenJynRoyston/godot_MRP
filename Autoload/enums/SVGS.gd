@@ -1,3 +1,5 @@
+extends Node
+
 enum TYPE {
 	BIN, CLEAR, 
 	DELETE, DOT, DOWNLOAD, EMAIL, EXE_FILE, TXT_FILE,

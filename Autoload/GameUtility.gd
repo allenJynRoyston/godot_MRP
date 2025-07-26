@@ -7,7 +7,7 @@ const EventContainerPreload:PackedScene = preload("res://Scenes/TrainingProgram/
 const NewTallyPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NewTallyModal/NewTallyModal.tscn")
 
 const ResearcherHireScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ResearcherHireScreen/ResearcherHireScreen.tscn")
-const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SCPSelectScreen/SCPSelectScreen.tscn")
+const ScpSelectScreenPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpSelectScreen/ScpSelectScreen.tscn")
 
 const StoreGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/StoreGrid.tscn")
 const ScpGridPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ScpGrid/ScpGrid.tscn")

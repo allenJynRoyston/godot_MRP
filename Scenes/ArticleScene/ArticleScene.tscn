@@ -1,0 +1,211 @@
+[gd_scene load_steps=11 format=3 uid="uid://esq71d7mxqx7"]
+
+[ext_resource type="Script" uid="uid://cv0jib84ns0bc" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
+[ext_resource type="LabelSettings" uid="uid://cgiw558tptin8" path="res://Fonts/article_h1.tres" id="2_6ur50"]
+[ext_resource type="StyleBox" uid="uid://6oppauql27g" path="res://Styles/ArticlePanel.tres" id="2_gaacx"]
+[ext_resource type="LabelSettings" uid="uid://bljqgalhb0kxy" path="res://Fonts/article_h2.tres" id="3_ds7rn"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="3_ttunc"]
+[ext_resource type="LabelSettings" uid="uid://c736yp54jh7wi" path="res://Fonts/article_p.tres" id="4_ff2n2"]
+[ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="5_ff2n2"]
+[ext_resource type="LabelSettings" uid="uid://dgq4h113a6xtn" path="res://Fonts/article_small.tres" id="6_ajcl2"]
+[ext_resource type="Texture2D" uid="uid://c7v8qkll526nv" path="res://Media/scps/mirror_frame.png" id="6_gaacx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj7ex"]
+bg_color = Color(1.6921e-08, 0.0443045, 0.00631036, 1)
+
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nj7ex")
+script = ExtResource("1_l6f8p")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LeftPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_gaacx")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "SCP XXXX"
+label_settings = ExtResource("2_6ur50")
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Object Class:  KETER (previously safe)"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Danger class: KENEQ"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Label4" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "DISRUPTION CLASS: VLAM"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Label5" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "RISK CLASS: CRITICAL"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Content" type="PanelContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_gaacx")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ContainmentProceduresVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/ContainmentProceduresVBox"]
+layout_mode = 2
+text = "Standard Containment Procedures"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/ContainmentProceduresVBox"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "Due to SCP-XXXX’s intangible nature and transient manifestation, physical containment is currently impossible. Containment efforts are focused on detection, disruption, and suppression of new instances.
+
+Embedded Foundation assets within global digital publishing platforms, print-on-demand services, and major entertainment distributors are to flag anomalous works matching SCP-XXXX’s signature pattern:
+
+Highly introspective narratives centered around apotheosis, recursive identity, and godhood
+
+Untraceable or false metadata (authors, developers, publishers)
+
+Cognitive disruption or emotional disassociation upon interaction
+
+Any flagged instance is to be reviewed by MTF Psi-8 (\"Thought Police\"). Verified SCP-XXXX manifestations are to be immediately removed from circulation, with all physical and digital copies destroyed or purged. Civilians exposed to SCP-XXXX are to be detained and evaluated under Protocol VEDA-9.
+
+Suicide clusters near SCP-XXXX emergence zones must be investigated for potential manifestation. Surviving individuals are to undergo amnestics and memetic repair, if viable."
+label_settings = ExtResource("4_ff2n2")
+autowrap_mode = 3
+
+[node name="DescriptionVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/DescriptionVBox"]
+layout_mode = 2
+text = "Description"
+label_settings = ExtResource("3_ds7rn")
+uppercase = true
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/DescriptionVBox"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "SCP-XXXX is a non-corporeal anomalous entity or conceptual pattern that manifests through various imaginative entertainment mediums. It is intangible, yet consistently assumes the form of a readable or interpretive artifact—such as a novel, video game, screenplay, comic, or other cognitively interactive narrative work.
+
+The commonality between instances is that they:
+
+Require baseline imagination and literacy to engage with.
+
+Function as delivery mechanisms for SCP-XXXX's anomalous memetic payload.
+
+There is typically only one active instance of SCP-XXXX at any time. Once an instance is neutralized, another will appear unpredictably in a different medium or platform, often within 24–72 hours.
+
+Primary Effects:
+Upon engaging with SCP-XXXX, subjects will gradually develop two core delusions, which SCP-XXXX reinforces through subtle narrative alignment and psychological manipulation:
+
+1. Apotheotic Persuasion:
+Subjects become convinced that full engagement with the work (e.g., completing a game, finishing a book, decoding hidden messages) will grant them divine power, transcendence, or omniscience. This belief is not immediate; it develops subtly, often over multiple sessions of exposure.
+
+2. Inevitable Self-Termination:
+Regardless of interpretation, all exposed subjects eventually commit suicide—typically within 3 to 14 days. The cause of death is often stylized in a manner mirroring themes or motifs from the SCP-XXXX instance (e.g., jumping from heights in stories about ascension, drowning in works referencing rebirth, etc.).
+
+Subjects who are cognitively disrupted before completing SCP-XXXX’s “narrative” may resist the second effect, though long-term psychological damage is common."
+label_settings = ExtResource("4_ff2n2")
+autowrap_mode = 3
+
+[node name="RightPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_gaacx")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/RightPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RightPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/RightPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+texture = ExtResource("5_ff2n2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer/RightPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+texture = ExtResource("6_gaacx")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Known previous iterations"
+label_settings = ExtResource("6_ajcl2")
+horizontal_alignment = 1
+
+[node name="BtnControls" parent="." instance=ExtResource("3_ttunc")]
+layout_mode = 2
+hide_a_btn = true

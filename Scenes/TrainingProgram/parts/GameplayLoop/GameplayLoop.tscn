@@ -33,6 +33,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="MarkedObjectivesContainer" parent="." instance=ExtResource("4_lgd8l")]
+visible = false
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]

@@ -30,13 +30,6 @@ extends Control
 @onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
 @onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
 
-@onready var TopPanel:PanelContainer = $Top/PanelContainer
-@onready var TopMargin:MarginContainer = $Top/PanelContainer/MarginContainer
-@onready var BottomPanel:PanelContainer = $Bottom/PanelContainer
-@onready var BottomMargin:MarginContainer = $Bottom/PanelContainer/MarginContainer
-@onready var CenterPanel:PanelContainer = $Center/PanelContainer
-@onready var CenterMargin:MarginContainer = $Center/PanelContainer/MarginContainer
-
 const SplashPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn")
 
 var current_location:Dictionary = {}

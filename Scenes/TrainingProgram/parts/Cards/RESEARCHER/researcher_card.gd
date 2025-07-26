@@ -20,7 +20,6 @@ extends MouseInteractions
 @onready var FrontSanity:PanelContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VitalsContainer/HBoxContainer2/FrontSanity
 
 # BACK
-@onready var BackName:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackName
 @onready var BackImage:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/BackImage
 #@onready var AssignedTo:PanelContainer = $CardBody/SubViewport/Control/CardBody/Back/PanelContainer/MarginContainer/BackDrawerContainer/AssignedTo
 

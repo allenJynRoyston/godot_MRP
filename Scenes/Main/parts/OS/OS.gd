@@ -71,18 +71,18 @@ func update_settings_options(_options:Dictionary) -> void:
 
 var app_list:Array[Dictionary] = [
 	# ----------
-	{
-		"details": {
-			"title": "LOGOUT",
-			"icon": SVGS.TYPE.BACK,
-		},
-		"installed": func() -> bool:
-			return true,
-		"events": {
-			"open": func(data:Dictionary) -> void:
-				pause(),
-		}
-	},
+	#{
+		#"details": {
+			#"title": "LOCK",
+			#"icon": SVGS.TYPE.BACK,
+		#},
+		#"installed": func() -> bool:
+			#return true,
+		#"events": {
+			#"open": func(data:Dictionary) -> void:
+				#pause(),
+		#}
+	#},
 	# ----------
 	
 	# ----------
@@ -724,7 +724,9 @@ func render_desktop_icons() -> void:
 	BtnControls.directional_pref = "LR"
 	BtnControls.itemlist = desktop_itemlist
 	BtnControls.item_index = previous_desktop_index
-	BtnControls.hide_b_btn = true
+	
+	BtnControls.onBack = func() -> void:		
+		pause()	
 
 	BtnControls.onAction = func() -> void:
 		if selected_app.is_empty():return

@@ -1,0 +1,209 @@
+[gd_scene load_steps=16 format=3 uid="uid://bso3mupgofbc6"]
+
+[ext_resource type="Script" uid="uid://cbyqr6lnfrevh" path="res://Scenes/IntroAndTitleScreen/camera_3d.gd" id="1_5j18f"]
+[ext_resource type="Script" uid="uid://cmd0kpf27mtcp" path="res://Scenes3D/OutsideRender/outside_render.gd" id="1_iu2be"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_iu2be"]
+[ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_sqf7y"]
+[ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="5_bqpsx"]
+
+[sub_resource type="Environment" id="Environment_bqpsx"]
+background_mode = 1
+ambient_light_energy = 2.88
+tonemap_mode = 3
+tonemap_exposure = 0.62
+sdfgi_read_sky_light = false
+volumetric_fog_enabled = true
+volumetric_fog_anisotropy = 0.69
+volumetric_fog_length = 60.0
+volumetric_fog_detail_spread = 0.574348
+volumetric_fog_ambient_inject = 1.48
+volumetric_fog_temporal_reprojection_amount = 0.822
+adjustment_enabled = true
+adjustment_brightness = 0.81
+adjustment_contrast = 1.09
+adjustment_saturation = 0.44
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_yyocm"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_lhit1"]
+exposure_multiplier = 1.282
+dof_blur_far_enabled = true
+dof_blur_far_distance = 18.96
+dof_blur_far_transition = -1.0
+dof_blur_near_enabled = true
+dof_blur_near_distance = 9.74
+dof_blur_amount = 0.13
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yyocm"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -372.0
+angle_max = 348.0
+flatness = 1.0
+gravity = Vector3(4, -9, 5)
+radial_accel_min = -5.0
+radial_accel_max = 8.33
+tangential_accel_min = -1.67
+tangential_accel_max = -2.23517e-06
+attractor_interaction_enabled = false
+turbulence_noise_speed_random = 0.1
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.168
+turbulence_initial_displacement_min = -53.0
+turbulence_initial_displacement_max = 54.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_65whp"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+cull_mode = 2
+albedo_texture = ExtResource("5_bqpsx")
+texture_repeat = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_lhit1"]
+lightmap_size_hint = Vector2i(2, 2)
+material = SubResource("StandardMaterial3D_65whp")
+size = Vector2(0.02, 0.02)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rvrtn"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 20.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ywuqy"]
+size = Vector3(1, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tw5wn"]
+size = Vector3(25, 25, 25)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tee3f"]
+size = Vector2(200, 200)
+
+[node name="OutsideRender" type="Node3D"]
+script = ExtResource("1_iu2be")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95709, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Node3D"]
+environment = SubResource("Environment_bqpsx")
+camera_attributes = SubResource("CameraAttributesPractical_yyocm")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D/WorldEnvironment"]
+transform = Transform3D(0.65317, -0.308163, 0.691668, 0.518263, 0.847903, -0.111645, -0.552062, 0.431389, 0.713534, 6.94894, 14.1197, 0)
+light_color = Color(0.18375, 0.0603779, 0.0415957, 1)
+light_energy = 7.652
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(0.671152, 0, 0.74132, 0, 1, 0, -0.74132, 0, 0.671152, 8.49568, 5.5, 12.6797)
+attributes = SubResource("CameraAttributesPractical_lhit1")
+current = true
+fov = 67.0
+size = 6.263
+far = 455.57
+script = ExtResource("1_5j18f")
+wobble_intensity = 0.1
+wobble_speed = 1.0
+
+[node name="DustParticles" type="GPUParticles3D" parent="Node3D/Camera3D"]
+transform = Transform3D(0.999868, 0, -0.0162481, 0, 1, 0, 0.0162481, 0, 0.999868, -0.0830426, 0, -1.69598)
+gi_mode = 0
+amount = 10000
+speed_scale = 0.1
+explosiveness = 0.5
+randomness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_yyocm")
+draw_pass_1 = SubResource("QuadMesh_lhit1")
+
+[node name="StreetLight" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -5.51382, 4.84705, 12.6339)
+mesh = SubResource("CylinderMesh_rvrtn")
+skeleton = NodePath("../Camera3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/StreetLight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
+mesh = SubResource("BoxMesh_ywuqy")
+
+[node name="CustomSpotlight" parent="Node3D/StreetLight/MeshInstance3D" instance=ExtResource("2_iu2be")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30537, -0.335719, 0)
+light_color = Color(1, 0.993, 0.79, 1)
+godray_color = Color(0.966243, 0.980311, 0.747895, 1)
+godray_energy = 1.0
+spot_range = 18.0
+spot_energy = 1.0
+omni_range = 5.0
+disable_reverse_shadow = true
+
+[node name="StreetLight2" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -15.0901, 4.84705, 9.38507)
+mesh = SubResource("CylinderMesh_rvrtn")
+skeleton = NodePath("../Camera3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/StreetLight2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
+mesh = SubResource("BoxMesh_ywuqy")
+
+[node name="CustomSpotlight" parent="Node3D/StreetLight2/MeshInstance3D" instance=ExtResource("2_iu2be")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30537, -0.335719, 0)
+light_color = Color(1, 0.993, 0.79, 1)
+godray_color = Color(0.966243, 0.980311, 0.747895, 1)
+godray_energy = 1.0
+spot_range = 18.0
+spot_energy = 5.0
+omni_range = 5.0
+disable_reverse_shadow = true
+
+[node name="StreetLight3" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.9395, 4.84705, 4.52634)
+mesh = SubResource("CylinderMesh_rvrtn")
+skeleton = NodePath("../Camera3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/StreetLight3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319067, 10.1134, 0)
+mesh = SubResource("BoxMesh_ywuqy")
+
+[node name="CustomSpotlight" parent="Node3D/StreetLight3/MeshInstance3D" instance=ExtResource("2_iu2be")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30537, -0.335719, 0)
+light_color = Color(1, 0.993, 0.79, 1)
+godray_color = Color(0.966243, 0.980311, 0.747895, 1)
+godray_energy = 1.0
+spot_range = 18.0
+spot_energy = 1.0
+omni_range = 5.0
+disable_reverse_shadow = true
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -3.61857, 8.85668, -36.1537)
+mesh = SubResource("BoxMesh_tw5wn")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Node3D/MeshInstance3D2"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, -21.9136, 0, -9.70996)
+light_color = Color(0.918995, 0.503806, 0.352411, 1)
+light_energy = 8.262
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 1.36
+shadow_enabled = true
+shadow_normal_bias = 3.022
+omni_range = 45.171
+omni_attenuation = -0.573
+
+[node name="CustomSpotlight" parent="Node3D/MeshInstance3D2" instance=ExtResource("2_iu2be")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.769, 1.29222, 1.92695)
+godray_color = Color(0.888751, 0.977465, 0.401527, 1)
+godray_energy = 4.0
+spot_range = 30.0
+spot_energy = 5.0
+omni_range = 10.0
+
+[node name="Sirens" parent="Node3D" instance=ExtResource("4_sqf7y")]
+transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -36.3368, 6.56622, -30.1381)
+fast_speed = 8.0
+slow_speed = -4.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.76729, -41.4409)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_tee3f")

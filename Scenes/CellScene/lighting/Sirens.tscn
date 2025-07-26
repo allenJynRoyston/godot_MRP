@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxnwt5sjhdab7"]
+
+[ext_resource type="Script" uid="uid://dp41wacm427qt" path="res://Scenes/CellScene/lighting/sirens.gd" id="1_h2ugr"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_anqw2"]
+
+[node name="Sirens" type="Node3D"]
+script = ExtResource("1_h2ugr")
+
+[node name="FastSpotlight" parent="." instance=ExtResource("2_anqw2")]
+transform = Transform3D(0.509182, -0.860123, -3.75973e-08, 0, -4.37114e-08, 1, -0.860123, -0.509182, -2.2257e-08, 0, 0, 0)
+light_color = Color(1, 0, 0, 1)
+godray_color = Color(0.669321, 0, 0.304563, 1)
+godray_energy = 10.0
+spot_range = 20.0
+spot_energy = 1.0
+omni_range = 3.0
+disable_reverse_shadow = true
+
+[node name="SlowSpotlight" parent="." instance=ExtResource("2_anqw2")]
+transform = Transform3D(-0.455504, -0.890559, -3.89284e-08, 4.90942e-16, -4.37114e-08, 1, -0.890559, 0.455504, 1.99107e-08, 0, 0, -0.0313562)
+light_color = Color(0, 0, 1, 1)
+godray_color = Color(0.71, 1, 0.903333, 1)
+godray_energy = 5.0
+spot_range = 30.0
+omni_range = 0.0
+disable_reverse_shadow = true

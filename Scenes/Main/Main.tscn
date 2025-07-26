@@ -1,9 +1,10 @@
-[gd_scene load_steps=31 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=32 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
 [ext_resource type="PackedScene" uid="uid://c4jcka6l73m7c" path="res://Scenes/IntroAndTitleScreen/IntroAndTitleScreen.tscn" id="4_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://b4pwrpvr3osgb" path="res://Scenes/Main/parts/OS/OS.tscn" id="5_epx8f"]
+[ext_resource type="PackedScene" uid="uid://esq71d7mxqx7" path="res://Scenes/ArticleScene/ArticleScene.tscn" id="5_hkvnm"]
 [ext_resource type="Texture2D" uid="uid://b7jskixnjjwb7" path="res://Media/mouse/icons8-select-cursor-24.png" id="7_qdkat"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_udh0u"]
 [ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="9_wgovn"]
@@ -175,7 +176,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-reset_userprofile_save = true
+is_production_build = true
 audio_mute = true
 skip_splash = true
 skip_intro = true
@@ -183,7 +184,6 @@ intro_skip_logo = true
 intro_skip_title = true
 intro_skip_sequence = true
 intro_skip_start_at = true
-skip_office_intro = true
 office_skip_animation = true
 os_skip_boot = true
 os_app_fast_load = true
@@ -224,6 +224,8 @@ texture = SubResource("ViewportTexture_dvlhv")
 expand_mode = 1
 
 [node name="CellScene" parent="GameLayer" instance=ExtResource("4_18xdc")]
+
+[node name="ArticleScene" parent="GameLayer" instance=ExtResource("5_hkvnm")]
 
 [node name="TransitionScreen" parent="GameLayer" instance=ExtResource("8_udh0u")]
 

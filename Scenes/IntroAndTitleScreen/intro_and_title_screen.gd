@@ -5,7 +5,7 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 @onready var TextureRender:TextureRect = $Title/MarginContainer/TextureRender
 
 @onready var RenderSubviewport:SubViewport = $Title/RenderSubviewport
-@onready var SceneCamera:Camera3D = $Title/RenderSubviewport/Node3D/Camera3D
+@onready var OutsideRender:Node3D = $Title/RenderSubviewport/OutsideRender
 
 @onready var TitleSplash:PanelContainer = $TitleSplash
 
@@ -28,8 +28,6 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 @onready var PressStartPanel:PanelContainer = $PressStart/PanelContainer
 @onready var PressStartGameLabel:Label = $PressStart/PanelContainer/MarginContainer/VBoxContainer/GameTitle
 @onready var PressStartMainPanel:MarginContainer = $PressStart/PanelContainer/MarginContainer
-
-@onready var ScpControl:Control = $SCP
 
 const game_title:String = "MEMORY RECOVERY PROTOCOL"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
@@ -54,7 +52,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
 	
-	SceneCamera.fov = 100
+
 	for node in [LogoPanel, TitlePanel, CreditsPanel, PressStartPanel, TitleBGLabel]:
 		node.modulate = Color(1, 1, 1, 0)	
 	
@@ -133,8 +131,7 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_TITLE):
 				TitlePanel.modulate = Color(1, 1, 1, 1)
 				await U.tween_node_property(TitleBG, 'color', Color(0, 0, 0, 0), 2.0)
-
-				U.tween_node_property(SceneCamera, 'fov', 80, 10.0)
+				
 				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 1), 2.0)
 				
 				for index in range(0, TitleLetterContainers.get_child_count()):
@@ -164,7 +161,7 @@ func on_current_mode_update() -> void:
 					U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show - 5, 0.3, Tween.TRANS_LINEAR)
 					await U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 0), 0.4)
 				
-				U.tween_node_property(SceneCamera, 'fov', 60, 4.0)
+				
 				U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
 				
 				await U.set_timeout(1.0)
@@ -188,7 +185,7 @@ func on_current_mode_update() -> void:
 				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
 				
 				GBL.find_node(REFS.AUDIO).fade_out(3.0)
-				await U.tween_node_property(SceneCamera, 'fov', 100, 2.0)
+				
 			
 			current_mode = MODE.EXIT
 		# ---------
