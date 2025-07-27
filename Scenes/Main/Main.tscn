@@ -173,6 +173,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+is_production_build = true
+reset_userprofile_save = true
 audio_mute = true
 skip_splash = true
 skip_intro = true
@@ -197,9 +199,6 @@ skip_contained_events = true
 mtf_alpha = true
 mtf_bravo = true
 mtf_delta = true
-
-[node name="OS" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
 
 [node name="GameLayer" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

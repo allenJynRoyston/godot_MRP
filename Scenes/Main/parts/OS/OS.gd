@@ -545,9 +545,9 @@ func install_app_complete(ref:APPS) -> void:
 func check_graphics_settings(instant:bool = false) -> void:
 	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
 	if use_crt_effect:
-		GBL.find_node(REFS.MAIN).use_full_shader_settings(instant) 
+		GBL.find_node(REFS.MAIN).apply_shader_effects(false) 
 	else:
-		GBL.find_node(REFS.MAIN).no_shader_effects(instant)	
+		GBL.find_node(REFS.MAIN).no_shader_effects(false)	
 
 func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting

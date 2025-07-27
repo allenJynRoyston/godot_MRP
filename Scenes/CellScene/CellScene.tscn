@@ -31,8 +31,7 @@ a_btn_title = "LOGIN"
 b_btn_title = "END"
 b_btn_icon = 16
 hide_b_btn = true
-c_btn_title = "PLAY MESSAGE"
-hide_c_btn = false
+c_btn_title = "C BTN"
 
 [node name="StoryNarration" parent="." instance=ExtResource("3_y10y4")]
 modulate = Color(1, 1, 1, 0.262745)
@@ -45,3 +44,14 @@ fsr_sharpness = 2.0
 size = Vector2i(1920, 1080)
 
 [node name="CellSceneRender" parent="RenderSubviewport" instance=ExtResource("4_h1wtw")]
+enable_emergency_lighting = false
+
+[node name="FadeOverlay" type="ColorRect" parent="."]
+z_index = 100
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="FadeOverlay2" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)

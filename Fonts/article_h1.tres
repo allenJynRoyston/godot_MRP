@@ -6,5 +6,5 @@
 font = ExtResource("1_hb32j")
 font_size = 36
 font_color = Color(0, 0.964706, 0.278431, 1)
-shadow_color = Color(0, 0.96, 0.272, 0.235294)
+shadow_color = Color(0, 0.964706, 0.278431, 1)
 shadow_offset = Vector2(2, 2)

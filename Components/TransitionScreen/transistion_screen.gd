@@ -15,8 +15,9 @@ func _ready() -> void:
 	TextureRectUI.hide()
 	
 func start(duration:float = 0.3, clear_after:bool = false) -> void:
+	TextureRectUI.show()
 	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
-	TextureRectUI.show()	
+	await U.tick()
 
 	match transition_type:
 		TYPE.DISSOLVE:
@@ -31,14 +32,10 @@ func start(duration:float = 0.3, clear_after:bool = false) -> void:
 			await U.tween_range(0.0, 1.0, duration, func(val:float) -> void:
 				TextureRectUI.material.set_shader_parameter("transition", val)
 			).finished
-			
-			
-	if clear_after:
-		clear()
-	
-func clear() -> void:
-	TextureRectUI.texture = null
-	TextureRectUI.material = null
+
+	if clear_after:		
+		TextureRectUI.texture = null
+		TextureRectUI.hide()
 
 func end(duration:float = 0.3, return_delay:float = 0.3) -> void:
 	await U.tween_range(1.0, 0.0, duration, func(val:float) -> void:

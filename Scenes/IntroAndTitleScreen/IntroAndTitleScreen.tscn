@@ -257,3 +257,8 @@ vertical_alignment = 2
 
 [node name="TransitionScreen" parent="." instance=ExtResource("12_6bd6i")]
 layout_mode = 2
+
+[node name="FadeOverlay" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)

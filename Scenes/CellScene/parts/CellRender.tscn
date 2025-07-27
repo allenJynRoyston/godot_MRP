@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://urjnikfy6y5j"]
+[gd_scene load_steps=15 format=3 uid="uid://urjnikfy6y5j"]
 
 [ext_resource type="PackedScene" uid="uid://bs1arpnwcdcdb" path="res://Scenes/CellScene/assets/DeskModel.tscn" id="1_01n06"]
 [ext_resource type="Script" uid="uid://dewg4p4ytk67q" path="res://Scenes/CellScene/parts/cell_render.gd" id="1_baq1p"]
@@ -7,11 +7,15 @@
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="3_65whp"]
 [ext_resource type="PackedScene" uid="uid://b0u4ro8hbibl1" path="res://Scenes/CellScene/assets/CellModel.tscn" id="3_c3rb4"]
 [ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_65whp"]
+[ext_resource type="PackedScene" uid="uid://csbyru8rsamxn" path="res://Scenes/CellScene/assets/ShelfModel.tscn" id="4_d2d4g"]
+[ext_resource type="PackedScene" uid="uid://bqn8lk7xb5ico" path="res://Scenes/CellScene/assets/TVMonitorModel.tscn" id="5_jdl17"]
 
 [sub_resource type="Environment" id="Environment_0c7qq"]
 background_energy_multiplier = 0.0
 ssr_enabled = true
 ssao_enabled = true
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
 sdfgi_read_sky_light = false
 fog_light_color = Color(0.157016, 0.174262, 0.201375, 1)
 fog_light_energy = 2.6
@@ -19,9 +23,11 @@ volumetric_fog_enabled = true
 volumetric_fog_density = 0.125
 volumetric_fog_emission = Color(0.0418844, 0.00556447, 0.0375506, 1)
 volumetric_fog_length = 124.23
+volumetric_fog_detail_spread = 1.60766
 volumetric_fog_ambient_inject = 2.83
 volumetric_fog_sky_affect = 0.0
-volumetric_fog_temporal_reprojection_amount = 0.797
+volumetric_fog_temporal_reprojection_enabled = false
+volumetric_fog_temporal_reprojection_amount = 0.99
 adjustment_enabled = true
 adjustment_contrast = 1.12
 
@@ -70,9 +76,13 @@ enable_dust_particles = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0c7qq")
 
+[node name="LookAtCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 2.7)
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0724058, -0.208737, 2.3066)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 2.7)
 current = true
+fov = 55.0
 near = 0.001
 far = 250.0
 
@@ -96,21 +106,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.78405)
 [node name="CellModel" parent="Structure" instance=ExtResource("3_c3rb4")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, -0.0300815, 6.75784)
 
-[node name="Desk" parent="Structure/CellModel" instance=ExtResource("1_01n06")]
-transform = Transform3D(-0.476115, 0, 0.879383, 0, 1, 0, -0.879383, 0, -0.476115, -0.3062, -0.786448, 1.35966)
+[node name="ShelfModel" parent="Structure" instance=ExtResource("4_d2d4g")]
+transform = Transform3D(0.592107, 0, -0.129338, 0, 0.6, 0, 0.0970036, 0, 0.789476, 0.523244, -1.35915, 5.15292)
 
-[node name="ComputerModel" parent="Structure/CellModel/Desk" instance=ExtResource("2_epicg")]
+[node name="TvMonitorModel" parent="Structure/ShelfModel" instance=ExtResource("5_jdl17")]
+transform = Transform3D(0.829786, 0, 0.0662206, 0, 0.833333, 0, -0.0241548, 0, 0.625745, -0.0693095, 1.40728, 0.0473084)
+
+[node name="LookAtCenter" type="Marker3D" parent="Structure/ShelfModel/TvMonitorModel"]
+transform = Transform3D(2.00173, 0, 0.166892, 0, 2, 0, -0.24569, 0, 1.97778, 0.0268171, 0.281754, 0.697492)
+
+[node name="Desk" parent="Structure" instance=ExtResource("1_01n06")]
+transform = Transform3D(0.879383, 0, 0.476115, 0, 1, 0, -0.476115, 0, 0.879383, -1.35966, -0.81653, 6.45164)
+
+[node name="ComputerModel" parent="Structure/Desk" instance=ExtResource("2_epicg")]
 transform = Transform3D(0.963472, 0, 0.267811, 0, 1, 0, -0.267811, 0, 0.963472, -0.278307, 0.0543795, 0.00963604)
 
-[node name="Desk2" parent="Structure/CellModel" instance=ExtResource("1_01n06")]
-transform = Transform3D(0.872428, 0, 0.488743, 0, 1, 0, -0.488743, 0, 0.872428, -0.18678, -0.786448, -1.52475)
+[node name="LookAtComputer" type="Marker3D" parent="Structure/Desk/ComputerModel"]
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.579517, 0.323269, 0.324792)
 
-[node name="ComputerModel" parent="Structure/CellModel/Desk2" instance=ExtResource("2_epicg")]
+[node name="Desk2" parent="Structure" instance=ExtResource("1_01n06")]
+transform = Transform3D(0.488743, 0, -0.872428, 0, 1, 0, 0.872428, 0, 0.488743, 1.52475, -0.81653, 6.57106)
+
+[node name="ComputerModel" parent="Structure/Desk2" instance=ExtResource("2_epicg")]
 transform = Transform3D(0.996971, 0, -0.0777804, 0, 1, 0, 0.0777804, 0, 0.996971, -0.236125, 0.0458773, 0.0353321)
+
+[node name="LookAtTerminal" type="Marker3D" parent="Structure/Desk2/ComputerModel"]
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.581689, 0.32543, 0.324792)
 
 [node name="OutsideWall" type="MeshInstance3D" parent="Structure"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.56512)
 mesh = SubResource("SphereMesh_epicg")
+
+[node name="LookAtExit" type="Marker3D" parent="Structure"]
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.568989, -0.383989, 9.39394)
 
 [node name="Lighting" type="Node3D" parent="."]
 
@@ -118,21 +146,32 @@ mesh = SubResource("SphereMesh_epicg")
 visible = false
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Lighting/AmbientLighting"]
-transform = Transform3D(-0.21284, -0.0334736, -0.976514, 0.0181468, 0.999105, -0.0382033, 0.976919, -0.0258518, -0.212042, -3.9299, 0.0463338, 0.353823)
+transform = Transform3D(-0.693684, 0.199178, -0.692192, -0.26947, 0.819453, 0.505848, 0.667973, 0.537424, -0.514769, -2.4538, 1.41851, -3.69232)
 light_color = Color(0.67, 0.736, 1, 1)
-light_energy = 12.111
-light_volumetric_fog_energy = 5.182
+light_energy = 12.333
+light_volumetric_fog_energy = 1.555
+light_specular = 0.0
 shadow_enabled = true
-spot_range = 7.633
-spot_attenuation = 0.72
-spot_angle = 15.42
-spot_angle_attenuation = 1.07177
+shadow_bias = 0.0
+shadow_normal_bias = 0.0
+distance_fade_shadow = 220.67
+distance_fade_length = 0.0
+spot_range = 7.188
+spot_attenuation = -0.11
+spot_angle = 29.72
+spot_angle_attenuation = 1.68179
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting/AmbientLighting"]
-transform = Transform3D(-0.854354, -0.166537, -0.492286, -0.302996, 0.929228, 0.211493, 0.422224, 0.329851, -0.844349, 0, 2.28125, -5.12804)
+transform = Transform3D(-0.727826, 0.189694, -0.659004, -0.498016, 0.514426, 0.698102, 0.471434, 0.836291, -0.279942, 0, 2.28125, -5.12804)
 light_color = Color(0.586517, 0.643759, 0.857073, 1)
-light_volumetric_fog_energy = 8.111
+light_energy = 5.0
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
+shadow_bias = 0.0
+directional_shadow_mode = 1
+directional_shadow_blend_splits = true
+directional_shadow_fade_start = 1.0
+directional_shadow_max_distance = 60.0
 
 [node name="EmergencyLighting" type="Node3D" parent="Lighting"]
 visible = false

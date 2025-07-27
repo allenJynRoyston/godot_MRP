@@ -6,17 +6,9 @@ var onBack:Callable = func():pass
 
 func _ready() -> void:
 	BtnControls.onBack = func():
-		pause()
+		await BtnControls.reveal(false)
+		onBack.call()	
 
 func switch_to() -> void:		
-	print('revealed?')
 	BtnControls.reveal(true)
-
-func pause() -> void:
-	await BtnControls.reveal(false)
-	onBack.call()	
-	
-func resume() -> void:
-	print('resume?')
-	await BtnControls.reveal(true)
 # -----------------------------------

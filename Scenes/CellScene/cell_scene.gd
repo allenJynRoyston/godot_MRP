@@ -6,27 +6,30 @@ extends PanelContainer
 @onready var StoryNarration:Control = $StoryNarration
 @onready var RenderSubviewport:SubViewport = $RenderSubviewport
 @onready var CellSceneRender:Node3D = $RenderSubviewport/CellSceneRender
+@onready var FadeOverlay:ColorRect = $FadeOverlay
 
-enum FOCUS {COMPUTER, ARTICLE}
+enum FOCUS {COMPUTER, CENTER, TERMINAL, EXIT}
 
 var MAIN_NODE:Control
 var control_pos:Dictionary = {}
 
 # new values
 var story_progress:Dictionary = {}
-#var story_index:int
-var allow_replay:bool = true
 
 var original_fov:float
 var original_rotation_degrees:Vector3
 var fast_animation:bool = false
-var focus_on:FOCUS = FOCUS.COMPUTER : 
-	set(val):
-		focus_on = val
-		on_focus_on_update()
 
+var focus_arr:Array = [FOCUS.COMPUTER, FOCUS.CENTER, FOCUS.TERMINAL, FOCUS.EXIT]
+var focus_index:int = FOCUS.CENTER : 
+	set(val):
+		focus_index = val
+		on_focus_index_update()
+	
+var play_introduction:bool 
 var gotoOs:Callable = func():pass
 var gotoScp:Callable = func():pass
+var transInFx:Callable = func():pass
 
 signal on_finish
 signal wait_for_story
@@ -43,6 +46,8 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.DOOR_SCENE)
 
 func _ready() -> void:
+	FadeOverlay.show()
+	
 	for subviewport in [ RenderSubviewport]:
 		subviewport.set_process(false)
 
@@ -53,44 +58,85 @@ func _ready() -> void:
 
 	BtnControls.reveal(false)
 	
-	BtnControls.onCBtn = func() -> void:
-		await BtnControls.reveal(false)		
-		await play_current_story_sequence()
-		BtnControls.reveal(true)	
-	
-	BtnControls.onBack = func() -> void:
-		pass
+	BtnControls.onBack = func() -> void:pass
 	# 
 	BtnControls.onDirectional = func(key:String):
-		if !is_visible_in_tree() or !is_node_ready() or !allow_replay:return
+		if !is_visible_in_tree() or !is_node_ready() or play_introduction:return
 		match key:
 			"A":
-				focus_on = FOCUS.COMPUTER
+				if focus_index != 0:
+					focus_index = U.min_max(focus_index - 1, 0, focus_arr.size() - 1)
 			"D":
-				focus_on = FOCUS.ARTICLE
+				if focus_index != focus_arr.size() - 1:
+					focus_index = U.min_max(focus_index + 1, 0, focus_arr.size() - 1)
 		
 		check_btn_states()
 
+	CellSceneRender.look_at_center()
+# ---------------------------------------------
+
+# ---------------------------------------------
+func generate_flicker_pattern(count := 10) -> Array:
+	var flickers := []
+	for i in count:
+		# Quick flick (off/on)
+		if randi() % 2 == 0:
+			flickers.append(randf_range(0.02, 0.05))  # fast blink
+		else:
+			flickers.append(randf_range(0.1, 0.2))   # slightly slower
+	return flickers
 # ---------------------------------------------
 
 # ---------------------------------------------
 func start(use_fast_animation:bool = false) -> void:
+	play_introduction = GBL.active_user_profile.boot_count == 0		
+	CellSceneRender.enable_ambient_lighting = true
+		
 	show()	
-	await U.tick()	
-	on_focus_on_update()
-
 	RenderSubviewport.set_process(true)	
 	TextureRender.texture = RenderSubviewport.get_texture()
+	
+	if play_introduction:
+		BtnControls.a_btn_title = "STRUGGLE"
+			
+		BtnControls.onAction = func() -> void:
+			BtnControls.reveal(false)		
+			await zoom_into_screen(true)
+			await play_current_story_sequence()
+			zoom_into_screen(false)			
+			BtnControls.reveal(true)
+			GBL.active_user_profile.boot_count += 1
+			GBL.update_and_save_user_profile()
+			play_introduction = false
+			CellSceneRender.enable_interogation_lighting = true			
+			check_btn_states()
+
+		BtnControls.freeze_and_disable(true)	
+
+		await U.tween_node_property(self, "modulate:a", 1, 1.0)
+		await U.tween_node_property(FadeOverlay, "modulate:a", 0, 1.0)		
+	
+		await U.set_timeout(3.0)		
+		for duration in generate_flicker_pattern(20):
+			await U.set_timeout(duration)
+			CellSceneRender.enable_lowlevel_lighting = !CellSceneRender.enable_lowlevel_lighting
+		CellSceneRender.enable_lowlevel_lighting = true
+		await U.set_timeout(3.0)
+		BtnControls.freeze_and_disable(false)
+
+
+			
+
+
+	await U.tick()
 
 	SUBSCRIBE.music_data = {
 		"selected": OS_AUDIO.TRACK.LOADING
 	}
 	
 	fast_animation = use_fast_animation
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 1.0)
-		
-	#SceneAnimationPlayer.active = true
-	#SceneAnimationPlayer.play("LightsOn")
+	await U.tween_node_property(self, "modulate:a", 1, 1.0)
+	await U.tween_node_property(FadeOverlay, "modulate:a", 0, 1.0)
 	BtnControls.reveal(true)
 
 func end() -> void:
@@ -106,23 +152,11 @@ func play_current_story_sequence() -> void:
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
 
-	# modify on action so it skips
-	BtnControls.a_btn_title = "SKIP"
-		
-	BtnControls.onAction = func() -> void:
-		await BtnControls.reveal(false)		
-		wait_for_story.emit()
-		
-	await U.set_timeout(0.3)
-	wait_for_story.emit()
-
 	GBL.mark_messages_played(on_chapter)
-	check_btn_states()
 # ---------------------------------------------
 
 # ---------------------------------------------
 func play_next_sequence() -> void:
-	allow_replay = false
 	var on_chapter:int = GBL.get_current_chapter()
 
 	# update available buttons
@@ -140,90 +174,89 @@ func play_next_sequence() -> void:
 	MAIN_NODE.current_layer = MAIN_NODE.LAYER.OS_lAYER
 	
 	await U.set_timeout(0.3)
-	
-	allow_replay = true
 # ---------------------------------------------
 
 # ---------------------------------------------
-func check_btn_states() -> void:	
-	match focus_on:
-		# ------------------------
-		FOCUS.COMPUTER:
-			if allow_replay:
-				var on_chapter:int = GBL.get_current_chapter()
-				var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]		
-				var message_has_been_played:bool = GBL.has_message_been_played(on_chapter)
-						
-				# c btn title
-				BtnControls.hide_c_btn = !has_story_message
-				BtnControls.c_btn_title = "PLAY MESSAGE" if on_chapter not in GBL.active_user_profile.story_progress.messages_played else "REPLAY MESSAGE"
-				
-				# modify on action so it skips
-				BtnControls.hide_a_btn = !message_has_been_played
-				BtnControls.a_btn_title = "LOGIN"
-					
-				BtnControls.onAction = func() -> void:
-					BtnControls.reveal(false)		
-					await zoom_into_screen(false)
-					gotoOs.call()
-					#gotoScp.call()
-			
-			else:
-				# modify on action so it skips
-				BtnControls.c_btn_title = "PLAY MESSAGE"
-				BtnControls.hide_a_btn = true
-					
-				BtnControls.onAction = func() -> void:
-					await BtnControls.reveal(false)		
-					wait_for_story.emit()
-					
-		# ------------------------
-		FOCUS.ARTICLE:
-			BtnControls.hide_c_btn = true
-			BtnControls.a_btn_title = "READ"
-			BtnControls.onAction = func() -> void:
-				BtnControls.reveal(false)
-				await zoom_into_screen(false)
-				gotoScp.call()
-	
-	
-
-		
-# ---------------------------------------------
-
-# ---------------------------------------------
-func on_focus_on_update() -> void:
+func on_focus_index_update() -> void:
 	BtnControls.freeze_and_disable(true)
-	
-	match focus_on:
+
+	match focus_index:
 		FOCUS.COMPUTER:
-			await CellSceneRender.look_left()
-		FOCUS.ARTICLE:
-			await CellSceneRender.look_right()
+			await CellSceneRender.look_at_computer()
+		FOCUS.CENTER:
+			await CellSceneRender.look_at_center()			
+		FOCUS.TERMINAL:
+			await CellSceneRender.look_at_terminal()
+		FOCUS.EXIT:
+			await CellSceneRender.look_at_exit()			
+	
 	
 	BtnControls.freeze_and_disable(false)
 	check_btn_states()
 # ---------------------------------------------	
 
 # ---------------------------------------------
+func check_btn_states() -> void:	
+	
+	match focus_index:
+		# ------------------------
+		FOCUS.COMPUTER:
+			BtnControls.a_btn_title = "LOGIN"
+				
+			BtnControls.onAction = func() -> void:				
+				BtnControls.reveal(false)
+				await transInFx.call()
+				await zoom_into_screen(true)
+				gotoOs.call()			
+		# ------------------------
+		FOCUS.CENTER:
+			var on_chapter:int = GBL.get_current_chapter()
+			var has_story_message:bool = "story_message" in STORY.chapters[on_chapter]
+			var message_has_been_played:bool = GBL.has_message_been_played(on_chapter)
+						
+			# modify on action so it skips
+			BtnControls.a_btn_title = "PLAY MESSAGE" if !message_has_been_played else "REPLAY MESSAGE"
+				
+			BtnControls.onAction = func() -> void:				
+				await BtnControls.reveal(false)
+				await transInFx.call()
+				await zoom_into_screen(true)				
+				await play_current_story_sequence()
+				check_btn_states()
+				zoom_into_screen(false)
+				BtnControls.reveal(true)
+				
+		# ------------------------
+		FOCUS.TERMINAL:
+			BtnControls.a_btn_title = "INVESTIGATE"
+			
+			BtnControls.onAction = func() -> void:				
+				BtnControls.reveal(false)
+				await transInFx.call()
+				await zoom_into_screen(true)
+				gotoScp.call()
+				
+		# ------------------------
+		FOCUS.EXIT:
+			BtnControls.a_btn_title = "STARE INTO THE DARK"
+			
+			BtnControls.onAction = func() -> void:
+				await transInFx.call()
+				BtnControls.reveal(false)
+				await zoom_into_screen(true)
+				await U.set_timeout(4.0)
+				await zoom_into_screen(false)
+				BtnControls.reveal(true)
+				
+# ---------------------------------------------
+
+# ---------------------------------------------
 func zoom_into_screen(state:bool, duration:float = 2.0) -> void:
 	await CellSceneRender.zoom(state)	
-
-	#if state:
-		#U.tween_node_property(SceneCamera, "fov", 77, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
-		#await U.tween_node_property(SceneCamera, "rotation_degrees:y", 1, 0.7 if !fast_animation else 0.3, duration/2)	
-	#else:
-		#U.tween_node_property(SceneCamera, "rotation_degrees:y", original_rotation_degrees.y, 1.0 if !fast_animation else 0.3)	
-		#U.tween_node_property(SceneCamera, "fov", 23, duration if !fast_animation else 0.3, 0, Tween.TRANS_QUART)
-		#await U.set_timeout(duration - 0.6)
 # ---------------------------------------------
 
 # ---------------------------------------------
-func skip_to_os() -> void:		
-	gotoOs.call()
-	await BtnControls.reveal(false)		
-
 func switch_to() -> void:	
-	await zoom_into_screen(true)	
+	await zoom_into_screen(false)	
 	BtnControls.reveal(true)
 # ---------------------------------------------

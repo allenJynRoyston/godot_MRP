@@ -197,6 +197,7 @@ var default_save_profiles:Dictionary = {
 
 # DEFAULT (NEW) USER PROFILE SCHEMA
 var user_profile_schema:Dictionary = {
+	"boot_count": 0,
 	"story_progress": {
 		"on_chapter": skip_to_chapter if debug_story_progress else 0,
 		"messages_played": [],
@@ -230,8 +231,8 @@ var current_layer:LAYER :
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
 func _init() -> void:
-	if FileAccess.file_exists("user://config.json"):
-		var file = FileAccess.open("user://config.json", FileAccess.READ)
+	if FileAccess.file_exists("user://scp_mrp.config.json"):
+		var file = FileAccess.open("user://scp_mrp.config.json", FileAccess.READ)
 		var result = JSON.parse_string(file.get_as_text())
 		if result is Dictionary:
 			resolution = Vector2(result.resolution_width, result.resolution_height)
@@ -258,10 +259,18 @@ func _ready() -> void:
 	# register node
 	GBL.register_node(REFS.GAMELAYER_SUBVIEWPORT, Gamelayer)
 	
+	# initially hide
+	for node in [OsScene, ArticleScene, CellScene]:
+		node.hide()
+	
 	# assign debugs
 	assign_debugs()
 
 	# assign functions
+	CellScene.transInFx = func(duration:float = 1.3) -> void:
+		TransitionScreen.start(duration, true)	
+		await U.set_timeout(duration * 0.5)
+		
 	CellScene.gotoOs = func() -> void:
 		current_layer = LAYER.OS_lAYER		
 
@@ -458,6 +467,8 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_node:Control) -> void:
+	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
+	
 	for node in [CellScene, OsScene, ArticleScene]:
 		if node == use_node:
 			node.z_index = 1
@@ -468,21 +479,25 @@ func switch_to_node(use_node:Control) -> void:
 				node.switch_to()
 		else: 
 			node.z_index = -1
-			if node == CellScene or node == ArticleScene:
-				node.hide()
+			node.hide()
 			node.set_process(false)
 			node.set_physics_process(false)
 	
-	TransitionScreen.start(0.3, true)
-	
 	match use_node:
 		CellScene:
-			no_shader_effects()
+			await no_shader_effects()
 		OsScene:
-			use_focus_shader_settings()
+			if use_crt_effect:
+				await apply_shader_effects()
+			else:
+				await no_shader_effects()
 		ArticleScene:
-			use_focus_shader_settings()
-			
+			if use_crt_effect:
+				await apply_shader_effects()
+			else:
+				await no_shader_effects()
+	
+
 # -----------------------------------	
 
 
@@ -580,57 +595,28 @@ func set_monitor_overlay(state:bool) -> void:
 # -----------------------------------	
 
 # -----------------------------------	
-func no_shader_effects(instant:bool = false) -> void:
-	await use_focus_shader_settings(instant)
+func no_shader_effects(instant:bool = false) -> void:	
+	use_full_shader_settings(false, instant)
 	FinalCompositeTextureRect.texture.viewport_path = Gamelayer.get_path()
+	TransitionScreen.start(1.3, true)	
 # -----------------------------------	
 
 # -----------------------------------	
-func use_focus_shader_settings(instant:bool = false) -> void:
+func apply_shader_effects(instant:bool = false) -> void:
 	FinalCompositeTextureRect.texture.viewport_path = MusicShaderViewport.get_path()
-	
-	var duration:float = 0.7 if !instant else 0
-	# set new color 
-	for item in color_rect_arr:
-		var node:Control = item[0]
-		U.tween_node_property(node, 'color:a', 0, duration)
-	
-	# set new bend amount
-	for item in [ [ScreenBendTextureRect, "bend"], [FinalCompositeTextureRect, "final"] ]:
-		var node:Control = item[0]
-		var key:String = item[1]
-		var material_dupe = shader_defaults[key].material.duplicate(true)
-		var new_amount:float = 0
-		node.material = material_dupe
+	#await TransitionScreen.start(0.1, true)			
+	await use_full_shader_settings(true, instant)
+# -----------------------------------	
 
-		U.tween_range(material_dupe.get_shader_parameter("bend_amount"), new_amount, duration, func(val:float) -> void:
-			material_dupe.set_shader_parameter("bend_amount", val)
-		).finished
-	
-	# remove border 
-	for item in [ [BorderShaderTextureRect, "border"] ]:
-		var node:Control = item[0]
-		var key:String = item[1]
-		var material_dupe = shader_defaults[key].material.duplicate(true)
-		var new_amount:float = 0
-		node.material = material_dupe
-
-		U.tween_range(material_dupe.get_shader_parameter("top_bottom_border_pixels"), new_amount, duration, func(val:float) -> void:
-			material_dupe.set_shader_parameter("top_bottom_border_pixels", val)
-		).finished		
-		
-		await U.tween_range(material_dupe.get_shader_parameter("left_right_border_pixels"), new_amount, duration, func(val:float) -> void:
-			material_dupe.set_shader_parameter("left_right_border_pixels", val)
-		).finished				
-			
-func use_full_shader_settings(instant:bool = false) -> void:
+# -----------------------------------	
+func use_full_shader_settings(state:bool, instant:bool = false) -> void:
 	var duration:float = 0.7 if !instant else 0
 	
 	# restore colors
 	for item in color_rect_arr:
 		var node:Control = item[0]
 		var key:String = item[1]
-		var color:Color = colorrect_defaults[key].color
+		var color:Color = colorrect_defaults[key].color if state else 0
 		U.tween_node_property(node, 'color:a', color.a, duration)
 	
 	# restores bend amount
@@ -638,7 +624,7 @@ func use_full_shader_settings(instant:bool = false) -> void:
 		var node:Control = item[0]
 		var key:String = item[1]
 		var material_dupe = shader_defaults[key].material.duplicate(true)
-		var new_amount:float = material_dupe.get_shader_parameter("bend_amount")
+		var new_amount:float = material_dupe.get_shader_parameter("bend_amount") if state else 0
 		node.material = material_dupe
 
 		U.tween_range(material_dupe.get_shader_parameter("bend_amount"), new_amount, duration, func(val:float) -> void:
@@ -649,8 +635,8 @@ func use_full_shader_settings(instant:bool = false) -> void:
 		var node:Control = item[0]
 		var key:String = item[1]
 		var material_dupe = shader_defaults[key].material.duplicate(true)
-		var new_amount_top:float = material_dupe.get_shader_parameter("top_bottom_border_pixels")
-		var new_amount_sides:float = material_dupe.get_shader_parameter("left_right_border_pixels")
+		var new_amount_top:float = material_dupe.get_shader_parameter("top_bottom_border_pixels") if state else 0
+		var new_amount_sides:float = material_dupe.get_shader_parameter("left_right_border_pixels") if state else 0
 
 		node.material = material_dupe
 
@@ -662,7 +648,6 @@ func use_full_shader_settings(instant:bool = false) -> void:
 			material_dupe.set_shader_parameter("left_right_border_pixels", val)
 		).finished						
 # -----------------------------------	
-
 
 # -----------------------------------	
 func on_shader_profile_update() -> void:

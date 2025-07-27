@@ -24,6 +24,7 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 @onready var PressStartPanel:PanelContainer = $PressStart/PanelContainer
 @onready var PressStartGameLabel:Label = $PressStart/PanelContainer/MarginContainer/VBoxContainer/GameTitle
 @onready var PressStartMainPanel:MarginContainer = $PressStart/PanelContainer/MarginContainer
+@onready var FadeOverlay:ColorRect = $FadeOverlay
 
 const game_title:String = "MEMORY RECOVERY PROTOCOL"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
@@ -148,6 +149,7 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_SEQUENCE):
 				for item in [
 						{"text": 'A GAME BY ALLEN ROYSTON', "wait": 0.3}, 
+						{"text": 'MUSIC BY RAGZ', "wait": 0.3}, 
 						{"text": 'CREATING SAVE FILE', "wait": 0.4}, 
 						{"text": 'SAVE FILE LOADED.', "wait": 0.4}
 					]:
@@ -155,8 +157,8 @@ func on_current_mode_update() -> void:
 					CreditLabel.text = item.text
 					CreditLabel.modulate = Color(1, 1, 1, 0)
 					
-					U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 1), 0.3)
-					U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 1), 0.3)
+					U.tween_node_property(CreditLabel, 'modulate:a', 1, 0.3)
+					U.tween_node_property(CreditsPanel, 'modulate:a', 1, 0.3)
 					
 					await U.tween_node_property(CreditsMarginPanel, 'position:y', control_pos[CreditsMarginPanel].show + 5, 0.3, Tween.TRANS_LINEAR)
 					await U.set_timeout(item.wait)
@@ -164,14 +166,14 @@ func on_current_mode_update() -> void:
 					await U.tween_node_property(CreditLabel, 'modulate', Color(1, 1, 1, 0), 0.4)
 				
 				
-				U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
+				U.tween_node_property(CreditsPanel, 'modulate:a', 0, 0.5)
 				await U.set_timeout(1.0)
 				
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
 					await letter_node.end()
 					
-				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 0), 2.0)
+				await U.tween_node_property(TitleBGLabel, 'modulate:a', 0, 2.0)
 				await U.set_timeout(0.5)				
 				
 			current_mode = MODE.WAIT_FOR_INPUT
@@ -180,14 +182,17 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.INTRO_SKIP_STARTAT):
 
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].show)
-				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 1), 0.7)
+				await U.tween_node_property(PressStartPanel, 'modulate:a', 1, 0.7)
 				await user_input
 			
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide)
-				U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
-				await OutsideRenderer.zoomOut()
-				await TransitionScreen.start(0.6, true)
-				#await U.set_timeout(0.5)
+				U.tween_node_property(PressStartPanel, 'modulate:a', 0, 0.3)				
+				OutsideRenderer.zoomOut()
+				await U.set_timeout(2.0)
+				U.tween_node_property(FadeOverlay, 'modulate:a', 1, 1, 1)
+				await TransitionScreen.start(2, true)
+				
+
 				#GBL.find_node(REFS.AUDIO).fade_out(3.0)
 
 			current_mode = MODE.EXIT

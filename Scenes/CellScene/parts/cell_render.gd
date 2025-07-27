@@ -7,6 +7,12 @@ extends Node3D
 @onready var LowLevelLighting:Node3D = $Lighting/LowLevelLighting
 @onready var DustParticles:GPUParticles3D = $Camera3D/DustParticles
 
+@onready var LookAtCamera:Camera3D = $LookAtCamera
+@onready var LookAtCenter:Marker3D = $Structure/ShelfModel/TvMonitorModel/LookAtCenter
+@onready var LookAtComputer:Marker3D = $Structure/Desk/ComputerModel/LookAtComputer
+@onready var LookAtTerminal:Marker3D = $Structure/Desk2/ComputerModel/LookAtTerminal
+@onready var LookAtExit:Marker3D = $Structure/LookAtExit
+
 @export var enable_ambient_lighting:bool = false : 
 	set(val):
 		enable_ambient_lighting = val
@@ -60,12 +66,23 @@ func on_enable_dust_particles_update() -> void:
 	DustParticles.show() if enable_dust_particles else DustParticles.hide()
 	DustParticles.emitting = enable_dust_particles
 
-func look_left() -> void:	
-	await U.tween_node_property(SceneCamera, "rotation_degrees:y", 35, 0.7, 0, Tween.TRANS_EXPO)
+func look_at_computer() -> void:	
+	LookAtCamera.look_at(LookAtComputer.global_transform.origin, Vector3.UP)
+	await U.tween_node_property(SceneCamera, "rotation_degrees", LookAtCamera.rotation_degrees, 0.5, 0, Tween.TRANS_CUBIC)	
 	
-func look_right() -> void:
-	await U.tween_node_property(SceneCamera, "rotation_degrees:y", -35, 0.7, 0, Tween.TRANS_EXPO)
+func look_at_terminal() -> void:	
+	LookAtCamera.look_at(LookAtTerminal.global_transform.origin, Vector3.UP)
+	await U.tween_node_property(SceneCamera, "rotation_degrees", LookAtCamera.rotation_degrees, 0.5, 0, Tween.TRANS_CUBIC)	
 	
+func look_at_center() -> void:
+	LookAtCamera.look_at(LookAtCenter.global_transform.origin, Vector3.UP)
+	await U.tween_node_property(SceneCamera, "rotation_degrees", LookAtCamera.rotation_degrees, 0.5, 0, Tween.TRANS_CUBIC)	
+
+func look_at_exit() -> void:
+	LookAtCamera.look_at(LookAtExit.global_transform.origin, Vector3.UP)
+	await U.tween_node_property(SceneCamera, "rotation_degrees", LookAtCamera.rotation_degrees, 0.5, 0, Tween.TRANS_CUBIC)	
+
+
 func zoom(state:bool) -> void:
-	U.tween_node_property(SceneCamera, "fov", 67 if state else 20, 0.7, 0, Tween.TRANS_EXPO)
-	await U.set_timeout(0.5)
+	U.tween_node_property(SceneCamera, "fov", 1 if state else 55, 0.7, 0, Tween.TRANS_CIRC)
+	await U.set_timeout(0.6)
