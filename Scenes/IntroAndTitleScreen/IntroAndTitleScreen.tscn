@@ -1,6 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=21 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
+[ext_resource type="Texture2D" uid="uid://dtxyw5375toy2" path="res://Media/images/GameLogo/godot_logo.png" id="3_bp17p"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
 [ext_resource type="Texture2D" uid="uid://ctxpqywam2krt" path="res://Media/images/GameLogo/game_logo.png" id="3_yi28m"]
@@ -76,7 +77,19 @@ layout_mode = 2
 [node name="Control" type="Control" parent="Logo/MarginContainer/CenterContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Logo/MarginContainer/CenterContainer/Control"]
+[node name="GodotLogo" type="TextureRect" parent="Logo/MarginContainer/CenterContainer/Control"]
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 2
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+pivot_offset = Vector2(250, 250)
+texture = ExtResource("3_bp17p")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StudioLogo" type="TextureRect" parent="Logo/MarginContainer/CenterContainer/Control"]
 custom_minimum_size = Vector2(500, 500)
 layout_mode = 2
 offset_left = -250.0

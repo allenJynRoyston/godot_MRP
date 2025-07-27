@@ -1,6 +1,6 @@
-[gd_scene load_steps=19 format=3 uid="uid://esq71d7mxqx7"]
+[gd_scene load_steps=20 format=3 uid="uid://esq71d7mxqx7"]
 
-[ext_resource type="Script" uid="uid://cv0jib84ns0bc" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
+[ext_resource type="Script" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
 [ext_resource type="LabelSettings" uid="uid://cgiw558tptin8" path="res://Fonts/article_h1.tres" id="2_6ur50"]
 [ext_resource type="StyleBox" uid="uid://6oppauql27g" path="res://Styles/ArticlePanel.tres" id="2_gaacx"]
 [ext_resource type="LabelSettings" uid="uid://bljqgalhb0kxy" path="res://Fonts/article_h2.tres" id="3_ds7rn"]
@@ -82,6 +82,8 @@ corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mhd6"]
 
 [node name="PanelContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -220,53 +222,59 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer"]
+[node name="TabContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer"]
 layout_mode = 2
 
-[node name="ItemBtn" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_6riif")
+index = 0
 title = "CONTAINMENT PROCEDURES"
 is_selected = true
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
-[node name="ItemBtn2" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn2" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0j6g6")
+index = 1
 title = "DESCRIPTION"
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
-[node name="ItemBtn3" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn3" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_r8dox")
+index = 2
 title = "REDACTED"
 is_disabled = true
 is_hollow = true
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
-[node name="ItemBtn4" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn4" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pqe1g")
+index = 3
 title = "REDACTED"
 is_disabled = true
 is_hollow = true
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
-[node name="ItemBtn5" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn5" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3j23j")
+index = 4
 title = "REDACTED"
 is_disabled = true
 is_hollow = true
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
-[node name="ItemBtn6" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/HBoxContainer" instance=ExtResource("5_6riif")]
+[node name="ItemBtn6" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_idrt8")
+index = 5
 title = "REDACTED"
 is_disabled = true
 is_hollow = true
@@ -277,29 +285,33 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_gaacx")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_8mhd6")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Containment" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer"]
+[node name="ContainmentProcedures" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Containment"]
-visible = false
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/ContainmentProcedures"]
 layout_mode = 2
 text = "Standard Containment Procedures"
 label_settings = ExtResource("3_ds7rn")
 uppercase = true
 
-[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Containment"]
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/ContainmentProcedures"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "Due to SCP-XXXX’s intangible nature and transient manifestation, physical containment is currently impossible. Containment efforts are focused on detection, disruption, and suppression of new instances.
@@ -318,24 +330,22 @@ Suicide clusters near SCP-XXXX emergence zones must be investigated for potentia
 label_settings = ExtResource("4_ff2n2")
 autowrap_mode = 3
 
-[node name="Description" type="HBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer"]
-visible = false
+[node name="Description" type="HBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/VBoxContainer"]
-visible = false
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/VBoxContainer"]
 layout_mode = 2
 text = "Description"
 label_settings = ExtResource("3_ds7rn")
 uppercase = true
 
-[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/VBoxContainer"]
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/VBoxContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "SCP-XXXX is a non-corporeal anomalous entity or conceptual pattern that manifests through various imaginative entertainment mediums. It is intangible, yet consistently assumes the form of a readable or interpretive artifact—such as a novel, video game, screenplay, comic, or other cognitively interactive narrative work.
@@ -361,37 +371,37 @@ Subjects who are cognitively disrupted before completing SCP-XXXX’s “narrati
 label_settings = ExtResource("4_ff2n2")
 autowrap_mode = 3
 
-[node name="RightPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description"]
+[node name="RightPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("2_gaacx")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/RightPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/RightPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("5_ff2n2")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("6_gaacx")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/RightPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Known previous iterations"
 label_settings = ExtResource("6_ajcl2")

@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="3_65whp"]
 [ext_resource type="PackedScene" uid="uid://b0u4ro8hbibl1" path="res://Scenes/CellScene/assets/CellModel.tscn" id="3_c3rb4"]
 [ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_65whp"]
-[ext_resource type="PackedScene" uid="uid://csbyru8rsamxn" path="res://Scenes/CellScene/assets/ShelfModel.tscn" id="4_d2d4g"]
-[ext_resource type="PackedScene" uid="uid://bqn8lk7xb5ico" path="res://Scenes/CellScene/assets/TVMonitorModel.tscn" id="5_jdl17"]
+[ext_resource type="PackedScene" path="res://Scenes/CellScene/assets/ShelfModel.tscn" id="4_d2d4g"]
+[ext_resource type="PackedScene" path="res://Scenes/CellScene/assets/TVMonitorModel.tscn" id="5_jdl17"]
 
 [sub_resource type="Environment" id="Environment_0c7qq"]
 background_energy_multiplier = 0.0
@@ -204,18 +204,9 @@ spot_range = 3.5
 spot_energy = 1.0
 
 [node name="LowLevelLighting" type="Node3D" parent="Lighting"]
-visible = false
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Lighting/LowLevelLighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7803, -0.0650684)
-light_color = Color(1, 0.79, 0.79, 1)
-omni_range = 0.394
+light_color = Color(0.9665, 0.211742, 0.320422, 1)
+omni_range = 3.775
 omni_shadow_mode = 0
-
-[node name="CustomSpotlight" parent="Lighting/LowLevelLighting/OmniLight3D" instance=ExtResource("3_65whp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.078862, -0.252471)
-godray_color = Color(0.897754, 0.989961, 0.960274, 1)
-godray_energy = 4.0
-spot_range = 4.2
-spot_energy = 1.0
-omni_range = 10.0

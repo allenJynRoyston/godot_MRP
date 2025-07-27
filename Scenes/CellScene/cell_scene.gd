@@ -97,29 +97,32 @@ func start(use_fast_animation:bool = false) -> void:
 	TextureRender.texture = RenderSubviewport.get_texture()
 	
 	if play_introduction:
-		BtnControls.a_btn_title = "STRUGGLE"
-			
+		BtnControls.hide_a_btn = true
+
 		BtnControls.onAction = func() -> void:
 			BtnControls.reveal(false)		
+			await transInFx.call()
 			await zoom_into_screen(true)
 			await play_current_story_sequence()
+			
 			zoom_into_screen(false)			
 			BtnControls.reveal(true)
 			GBL.active_user_profile.boot_count += 1
 			GBL.update_and_save_user_profile()
 			play_introduction = false
+			CellSceneRender.enable_lowlevel_lighting = false		
 			CellSceneRender.enable_interogation_lighting = true			
 			check_btn_states()
 
-		BtnControls.freeze_and_disable(true)	
-
-		await U.tween_node_property(self, "modulate:a", 1, 1.0)
-		await U.tween_node_property(FadeOverlay, "modulate:a", 0, 1.0)		
+		await U.tween_node_property(self, "modulate:a", 1, 2.0)
+		await U.tween_node_property(FadeOverlay, "modulate:a", 0, 2.0)		
 	
 		await U.set_timeout(3.0)		
-		for duration in generate_flicker_pattern(20):
+		
+		for duration in generate_flicker_pattern(10):
 			await U.set_timeout(duration)
 			CellSceneRender.enable_lowlevel_lighting = !CellSceneRender.enable_lowlevel_lighting
+		BtnControls.hide_a_btn = false
 		CellSceneRender.enable_lowlevel_lighting = true
 		await U.set_timeout(3.0)
 		BtnControls.freeze_and_disable(false)
@@ -218,7 +221,7 @@ func check_btn_states() -> void:
 			BtnControls.a_btn_title = "PLAY MESSAGE" if !message_has_been_played else "REPLAY MESSAGE"
 				
 			BtnControls.onAction = func() -> void:				
-				await BtnControls.reveal(false)
+				BtnControls.reveal(false)
 				await transInFx.call()
 				await zoom_into_screen(true)				
 				await play_current_story_sequence()
