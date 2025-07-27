@@ -122,6 +122,7 @@ func start(use_fast_animation:bool = false) -> void:
 		for duration in generate_flicker_pattern(10):
 			await U.set_timeout(duration)
 			CellSceneRender.enable_lowlevel_lighting = !CellSceneRender.enable_lowlevel_lighting
+		await U.set_timeout(1.0)		
 		BtnControls.hide_a_btn = false
 		CellSceneRender.enable_lowlevel_lighting = true
 		await U.set_timeout(3.0)

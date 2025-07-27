@@ -4,4 +4,4 @@
 
 [resource]
 shader = ExtResource("1_xoc1d")
-shader_parameter/melt_amount = 0.0
+shader_parameter/transition = 0.0
