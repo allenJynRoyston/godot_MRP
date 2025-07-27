@@ -1,8 +1,9 @@
 [gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://c736yp54jh7wi"]
 
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="1_fdvku"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="1_fdvku"]
 
 [resource]
 font = ExtResource("1_fdvku")
 font_color = Color(0, 0.964706, 0.278431, 1)
+shadow_color = Color(0, 0.96, 0.272, 0.2)
 shadow_offset = Vector2(2, 2)

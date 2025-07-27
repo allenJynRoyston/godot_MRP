@@ -19,7 +19,7 @@ extends BtnBase
 @onready var CooldownLabel:Label = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/CooldownPanel/MarginContainer/HBoxContainer/CooldownLabel
 
 @onready var TogglePanel:PanelContainer = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel
-@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer/CheckBox
+#@onready var Checkbox:BtnBase = $MarginContainer/InnerPanel/MarginContainer/HBoxContainer/TogglePanel/MarginContainer/HBoxContainer/CheckBox
 
 @export var title:String = "" : 
 	set(val): 
@@ -56,10 +56,10 @@ extends BtnBase
 		is_togglable = val
 		on_is_togglable_update()
 		
-@export var is_checked:bool = false : 
-	set(val):
-		is_checked = val
-		on_is_checked_update()		
+#@export var is_checked:bool = false : 
+	#set(val):
+		#is_checked = val
+		#on_is_checked_update()		
 		
 @export var is_empty:bool = false : 
 	set(val):
@@ -81,7 +81,7 @@ func _ready() -> void:
 	on_is_selected_update()
 	on_cooldown_duration_update()
 	on_is_togglable_update()
-	on_is_checked_update()
+	#on_is_checked_update()
 	on_is_empty_update()
 # ------------------------------------------------------------------------------
 
@@ -133,9 +133,9 @@ func on_is_togglable_update() -> void:
 	TogglePanel.show() if is_togglable else TogglePanel.hide()
 	
 
-func on_is_checked_update() -> void:
-	if !is_node_ready():return
-	Checkbox.is_checked = is_checked
+#func on_is_checked_update() -> void:
+	#if !is_node_ready():return
+	#Checkbox.is_checked = is_checked
 
 func on_cooldown_duration_update() -> void:
 	if !is_node_ready():return

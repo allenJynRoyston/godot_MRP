@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bqbahyl4ujfiq" path="res://Scenes/TrainingProgram/parts/TitleScreen/title_screen.gd" id="1_1obr7"]
 [ext_resource type="LabelSettings" uid="uid://dmld55niojdwk" path="res://Fonts/game/LogoScreen.tres" id="2_wrxma"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_p3swr"]
-[ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="4_oonus"]
+[ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="4_p3swr"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_3sdtd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfvw8"]
@@ -121,19 +121,19 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
+[node name="NewBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_p3swr")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3swr")
 title = "NEW GAME"
 COLOR_A = Color(1, 1, 1, 1)
 
-[node name="ContinueBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
+[node name="ContinueBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_p3swr")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nwmuc")
 title = "CONTINUE..."
 COLOR_A = Color(1, 1, 1, 1)
 
-[node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_oonus")]
+[node name="QuitBtn" parent="MainControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("4_p3swr")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_oonus")
 title = "EXIT APPLICATION"

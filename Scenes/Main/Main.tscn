@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=31 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -19,9 +19,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_dvlhv"]
-viewport_path = NodePath("OS")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
 viewport_path = NodePath("GameLayer")
@@ -176,7 +173,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-is_production_build = true
 audio_mute = true
 skip_splash = true
 skip_intro = true
@@ -205,23 +201,14 @@ mtf_delta = true
 [node name="OS" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
-[node name="OSPanel" parent="OS" instance=ExtResource("5_epx8f")]
-clip_contents = true
-
 [node name="GameLayer" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
 [node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("4_cv8e0")]
 theme_override_styles/panel = SubResource("StyleBoxFlat_cetvo")
 
-[node name="OSTexture" type="TextureRect" parent="GameLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("ViewportTexture_dvlhv")
-expand_mode = 1
+[node name="OsScene" parent="GameLayer" instance=ExtResource("5_epx8f")]
+clip_contents = true
 
 [node name="CellScene" parent="GameLayer" instance=ExtResource("4_18xdc")]
 

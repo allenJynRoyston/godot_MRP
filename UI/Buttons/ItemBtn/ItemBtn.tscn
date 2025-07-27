@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="2_x1mlu"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_mtla5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1mlu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67c0r"]
 bg_color = Color(0, 0, 0, 0.8)
 border_color = Color(1, 0.75, 0.2, 1)
 corner_radius_top_left = 3
@@ -12,7 +12,7 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="LabelSettings" id="LabelSettings_mtla5"]
+[sub_resource type="LabelSettings" id="LabelSettings_x1mlu"]
 font = ExtResource("3_mtla5")
 font_color = Color(1, 0.75, 0.2, 0.8)
 outline_size = 2
@@ -22,7 +22,7 @@ outline_color = Color(1, 0.75, 0.2, 0.5)
 custom_minimum_size = Vector2(0, 45)
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_x1mlu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_67c0r")
 script = ExtResource("1_67c0r")
 is_hoverable = false
 
@@ -46,5 +46,4 @@ is_hoverable = false
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "Item Btn"
-label_settings = SubResource("LabelSettings_mtla5")
+label_settings = SubResource("LabelSettings_x1mlu")

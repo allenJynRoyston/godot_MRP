@@ -1,14 +1,10 @@
 extends PanelContainer
 
 enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_TEXT, WAIT_FOR_INPUT, EXIT}
-
-@onready var TextureRender:TextureRect = $Title/MarginContainer/TextureRender
-
-@onready var RenderSubviewport:SubViewport = $Title/RenderSubviewport
-@onready var OutsideRender:Node3D = $Title/RenderSubviewport/OutsideRender
+@onready var TransitionScreen:Control = $TransitionScreen
+@onready var OutsideRenderer:Node3D = $Title/RenderSubviewport/OutsideRender
 
 @onready var TitleSplash:PanelContainer = $TitleSplash
-
 @onready var LogoControl:Control = $Logo
 @onready var LogoPanel:MarginContainer = $Logo/MarginContainer
 @onready var LogoTextureRect:TextureRect = $Logo/MarginContainer/CenterContainer/Control/TextureRect
@@ -105,6 +101,7 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.SKIP_SPLASH):
 				TitleSplash.start()
 				await TitleSplash.on_complete	
+				await TransitionScreen.start(0.6, true)
 				await U.set_timeout(0.5)	
 			current_mode = MODE.DISPLAY_LOGO	
 		# ---------
@@ -121,18 +118,23 @@ func on_current_mode_update() -> void:
 				
 				await U.set_timeout(2.0)
 				# fade out
-				U.tween_node_property(LogoTextureRect, 'scale:x', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
-				U.tween_node_property(LogoTextureRect, 'scale:y', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
-				await U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 0), 1.0)
+				#U.tween_node_property(LogoTextureRect, 'scale:x', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
+				#U.tween_node_property(LogoTextureRect, 'scale:y', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
+				U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 0), 1.0)
+				await TransitionScreen.start(0.6, true)
+				await U.set_timeout(0.5)	
 				
 			current_mode = MODE.DISPLAY_TITLE
 		# ---------
-		MODE.DISPLAY_TITLE:			
-			if !DEBUG.get_val(DEBUG.INTRO_SKIP_TITLE):
+		MODE.DISPLAY_TITLE:	
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_TITLE):				
 				TitlePanel.modulate = Color(1, 1, 1, 1)
-				await U.tween_node_property(TitleBG, 'color', Color(0, 0, 0, 0), 2.0)
+				U.tween_node_property(TitleBG, 'color', Color(0, 0, 0, 0), 2.0)
+				U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 1), 2.0)
+				OutsideRenderer.zoomIn()
+				await TransitionScreen.start(0.6, true)
+				await U.set_timeout(0.5)
 				
-				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 1), 2.0)
 				
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
@@ -163,14 +165,14 @@ func on_current_mode_update() -> void:
 				
 				
 				U.tween_node_property(CreditsPanel, 'modulate', Color(1, 1, 1, 0), 0.5)
-				
 				await U.set_timeout(1.0)
 				
 				for index in range(0, TitleLetterContainers.get_child_count()):
 					var letter_node:Control = TitleLetterContainers.get_child(index)
 					await letter_node.end()
 					
-				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 0), 2.0)				
+				await U.tween_node_property(TitleBGLabel, 'modulate', Color(1, 1, 1, 0), 2.0)
+				await U.set_timeout(0.5)				
 				
 			current_mode = MODE.WAIT_FOR_INPUT
 		# ---------
@@ -182,11 +184,12 @@ func on_current_mode_update() -> void:
 				await user_input
 			
 				U.tween_node_property(PressStartMainPanel, 'position:y', control_pos[PressStartMainPanel].hide)
-				await U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
-				
-				GBL.find_node(REFS.AUDIO).fade_out(3.0)
-				
-			
+				U.tween_node_property(PressStartPanel, 'modulate', Color(1, 1, 1, 0), 0.3)
+				await OutsideRenderer.zoomOut()
+				await TransitionScreen.start(0.6, true)
+				#await U.set_timeout(0.5)
+				#GBL.find_node(REFS.AUDIO).fade_out(3.0)
+
 			current_mode = MODE.EXIT
 		# ---------
 		MODE.EXIT:

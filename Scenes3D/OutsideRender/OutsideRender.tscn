@@ -1,6 +1,5 @@
-[gd_scene load_steps=16 format=3 uid="uid://bso3mupgofbc6"]
+[gd_scene load_steps=15 format=3 uid="uid://bso3mupgofbc6"]
 
-[ext_resource type="Script" uid="uid://cbyqr6lnfrevh" path="res://Scenes/IntroAndTitleScreen/camera_3d.gd" id="1_5j18f"]
 [ext_resource type="Script" uid="uid://cmd0kpf27mtcp" path="res://Scenes3D/OutsideRender/outside_render.gd" id="1_iu2be"]
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_iu2be"]
 [ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_sqf7y"]
@@ -96,15 +95,12 @@ light_color = Color(0.18375, 0.0603779, 0.0415957, 1)
 light_energy = 7.652
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(0.671152, 0, 0.74132, 0, 1, 0, -0.74132, 0, 0.671152, 8.49568, 5.5, 12.6797)
+transform = Transform3D(0.671721, 0, 0.740805, 0, 1, 0, -0.740805, 0, 0.671721, 8.496, 5.5, 12)
 attributes = SubResource("CameraAttributesPractical_lhit1")
 current = true
 fov = 67.0
 size = 6.263
 far = 455.57
-script = ExtResource("1_5j18f")
-wobble_intensity = 0.1
-wobble_speed = 1.0
 
 [node name="DustParticles" type="GPUParticles3D" parent="Node3D/Camera3D"]
 transform = Transform3D(0.999868, 0, -0.0162481, 0, 1, 0, 0.0162481, 0, 0.999868, -0.0830426, 0, -1.69598)

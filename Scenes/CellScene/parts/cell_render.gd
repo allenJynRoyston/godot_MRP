@@ -1,5 +1,6 @@
 extends Node3D
 
+@onready var SceneCamera:Camera3D = $Camera3D
 @onready var AmbientLighting:Node3D = $Lighting/AmbientLighting
 @onready var EmergencyLighting:Node3D = $Lighting/EmergencyLighting
 @onready var InterogationLighting:Node3D = $Lighting/InterogationLighting
@@ -58,4 +59,13 @@ func on_enable_dust_particles_update() -> void:
 	if !is_node_ready():return
 	DustParticles.show() if enable_dust_particles else DustParticles.hide()
 	DustParticles.emitting = enable_dust_particles
+
+func look_left() -> void:	
+	await U.tween_node_property(SceneCamera, "rotation_degrees:y", 35, 0.7, 0, Tween.TRANS_EXPO)
 	
+func look_right() -> void:
+	await U.tween_node_property(SceneCamera, "rotation_degrees:y", -35, 0.7, 0, Tween.TRANS_EXPO)
+	
+func zoom(state:bool) -> void:
+	U.tween_node_property(SceneCamera, "fov", 67 if state else 20, 0.7, 0, Tween.TRANS_EXPO)
+	await U.set_timeout(0.5)

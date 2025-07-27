@@ -5,10 +5,9 @@ extends PanelContainer
 @onready var Gamelayer:SubViewport = $GameLayer
 @onready var MusicShaderViewport:SubViewport = $MusicShader
 
+# MAIN SCENES
 @onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
-@onready var OSTexture:TextureRect = $GameLayer/OSTexture
-@onready var OSViewport:SubViewport = $OS
-@onready var OsScene:PanelContainer = $OS/OSPanel
+@onready var OsScene:PanelContainer = $GameLayer/OsScene
 @onready var CellScene:PanelContainer = $GameLayer/CellScene
 @onready var ArticleScene:PanelContainer = $GameLayer/ArticleScene
 @onready var TransitionScreen:Control = $GameLayer/TransitionScreen
@@ -266,11 +265,13 @@ func _ready() -> void:
 	CellScene.gotoOs = func() -> void:
 		current_layer = LAYER.OS_lAYER		
 
-		
 	CellScene.gotoScp = func() -> void:
 		current_layer = LAYER.SCP_LAYER	
 	
 	OsScene.onBack = func() -> void:
+		current_layer = LAYER.CELLBLOCK_LAYER
+	
+	ArticleScene.onBack = func() -> void:
 		current_layer = LAYER.CELLBLOCK_LAYER
 		
 	# get default parameters
@@ -472,14 +473,15 @@ func switch_to_node(use_node:Control) -> void:
 			node.set_process(false)
 			node.set_physics_process(false)
 	
-	TransitionScreen.start(0.7, true)
+	TransitionScreen.start(0.3, true)
 	
 	match use_node:
 		CellScene:
-			shader_profile = SHADER_PROFILE.NONE
-				
+			no_shader_effects()
 		OsScene:
-			shader_profile = SHADER_PROFILE.ALL
+			use_focus_shader_settings()
+		ArticleScene:
+			use_focus_shader_settings()
 			
 # -----------------------------------	
 
@@ -542,7 +544,6 @@ func duplicate_shader_defaults() -> void:
 		shader_defaults[key].material = node.material
 		shader_defaults[key].shader = node.material.shader
 		
-
 func duplicate_colorrect_defaults() -> void:
 	for item in color_rect_arr:
 		var node:Control = item[0]
@@ -550,7 +551,6 @@ func duplicate_colorrect_defaults() -> void:
 		
 		colorrect_defaults[key].node = node
 		colorrect_defaults[key].color = node.color
-		
 # -----------------------------------	
 
 # -----------------------------------	
@@ -568,7 +568,6 @@ func add_all_shaders() -> void:
 func remove_all_shaders() -> void:
 	for node in shader_list:
 		node.material = null
-		
 # -----------------------------------	
 
 # -----------------------------------	

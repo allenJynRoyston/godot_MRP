@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ciqd2sulkor5t"]
+
+[ext_resource type="Shader" uid="uid://wtxyh6raqh8m" path="res://CanvasShader/ScreenMelt/screenMelt.gdshader" id="1_xoc1d"]
+
+[resource]
+shader = ExtResource("1_xoc1d")
+shader_parameter/melt_amount = 0.0

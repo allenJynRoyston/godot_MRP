@@ -1,5 +1,4 @@
-extends MouseInteractions
-class_name Layout
+extends PanelContainer
 
 @onready var BG:TextureRect = $BG
 @onready var AudioVisualizer:PanelContainer = $AudioVisualizer
@@ -403,7 +402,6 @@ func _exit_tree() -> void:
 
 # -----------------------------------
 func _ready() -> void:	
-	super._ready()	
 	hide()
 	set_process(false)
 	set_physics_process(false)	
@@ -439,7 +437,7 @@ func resume() -> void:
 
 # -----------------------------------
 func start() -> void:
-	var skip_boot:bool = DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
+	var skip_boot:bool = true #DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
 	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
 	
 	

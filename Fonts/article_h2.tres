@@ -1,10 +1,11 @@
 [gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bljqgalhb0kxy"]
 
-[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="1_6ntom"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="1_6ntom"]
 
 [resource]
 font = ExtResource("1_6ntom")
 font_size = 24
 font_color = Color(0, 0.964706, 0.278431, 1)
 outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0.96, 0.272, 0.352941)
 shadow_offset = Vector2(2, 2)

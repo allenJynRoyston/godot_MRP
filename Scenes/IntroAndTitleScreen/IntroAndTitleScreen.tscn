@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c4jcka6l73m7c"]
+[gd_scene load_steps=20 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
@@ -11,6 +11,7 @@
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_yi28m"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="9_bxtjv"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="9_yi28m"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="12_6bd6i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
@@ -253,3 +254,6 @@ text = "Version 0.1.1B  (Internal Use Only)"
 label_settings = ExtResource("9_yi28m")
 horizontal_alignment = 1
 vertical_alignment = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("12_6bd6i")]
+layout_mode = 2
