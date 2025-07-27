@@ -4,5 +4,5 @@
 
 [resource]
 font = ExtResource("1_fdvku")
-font_color = Color(0, 0.964706, 0.278431, 1)
+font_color = Color(0.0313726, 0.964706, 0.282353, 1)
 shadow_offset = Vector2(2, 2)

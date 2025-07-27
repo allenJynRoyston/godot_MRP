@@ -15,9 +15,8 @@ func _ready() -> void:
 	TextureRectUI.hide()
 	
 func start(duration:float = 0.3, clear_after:bool = false) -> void:
-	TextureRectUI.show()
 	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
-	await U.tick()
+	TextureRectUI.show()
 
 	match transition_type:
 		TYPE.DISSOLVE:

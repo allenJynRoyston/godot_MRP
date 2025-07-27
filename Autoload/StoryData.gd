@@ -7,14 +7,17 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"D-Class 313202, you're finally awake. I'm Researcher Ambrose. I'm overseeing the study of... whatever that is in front of you.",
-			"Good news first — your job's pretty simple. That computer right there has a piece of software on it.",
-			"Specifically, it’s called the Site Director Training Program.",
-			"All you have to do is learn it. That’s it.",
-			"You complete the program, we let you walk free. Simple.",
-			"Now, the bad news.",
-			"If you refuse, or take too long? The bomb around your neck goes off.",
-			"Well... that's all you need to know for now. Get to work."
+			"D-Class 2477.  Welcome back.",
+			"My name is Dr. Ambrose and I'm the lead researcher for this experiement we're about to perform.",
+			"What I'm asking you to do is extremely simple.  The computer on your left.  I need you to interact with it.",
+			"We're not sure why, but... we think it's dangerous.  And you're tasked with finding out why.",
+			"If you have quesitons, use the terminal on the right.  It will explain everything.",
+			"Final thing.  Don't move from that chair.  You're secured to it, but the pressure plate undernearth is sensitive.  You trigger it and the room explodes.",
+			"Game over.  So don't do it.",
+			"The chair you're strapped to has controls in it.  Use them to interact with the computer.",
+			"Alright.  That's the jist of it.",
+			"Survive for the next 8 hours and we'll release the lock and call it a day.",
+			"Good luck."
 		],
 		"objectives": {
 			"title": "SETUP",

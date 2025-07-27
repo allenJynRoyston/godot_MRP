@@ -6,8 +6,9 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 
 @onready var TitleSplash:PanelContainer = $TitleSplash
 @onready var LogoControl:Control = $Logo
+@onready var GodotLogo:Control = $Logo/MarginContainer/CenterContainer/Control/GodotLogo
+@onready var StudioLogo:TextureRect = $Logo/MarginContainer/CenterContainer/Control/StudioLogo
 @onready var LogoPanel:MarginContainer = $Logo/MarginContainer
-@onready var LogoTextureRect:TextureRect = $Logo/MarginContainer/CenterContainer/Control/TextureRect
 
 @onready var TitleControl:Control = $Title
 @onready var TitlePanel:MarginContainer = $Title/MarginContainer
@@ -48,7 +49,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)
-	
+	GodotLogo.hide()
 
 	for node in [LogoPanel, TitlePanel, CreditsPanel, PressStartPanel, TitleBGLabel]:
 		node.modulate = Color(1, 1, 1, 0)	
@@ -91,6 +92,18 @@ func end() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
+func generate_flicker_pattern(count := 10) -> Array:
+	var flickers := []
+	for i in count:
+		# Quick flick (off/on)
+		if randi() % 2 == 0:
+			flickers.append(randf_range(0.02, 0.05))  # fast blink
+		else:
+			flickers.append(randf_range(0.1, 0.2))   # slightly slower
+	return flickers
+# ---------------------------------------------
+
+# ---------------------------------------------
 func on_current_mode_update() -> void:
 	if !is_node_ready():return
 	match current_mode:
@@ -113,11 +126,18 @@ func on_current_mode_update() -> void:
 				}	
 					
 				# fade in
-				U.tween_node_property(LogoTextureRect, 'scale:x', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
-				U.tween_node_property(LogoTextureRect, 'scale:y', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
+				U.tween_node_property(StudioLogo, 'scale:x', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
+				U.tween_node_property(StudioLogo, 'scale:y', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
 				await U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 1), 1.0, 0.3)
-				
 				await U.set_timeout(2.0)
+				
+				for duration in generate_flicker_pattern(10):
+					await U.set_timeout(duration)
+					StudioLogo.visible = !StudioLogo.visible
+					GodotLogo.visible = !StudioLogo.visible
+				
+				LogoPanel.visible = false
+				GodotLogo.visible = true
 				# fade out
 				#U.tween_node_property(LogoTextureRect, 'scale:x', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
 				#U.tween_node_property(LogoTextureRect, 'scale:y', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
