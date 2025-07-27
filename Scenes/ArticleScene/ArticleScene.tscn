@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://esq71d7mxqx7"]
 
-[ext_resource type="Script" uid="uid://cv0jib84ns0bc" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
+[ext_resource type="Script" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
 [ext_resource type="LabelSettings" uid="uid://cgiw558tptin8" path="res://Fonts/article_h1.tres" id="2_6ur50"]
 [ext_resource type="StyleBox" uid="uid://6oppauql27g" path="res://Styles/ArticlePanel.tres" id="2_gaacx"]
 [ext_resource type="LabelSettings" uid="uid://bljqgalhb0kxy" path="res://Fonts/article_h2.tres" id="3_ds7rn"]

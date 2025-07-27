@@ -97,9 +97,9 @@ func generate_flicker_pattern(count := 10) -> Array:
 	for i in count:
 		# Quick flick (off/on)
 		if randi() % 2 == 0:
-			flickers.append(randf_range(0.02, 0.05))  # fast blink
+			flickers.append(randf_range(0.02, 0.04))  # fast blink
 		else:
-			flickers.append(randf_range(0.1, 0.2))   # slightly slower
+			flickers.append(randf_range(0.05, 0.1))   # slightly slower
 	return flickers
 # ---------------------------------------------
 
@@ -131,17 +131,13 @@ func on_current_mode_update() -> void:
 				await U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 1), 1.0, 0.3)
 				await U.set_timeout(2.0)
 				
-				for duration in generate_flicker_pattern(10):
-					await U.set_timeout(duration)
-					StudioLogo.visible = !StudioLogo.visible
-					GodotLogo.visible = !StudioLogo.visible
+				StudioLogo.hide()
+				GodotLogo.show()
+				await TransitionScreen.start(2.0, true)
+				await U.set_timeout(2.0)
 				
-				LogoPanel.visible = false
-				GodotLogo.visible = true
-				# fade out
-				#U.tween_node_property(LogoTextureRect, 'scale:x', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
-				#U.tween_node_property(LogoTextureRect, 'scale:y', 1, 1.0, 1.0, Tween.TRANS_LINEAR)
-				U.tween_node_property(LogoPanel, 'modulate', Color(1, 1, 1, 0), 1.0)
+				U.tween_node_property(LogoPanel, 'modulate:a', 0, 1.0)
+				
 				await TransitionScreen.start(0.6, true)
 				await U.set_timeout(0.5)	
 				
@@ -209,7 +205,7 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(PressStartPanel, 'modulate:a', 0, 0.3)				
 				OutsideRenderer.zoomOut()
 				await U.set_timeout(2.0)
-				U.tween_node_property(FadeOverlay, 'modulate:a', 1, 1, 1)
+				U.tween_node_property(FadeOverlay, 'modulate:a', 1, 2)
 				await TransitionScreen.start(2, true)
 				
 
