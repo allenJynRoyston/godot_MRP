@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://esq71d7mxqx7"]
+[gd_scene load_steps=21 format=3 uid="uid://esq71d7mxqx7"]
 
 [ext_resource type="Script" uid="uid://cv0jib84ns0bc" path="res://Media/scps/article_scene.gd" id="1_l6f8p"]
 [ext_resource type="LabelSettings" uid="uid://cgiw558tptin8" path="res://Fonts/article_h1.tres" id="2_6ur50"]
@@ -6,6 +6,7 @@
 [ext_resource type="LabelSettings" uid="uid://bljqgalhb0kxy" path="res://Fonts/article_h2.tres" id="3_ds7rn"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="3_ttunc"]
 [ext_resource type="LabelSettings" uid="uid://c736yp54jh7wi" path="res://Fonts/article_p.tres" id="4_ff2n2"]
+[ext_resource type="LabelSettings" uid="uid://jmgk2txjfoch" path="res://Fonts/article_h2-red.tres" id="5_0j6g6"]
 [ext_resource type="PackedScene" uid="uid://cajdcn0ommfho" path="res://UI/Buttons/ItemBtn/ItemBtn.tscn" id="5_6riif"]
 [ext_resource type="Texture2D" uid="uid://b6d0wadq4hrkv" path="res://Media/scps/the_door.png" id="5_ff2n2"]
 [ext_resource type="LabelSettings" uid="uid://dgq4h113a6xtn" path="res://Fonts/article_small.tres" id="6_ajcl2"]
@@ -36,12 +37,8 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8dox"]
-bg_color = Color(0, 0, 0, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(0, 0.964706, 0.278431, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -144,7 +141,7 @@ horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "SCP-XXXX"
+text = "SCP-██"
 label_settings = ExtResource("3_ds7rn")
 horizontal_alignment = 1
 
@@ -166,7 +163,7 @@ horizontal_alignment = 1
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "KETER"
-label_settings = ExtResource("3_ds7rn")
+label_settings = ExtResource("5_0j6g6")
 horizontal_alignment = 1
 
 [node name="VSeparator2" type="VSeparator" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer"]
@@ -187,7 +184,7 @@ horizontal_alignment = 1
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "KENEQ"
-label_settings = ExtResource("3_ds7rn")
+label_settings = ExtResource("5_0j6g6")
 horizontal_alignment = 1
 
 [node name="VSeparator3" type="VSeparator" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer"]
@@ -208,7 +205,7 @@ horizontal_alignment = 1
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header/MarginContainer/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 text = "CRITICAL"
-label_settings = ExtResource("3_ds7rn")
+label_settings = ExtResource("5_0j6g6")
 horizontal_alignment = 1
 
 [node name="Header2" type="PanelContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer"]
@@ -229,7 +226,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_6riif")
 index = 0
-title = "CONTAINMENT PROCEDURES"
+title = "SPECIAL CONTAINMENT PROCEDURES"
 is_selected = true
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
@@ -241,13 +238,10 @@ title = "DESCRIPTION"
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
 [node name="ItemBtn3" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_r8dox")
 index = 2
-title = "REDACTED"
-is_disabled = true
-is_hollow = true
+title = "DISCOVERY"
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
 [node name="ItemBtn4" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
@@ -292,10 +286,10 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_8mhd6")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 100
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer"]
 layout_mode = 2
@@ -304,29 +298,28 @@ theme_override_constants/separation = 20
 [node name="ContainmentProcedures" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/ContainmentProcedures"]
 layout_mode = 2
-text = "Standard Containment Procedures"
+text = "Special Containment Procedures"
 label_settings = ExtResource("3_ds7rn")
 uppercase = true
 
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/ContainmentProcedures"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-text = "Due to SCP-XXXX’s intangible nature and transient manifestation, physical containment is currently impossible. Containment efforts are focused on detection, disruption, and suppression of new instances.
+text = "SCP-██ instances are to be contained within a secured digital and physical media archive at Site-██. All known inert instances of SCP-██, including manuscripts, digital files, and related media, must be logged, catalogued, and stored in secure, access-controlled containment lockers to prevent uintended exposure.
 
-Embedded Foundation assets within global digital publishing platforms, print-on-demand services, and major entertainment distributors are to flag anomalous works matching SCP-XXXX’s signature pattern:
+Access to SCP-██ materials is restricted to personnel with Level 4 clearance or higher and requires prior approval from the Site Director and the Memetics Containment Team. Any testing involving SCP-██ must be conducted under strict supervision with Class-B amnestic protocols administered before and immediately after exposure.
 
-Highly introspective narratives centered around apotheosis, recursive identity, and godhood
+Subjects exposed to SCP-██ are to be monitored continuously for signs of cognitohazard manifestation. In the event of a subject exhibiting ritualistic behavior or delusional identity alteration, immediate quarantine and psychological intervention are mandatory. Repeated administration of Class-B amnestics should be employed to mitigate full manifestation, though prolonged or repeated exposure must be avoided due to ██████.
+d
+Given the suspected presence of multiple active SCP-██ instances, ongoing surveillance of media channels and cultural content is to be maintained to identify emergent or newly propagated copies. Any newly discovered active instances of SCP-██ are to be secured and contained separately in a high-security isolation wing at Site-███, distinct from inert or inactive instances. These active instances require enhanced containment measures, including restricted access and continuous memetic monitoring.
 
-Untraceable or false metadata (authors, developers, publishers)
+In the event of subject expiration, the corresponding SCP-██ instance becomes inert and must be catalogued and transferred to the primary SCP-██ archive for inactive containment, distinct from the active containment wing.
 
-Cognitive disruption or emotional disassociation upon interaction
-
-Any flagged instance is to be reviewed by MTF Psi-8 (\"Thought Police\"). Verified SCP-XXXX manifestations are to be immediately removed from circulation, with all physical and digital copies destroyed or purged. Civilians exposed to SCP-XXXX are to be detained and evaluated under Protocol VEDA-9.
-
-Suicide clusters near SCP-XXXX emergence zones must be investigated for potential manifestation. Surviving individuals are to undergo amnestics and memetic repair, if viable."
+Research into SCP-██’s selection mechanism and targeting criteria remains a high priority. Personnel involved in SCP-██ containment and study must undergo periodic psychological evaluations and memetic resistance training to mitigate cognitive contamination risks."
 label_settings = ExtResource("4_ff2n2")
 autowrap_mode = 3
 
@@ -338,6 +331,7 @@ theme_override_constants/separation = 50
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/VBoxContainer"]
 layout_mode = 2
@@ -348,26 +342,16 @@ uppercase = true
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Content/ScrollContainer/MarginContainer/VBoxContainer/Description/VBoxContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-text = "SCP-XXXX is a non-corporeal anomalous entity or conceptual pattern that manifests through various imaginative entertainment mediums. It is intangible, yet consistently assumes the form of a readable or interpretive artifact—such as a novel, video game, screenplay, comic, or other cognitively interactive narrative work.
+text = "SCP-██ is a statistical or conceptual anomaly that manifest itself as a form of entertainment medium, including but not limited to books, screenplays, graphic literature, etc. Current analysis suggests its propagation is limited to formats requiring active cognitive engagement, specifically through reading and imaginative interpretation.  Due to these characteristics, SCP-██ is currently considered effectively uncontainable, with its influence capable of propagating covertly and persisting indefinitely.
 
-The commonality between instances is that they:
+Interaction with SCP-██ is believed to induce a low-grade cognitohazard that progressively alters the subject’s sense of identity. This typically manifests as a compulsive fixation and a gradual onset of delusional self-perception, commonly perceived as a developing god complex.
 
-Require baseline imagination and literacy to engage with.
+For reasons not yet fully understood, SCP-██’s effect culminates in a ritualistic act unique to each individual, immediately followed by self-terminating behavior. When conditions permit, victims have been observed to ████ individuals close to them including parents, children, spouses, and, in several documented cases, complete strangers. Completion of SCP-██’s \"narrative\" appears to be a prerequisite for this sequence. The timeline for progression is highly variable, ranging from several days to multiple years, with no clear pattern or predictability.
 
-Function as delivery mechanisms for SCP-XXXX's anomalous memetic payload.
+Subjects administered Class-B amnestics or stronger, either prior to or shortly after completing SCP-██’s “narrative,” have been effective at preventing victims from experiencing a full cognitohazard manifestation. Repeated exposures to SCP-██ and amnestics are ongoing, but have resulted ████ in █% of test subjects.  It is suspected that more than one instance of SCP-██ is active at any time. 
 
-There is typically only one active instance of SCP-XXXX at any time. Once an instance is neutralized, another will appear unpredictably in a different medium or platform, often within 24–72 hours.
-
-Primary Effects:
-Upon engaging with SCP-XXXX, subjects will gradually develop two core delusions, which SCP-XXXX reinforces through subtle narrative alignment and psychological manipulation:
-
-1. Apotheotic Persuasion:
-Subjects become convinced that full engagement with the work (e.g., completing a game, finishing a book, decoding hidden messages) will grant them divine power, transcendence, or omniscience. This belief is not immediate; it develops subtly, often over multiple sessions of exposure.
-
-2. Inevitable Self-Termination:
-Regardless of interpretation, all exposed subjects eventually commit suicide—typically within 3 to 14 days. The cause of death is often stylized in a manner mirroring themes or motifs from the SCP-XXXX instance (e.g., jumping from heights in stories about ascension, drowning in works referencing rebirth, etc.).
-
-Subjects who are cognitively disrupted before completing SCP-XXXX’s “narrative” may resist the second effect, though long-term psychological damage is common."
+Upon the subject’s expiration, the corresponding instance of SCP-██ becomes inert, suggesting that SCP-██ exercises selective targeting. The mechanism and criteria behind this selection process remain unknown.  
+"
 label_settings = ExtResource("4_ff2n2")
 autowrap_mode = 3
 

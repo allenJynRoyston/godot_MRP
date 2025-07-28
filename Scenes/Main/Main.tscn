@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=34 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -20,8 +20,17 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cetvo"]
 bg_color = Color(0.0338533, 0.0338533, 0.0338533, 1)
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_epx8f"]
+viewport_path = NodePath("CellViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ci8a"]
+viewport_path = NodePath("ArticleViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_18xdc"]
+viewport_path = NodePath("OSViewport")
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_y3p8a"]
-viewport_path = NodePath("GameLayer")
+viewport_path = NodePath("ActiveSubviewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a5ilm"]
 viewport_path = NodePath("GlitchShader")
@@ -175,7 +184,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
 is_production_build = true
 reset_userprofile_save = true
-audio_mute = true
 skip_splash = true
 skip_intro = true
 intro_skip_logo = true
@@ -200,20 +208,64 @@ mtf_alpha = true
 mtf_bravo = true
 mtf_delta = true
 
-[node name="GameLayer" type="SubViewport" parent="."]
+[node name="OSViewport" type="SubViewport" parent="."]
+own_world_3d = true
 size = Vector2i(1920, 1080)
 
-[node name="IntroAndTitleScreen" parent="GameLayer" instance=ExtResource("4_cv8e0")]
-theme_override_styles/panel = SubResource("StyleBoxFlat_cetvo")
-
-[node name="OsScene" parent="GameLayer" instance=ExtResource("5_epx8f")]
+[node name="OsScene" parent="OSViewport" instance=ExtResource("5_epx8f")]
 clip_contents = true
 
-[node name="CellScene" parent="GameLayer" instance=ExtResource("4_18xdc")]
+[node name="ArticleViewport" type="SubViewport" parent="."]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
 
-[node name="ArticleScene" parent="GameLayer" instance=ExtResource("5_hkvnm")]
+[node name="ArticleScene" parent="ArticleViewport" instance=ExtResource("5_hkvnm")]
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="TransitionScreen" parent="GameLayer" instance=ExtResource("8_udh0u")]
+[node name="CellViewport" type="SubViewport" parent="."]
+own_world_3d = true
+size = Vector2i(1920, 1080)
+
+[node name="CellScene" parent="CellViewport" instance=ExtResource("4_18xdc")]
+
+[node name="ActiveSubviewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="IntroAndTitleScreen" parent="ActiveSubviewport" instance=ExtResource("4_cv8e0")]
+theme_override_styles/panel = SubResource("StyleBoxFlat_cetvo")
+
+[node name="CellTextureRect" type="TextureRect" parent="ActiveSubviewport"]
+z_index = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_epx8f")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="ArticleTextureRect" type="TextureRect" parent="ActiveSubviewport"]
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -640.0
+offset_bottom = -360.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_5ci8a")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="OsTextureRect" type="TextureRect" parent="ActiveSubviewport"]
+z_index = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_18xdc")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="TransitionScreen" parent="ActiveSubviewport" instance=ExtResource("8_udh0u")]
 
 [node name="GlitchShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
@@ -348,6 +400,7 @@ texture = SubResource("ViewportTexture_3omms")
 stretch_mode = 2
 
 [node name="MusicShader" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
 
 [node name="MusicShaderTexture" type="TextureRect" parent="MusicShader"]
 anchors_preset = 15

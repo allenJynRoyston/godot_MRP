@@ -15,9 +15,9 @@ func _ready() -> void:
 	TextureRectUI.hide()
 	
 func start(duration:float = 0.3, clear_after:bool = false) -> void:
-	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))
 	TextureRectUI.show()
-
+	
 	match transition_type:
 		TYPE.DISSOLVE:
 			TextureRectUI.material = DissolveMaterial.duplicate(true)

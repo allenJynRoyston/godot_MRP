@@ -4,23 +4,12 @@ extends PanelContainer
 @onready var LoginRTL:RichTextLabel = $MarginContainer/VBoxContainer/RichTextLabel
 
 const login_arr:Array[String] = [
-  "C:\\BOOT> [REDACTED] PC-██ Home Terminal",
-  "C:\\CORE> boot SYSTEM-O-CORE v1.3.9 --build=1997-RELEASE",
-  "C:\\MEMORY> scan /512mb",
-  "C:\\DRIVES> mount C:\\",
+  "C:\\BOOT> Orange PC-97.exe",
   "C:\\CONFIG> load autoexec.bat",
   "C:\\CONFIG> load config.sys",
-  "C:\\SOUND> initializing SoundMaster™ driver... OK",
-  "C:\\VIDEO> loading VGA driver... 640x480@256c OK",
-  "C:\\NET> attempting dial-up handshake... CONNECTED [28.8kbps]",
-  "C:\\SYSTEM> echo Welcome to ORANGE SOFTWARE 1997",
-  "C:\\SYSTEM> echo All systems nominal.",
-  "C:\\LOGIN> user: admin",
-  "C:\\LOGIN> password: ********",
-  "ACCESS GRANTED.",
-  "Launching terminal shell...",
-  "██████████(R) ████-██(R) Version 6.22",
-  "(C)Copyright ████████ Corp 1981-1994.",
+  "C:\\SOUND> initializing SoundMax™ driver... OK",
+  "OrangeOS Version 6.22",
+  "(C)Copyright Wondertainment PC Division 1981-1994.",
   ".... READY",
 ];
 
@@ -28,11 +17,6 @@ const login_arr:Array[String] = [
 signal is_complete
 
 func start() -> void:
-	
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.OS_STARTUP_SFX,
-	}
-	
 	show()	
 	await U.set_timeout(2.5)
 
@@ -51,6 +35,4 @@ func start() -> void:
 		else:
 			await U.set_timeout(0.2)  # Short pause between lines
 
-
-	GBL.find_node(REFS.AUDIO).fade_out(3.0)
 	queue_free()

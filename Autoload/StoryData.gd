@@ -7,17 +7,16 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"D-Class 2477.  Welcome back.",
-			"My name is Dr. Ambrose and I'm the lead researcher for this experiement we're about to perform.",
-			"What I'm asking you to do is extremely simple.  The computer on your left.  I need you to interact with it.",
-			"We're not sure why, but... we think it's dangerous.  And you're tasked with finding out why.",
-			"If you have quesitons, use the terminal on the right.  It will explain everything.",
-			"Final thing.  Don't move from that chair.  You're secured to it, but the pressure plate undernearth is sensitive.  You trigger it and the room explodes.",
-			"Game over.  So don't do it.",
-			"The chair you're strapped to has controls in it.  Use them to interact with the computer.",
-			"Alright.  That's the jist of it.",
-			"Survive for the next 8 hours and we'll release the lock and call it a day.",
-			"Good luck."
+			"D-Class 2477, audio check confirmed. You are now active in Test Chamber 12.",
+			"This message is pre-recorded. Do not attempt to respond.",
+			"My name is Doctor Ambrose, and you have been selected for cognitive exposure to a classified anomaly.",
+ 			"I understand that may sound concerning, but while you're under our observation, you are completely safe. Do not panic.",
+			"You may have also notice gaps in your memory. That is by design. It is for your safety and for ours.  Again, do not panic.  Your memory will return in time.",			
+			"First things first, you should notice a computer to your LEFT. There's a... game of sorts on it.  We just need you to engage with it.  That's it.  Easy task.",
+			"Also note that there's a terminal on your RIGHT.  It should field any questions you may have.",
+			"Now pay attention. You are securely restrained for the duration of this session. Do not attempt to remove the harness.",
+ 			"Do not interfere with any equipment or attempt to disengage the system. Tampering will result in your immediate termination.",
+ 			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
 		"objectives": {
 			"title": "SETUP",

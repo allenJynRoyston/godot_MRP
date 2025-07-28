@@ -1,10 +1,10 @@
 [gd_scene load_steps=21 format=3 uid="uid://c4jcka6l73m7c"]
 
 [ext_resource type="Script" uid="uid://gvux2t8ttbns" path="res://Scenes/IntroAndTitleScreen/intro_and_title_screen.gd" id="1_iwjdn"]
-[ext_resource type="Texture2D" uid="uid://dtxyw5375toy2" path="res://Media/images/GameLogo/godot_logo.png" id="3_bp17p"]
+[ext_resource type="Texture2D" uid="uid://c31lvealkmfn5" path="res://Media/images/logos/godot_logo.png" id="3_bp17p"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
-[ext_resource type="Texture2D" uid="uid://ctxpqywam2krt" path="res://Media/images/GameLogo/game_logo.png" id="3_yi28m"]
+[ext_resource type="Texture2D" uid="uid://ctxpqywam2krt" path="res://Media/images/logos/game_logo.png" id="3_yi28m"]
 [ext_resource type="PackedScene" uid="uid://d26ruk5g28ttk" path="res://Scenes/IntroSplash/IntroSplash.tscn" id="4_6bd6i"]
 [ext_resource type="PackedScene" uid="uid://bso3mupgofbc6" path="res://Scenes3D/OutsideRender/OutsideRender.tscn" id="4_bxtjv"]
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]

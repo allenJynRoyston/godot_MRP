@@ -402,7 +402,6 @@ func _exit_tree() -> void:
 
 # -----------------------------------
 func _ready() -> void:	
-	hide()
 	set_process(false)
 	set_physics_process(false)	
 	
@@ -425,22 +424,10 @@ func _ready() -> void:
 # -----------------------------------
 
 # -----------------------------------
-func pause() -> void:
-	freeze_inputs = true
-	await BtnControls.reveal(false)
-	onBack.call()	
-	
-func resume() -> void:
-	await BtnControls.reveal(true)
-	freeze_inputs = false
-# -----------------------------------
-
-# -----------------------------------
 func start() -> void:
-	var skip_boot:bool = true #DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
+	var skip_boot:bool = DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
 	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
-	
-	
+
 	has_started = true
 	check_graphics_settings(true)
 	load_state()	
@@ -573,7 +560,7 @@ func open_app(data:Dictionary, options:Dictionary = {}) -> void:
 	await BtnControls.reveal(false)	
 	
 	# grab background image for pause continaer	
-	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+	PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))	
 
 	# ... now open the "app"
 	if data.ref not in running_apps_list.map(func(i): return i.ref):
@@ -724,7 +711,8 @@ func render_desktop_icons() -> void:
 	BtnControls.item_index = previous_desktop_index
 	
 	BtnControls.onBack = func() -> void:		
-		pause()	
+		BtnControls.reveal(false)
+		onBack.call()	
 
 	BtnControls.onAction = func() -> void:
 		if selected_app.is_empty():return
@@ -762,7 +750,7 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 		
 	if show_taskbar:		
 		if currently_running_app == null:
-			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))
 		PauseContainer.show()	
 		Taskbar.set_show_taskbar(show_taskbar)
 		await BtnControls.reveal(false)	
@@ -776,6 +764,11 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 			await BtnControls.reveal(true)
 		
 	freeze_inputs = false		
+# -----------------------------------
+
+# -----------------------------------
+func switch_to() -> void:	
+	BtnControls.reveal(true)
 # -----------------------------------
 
 # ------------------------------------------

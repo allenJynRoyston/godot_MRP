@@ -2,15 +2,29 @@ extends PanelContainer
 
 @onready var MousePointer:TextureRect = $FinalComposition/MousePointer
 @onready var Output:TextureRect = $FinalOutput/Output
-@onready var Gamelayer:SubViewport = $GameLayer
+@onready var ActiveSubviewport:SubViewport = $ActiveSubviewport
 @onready var MusicShaderViewport:SubViewport = $MusicShader
 
+# OS
+@onready var OSViewport:SubViewport = $OSViewport
+@onready var OsScene:PanelContainer = $OSViewport/OsScene
+
+# ARTICLE
+@onready var ArticleViewport:SubViewport = $ArticleViewport
+@onready var ArticleScene:PanelContainer = $ArticleViewport/ArticleScene
+
+# OS
+@onready var CellViewport:SubViewport = $CellViewport
+@onready var CellScene:PanelContainer = $CellViewport/CellScene
+
+# texture rect
+@onready var OsTextureRect:TextureRect = $ActiveSubviewport/OsTextureRect
+@onready var ArticleTextureRect:TextureRect = $ActiveSubviewport/ArticleTextureRect
+@onready var CellTextureRect:TextureRect = $ActiveSubviewport/CellTextureRect
+
 # MAIN SCENES
-@onready var IntroAndTitleScreen:Control = $GameLayer/IntroAndTitleScreen
-@onready var OsScene:PanelContainer = $GameLayer/OsScene
-@onready var CellScene:PanelContainer = $GameLayer/CellScene
-@onready var ArticleScene:PanelContainer = $GameLayer/ArticleScene
-@onready var TransitionScreen:Control = $GameLayer/TransitionScreen
+@onready var IntroAndTitleScreen:Control = $ActiveSubviewport/IntroAndTitleScreen
+@onready var TransitionScreen:Control = $ActiveSubviewport/TransitionScreen
 
 # TEXT RECTS with SHADERSs
 @onready var GlitchShaderTextureRect:TextureRect = $GlitchShader/TextureRect
@@ -249,7 +263,9 @@ func _init() -> void:
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 	GBL.unregister_node(REFS.MAIN)
-	GBL.unregister_node(REFS.GAMELAYER_SUBVIEWPORT)
+	GBL.unregister_node(REFS.MAIN_ACTIVE_VIEWPORT)
+	GBL.unregister_node(REFS.MAIN_ARTICLE_VIEWPORT)
+	GBL.unregister_node(REFS.MAIN_OS_VIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	
 # -----------------------------------		
@@ -257,20 +273,18 @@ func _exit_tree() -> void:
 # -----------------------------------	
 func _ready() -> void:
 	# register node
-	GBL.register_node(REFS.GAMELAYER_SUBVIEWPORT, Gamelayer)
-	
-	# initially hide
-	for node in [OsScene, ArticleScene, CellScene]:
-		node.hide()
+	GBL.register_node(REFS.MAIN_ACTIVE_VIEWPORT, ActiveSubviewport)
+	GBL.register_node(REFS.MAIN_ARTICLE_VIEWPORT, ArticleViewport)
+	GBL.register_node(REFS.MAIN_OS_VIEWPORT, OSViewport)
+	GBL.register_node(REFS.MAIN_CELL_VIEWPORT, CellViewport)
 	
 	# assign debugs
 	assign_debugs()
 
 	# assign functions
 	CellScene.transInFx = func(duration:float = 1.3) -> void:
-		TransitionScreen.start(duration, true)	
-		await U.set_timeout(duration * 0.5)
-		
+		await use_transition()
+
 	CellScene.gotoOs = func() -> void:
 		current_layer = LAYER.OS_lAYER		
 
@@ -278,9 +292,11 @@ func _ready() -> void:
 		current_layer = LAYER.SCP_LAYER	
 	
 	OsScene.onBack = func() -> void:
+		use_transition()
 		current_layer = LAYER.CELLBLOCK_LAYER
 	
 	ArticleScene.onBack = func() -> void:
+		use_transition()
 		current_layer = LAYER.CELLBLOCK_LAYER
 		
 	# get default parameters
@@ -293,6 +309,53 @@ func _ready() -> void:
 	# start
 	start()
 # -----------------------------------	
+
+# -----------------------------------	
+func use_transition(duration:float = 1.3) -> void:
+	TransitionScreen.start(duration, true)	
+	await U.set_timeout(duration * 0.5)
+# -----------------------------------	
+
+# -----------------------------------	
+func start() -> void:
+	# mouse behavior
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
+	# -------------------
+	if reset_userprofile_save:
+		print("RESET USER PROFILE")
+		update_and_save_user_profile(user_profile_schema.duplicate())
+	else:
+		var res:Dictionary = FS.load_file(FS.FILE.USER_PROFILE)
+		if res.success:
+			GBL.active_user_profile = res.filedata.data
+		else:
+			print("NEW USER PROFILE CREATED!")
+			update_and_save_user_profile(user_profile_schema.duplicate())
+
+	# -------------------
+	if start_at_fullscreen:
+		on_fullscreen_update(resolution)
+		toggle_fullscreen()
+	else:		
+		on_fullscreen_update(Vector2(1280, 720))			
+	
+	# -------------------
+	if !DEBUG.get_val(DEBUG.SKIP_INTRO):
+		IntroAndTitleScreen.start()
+		await IntroAndTitleScreen.on_complete
+
+	current_layer = LAYER.CELLBLOCK_LAYER	
+	await U.tick()
+	
+	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
+		CellScene.skip_to_os()
+		return
+		
+	# apply fast forward
+	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )		
+# -----------------------------------			
+
 
 
 # -----------------------------------	
@@ -368,46 +431,6 @@ func assign_debugs() -> void:
 # -----------------------------------	
 
 # -----------------------------------	
-func start() -> void:
-	# mouse behavior
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	
-	# -------------------
-	if reset_userprofile_save:
-		print("RESET USER PROFILE")
-		update_and_save_user_profile(user_profile_schema.duplicate())
-	else:
-		var res:Dictionary = FS.load_file(FS.FILE.USER_PROFILE)
-		if res.success:
-			GBL.active_user_profile = res.filedata.data
-		else:
-			print("NEW USER PROFILE CREATED!")
-			update_and_save_user_profile(user_profile_schema.duplicate())
-
-	# -------------------
-	if start_at_fullscreen:
-		on_fullscreen_update(resolution)
-		toggle_fullscreen()
-	else:		
-		on_fullscreen_update(Vector2(1280, 720))			
-	
-	# -------------------
-	if !DEBUG.get_val(DEBUG.SKIP_INTRO):
-		IntroAndTitleScreen.start()
-		await IntroAndTitleScreen.on_complete
-
-	current_layer = LAYER.CELLBLOCK_LAYER	
-	await U.tick()
-	
-	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
-		CellScene.skip_to_os()
-		return
-		
-	# apply fast forward
-	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )		
-# -----------------------------------			
-
-# -----------------------------------	
 func on_mouse_icon_update(mouse_icon:GBL.MOUSE_ICON) -> void:
 	if is_node_ready():
 		match mouse_icon:
@@ -466,75 +489,88 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 # -----------------------------------	
 
 # -----------------------------------	
-func switch_to_node(use_node:Control) -> void:
+func switch_to_node(use_texture:TextureRect) -> void:
 	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
-	
-	for node in [CellScene, OsScene, ArticleScene]:
-		if node == use_node:
-			node.z_index = 1
-			node.show()
-			node.set_process(true)
-			node.set_physics_process(true)
-			if "switch_to" in node:
-				node.switch_to()
-		else: 
-			node.z_index = -1
-			node.hide()
-			node.set_process(false)
-			node.set_physics_process(false)
-	
-	match use_node:
-		CellScene:
-			await no_shader_effects()
-		OsScene:
-			if use_crt_effect:
-				await apply_shader_effects()
-			else:
-				await no_shader_effects()
-		ArticleScene:
-			if use_crt_effect:
-				await apply_shader_effects()
-			else:
-				await no_shader_effects()
-	
 
+	for node in [CellTextureRect, OsTextureRect, ArticleTextureRect]:
+		if node == use_texture:
+			node.show()
+		else: 
+			node.hide()		
+
+	match use_texture:
+		CellTextureRect:
+			no_shader_effects()
+		OsTextureRect:
+			if use_crt_effect:
+				apply_shader_effects()
+			else:
+				no_shader_effects()
+		ArticleTextureRect:
+			if use_crt_effect:
+				apply_shader_effects()
+			else:
+				no_shader_effects()
+	
 # -----------------------------------	
 
 
 # -----------------------------------
 func on_current_layer_update() -> void:
 	if !is_node_ready():return
-
+	
+	# first, deactivate to save resources
+	for node in [CellScene, OsScene, ArticleScene]:
+		node.set_process(false)
+		node.set_physics_process(false)		
+				
+	# then activate the one that's relevant
 	match current_layer:
 		# -----------
 		LAYER.OS_lAYER:
-			# switch nodes
-			switch_to_node(OsScene)
-			
+
+			# activate
+			OsScene.set_process(true)
+			OsScene.set_physics_process(true)
+			OsScene.switch_to()
+
 			# start scene
 			if !OsScene.has_started:
 				OsScene.start()	
-			else:
-				OsScene.resume()
 				
+			switch_to_node(OsTextureRect)
+							
 			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Master')
 				
 		# -----------
 		LAYER.CELLBLOCK_LAYER:
-			# switch nodes
-			switch_to_node(CellScene)
+
+			# activate
+			CellScene.set_process(true)
+			CellScene.set_physics_process(true)
+			CellScene.switch_to()
 			
+			# switch nodes
+			switch_to_node(CellTextureRect)
+						
+								
 			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
 
 		# -----------
 		LAYER.SCP_LAYER:
+						
+			# activate
+			ArticleScene.set_process(true)
+			ArticleScene.set_physics_process(true)
+			ArticleScene.switch_to()
+
 			# switch nodes
-			switch_to_node(ArticleScene)
-			
+			switch_to_node(ArticleTextureRect)
+
 			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
@@ -596,16 +632,12 @@ func set_monitor_overlay(state:bool) -> void:
 
 # -----------------------------------	
 func no_shader_effects(instant:bool = false) -> void:	
-	use_full_shader_settings(false, instant)
-	FinalCompositeTextureRect.texture.viewport_path = Gamelayer.get_path()
-	TransitionScreen.start(1.3, true)	
+	await use_full_shader_settings(false, instant)
 # -----------------------------------	
 
 # -----------------------------------	
-func apply_shader_effects(instant:bool = false) -> void:
-	FinalCompositeTextureRect.texture.viewport_path = MusicShaderViewport.get_path()
-	#await TransitionScreen.start(0.1, true)			
-	await use_full_shader_settings(true, instant)
+func apply_shader_effects(instant:bool = false) -> void:		
+	await use_full_shader_settings(true, instant)		
 # -----------------------------------	
 
 # -----------------------------------	
@@ -659,7 +691,6 @@ func on_shader_profile_update() -> void:
 			add_all_shaders()
 			set_monitor_overlay(true)
 # -----------------------------------	
-
 
 # -----------------------------------	
 func on_process_update(delta: float) -> void:

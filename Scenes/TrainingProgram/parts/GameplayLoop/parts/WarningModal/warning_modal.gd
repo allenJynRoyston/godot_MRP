@@ -113,7 +113,7 @@ func activate(auto_start:bool = true) -> void:
 func start() -> void:
 	#if !allow_controls:
 		#TextureRectUI.show()
-		#TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		#TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))	
 	#
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))	
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)

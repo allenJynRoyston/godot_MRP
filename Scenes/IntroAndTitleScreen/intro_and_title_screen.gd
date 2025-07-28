@@ -92,18 +92,6 @@ func end() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func generate_flicker_pattern(count := 10) -> Array:
-	var flickers := []
-	for i in count:
-		# Quick flick (off/on)
-		if randi() % 2 == 0:
-			flickers.append(randf_range(0.02, 0.04))  # fast blink
-		else:
-			flickers.append(randf_range(0.05, 0.1))   # slightly slower
-	return flickers
-# ---------------------------------------------
-
-# ---------------------------------------------
 func on_current_mode_update() -> void:
 	if !is_node_ready():return
 	match current_mode:
@@ -133,11 +121,10 @@ func on_current_mode_update() -> void:
 				
 				StudioLogo.hide()
 				GodotLogo.show()
-				await TransitionScreen.start(2.0, true)
+				await TransitionScreen.start(0.5, true)
 				await U.set_timeout(2.0)
 				
-				U.tween_node_property(LogoPanel, 'modulate:a', 0, 1.0)
-				
+				U.tween_node_property(LogoPanel, 'modulate:a', 0, 0.6)
 				await TransitionScreen.start(0.6, true)
 				await U.set_timeout(0.5)	
 				
@@ -206,10 +193,10 @@ func on_current_mode_update() -> void:
 				OutsideRenderer.zoomOut()
 				await U.set_timeout(2.0)
 				U.tween_node_property(FadeOverlay, 'modulate:a', 1, 2)
-				await TransitionScreen.start(2, true)
-				
+				await TransitionScreen.start(3, true)				
 
-				#GBL.find_node(REFS.AUDIO).fade_out(3.0)
+				GBL.find_node(REFS.AUDIO).fade_out(3.0)
+				await U.set_timeout(1.0)
 
 			current_mode = MODE.EXIT
 		# ---------

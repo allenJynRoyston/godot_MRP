@@ -141,7 +141,7 @@ func activate(auto_start:bool = true) -> void:
 func start(new_differential:Dictionary) -> void:
 	if !allow_controls:
 		TextureRectUI.show()
-		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+		TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))	
 	
 	differential = new_differential
 	

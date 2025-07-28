@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://urjnikfy6y5j"]
+[gd_scene load_steps=16 format=3 uid="uid://urjnikfy6y5j"]
 
 [ext_resource type="PackedScene" uid="uid://bs1arpnwcdcdb" path="res://Scenes/CellScene/assets/DeskModel.tscn" id="1_01n06"]
 [ext_resource type="Script" uid="uid://dewg4p4ytk67q" path="res://Scenes/CellScene/parts/cell_render.gd" id="1_baq1p"]
@@ -7,8 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="3_65whp"]
 [ext_resource type="PackedScene" uid="uid://b0u4ro8hbibl1" path="res://Scenes/CellScene/assets/CellModel.tscn" id="3_c3rb4"]
 [ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_65whp"]
-[ext_resource type="PackedScene" path="res://Scenes/CellScene/assets/ShelfModel.tscn" id="4_d2d4g"]
-[ext_resource type="PackedScene" path="res://Scenes/CellScene/assets/TVMonitorModel.tscn" id="5_jdl17"]
+[ext_resource type="PackedScene" uid="uid://csbyru8rsamxn" path="res://Scenes/CellScene/assets/ShelfModel.tscn" id="4_d2d4g"]
+[ext_resource type="PackedScene" uid="uid://bqn8lk7xb5ico" path="res://Scenes/CellScene/assets/TVMonitorModel.tscn" id="5_jdl17"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jdl17"]
 
 [sub_resource type="Environment" id="Environment_0c7qq"]
 background_energy_multiplier = 0.0
@@ -73,6 +75,32 @@ script = ExtResource("1_baq1p")
 enable_emergency_lighting = true
 enable_dust_particles = true
 
+[node name="OsViewport" type="SubViewport" parent="."]
+disable_3d = true
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+
+[node name="OsTextureRect" type="TextureRect" parent="OsViewport"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_jdl17")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ArticleViewport" type="SubViewport" parent="."]
+disable_3d = true
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+
+[node name="ArticleTextureRect" type="TextureRect" parent="ArticleViewport"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = SubResource("ViewportTexture_jdl17")
+expand_mode = 1
+stretch_mode = 6
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0c7qq")
 
@@ -113,13 +141,14 @@ transform = Transform3D(0.592107, 0, -0.129338, 0, 0.6, 0, 0.0970036, 0, 0.78947
 transform = Transform3D(0.829786, 0, 0.0662206, 0, 0.833333, 0, -0.0241548, 0, 0.625745, -0.0693095, 1.40728, 0.0473084)
 
 [node name="LookAtCenter" type="Marker3D" parent="Structure/ShelfModel/TvMonitorModel"]
-transform = Transform3D(2.00173, 0, 0.166892, 0, 2, 0, -0.24569, 0, 1.97778, 0.0268171, 0.281754, 0.697492)
+transform = Transform3D(2.00173, 0, 0.166892, 0, 2, 0, -0.24569, 0, 1.97778, 0.00873423, 0.159961, 0.699711)
 
 [node name="Desk" parent="Structure" instance=ExtResource("1_01n06")]
 transform = Transform3D(0.879383, 0, 0.476115, 0, 1, 0, -0.476115, 0, 0.879383, -1.35966, -0.81653, 6.45164)
 
 [node name="ComputerModel" parent="Structure/Desk" instance=ExtResource("2_epicg")]
 transform = Transform3D(0.963472, 0, 0.267811, 0, 1, 0, -0.267811, 0, 0.963472, -0.278307, 0.0543795, 0.00963604)
+screen_glow_color = Color(0.522806, 0.261395, 0.130863, 1)
 
 [node name="LookAtComputer" type="Marker3D" parent="Structure/Desk/ComputerModel"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.579517, 0.323269, 0.324792)
@@ -127,10 +156,11 @@ transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.579517, 0.323
 [node name="Desk2" parent="Structure" instance=ExtResource("1_01n06")]
 transform = Transform3D(0.488743, 0, -0.872428, 0, 1, 0, 0.872428, 0, 0.488743, 1.52475, -0.81653, 6.57106)
 
-[node name="ComputerModel" parent="Structure/Desk2" instance=ExtResource("2_epicg")]
+[node name="TerminalModel" parent="Structure/Desk2" instance=ExtResource("2_epicg")]
 transform = Transform3D(0.996971, 0, -0.0777804, 0, 1, 0, 0.0777804, 0, 0.996971, -0.236125, 0.0458773, 0.0353321)
+screen_glow_color = Color(0.535334, 1, 0.582456, 1)
 
-[node name="LookAtTerminal" type="Marker3D" parent="Structure/Desk2/ComputerModel"]
+[node name="LookAtTerminal" type="Marker3D" parent="Structure/Desk2/TerminalModel"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.581689, 0.32543, 0.324792)
 
 [node name="OutsideWall" type="MeshInstance3D" parent="Structure"]
@@ -204,6 +234,7 @@ spot_range = 3.5
 spot_energy = 1.0
 
 [node name="LowLevelLighting" type="Node3D" parent="Lighting"]
+visible = false
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Lighting/LowLevelLighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7803, -0.0650684)

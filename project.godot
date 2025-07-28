@@ -71,7 +71,7 @@ window/main_scene="res://Scenes/Computer/Computer.tscn"
 
 [editor]
 
-movie_writer/movie_file="/Users/jyn/Desktop/gameplay_capture.avi"
+movie_writer/movie_file="C:/Users/PC/Desktop/gameplay_capture.avi"
 
 [editor_plugins]
 

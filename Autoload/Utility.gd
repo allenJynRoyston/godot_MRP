@@ -394,3 +394,14 @@ func scramble_word(word: String) -> String:
 
 	return first_char + "".join(middle_chars) + last_char
 # ----------------------
+
+# ---------------------------------------------
+func generate_flicker_pattern(count:int = 10) -> Array:
+	var flickers := []
+	for i in count:
+		if randi() % 2 == 0:
+			flickers.append(randf_range(0.02, 0.05))  # fast blink
+		else:
+			flickers.append(randf_range(0.05, 0.1))   # slightly slower
+	return flickers
+# ---------------------------------------------

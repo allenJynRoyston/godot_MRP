@@ -34,10 +34,12 @@ func _ready() -> void:
 func change_bus(bus:String) -> void:
 	var stream_position:float = current_audio_stream_player.get_playback_position()
 	var current_track = null
-	if current_audio_stream_player.playing:
-		current_audio_stream_player.stop()	
-		current_track = current_audio_stream_player.stream
+	AudioStreamPlayerMaster.stop()	
+	AudioStreamPlayerReverb.stop()
 	
+	current_track = current_audio_stream_player.stream
+	
+
 	match bus:
 		"Master":
 			current_audio_stream_player = AudioStreamPlayerMaster
@@ -49,20 +51,20 @@ func change_bus(bus:String) -> void:
 	if effect is AudioEffectSpectrumAnalyzerInstance:
 		spectrum = effect
 		
-	if current_track != null:
-		current_audio_stream_player.stream = current_track
-		current_audio_stream_player.play(stream_position)
+	#if current_track != null:
+	current_audio_stream_player.stream = current_track
+	current_audio_stream_player.play(stream_position)
 # --------------------------------------	
 
 # --------------------------------------	
 func play_track(duration:float = 1.0) -> void:
 	if is_already_playing():
-		await fade_out(0.3)
+		await fade_out(0.7)
 		
 	track_data.file.loop = true
 	current_audio_stream_player.stream = track_data.file
 	current_audio_stream_player.play()
-	current_audio_stream_player.volume_db = max_volumne - 5
+	#current_audio_stream_player.volume_db = max_volumne - 5
 	
 	await U.tween_range(current_audio_stream_player.volume_db, max_volumne, duration, 
 		func(val):

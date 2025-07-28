@@ -36,7 +36,7 @@ func pause() -> void:
 		is_paused = true
 		await TrainingProgram.pause()
 		if is_visible_in_tree():
-			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.GAMELAYER_SUBVIEWPORT))	
+			PauseContainer.background_image = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))	
 		PauseContainer.show()
 		TrainingProgram.hide()
 	

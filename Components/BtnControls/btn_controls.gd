@@ -13,6 +13,9 @@ extends Control
 @onready var HintDescription:Label = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintDescription
 @onready var HintIcon:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
 
+@export_category("DEBUG")
+@export var debug:bool = false
+
 @export_category("OPTIONS")
 @export var include_blackbar:bool = false : 
 	set(val):
@@ -69,6 +72,7 @@ extends Control
 	set(val): 
 		hide_c_btn = val
 		on_hide_c_btn_update()		
+
 
 var control_pos:Dictionary
 var control_pos_default:Dictionary
