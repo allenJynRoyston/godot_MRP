@@ -18,7 +18,7 @@ signal is_complete
 
 func start() -> void:
 	show()	
-	await U.set_timeout(2.5)
+	await U.set_timeout(0.5)
 
 	for i in login_arr.size():
 		var str:String = login_arr[i]

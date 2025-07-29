@@ -1,8 +1,8 @@
 extends Control
 
-@onready var TransitionRect:TextureRect = $TransitionRect
 @onready var RenderSubviewport:SubViewport = $SubViewport
 @onready var MainViewportTexture:TextureRect = $MainViewportTexture
+@onready var TransitionScreen:Control = $TransitionScreen
 
 @onready var BGColorRect:ColorRect = $BGColorRect
 @onready var MaterialRect:ColorRect = $ColorRect
@@ -73,13 +73,14 @@ func _ready() -> void:
 
 # ------------------------------------------------
 func transition() -> void:
-	TransitionRect.show()
-	TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
-	await U.tween_range(0.0, 1.0, 0.3, func(val:float) -> void:
-		TransitionRect.material.set_shader_parameter("sensitivity", val)
-	).finished	
-	TransitionRect.hide()
+	await TransitionScreen.start(0.3, true)
+	#TransitionRect.show()
+	#TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
+	#var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
+	#await U.tween_range(0.0, 1.0, 0.3, func(val:float) -> void:
+		#TransitionRect.material.set_shader_parameter("sensitivity", val)
+	#).finished	
+	#TransitionRect.hide()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -226,30 +227,31 @@ func on_base_states_update(new_base_state:Dictionary) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or previous_camera_type == camera_settings.type:return
-	previous_camera_type = camera_settings.type
-	transition()
+	previous_camera_type = camera_settings.type	
 	
 	var new_amount:float = 6.0
 
 	match camera_settings.type:
 		# --------------------
-		CAMERA.TYPE.FLOOR_SELECT:
+		CAMERA.TYPE.FLOOR_SELECT:			
 			enable_overview(true)
 			enable_wing(false)
 			enable_generator(false)
 		# --------------------	
-		CAMERA.TYPE.WING_SELECT:
+		CAMERA.TYPE.WING_SELECT:	
 			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)
 			new_amount = 3.0
 		# --------------------		
 		CAMERA.TYPE.ROOM_SELECT:
+			transition()
 			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)			
 		# --------------------	
 		CAMERA.TYPE.GENERATOR:
+			transition()
 			enable_generator(true)
 			enable_overview(false)
 			enable_wing(false)

@@ -14,8 +14,9 @@ sdfgi_read_sky_light = false
 volumetric_fog_enabled = true
 volumetric_fog_anisotropy = 0.69
 volumetric_fog_length = 60.0
-volumetric_fog_detail_spread = 0.574348
+volumetric_fog_detail_spread = 4.24264
 volumetric_fog_ambient_inject = 1.48
+volumetric_fog_temporal_reprojection_enabled = false
 volumetric_fog_temporal_reprojection_amount = 0.822
 adjustment_enabled = true
 adjustment_brightness = 0.81
@@ -51,7 +52,7 @@ turbulence_influence_max = 0.168
 turbulence_initial_displacement_min = -53.0
 turbulence_initial_displacement_max = 54.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_65whp"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iu2be"]
 transparency = 2
 alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
@@ -62,7 +63,7 @@ texture_repeat = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_lhit1"]
 lightmap_size_hint = Vector2i(2, 2)
-material = SubResource("StandardMaterial3D_65whp")
+material = SubResource("StandardMaterial3D_iu2be")
 size = Vector2(0.02, 0.02)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_rvrtn"]

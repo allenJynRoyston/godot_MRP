@@ -1,6 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
+[ext_resource type="PackedScene" uid="uid://b0xcdsr0gn57k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/WingScene.tscn" id="2_n8dix"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
@@ -55,30 +56,6 @@ shader_parameter/base_color = Vector4(1, 1, 1, 1)
 [sub_resource type="ViewportTexture" id="ViewportTexture_u0dki"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="Environment" id="Environment_ngmdl"]
-ambient_light_source = 1
-ambient_light_color = Color(1, 1, 1, 1)
-reflected_light_source = 1
-tonemap_mode = 2
-tonemap_exposure = 0.62
-ssr_fade_in = 2.23928
-ssr_depth_tolerance = 31.21
-ssao_enabled = true
-ssao_radius = 6.51
-ssil_intensity = 8.26
-ssil_sharpness = 0.29
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
-sdfgi_read_sky_light = false
-sdfgi_cascades = 1
-glow_enabled = true
-fog_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.0206
-volumetric_fog_albedo = Color(0, 0, 0, 1)
-adjustment_enabled = true
-adjustment_contrast = 1.5
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hldmr"]
 albedo_color = Color(0.400614, 0.1771, 0.347313, 1)
 metallic = 0.73
@@ -119,11 +96,11 @@ emission = Color(0.385469, 0.544101, 0.543483, 1)
 height_falloff = 6.45476
 edge_fade = 7.10118
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygf5b"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n8dix"]
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l2d6o"]
-material = SubResource("StandardMaterial3D_ygf5b")
+material = SubResource("StandardMaterial3D_n8dix")
 
 [node name="Wing" type="Control"]
 layout_mode = 3
@@ -140,17 +117,27 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("ViewportTexture_u0dki")
-stretch_mode = 6
+stretch_mode = 5
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(1920, 1080)
+
+[node name="WingScene" parent="SubViewport" instance=ExtResource("2_n8dix")]
+r1_under_construction = true
+r2_is_empty = true
+r3_is_empty = true
+r4_is_empty = true
+r5_is_empty = true
+r6_is_empty = true
+r7_is_empty = true
+r8_is_empty = true
+r9_is_empty = true
 
 [node name="RoomColumn" type="Node3D" parent="SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/RoomColumn"]
-environment = SubResource("Environment_ngmdl")
+visible = false
 
 [node name="FloorMesh" type="MeshInstance3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08621, 0)

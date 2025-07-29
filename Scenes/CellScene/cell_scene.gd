@@ -19,6 +19,7 @@ var story_progress:Dictionary = {}
 var original_fov:float
 var original_rotation_degrees:Vector3
 var fast_animation:bool = false
+var freeze_input:bool = false
 
 var focus_arr:Array = [FOCUS.COMPUTER, FOCUS.CENTER, FOCUS.TERMINAL, FOCUS.EXIT]
 var focus_index:int = FOCUS.CENTER : 
@@ -49,7 +50,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	FadeOverlay.show()
 	
-	for subviewport in [ RenderSubviewport]:
+	for subviewport in [RenderSubviewport]:
 		subviewport.set_process(false)
 
 	for node in [ColorBG, TextureRender]:
@@ -62,7 +63,7 @@ func _ready() -> void:
 	BtnControls.onBack = func() -> void:pass
 	# 
 	BtnControls.onDirectional = func(key:String):
-		if !is_visible_in_tree() or !is_node_ready() or play_introduction:return
+		if !is_node_ready() or play_introduction:return
 		match key:
 			"A":
 				if focus_index != 0:

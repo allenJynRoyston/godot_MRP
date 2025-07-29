@@ -306,20 +306,15 @@ func _ready() -> void:
 	# apply shader profile
 	on_shader_profile_update()
 	
-	# start
-	start()
-# -----------------------------------	
-
-# -----------------------------------	
-func use_transition(duration:float = 1.3) -> void:
-	TransitionScreen.start(duration, true)	
-	await U.set_timeout(duration * 0.5)
-# -----------------------------------	
-
-# -----------------------------------	
-func start() -> void:
 	# mouse behavior
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		
+	# -------------------
+	if start_at_fullscreen:
+		on_fullscreen_update(resolution)
+		toggle_fullscreen()
+	else:		
+		on_fullscreen_update(Vector2(1280, 720))			
 	
 	# -------------------
 	if reset_userprofile_save:
@@ -332,31 +327,29 @@ func start() -> void:
 		else:
 			print("NEW USER PROFILE CREATED!")
 			update_and_save_user_profile(user_profile_schema.duplicate())
-
-	# -------------------
-	if start_at_fullscreen:
-		on_fullscreen_update(resolution)
-		toggle_fullscreen()
-	else:		
-		on_fullscreen_update(Vector2(1280, 720))			
 	
-	# -------------------
-	if !DEBUG.get_val(DEBUG.SKIP_INTRO):
+	# start
+	start()
+# -----------------------------------	
+
+# -----------------------------------	
+func start() -> void:
+	# skip intro
+	if DEBUG.get_val(DEBUG.SKIP_INTRO):
+		IntroAndTitleScreen.queue_free()
+	else:
 		IntroAndTitleScreen.start()
 		await IntroAndTitleScreen.on_complete
 
-	current_layer = LAYER.CELLBLOCK_LAYER	
-	await U.tick()
-	
+	# start at OS
 	if DEBUG.get_val(DEBUG.SKIP_OFFICE_INTRO):
-		CellScene.skip_to_os()
+		current_layer = LAYER.OS_lAYER	
 		return
 		
 	# apply fast forward
-	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )		
+	current_layer = LAYER.CELLBLOCK_LAYER		
+	CellScene.start( DEBUG.get_val(DEBUG.OFFICE_SKIP_ANIMATION) )
 # -----------------------------------			
-
-
 
 # -----------------------------------	
 func assign_debugs() -> void:
@@ -428,6 +421,12 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.STAFF_MTF_ALPHA, mtf_alpha)	
 	DEBUG.assign(DEBUG.STAFF_MTF_BRAVO, mtf_bravo)	
 	DEBUG.assign(DEBUG.STAFF_MTF_DELTA, mtf_delta)
+# -----------------------------------	
+
+# -----------------------------------	
+func use_transition(duration:float = 1.3) -> void:
+	TransitionScreen.start(duration, true)	
+	await U.set_timeout(duration * 0.5)
 # -----------------------------------	
 
 # -----------------------------------	
@@ -514,7 +513,6 @@ func switch_to_node(use_texture:TextureRect) -> void:
 	
 # -----------------------------------	
 
-
 # -----------------------------------
 func on_current_layer_update() -> void:
 	if !is_node_ready():return
@@ -523,12 +521,11 @@ func on_current_layer_update() -> void:
 	for node in [CellScene, OsScene, ArticleScene]:
 		node.set_process(false)
 		node.set_physics_process(false)		
-				
+		
 	# then activate the one that's relevant
 	match current_layer:
 		# -----------
 		LAYER.OS_lAYER:
-
 			# activate
 			OsScene.set_process(true)
 			OsScene.set_physics_process(true)
@@ -539,6 +536,10 @@ func on_current_layer_update() -> void:
 				OsScene.start()	
 				
 			switch_to_node(OsTextureRect)
+			
+			OsScene.show()
+			for node in [ CellScene, ArticleScene]:
+				node.hide()
 							
 			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
@@ -546,7 +547,6 @@ func on_current_layer_update() -> void:
 				
 		# -----------
 		LAYER.CELLBLOCK_LAYER:
-
 			# activate
 			CellScene.set_process(true)
 			CellScene.set_physics_process(true)
@@ -554,6 +554,8 @@ func on_current_layer_update() -> void:
 			
 			# switch nodes
 			switch_to_node(CellTextureRect)
+			for node in [ OsScene, CellScene, ArticleScene]:
+				node.show()
 						
 								
 			# update audio
@@ -562,7 +564,6 @@ func on_current_layer_update() -> void:
 
 		# -----------
 		LAYER.SCP_LAYER:
-						
 			# activate
 			ArticleScene.set_process(true)
 			ArticleScene.set_physics_process(true)
@@ -570,7 +571,10 @@ func on_current_layer_update() -> void:
 
 			# switch nodes
 			switch_to_node(ArticleTextureRect)
-
+			ArticleTextureRect.show()
+			for node in [ CellScene, OsScene]:
+				node.hide()	
+				
 			# update audio
 			if GBL.find_node(REFS.AUDIO) != null:
 				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
