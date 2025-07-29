@@ -7,7 +7,7 @@
 script = ExtResource("1_h2ugr")
 
 [node name="FastSpotlight" parent="." instance=ExtResource("2_anqw2")]
-transform = Transform3D(0.803769, -0.594162, -2.59717e-08, 0, -4.37114e-08, 1, -0.594162, -0.803769, -3.51338e-08, 0, 0, 0)
+transform = Transform3D(0.889939, -0.454974, -1.98876e-08, 0, -4.37114e-08, 1, -0.454974, -0.889939, -3.89005e-08, 0, 0, 0)
 light_color = Color(1, 0, 0, 1)
 godray_color = Color(0.669321, 0, 0.304563, 1)
 godray_energy = 10.0
@@ -15,12 +15,14 @@ spot_range = 20.0
 spot_energy = 1.0
 omni_range = 3.0
 disable_reverse_shadow = true
+include_dust_particles = false
 
 [node name="SlowSpotlight" parent="." instance=ExtResource("2_anqw2")]
-transform = Transform3D(-0.996995, -0.0811376, -3.54713e-09, 4.90942e-16, -4.37114e-08, 1, -0.0811376, 0.996995, 4.35807e-08, 0, 0, -0.0313562)
+transform = Transform3D(-0.134207, -0.991269, -4.33306e-08, 4.90942e-16, -4.37114e-08, 1, -0.991269, 0.134207, 5.86601e-09, 0, 0, -0.0313562)
 light_color = Color(0, 0, 1, 1)
 godray_color = Color(0.71, 1, 0.903333, 1)
 godray_energy = 5.0
 spot_range = 30.0
 omni_range = 0.0
 disable_reverse_shadow = true
+include_dust_particles = false

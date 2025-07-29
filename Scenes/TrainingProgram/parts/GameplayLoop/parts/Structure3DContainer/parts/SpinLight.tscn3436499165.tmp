@@ -60,7 +60,6 @@ spot_range = 60.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null
 
 [node name="CustomSpotlight2" parent="SpinLightMesh2" instance=ExtResource("2_iv5lu")]
 transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
@@ -70,4 +69,3 @@ spot_range = 60.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null

@@ -5,6 +5,7 @@ extends Node3D
 @onready var Cone:SpotLight3D = $OmniLight3D/Cone
 @onready var ReverseShadow:SpotLight3D = $OmniLight3D/Cone/ReverseShadow
 @onready var Godray:SpotLight3D = $OmniLight3D/Cone/Godray
+@onready var DustParticles:GPUParticles3D = $OmniLight3D/Cone/DustParticles
 
 @export var light_color:Color = Color.WHITE :
 	set(val):
@@ -41,6 +42,11 @@ extends Node3D
 		disable_reverse_shadow = val
 		on_disable_reverse_shadow_update()
 		
+@export var include_dust_particles:bool = true : 
+	set(val):
+		include_dust_particles = val
+		on_include_dust_particles_update()	
+		
 
 @export var enable_debug:bool = false		
 		
@@ -52,7 +58,7 @@ func _ready() -> void:
 	on_godray_energy_update()
 	on_omni_range_update()
 	on_disable_reverse_shadow_update()
-
+	on_include_dust_particles_update()
 
 func on_spot_range_update() -> void:
 	if !is_node_ready():return
@@ -84,3 +90,7 @@ func on_godray_energy_update() -> void:
 func on_disable_reverse_shadow_update() -> void:
 	if !is_node_ready():return
 	ReverseShadow.hide() if disable_reverse_shadow else ReverseShadow.show()
+
+func on_include_dust_particles_update() -> void:
+	if !is_node_ready():return
+	DustParticles.emitting = include_dust_particles

@@ -1,9 +1,56 @@
-[gd_scene load_steps=2 format=3 uid="uid://vyv5jxl3butn"]
+[gd_scene load_steps=6 format=3 uid="uid://vyv5jxl3butn"]
 
 [ext_resource type="Script" uid="uid://dtd3t8g62ipu5" path="res://Scenes/CellScene/lighting/custom_spot_light.gd" id="1_pcfd6"]
+[ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="2_vnfcl"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2y3ha"]
+lifetime_randomness = 0.4
+particle_flag_rotate_y = true
+emission_shape_scale = Vector3(2, 3, 2)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -372.0
+angle_max = 348.0
+flatness = 1.0
+angular_velocity_min = -11.21
+angular_velocity_max = 11.21
+orbit_velocity_min = -0.0309999
+orbit_velocity_max = 0.0230001
+radial_velocity_min = -11.67
+radial_velocity_max = 27.24
+gravity = Vector3(4, -9, 5)
+radial_accel_min = -5.0
+radial_accel_max = 8.33
+tangential_accel_min = -1.67
+tangential_accel_max = -2.23517e-06
+attractor_interaction_enabled = false
+scale_min = 0.4
+scale_max = 0.7
+turbulence_noise_speed_random = 0.1
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.168
+turbulence_initial_displacement_min = -53.0
+turbulence_initial_displacement_max = 54.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iu2be"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+cull_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_texture = ExtResource("2_vnfcl")
+texture_repeat = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_71c56"]
+lightmap_size_hint = Vector2i(6, 6)
+material = SubResource("StandardMaterial3D_iu2be")
+uv2_padding = 1.77
 
 [node name="CustomSpotlight" type="Node3D"]
 script = ExtResource("1_pcfd6")
+include_dust_particles = null
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 light_energy = 0.1
@@ -22,6 +69,18 @@ spot_range = 4.0
 spot_attenuation = 0.09
 spot_angle = 47.59
 spot_angle_attenuation = 0.707107
+
+[node name="DustParticles" type="GPUParticles3D" parent="OmniLight3D/Cone"]
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -7.45058e-09, 1, -7.45058e-09, 1.19209e-07, 1.49012e-08, 1, 0, 1.80677e-07, -4.1221)
+gi_mode = 0
+amount = 50
+lifetime = 4.0
+speed_scale = 0.1
+explosiveness = 0.5
+randomness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_2y3ha")
+draw_pass_1 = SubResource("QuadMesh_71c56")
 
 [node name="ReverseShadow" type="SpotLight3D" parent="OmniLight3D/Cone"]
 light_energy = 4.0

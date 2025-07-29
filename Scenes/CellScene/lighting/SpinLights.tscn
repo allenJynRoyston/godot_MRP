@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://gupgijiij07d"]
+
+[ext_resource type="Script" uid="uid://sa7vgfyl8tdu" path="res://Scenes/CellScene/lighting/spin_lights.gd" id="1_4i3pf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4i3pf"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4i3pf"]
+material = SubResource("StandardMaterial3D_4i3pf")
+radius = 0.25
+height = 1.0
+radial_segments = 32
+rings = 4
+
+[node name="SpinLights" type="Node3D"]
+script = ExtResource("1_4i3pf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("CapsuleMesh_4i3pf")
+skeleton = NodePath("../OmniLight3D/SpotLight3D")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(-0.669311, -0.14537, 0.728622, -0.11913, 0.988982, 0.0878824, -0.733369, -0.0279799, -0.679255, 0, 0, 0)
+light_energy = 6.963
+omni_range = 0.828
+omni_attenuation = 2.764
+omni_shadow_mode = 0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="OmniLight3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.33299e-08, 0.627914, 3.46142)
+light_color = Color(1, 0.894642, 0.554666, 1)
+shadow_enabled = true
+spot_range = 18.0
+spot_attenuation = -2.17
+spot_angle = 24.54
+spot_angle_attenuation = 3.13833
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="OmniLight3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5.4073e-07, 0.627914, -3.363)
+light_color = Color(1, 0.894642, 0.554666, 1)
+shadow_enabled = true
+spot_range = 18.0
+spot_attenuation = -2.17
+spot_angle = 24.54
+spot_angle_attenuation = 3.13833

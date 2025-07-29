@@ -17,17 +17,21 @@ _surfaces = [{
 script = ExtResource("1_cmd18")
 
 [node name="RoomRender" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_cmd18")
 
 [node name="OriginalMesh2" type="CSGBox3D" parent="."]
+visible = false
 size = Vector3(15, 15, 15)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="OriginalMesh2"]
 transform = Transform3D(0.682598, 0.730794, 0, -0.730794, 0.682598, 0, 0, 0, 1, 8.95021, 7.41433, 0)
+visible = false
 operation = 2
 size = Vector3(14, 5, 14)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="OriginalMesh2"]
 transform = Transform3D(-2.98111e-08, -3.19685e-08, -1, -0.731354, 0.681998, 0, 0.681998, 0.731354, -4.37114e-08, 1.23417, 7.41433, 8.15184)
+visible = false
 operation = 2
 size = Vector3(14, 5, 14)

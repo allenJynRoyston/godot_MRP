@@ -7,6 +7,7 @@ extends Node3D
 @onready var Flap4:MeshInstance3D = $Flap4
 
 @onready var SafetyGate:MeshInstance3D = $SafetyGate
+@onready var SpinLights:Node3D = $SafetyGate/SpinLights
 
 @export var open_flaps:bool = false : 
 	set(val):
@@ -40,3 +41,4 @@ func on_open_flaps_update() -> void:
 func on_raise_gate_update() -> void:
 	if !is_node_ready():return
 	await U.tween_node_property(SafetyGate, "position:y", 2 if raise_gate else -1)
+	SpinLights.show() if raise_gate else SpinLights.hide()

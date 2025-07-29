@@ -125,15 +125,6 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="WingScene" parent="SubViewport" instance=ExtResource("2_n8dix")]
-r1_under_construction = true
-r2_is_empty = true
-r3_is_empty = true
-r4_is_empty = true
-r5_is_empty = true
-r6_is_empty = true
-r7_is_empty = true
-r8_is_empty = true
-r9_is_empty = true
 
 [node name="RoomColumn" type="Node3D" parent="SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
@@ -402,7 +393,6 @@ sky_mode = 1
 
 [node name="DangerLights" type="Node3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.999195, 0, -0.0401317, 0, 1, 0, 0.0401317, 0, -0.999195, 0, 0, 20)
-visible = false
 
 [node name="FogVolume" type="FogVolume" parent="SubViewport/RoomColumn/DangerLights"]
 transform = Transform3D(0.611122, 0.00742188, -0.791501, 0.00275932, 0.99993, 0.0115068, 0.791531, -0.00921612, 0.611059, -5.71933, -0.706925, 13.5801)
@@ -618,7 +608,6 @@ spot_angle_attenuation = 1.6245
 [node name="MainCamera" type="Camera3D" parent="SubViewport/RoomColumn"]
 transform = Transform3D(-0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, 0.353553, -0.612373, -24.8661, 22.2572, -23.9335)
 projection = 1
-current = true
 size = 30.179
 near = 0.007
 far = 333.67

@@ -1,13 +1,9 @@
-[gd_scene load_steps=6 format=4 uid="uid://dl5qwg47wln3a"]
+[gd_scene load_steps=4 format=4 uid="uid://c7tyen45c8wh7"]
 
-[ext_resource type="Script" uid="uid://dkfx2nmlgd5mn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/parts/spin_light.gd" id="1_nrm1j"]
-[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_iv5lu"]
+[ext_resource type="Script" uid="uid://bk5sfccmo8rwa" path="res://Scenes/CellScene/lighting/large_spin.gd" id="1_15d04"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_41n73"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_7bloh"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_x55mc"]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_b2rcb"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_jghc7"]
 _surfaces = [{
 "aabb": AABB(-1, -1, -1, 2, 2, 2),
 "attribute_data": PackedByteArray("AABAPwAAAAAAAGA/AAAAAAAAYD8AAIA/eoJaPwAAAAAAAIA/AAAAAAAAAD8AAAA/AAAAPgAAgD8AAAAAAACAPwAAAAAAAAAA////PgAAAAB6glo/AAAAAAAAAD8AAAA/AACAPgAAgD8AAAA+AACAPwAAAD4AAAAAAACAPwAAAAB4glo/AAAAAAAAAD8AAAA/AAAAAAAAgD8AAGA/AACAPwAAYD8AAAAAeIJaPwAAAAAAAAA/AAAAAAAAAD8AAAA/AABgPwAAgD8AAEA/AACAPwAAQD8AAAAAAAAAAAAAAAAAAAA+AAAAAAAAAD4AAIA/////PgAAAAB6glo/AAAAAAAAgD8AAAAAAAAAPgAAAAAAAIA+AAAAAAAAgD4AAIA/GvYVPgAAAAD///8+AAAAAAAAgD8AAAAAAABgPwAAAAAAAAAAAAAAAAAAAAAAAIA/eIJaPwAAAAAAAAA/AAAAAAAAgD8AAAAAAAAAPwAAAAAAACA/AAAAAAAAID8AAIA/AAAAPwAAAAAY9hU+AAAAAAAAgD8AAAAAGvYVPgAAAAD///8+AAAAAAAAAD8AAAA/AADAPgAAgD8AAIA+AACAPwAAgD4AAAAAAAAAAAAAAAAa9hU+AAAAAAAAAD8AAAA/AAAAPwAAgD8AAMA+AACAPwAAwD4AAAAAAAAAPwAAAAAY9hU+AAAAAAAAAD8AAAA/AABAPwAAgD8AACA/AACAPwAAID8AAAAAGPYVPgAAAAAAAAAAAAAAAAAAAD8AAAA/AAAgPwAAgD8AAAA/AACAPwAAAD8AAAAAAACAPgAAAAAAAMA+AAAAAAAAwD4AAIA/AAAAAAAAAAAa9hU+AAAAAAAAgD8AAAAAAADAPgAAAAAAAAA/AAAAAAAAAD8AAIA/AAAgPwAAAAAAAEA/AAAAAAAAQD8AAIA/GPYVPgAAAAAAAAAAAAAAAAAAgD8AAAAA"),
@@ -18,55 +14,28 @@ _surfaces = [{
 "vertex_data": PackedByteArray("Lt5MMgAAgL8AAIC/8QQ1PwAAgL/1BDW/8QQ1PwAAgD/1BDW/AACAPwAAgD8AAAAA8wQ1PwAAgD/zBDU/AAAAAAAAgD8AAAAA8wQ1PwAAgD/zBDU/AACAPwAAgD8AAAAAAACAPwAAgL8AAAAA8wQ1PwAAgD/zBDU/Lr07swAAgD8AAIA/AAAAAAAAgD8AAAAALr07swAAgD8AAIA/8wQ1PwAAgD/zBDU/8wQ1PwAAgL/zBDU/8QQ1PwAAgD/1BDW/AACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAA8QQ1PwAAgD/1BDW/8QQ1PwAAgL/1BDW/Lt5MMgAAgD8AAIC/8QQ1PwAAgD/1BDW/AAAAAAAAgD8AAAAA8QQ1PwAAgD/1BDW/Lt5MMgAAgD8AAIC/Lt5MMgAAgL8AAIC/AACAPwAAgL8AAAAA8wQ1PwAAgL/zBDU/8wQ1PwAAgD/zBDU/Lr07swAAgL8AAIA/8wQ1PwAAgL/zBDU/AACAPwAAgL8AAAAA8wQ1PwAAgL/zBDU/Lr07swAAgL8AAIA/Lr07swAAgD8AAIA/8wQ1vwAAgL/zBDU/Lr07swAAgL8AAIA/AACAPwAAgL8AAAAA8QQ1PwAAgL/1BDW/AACAPwAAgL8AAAAAAACAPwAAgD8AAAAA8QQ1PwAAgL/1BDW/Lt5MMgAAgL8AAIC/AACAPwAAgL8AAAAAAACAvwAAgL8uvbuz9AQ1vwAAgL/yBDW/9AQ1vwAAgD/yBDW/Lt5MMgAAgL8AAIC/9AQ1vwAAgL/yBDW/AACAPwAAgL8AAAAALr07swAAgD8AAIA/8wQ1vwAAgD/zBDU/AAAAAAAAgD8AAAAA8wQ1vwAAgD/zBDU/Lr07swAAgD8AAIA/Lr07swAAgL8AAIA/8wQ1vwAAgD/zBDU/AACAvwAAgD8uvbuzAAAAAAAAgD8AAAAAAACAvwAAgD8uvbuz8wQ1vwAAgD/zBDU/8wQ1vwAAgL/zBDU/9AQ1vwAAgD/yBDW/Lt5MMgAAgD8AAIC/AAAAAAAAgD8AAAAALt5MMgAAgD8AAIC/9AQ1vwAAgD/yBDW/9AQ1vwAAgL/yBDW/AACAvwAAgD8uvbuz9AQ1vwAAgD/yBDW/AAAAAAAAgD8AAAAA9AQ1vwAAgD/yBDW/AACAvwAAgD8uvbuzAACAvwAAgL8uvbuzLr07swAAgL8AAIA/8wQ1vwAAgL/zBDU/8wQ1vwAAgD/zBDU/AACAvwAAgL8uvbuz8wQ1vwAAgL/zBDU/AACAPwAAgL8AAAAA8wQ1vwAAgL/zBDU/AACAvwAAgL8uvbuzAACAvwAAgD8uvbuz9AQ1vwAAgL/yBDW/Lt5MMgAAgL8AAIC/Lt5MMgAAgD8AAIC/9AQ1vwAAgL/yBDW/AACAvwAAgL8uvbuzAACAPwAAgL8AAAAA//938Hfw/7///ym3Kbf/v///1cjVyP+//3///4Ja/7//f///glr/v/9///+CWv+/1cj/f9VI/7///4aPho//v3fw/394cP+//3///30l/7//f///fSX/v/9///99Jf+/ho//f4cP/7/VyP9/1Uj/vym3/38pN/+//3///wAAvhL/f///AAC+Ev9///8AAL4S//+GjwAAwwf//9XIAABqJP//KbcAAJQb/3///wAAQS3/f///AABBLf9///8AAEEt///VyNXI/78AAHfw///Cx///d/B38P+/d/D/f3hw/78pt/9/KTf/v9XI/3/VSP+//38AAP///7//fwAA////v/9/AAD///+/Kbf/fyk3/794cP9/AADCx4aP/3+HD/+//38AAP///7//fwAA////v/9/AAD///+///8ptwAAlBt38P9////DB///ho8AAMMH/38AAP///7//fwAA////v/9/AAD///+/AACGj///O/gAANXI//+U2wAAKbf//2rk/38AAP///7//fwAA////v/9/AAD///+//3///wAAvdL/f///AAC90v9///8AAL3S1Uj/fwAAlNuGj/9/hw//v3hw/38AAMLH/3///wAAQO3/f///AABA7f9///8AAEDthw//fwAAO/jVSP9/AACU2yk3/38AAGrk/3///30l/z//f///fSX/P/9///99Jf8/AAB38P//wscAACm3//9q5AAA1cj//5Tb/3///4Ja/z//f///glr/P/9///+CWv8/AAApt///auSHD/9/AAA7+AAAho///zv4eHD/fwAAwscpN/9/AABq5NVI/38AAJTb/38AAP///7//fwAA////v/9/AAD///+/KTf/fwAAauQAAIaP//87+IcP/38AADv4AADVyP//lNv//3fwd/D/vwAAd/D//8LH/38AAP///7//fwAA////v/9/AAD///+/")
 }]
 
-[node name="SpinLight" type="Node3D"]
-script = ExtResource("1_nrm1j")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.79674e-07, -4.89499)
-visible = false
-mesh = SubResource("PlaneMesh_7bloh")
+[node name="LargeSpinLights" type="Node3D"]
+script = ExtResource("1_15d04")
 
 [node name="SpinLightMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.199821, -7.86998e-10, 0.00900237, 0, -0.2, -1.74846e-08, 0.00900237, 1.74688e-08, -0.199821, 0, 0, 0)
-visible = false
-mesh = SubResource("CapsuleMesh_x55mc")
-skeleton = NodePath("SpotLight3D")
+transform = Transform3D(-0.81482, 0, 0.579722, 0, 1, 0, -0.579722, 0, -0.81482, 0, 0, 0)
+mesh = SubResource("ArrayMesh_jghc7")
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="SpinLightMesh"]
-transform = Transform3D(1, 0, -1.74846e-07, 0, 1, 0, 1.74846e-07, 0, 1, 1.72593e-07, 1.42109e-14, -0.705017)
-light_energy = 7.292
-shadow_enabled = true
-spot_range = 7.3516
-spot_attenuation = 0.58
-spot_angle = 11.2955
-
-[node name="SpotLight3D" type="SpotLight3D" parent="SpinLightMesh"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -4.93237e-08, 0, 0.564198)
-light_energy = 7.292
-shadow_enabled = true
-spot_range = 7.3516
-spot_attenuation = 0.58
-spot_angle = 11.2955
-
-[node name="SpinLightMesh2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.272801, 0, -0.962071, 0, 0.999999, 0, 0.962071, 0, 0.272801, 0, 0, 0)
-mesh = SubResource("ArrayMesh_b2rcb")
-
-[node name="CustomSpotlight" parent="SpinLightMesh2" instance=ExtResource("2_iv5lu")]
+[node name="CustomSpotlight" parent="SpinLightMesh" instance=ExtResource("2_41n73")]
 transform = Transform3D(-1.86265e-09, 2.98023e-08, 1, 0.996346, 0.0854169, 0, -0.085417, 0.996345, 0, -0.00306207, 0.844038, -0.415285)
-light_color = Color(1, 0.78, 0.45, 1)
+light_color = Color(0.79, 0, 0.0131665, 1)
 godray_energy = 10.0
-spot_range = 60.0
+spot_range = 50.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
 include_dust_particles = null
 
-[node name="CustomSpotlight2" parent="SpinLightMesh2" instance=ExtResource("2_iv5lu")]
+[node name="CustomSpotlight2" parent="SpinLightMesh" instance=ExtResource("2_41n73")]
 transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
-light_color = Color(1, 0.78, 0.45, 1)
+light_color = Color(0, 0.633333, 1, 1)
 godray_energy = 10.0
-spot_range = 60.0
+spot_range = 50.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
