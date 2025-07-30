@@ -559,7 +559,7 @@ func show_build_options() -> void:
 
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
-			return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size
+			return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size
 		
 		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
 			"draw_to_active_menu": true,
@@ -1226,7 +1226,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			# ControllerOverlay.show_directional = false
 			
 			# update mouse
-			var warp_to_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size			
+			var warp_to_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size			
 			Input.warp_mouse(warp_to_pos)
 			
 			# set this flat first
@@ -1252,7 +1252,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 			# update line draw
 			var get_node_pos:Callable = func() -> Vector2: 
-				return GBL.find_node(REFS.ROOM_NODES).get_room_position(current_location.room) * self.size			
+				return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size			
 						
 			GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
 				"draw_to_summary_card": true,
@@ -1289,7 +1289,7 @@ func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
 	pass
 	#if state:
 		#FloorPreviewControl.show()
-		#var subviewport:SubViewport = GBL.find_node(REFS.ROOM_NODES).get_preview_viewport()
+		#var subviewport:SubViewport = GBL.find_node(REFS.WING_RENDER).get_preview_viewport()
 		#PreviewTextureRect.texture = subviewport.get_texture()		
 	#
 	#await U.tween_node_property(FloorPreviewPanel, "position:x", control_pos[FloorPreviewPanel].show if state else control_pos[FloorPreviewPanel].hide , duration)
@@ -1324,7 +1324,7 @@ func reveal_cardminipanel(state:bool, duration:float = 0.2) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func enable_room_focus(state:bool) -> void:
-	GBL.find_node(REFS.ROOM_NODES).enable_room_focus = state
+	GBL.find_node(REFS.WING_RENDER).enable_room_focus = state
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -1382,7 +1382,7 @@ func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
 	var duration:float = 0.0 if skip_animation else 0.3
-	var RenderNode:Control = GBL.find_node(REFS.RENDERING)
+	var RenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 	
 	
 	match current_mode:
@@ -1395,7 +1395,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			reveal_cardminipanel(false, duration)
 		# --------------
 		MODE.ACTIONS:
-			RenderNode.set_wing_camera_size(28)
+			RenderNode.update_camera_size(125)
 			
 			enable_room_focus(false)
 			set_backdrop_state(false)	
@@ -1409,7 +1409,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			
 		# --------------
 		MODE.INVESTIGATE:
-			RenderNode.set_wing_camera_size(35)
+			RenderNode.update_camera_size(175)
 			
 			NewMessageBtn.is_disabled = true
 		

@@ -234,11 +234,13 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	match camera_settings.type:
 		# --------------------
 		CAMERA.TYPE.FLOOR_SELECT:			
+			transition()
 			enable_overview(true)
 			enable_wing(false)
 			enable_generator(false)
 		# --------------------	
 		CAMERA.TYPE.WING_SELECT:	
+			transition()
 			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)

@@ -1,35 +1,42 @@
-[gd_scene load_steps=14 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=23 format=4 uid="uid://b0xcdsr0gn57k"]
 
-[ext_resource type="PackedScene" uid="uid://da46sqhr4dsg3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/parts/GateRender/GateRender.tscn" id="1_gfang"]
-[ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/wing_scene.gd" id="1_lfhxq"]
-[ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="2_onjb5"]
-[ext_resource type="PackedScene" uid="uid://dd18gu8px7b47" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/parts/RoomRender/RoomRender.tscn" id="2_pf1vf"]
-[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="3_y3yuo"]
-[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="7_sqqcm"]
-[ext_resource type="PackedScene" uid="uid://c7tyen45c8wh7" path="res://Scenes/CellScene/lighting/LargeSpin.tscn" id="8_sqqcm"]
+[ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gd" id="1_nn2y2"]
+[ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="2_wsecj"]
+[ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="3_8vjbp"]
+[ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_jx7vp"]
+[ext_resource type="PackedScene" uid="uid://dd18gu8px7b47" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/RoomRender.tscn" id="5_yf1e1"]
+[ext_resource type="PackedScene" uid="uid://da46sqhr4dsg3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/GateRender/GateRender.tscn" id="6_5obq1"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="7_fh3pe"]
+[ext_resource type="PackedScene" uid="uid://c7tyen45c8wh7" path="res://Scenes/CellScene/lighting/LargeSpin.tscn" id="8_n6jqu"]
+[ext_resource type="Script" uid="uid://3ojuguh0qit6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/fog_volume.gd" id="9_ie5r3"]
 
 [sub_resource type="Environment" id="Environment_g7dei"]
 background_mode = 1
 reflected_light_source = 1
 tonemap_mode = 3
 tonemap_exposure = 0.62
+ssr_fade_in = 0.27991
+ssao_enabled = true
+ssil_enabled = true
 sdfgi_enabled = true
 sdfgi_read_sky_light = false
+sdfgi_bounce_feedback = 0.54
 sdfgi_min_cell_size = 0.260352
 glow_enabled = true
 volumetric_fog_enabled = true
-volumetric_fog_emission = Color(0.783523, 0.783523, 0.783523, 1)
-volumetric_fog_emission_energy = 0.2
-volumetric_fog_anisotropy = 0.9
-volumetric_fog_length = 35.0
-volumetric_fog_detail_spread = 1.18921
-volumetric_fog_ambient_inject = 8.32
+volumetric_fog_density = 0.015
+volumetric_fog_albedo = Color(0.902649, 0.912308, 0.981409, 1)
+volumetric_fog_anisotropy = 0.77
+volumetric_fog_length = 140.0
+volumetric_fog_detail_spread = 1.93187
+volumetric_fog_ambient_inject = 4.97
+volumetric_fog_sky_affect = 0.0
 volumetric_fog_temporal_reprojection_enabled = false
 volumetric_fog_temporal_reprojection_amount = 0.822
 adjustment_enabled = true
 adjustment_brightness = 0.82
 adjustment_contrast = 1.92
-adjustment_saturation = 0.73
+adjustment_saturation = 1.25
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_bityt"]
 
@@ -44,10 +51,61 @@ _surfaces = [{
 "vertex_data": PackedByteArray("BgDwQAAAcMECAPBABgDwwAAAcMEAALRBAgDwQAAAcMH+/7NBAwDwQAAAcMEBABbC/v+zQQAAcMEAABbCAABIQgAAcMEAAEjCAAAWQgAAcMEBABbCAABIQgAAcMEAAEjC/v+zQQAAcMEAABbCAQAWQgAAcMEAALTBAABIQgAAcMEAAEjCAAAWQgAAcMEBABbCAAAWQgAAcMEFAPDAAABIQgAAcMEAAEjCAQAWQgAAcMEAALTBAAC0QQAAcMH+/7PB//+zQQAAcMEDAPDAAQAWQgAAcMEAALTBAQAWwgAAcMH//7NBAABIwgAAcMFiMRZCAAAWwgAAcMEBABZCAQAWQgAAcMEAALTB//+zQQAAcMEDAPDAAAAWQgAAcMEFAPDAAQAWwgAAcMH//7NBAAAWwgAAcMEGAPBAAABIwgAAcMFiMRZCAQAWwgAAcMH//7NB/v+zwQAAcMECAPBAAAAWwgAAcMEGAPBAAAAWQgAAcMEFAPDAAABIQgAAcMEAAEhCAABIQgAAcMEAAEjCAABIwgAAcMFiMRZCAAAWwgAAcMEGAPBAAQAWwgAAcMECAPDAAgDwQAAAcMEGAPDA//+zQQAAcMEFAPBA//+zQQAAcMEDAPDABgDwQAAAcMECAPBA//+zQQAAcMEFAPBAAgDwQAAAcMEGAPDAAABIwgAAcMFiMRZCAABIwlDxSsE4gjPCAABIwlDxSsFiMRZCAgDwQAAAcMH+/7NB//+zQQAAcMEFAPBABgDwQAAAcMECAPBABgDwwAAAcMECAPDAAAC0wQAAcMEGAPDAAgDwwAAAcMEGAPBAAgDwQAAAcMH+/7NB//+zQQAAcMEBABZC//+zQQAAcMH//7NBAwDwwAAAcMH//7PBBgDwwAAAcMECAPDABQDwQAAAcMH//7PB//+zwQAAcMEAABZCAABIQgAAcMEAAEhCAgDwwAAAcMEBABZCAwDwwAAAcMH//7PB/v+zwQAAcMEAALTBBgDwwAAAcMECAPDABgDwQAAAcMEAABZC//+zQQAAcMEBABZCAgDwQAAAcMH+/7NBAgDwwAAAcMEBABZCAABIQgAAcMEAAEhCBgDwQAAAcMEAABZCAwDwQAAAcMEBABbCAAC0QQAAcMH+/7PB/v+zQQAAcMEAABbCAABIwlDxSsE4gjPCAABIwgAAcMEAAEjCAABIwgAAcEE4gjPCYjEWwlDxSsEAAEhCAABIQgAAcMEAAEhCYjEWwgAAcMEAAEhCYjEWwgAAcMEAAEhCAABIQgAAcMEAAEhCAABIwgAAcMFiMRZCAABIQgAAcMEAAEhC//+zwQAAcMEAABZCAAAWwgAAcMEBABZCAABIwgAAcMEAAEjCAABIwgAAcEEAAEjCAABIwgAAcEE4gjPCAABIQgAAcMEAAEhCAAAWwgAAcMEBABZCAABIwgAAcMFiMRZCAABIQgAAcMEAAEjCAABIwgAAcEEAAEjCAABIwgAAcMEAAEjCAABIwgAAcEEAAEjCPIIzQgAAcEE4gjPCAABIwgAAcEE4gjPC//+zwQAAcMEAABZCAgDwwAAAcMEBABZC//+zwQAAcMH//7NBBQDwwAAAcMEAABbCAwDwQAAAcMEBABbCAABIQgAAcMEAAEjCAgDwQAAAcMH+/7NB//+zQQAAcMH//7NB//+zQQAAcMEFAPBA//+zwQAAcMH//7NBAgDwwAAAcMEBABZCBgDwwAAAcMEAALRBBQDwQAAAcMH//7PBAAC0QQAAcMH+/7PBAwDwQAAAcMEBABbC//+zwQAAcMH//7NBBgDwwAAAcMEAALRBAgDwwAAAcMEGAPBAAgDwwAAAcMEGAPBABgDwwAAAcMEAALRBBgDwQAAAcMECAPBABQDwQAAAcMH//7PBBgDwwAAAcMECAPDAAAC0QQAAcMH+/7PBAgDwQAAAcMEGAPDAAAC0QQAAcMH+/7PBBgDwwAAAcMECAPDA//+zwQAAcMH//7NBAgDwwAAAcMEGAPBAAQAWwgAAcMH//7NBAgDwwAAAcMEGAPBA/v+zwQAAcMECAPBAAQAWwgAAcMH//7NBAgDwwAAAcMEGAPBAAAC0wQAAcMEGAPDA/v+zwQAAcMECAPBAAgDwQAAAcMEGAPDA//+zQQAAcMEDAPDAAAC0QQAAcMH+/7PBAABIwgAAcMFiMRZCAQAWwgAAcMECAPDAAABIwgAAcMEAAEjCAAAWQgAAcMH//7NBAABIQgAAcMEAAEhCAQAWQgAAcMEDAPBAAwDwwAAAcMH//7PBAAC0wQAAcMEBABbC/v+zwQAAcMEAALTBBgDwQAAAcMEAABZCAABIQgAAcMEAAEhC//+zQQAAcMEBABZC//+zQQAAcMEBABZCAABIQgAAcMEAAEhCAQAWQgAAcMEAABZCBQDwwAAAcMEAABbCAABIwgAAcMEAAEjCAAC0wQAAcMEBABbCBgDwwAAAcMECAPDA/v+zwQAAcMEAALTBAAC0wQAAcMEGAPDAAABIQgAAcMEAAEjCAABIQgAAcEEAAEjCAABIwgAAcEEAAEjCAABIQgAAcEEAAEjCPIIzQgAAcEE4gjPCAABIwgAAcEEAAEjCAAAWwgAAcMH+/7PBAQAWwgAAcMECAPDA/v+zwQAAcMEAALTBAABIQgAAcMEAAEjCAABIQgAAcEEAAEhCAABIQgAAcEEAAEjCAQAWQgAAcMEAABZCAABIQgAAcMEAAEhCAAAWQgAAcMH//7NBAABIwgAAcMEAAEjCAABIwlDxSsE4gjPCAABIwgAAcMFiMRZCAABIQgAAcEEAAEjCAABIQgAAcEEAAEhCPIIzQgAAcEE4gjPCAABIQgAAcMEAAEhCAABIQgAAcEEAAEhCAABIQgAAcMEAAEjCAABIwgAAcMEAAEjCAQAWwgAAcMECAPDAAAAWwgAAcMH+/7PBAABIQgAAcMEAAEhCPIIzQlDxSsEAAEhCAABIQgAAcEEAAEhCAABIwgAAcMEAAEjCAAAWwgAAcMH+/7PBAQAWwgAAcMEAABbCAABIwgAAcMEAAEjCAQAWwgAAcMEAABbCAAC0wQAAcMEBABbCAABIQgAAcEEAAEhCPIIzQgAAcEEAAEhCPIIzQgAAcEE4gjPCPIIzQgAAcEEAAEhCAABIQgAAcEEAAEhCPIIzQlDxSsEAAEhCAQAWQgAAcMEDAPBAAABIQgAAcMEAAEhCAAAWQgAAcMEFAPDA//+zQQAAcMEFAPBA//+zQQAAcMH//7NBAQAWQgAAcMEDAPBAAQAWQgAAcMEDAPBA//+zQQAAcMH//7NBAAAWQgAAcMH//7NBBQDwwAAAcMEAABbCAAC0wQAAcMEBABbCAwDwwAAAcMH//7PBPIIzQlDxSsEAAEhCAABIQgAAcMEAAEhCYjEWwlDxSsEAAEhC/v+zwQAAcMEAALTBAQAWwgAAcMECAPDAAAC0wQAAcMEGAPDABQDwwAAAcMEAABbCAABIQgAAcMEAAEjCAABIwgAAcMEAAEjCAgDwQFDxSsH+/7NB//+zQVDxSsH//7NBBgDwQFDxSsEAABZCPIIzQmQYQkEAAPDBPIIzQgAAcEE4gjPCPIIzQmQYQkEAAPBBAgDwwFDxSsEBABZCPIIzQlDxSsEAAEhCYjEWwlDxSsEAAEhCBQDwQFDxSsH//7PB/v+zQVDxSsEAABbCAAC0QVDxSsH+/7PB/P/vQTjP+8A4gjPCPIIzQlDxSsE4gjPCBADwwTjP+8A4gjPCAgDwQFDxSsEGAPDAAwDwwFDxSsH//7PBBQDwQFDxSsH//7PB//+zQVDxSsEFAPBAAAAWQlDxSsH//7NB//+zQVDxSsH//7NBAQAWQlDxSsEDAPBAAAAWQlDxSsH//7NB//+zQVDxSsEFAPBAAwDwQFDxSsEBABbC/v+zQVDxSsEAABbCBQDwQFDxSsH//7PB/P/vQWQYQkE4gjPCPIIzQgAAcEE4gjPC/P/vQTjP+8A4gjPCPIIzQlDxSsE4gjPCAwDwQFDxSsEBABbCBQDwwFDxSsEAABbCBADwwWQYQkE4gjPCAABIwgAAcEE4gjPC/P/vQWQYQkE4gjPCPIIzQgAAcEE4gjPCPIIzQmQYQkEAAPDBPIIzQlDxSsE4gjPCPIIzQlDxSsEAAEhCPIIzQjjP+8AAAPBBPIIzQgAAcEEAAEhCPIIzQmQYQkEAAPBBPIIzQgAAcEE4gjPCPIIzQgAAcEEAAEhCBADwwWQYQkE4gjPCAABIwlDxSsE4gjPCAABIwgAAcEE4gjPCBgDwQFDxSsEAABZC//+zQVDxSsH//7NB//+zQVDxSsEBABZCBgDwQFDxSsEAABZCPIIzQlDxSsEAAEhCAgDwwFDxSsEBABZCPIIzQmQYQkEAAPBBPIIzQgAAcEEAAEhCPIIzQjjP+8AAAPBBBgDwQFDxSsEAABZC//+zQVDxSsEBABZCPIIzQlDxSsEAAEhCAAAWQlDxSsH//7NBPIIzQlDxSsEAAEhCAQAWQlDxSsEAABZCPIIzQjjP+8AAAPDBPIIzQlDxSsEAAEhCPIIzQlDxSsE4gjPCAQAWQlDxSsEDAPBAPIIzQlDxSsEAAEhCAAAWQlDxSsH//7NBPIIzQjjP+8AAAPBBPIIzQlDxSsEAAEhCPIIzQjjP+8AAAPDBAQAWQlDxSsEDAPBAAAAWQlDxSsEFAPDAPIIzQlDxSsE4gjPCPIIzQlDxSsE4gjPCAAAWQlDxSsEFAPDAAQAWQlDxSsEAALTBAQAWQlDxSsEAALTBAAAWQlDxSsEFAPDAAAC0QVDxSsH+/7PBAQAWQlDxSsEAABZCPIIzQlDxSsEAAEhC//+zQVDxSsEBABZCAAC0QVDxSsH+/7PBAAAWQlDxSsEFAPDA//+zQVDxSsEDAPDABgDwQFDxSsECAPBA//+zQVDxSsEDAPDA//+zQVDxSsEFAPBAAAAWQlDxSsEBABbCPIIzQlDxSsE4gjPCAQAWQlDxSsEAALTBAQAWQlDxSsEDAPBAPIIzQlDxSsE4gjPCPIIzQlDxSsEAAEhCAgDwQFDxSsH+/7NB//+zQVDxSsEFAPBA//+zQVDxSsH//7NB/v+zQVDxSsEAABbCPIIzQlDxSsE4gjPCAAAWQlDxSsEBABbC/P/vQWQYQkE4gjPCAABIwgAAcEE4gjPCPIIzQgAAcEE4gjPCBgDwQFDxSsECAPBA//+zQVDxSsEFAPBAAgDwQFDxSsH+/7NBAAC0QVDxSsH+/7PB//+zQVDxSsEDAPDABgDwQFDxSsECAPBAAwDwQFDxSsEBABbCPIIzQlDxSsE4gjPC/v+zQVDxSsEAABbC/P/vQTjP+8A4gjPCPIIzQgAAcEE4gjPCPIIzQlDxSsE4gjPCPIIzQlDxSsE4gjPCPIIzQmQYQkEAAPDBPIIzQjjP+8AAAPDBBQDwQFDxSsH//7PBAAC0QVDxSsH+/7PBBgDwQFDxSsECAPBAAgDwQFDxSsEGAPDABQDwQFDxSsH//7PBBgDwQFDxSsECAPBABgDwQFDxSsECAPBAAgDwQFDxSsH+/7NBAgDwwFDxSsEGAPBAAABIwlDxSsE4gjPCBQDwwFDxSsEAABbCAAC0wVDxSsEBABbC//+zwVDxSsH//7NBAgDwwFDxSsEGAPBA//+zwVDxSsEAABZCAAC0wVDxSsEGAPDABgDwwFDxSsECAPDA/v+zwVDxSsECAPBA/v+zwVDxSsECAPBABgDwwFDxSsECAPDAAgDwwFDxSsEGAPBA/v+zwVDxSsEAALTBBgDwwFDxSsECAPDAAAC0wVDxSsEGAPDA/v+zwVDxSsEAALTBAAC0wVDxSsEGAPDAAAAWwlDxSsH+/7PB/v+zwVDxSsEAALTBAwDwwFDxSsH//7PBBgDwwFDxSsECAPDABgDwwFDxSsECAPDAAwDwwFDxSsH//7PBAgDwQFDxSsEGAPDA/v+zwVDxSsECAPBAAgDwwFDxSsEGAPBA//+zwVDxSsH//7NBAgDwwFDxSsEGAPBABgDwwFDxSsEAALRB//+zwVDxSsEAABZCAgDwwFDxSsEGAPBAAgDwQFDxSsH+/7NBBgDwwFDxSsEAALRB/v+zwVDxSsECAPBA//+zwVDxSsH//7NBAAAWwlDxSsEGAPBA/v+zwVDxSsEAALTBBQDwwFDxSsEAABbCAwDwwFDxSsH//7PBPIIzQlDxSsE4gjPCBQDwwFDxSsEAABbCAABIwlDxSsE4gjPCBADwwTjP+8A4gjPCPIIzQlDxSsE4gjPCAABIwlDxSsE4gjPCAAC0wVDxSsEBABbCBQDwwFDxSsEAABbC/v+zwVDxSsEAALTBYjEWwlDxSsEAAEhCAABIwlDxSsFiMRZCAABIwlDxSsE4gjPCAABIwlDxSsE4gjPCAQAWwlDxSsH//7NBAAAWwlDxSsEBABZCAABIwlDxSsE4gjPCAAAWwlDxSsEBABZCYjEWwlDxSsEAAEhCAAAWwlDxSsEGAPBA//+zwVDxSsH//7NBAQAWwlDxSsH//7NBAABIwlDxSsE4gjPCAAAWwlDxSsEGAPBAAQAWwlDxSsH//7NBAAAWwlDxSsH+/7PBAAC0wVDxSsEGAPDAAQAWwlDxSsECAPDAAABIwlDxSsE4gjPCAQAWwlDxSsECAPDAAAAWwlDxSsEGAPBAAABIwlDxSsE4gjPCAAAWwlDxSsH+/7PBAQAWwlDxSsECAPDA//+zwVDxSsEAABZCAgDwwFDxSsEBABZCYjEWwlDxSsEAAEhCAABIwlDxSsE4gjPCAQAWwlDxSsEAABbCAAAWwlDxSsH+/7PB//+zwVDxSsEAABZCBgDwwFDxSsEAALRBAgDwwFDxSsEBABZCAABIwlDxSsE4gjPCAAC0wVDxSsEBABbCAQAWwlDxSsEAABbC//+zwVDxSsEAABZCYjEWwlDxSsEAAEhCAAAWwlDxSsEBABZCBADwwTjP+8A4gjPCAABIwlDxSsE4gjPCBADwwWQYQkE4gjPCYjEWwlDxSsEAAEhCYjEWwgAAcMEAAEhCAABIwgAAcMFiMRZCAABIwlDxSsFiMRZCYjEWwlDxSsEAAEhCAABIwgAAcMFiMRZCxNwfwnhYcsEgIyDCPCMgQjwsycEgIyDCxNwfwjwsycEgIyDCxNwfwjwsycEgIyDC/lhkwjwsycHkplPCxNwfwjwsycHg3B9C/lhkwnhYcsHkplPCxNwfwnhYcsEgIyDCxNwfwnhYcsHg3B9CxNwfwjwsycHg3B9CxNwfwnhYcsEgIyDCxNwfwjwsycEgIyDC/lhkwjwsycHkplPCAqdTQjwsycHkplPC/lhkwnhYcsHkplPCxNwfwjwsycEgIyDCAqdTQjwsycHkplPC/lhkwjwsycHkplPCPCMgQjwsycHg3B9CPCMgQnhYcsHg3B9CxNwfwjwsycHg3B9C/lhkwjwsycEcWWRCAqdTQjwsycEcWWRCPCMgQjwsycHg3B9CAqdTQnhYcsEcWWRCAqdTQjwsycEcWWRC/lhkwjwsycEcWWRCPCMgQnhYcsHg3B9CAqdTQnhYcsEcWWRCxNwfwnhYcsHg3B9CPCMgQnhYcsHg3B9CPCMgQjwsycHg3B9CPCMgQjwsycEgIyDC/lhkwnhYcsHkplPCAqdTQnhYcsHkplPCxNwfwnhYcsEgIyDCxNwfwjwsycHg3B9CxNwfwnhYcsHg3B9CxNwfwnhYcsEgIyDC/lhkwnhYcsEcWWRC/lhkwjwsycEcWWRC/lhkwnhYcsHkplPCAqdTQnhYcsEcWWRCPCMgQnhYcsHg3B9CAqdTQnhYcsHkplPCxNwfwnhYcsHg3B9C/lhkwnhYcsEcWWRC/lhkwnhYcsHkplPCAqdTQnhYcsEcWWRCAqdTQjwsycHkplPCAqdTQjwsycEcWWRC/lhkwjwsycEcWWRCxNwfwjwsycHg3B9C/lhkwjwsycHkplPCPCMgQjwsycHg3B9CAqdTQjwsycEcWWRCAqdTQjwsycHkplPCxNwfwjwsycHg3B9C/lhkwjwsycEcWWRCPCMgQjwsycHg3B9C/lhkwjwsycHkplPC/lhkwnhYcsHkplPC/lhkwjwsycEcWWRCAqdTQjwsycHkplPCPCMgQjwsycEgIyDCPCMgQjwsycHg3B9CAqdTQnhYcsHkplPCPCMgQnhYcsEgIyDCxNwfwnhYcsEgIyDCxNwfwnhYcsEgIyDCPCMgQnhYcsEgIyDCPCMgQjwsycEgIyDCPCMgQnhYcsEgIyDCPCMgQnhYcsHg3B9CPCMgQjwsycEgIyDCAqdTQjwsycHkplPCAqdTQnhYcsHkplPC/lhkwnhYcsHkplPCAqdTQnhYcsHkplPCPCMgQnhYcsHg3B9CPCMgQnhYcsEgIyDCAqdTQjwsycHkplPCAqdTQnhYcsEcWWRCAqdTQnhYcsHkplPCxNwfwnhYcsHg3B9CAqdTQnhYcsEcWWRC/lhkwnhYcsEcWWRCxNwfwjwsycHg3B9CPCMgQnhYcsHg3B9CxNwfwnhYcsHg3B9C/lhkwnhYcsEcWWRCAqdTQnhYcsEcWWRC/lhkwjwsycEcWWRCPCMgQjwsycEgIyDCAqdTQjwsycHkplPCxNwfwjwsycEgIyDC/P/vQWQYQkE4gjPC/P/vQTjP+8A4gjPC/P/vQWQYQkGS/0XCBADwwTjP+8A4gjPCBADwwTjP+8CS/0XC/P/vQTjP+8CS/0XCBADwwTjP+8A4gjPC/P/vQTjP+8CS/0XC/P/vQTjP+8A4gjPCBADwwWQYQkGS/0XC/P/vQWQYQkGS/0XC/P/vQTjP+8CS/0XC/P/vQWQYQkE4gjPC/P/vQWQYQkGS/0XCBADwwWQYQkGS/0XCBADwwTjP+8A4gjPCBADwwWQYQkE4gjPCBADwwTjP+8CS/0XCBADwwWQYQkGS/0XCBADwwTjP+8CS/0XCBADwwWQYQkE4gjPC/P/vQTjP+8CS/0XC/P/vQWQYQkGS/0XC/P/vQTjP+8A4gjPCBADwwTjP+8CS/0XCBADwwWQYQkGS/0XC/P/vQTjP+8CS/0XCBADwwWQYQkE4gjPC/P/vQWQYQkE4gjPCBADwwWQYQkGS/0XCPIIzQjjP+8AAAPDBPIIzQmQYQkEAAPDBB+lFQjjP+8AAAPDBB+lFQmQYQkEAAPDBBelFQmQYQkEAAPBBBelFQjjP+8AAAPBBBelFQjjP+8AAAPBBBelFQmQYQkEAAPBBPIIzQjjP+8AAAPBBPIIzQmQYQkEAAPBBBelFQmQYQkEAAPBBB+lFQmQYQkEAAPDBPIIzQmQYQkEAAPBBPIIzQjjP+8AAAPBBBelFQmQYQkEAAPBBPIIzQmQYQkEAAPDBPIIzQmQYQkEAAPBBB+lFQmQYQkEAAPDBBelFQjjP+8AAAPBBPIIzQjjP+8AAAPDBB+lFQjjP+8AAAPDBB+lFQmQYQkEAAPDBB+lFQjjP+8AAAPDBPIIzQmQYQkEAAPDBBelFQjjP+8AAAPBBPIIzQjjP+8AAAPBBPIIzQjjP+8AAAPDBB+lFQjjP+8AAAPDBB+lFQmQYQkEAAPDBBelFQjjP+8AAAPBBAQAWQgAAcMEAALTBAAAWQgAAcMEBABbCAQAWQlDxSsEAALTB/v+zQQAAcMEAABbCAAC0QQAAcMH+/7PB/v+zQVDxSsEAABbC/v+zQVDxSsEAABbCAAC0QQAAcMH+/7PBAAC0QVDxSsH+/7PBAQAWQlDxSsEAALTBAAAWQgAAcMEBABbCAAAWQlDxSsEBABbCAQAWQgAAcMEAALTBAAC0QVDxSsH+/7PBAAC0QQAAcMH+/7PBAQAWQgAAcMEAALTBAQAWQlDxSsEAALTBAAC0QVDxSsH+/7PB/v+zQQAAcMEAABbC/v+zQVDxSsEAABbCAAAWQlDxSsEBABbC/v+zQQAAcMEAABbCAAAWQlDxSsEBABbCAAAWQgAAcMEBABbCBQDwwAAAcMEAABbCAwDwwAAAcMH//7PBBQDwwFDxSsEAABbCAwDwQFDxSsEBABbCAwDwQAAAcMEBABbCBQDwwAAAcMEAABbCAwDwQFDxSsEBABbCBQDwQFDxSsH//7PBAwDwQAAAcMEBABbCBQDwQAAAcMH//7PBAwDwQAAAcMEBABbCBQDwQFDxSsH//7PBBQDwwAAAcMEAABbCBQDwwFDxSsEAABbCAwDwQFDxSsEBABbCAwDwwFDxSsH//7PBBQDwwFDxSsEAABbCAwDwwAAAcMH//7PBAwDwwFDxSsH//7PBAwDwwAAAcMH//7PBBQDwQAAAcMH//7PBBQDwQAAAcMH//7PBBQDwQFDxSsH//7PBAwDwwFDxSsH//7PBAQAWwgAAcMEAABbCAAAWwgAAcMH+/7PBAQAWwlDxSsEAABbCAAC0wVDxSsEBABbCAAC0wQAAcMEBABbCAQAWwgAAcMEAABbCAAC0wVDxSsEBABbC/v+zwVDxSsEAALTBAAC0wQAAcMEBABbC/v+zwQAAcMEAALTBAAC0wQAAcMEBABbC/v+zwVDxSsEAALTBAAAWwlDxSsH+/7PBAAAWwgAAcMH+/7PB/v+zwQAAcMEAALTBAQAWwgAAcMEAABbCAQAWwlDxSsEAABbCAAC0wVDxSsEBABbC/v+zwQAAcMEAALTB/v+zwVDxSsEAALTBAAAWwlDxSsH+/7PBAAAWwlDxSsH+/7PBAQAWwlDxSsEAABbCAAAWwgAAcMH+/7PBAQAWQgAAcMEDAPBAAAAWQgAAcMEFAPDAAQAWQlDxSsEDAPBAAQAWQgAAcMEDAPBAAQAWQlDxSsEDAPBA//+zQVDxSsEFAPBA//+zQQAAcMEDAPDA//+zQVDxSsEDAPDAAAAWQlDxSsEFAPDA//+zQQAAcMEDAPDA//+zQQAAcMEFAPBA//+zQVDxSsEDAPDAAAAWQlDxSsEFAPDAAAAWQgAAcMEFAPDA//+zQQAAcMEDAPDAAAAWQlDxSsEFAPDAAQAWQlDxSsEDAPBAAAAWQgAAcMEFAPDA//+zQVDxSsEFAPBA//+zQQAAcMEFAPBAAQAWQgAAcMEDAPBA//+zQVDxSsEFAPBA//+zQVDxSsEDAPDA//+zQQAAcMEFAPBABgDwwFDxSsECAPDAAgDwwAAAcMEGAPBAAgDwwFDxSsEGAPBAAgDwQAAAcMEGAPDABgDwQFDxSsECAPBABgDwQAAAcMECAPBABgDwwAAAcMECAPDAAgDwQFDxSsEGAPDAAgDwQAAAcMEGAPDABgDwwAAAcMECAPDABgDwwFDxSsECAPDAAgDwQFDxSsEGAPDAAgDwwFDxSsEGAPBABgDwQAAAcMECAPBABgDwQFDxSsECAPBAAgDwwFDxSsEGAPBAAgDwwAAAcMEGAPBABgDwQAAAcMECAPBAAgDwQFDxSsEGAPDABgDwQFDxSsECAPBAAgDwQAAAcMEGAPDABgDwwAAAcMECAPDAAgDwwAAAcMEGAPBABgDwwFDxSsECAPDAAAAWwlDxSsEGAPBAAAAWwgAAcMEGAPBA/v+zwQAAcMECAPBAAAC0wVDxSsEGAPDAAAC0wQAAcMEGAPDAAQAWwgAAcMECAPDAAAC0wVDxSsEGAPDA/v+zwVDxSsECAPBAAAC0wQAAcMEGAPDA/v+zwQAAcMECAPBAAAC0wQAAcMEGAPDA/v+zwVDxSsECAPBA/v+zwQAAcMECAPBA/v+zwVDxSsECAPBAAAAWwlDxSsEGAPBAAAAWwlDxSsEGAPBAAQAWwlDxSsECAPDAAAAWwgAAcMEGAPBAAQAWwgAAcMECAPDAAAAWwgAAcMEGAPBAAQAWwlDxSsECAPDAAQAWwgAAcMECAPDAAQAWwlDxSsECAPDAAAC0wVDxSsEGAPDAAQAWQgAAcMEAABZCAAAWQgAAcMH//7NBAQAWQlDxSsEAABZCAQAWQgAAcMEAABZCAQAWQlDxSsEAABZC//+zQVDxSsEBABZC//+zQQAAcMH//7NB//+zQQAAcMEBABZC//+zQVDxSsH//7NB//+zQVDxSsEBABZC//+zQQAAcMEBABZCAQAWQgAAcMEAABZCAAAWQlDxSsH//7NBAQAWQlDxSsEAABZCAAAWQgAAcMH//7NB//+zQVDxSsEBABZC//+zQVDxSsH//7NB//+zQQAAcMEBABZCAAAWQlDxSsH//7NBAAAWQgAAcMH//7NB//+zQQAAcMH//7NB//+zQQAAcMH//7NB//+zQVDxSsH//7NBAAAWQlDxSsH//7NBBgDwQAAAcMEAABZCBgDwQFDxSsEAABZCAgDwwFDxSsEBABZCAgDwQFDxSsH+/7NBAgDwQAAAcMH+/7NBBgDwwAAAcMEAALRBBgDwQAAAcMEAABZCAgDwQAAAcMH+/7NBBgDwQFDxSsEAABZCAgDwwFDxSsEBABZCAgDwwAAAcMEBABZCBgDwQAAAcMEAABZCAgDwwFDxSsEBABZCBgDwwFDxSsEAALRBAgDwwAAAcMEBABZCBgDwwAAAcMEAALRBBgDwwFDxSsEAALRBAgDwQFDxSsH+/7NBBgDwwAAAcMEAALRBAgDwwAAAcMEBABZCBgDwwFDxSsEAALRBAgDwQFDxSsH+/7NBBgDwQFDxSsEAABZCAgDwQAAAcMH+/7NB//+zwVDxSsH//7NB//+zwQAAcMH//7NBAQAWwgAAcMH//7NBAQAWwgAAcMH//7NBAQAWwlDxSsH//7NB//+zwVDxSsH//7NB//+zwQAAcMH//7NB//+zwVDxSsEAABZC//+zwQAAcMEAABZC//+zwVDxSsH//7NB//+zwVDxSsEAABZC//+zwQAAcMH//7NBAAAWwlDxSsEBABZCAQAWwlDxSsH//7NBAAAWwgAAcMEBABZCAAAWwlDxSsEBABZCAAAWwgAAcMEBABZC//+zwQAAcMEAABZCAAAWwlDxSsEBABZC//+zwQAAcMEAABZC//+zwVDxSsEAABZCAAAWwgAAcMEBABZCAQAWwlDxSsH//7NBAQAWwgAAcMH//7NB/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/38AAP//AAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAP//AAD/fwAA//8AAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAAAAAAA/38AAP//AAD/fwAA//8AAP9/AAAAAAAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA////f/9//n////9//3/+f////3//f/5//38AAAAAAAD/fwAAAAAAAP9/AAAAAAAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAAAAAAAP9/AAAAAAAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAAAAAAD/fwAA//8AAP9/AAD//wAA/3//////////f/////////9///8AAP7/AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//////////f/////////9//////////3//////////f//////+//9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+//3//////////f/////////9//////////3//////////f///AAD+//9//////////3//////////f///AAD+//9//////////3///wAA/v//f//////+//9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+//3//////////f///AAD+//9///////7//3//fwAA/7//f/9/AAD/v/9//38AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCAAAD/f/9/AIAAAP9//38AgAAA/3//fwCAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//fwAA/7//f/9/AAD/v/9//38AAP+//3///wAA/v//f/////////9///////7//3///wAA/v//f/////////9/////////AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3///wAA/v//f//////+//9//////////3///wAA/v//f/////////9/////////AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//////////f/////////9///8AAP7/AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//////////f/////////9//////////3//////////f/////////9///8AAP7//3///wAA/v//f/////////9//////////3//////////f/////////9///////7//3//////////f/////////9//////////3///wAA/v//f/////////9//////////3//////////f/////////9///8AAP7//3//////////f/////////9//////////3//////////f/////////9//////////3///////v//f/////////9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+//3///wAA/v//f/////////9//////////3//////////f/////////9///8AAP7//3///wAA/v//f/////////9///////7//3//fwAA/7//f/9/AAD/v/9//38AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//////////f/////////9///8AAP7//3//////////f/////////9///8AAP7//3///wAA/v//f/////////9//////////3//////////f//////+//9///8AAP7//3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f//////+//9//////////3//////////f//////+//9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+//3///wAA/v//f//////+//9//////////3//////////f/////////9//////////3//////////f/////////9///////7//3//////////f//////+//9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f/////////9//////////3//////////f///AAD+//9//////////3//////////f/////////9///////7//3//fwAA/7//f/9/AAD/v/9//38AAP+//z//fwAA/9//P/9/AAD/3/8//38AAP/f/z//fwAA/9//P/9/AAD/3/8//38AAP/f/3//fwAA/7//f/9/AAD/v/9//38AAP+//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3///wAAAAD/f///AAAAAP9//////wAA////f/9/AID///9//38AgP///3//fwCA/////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/7//////AAD/v/////8AAP+//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3///wAAAAD/f///AAAAAP9//////wAAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3///wAAAAD/f/////8AAP9///8AAAAA////f/9/AID///9//38AgP///3//fwCAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3///wAAAAD/f///AAAAAP9//////wAA/3//////AAD/f/////8AAP9///8AAAAA////f/9//n////9//3/+f////3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9///8AAAAA/3//fwAA/7//f/9/AAD/v/9//38AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCA/////wAA/z//////AAD/P/////8AAP8//3//////AAD/f///AAAAAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//////AAD/f///AAAAAP9//////wAA/////wAA/7//////AAD/v/////8AAP+//3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//////////f/////////9//////////3//////////f/////////9//////////3//fwAA/7//f/9/AAD/v/9//38AAP+//38AAP//////fwAA//////9/AAD/////////f/9/AID///9//38AgP///3//fwCA////f/9/AID///9//38AgP///3//fwCAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/3//fwAA/7//f/9/AAD/v/9//38AAP+//38AAP//////fwAA//////9/AAD//////3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/////8AAP9//////wAA/3////////////9/AID//////38AgP//////fwCA/38AAP///7//fwAA////v/9/AAD///+///////9/AID//////38AgP//////fwCA/38AAP///7//fwAA////v/9/AAD///+//3///////7//f///////v/9///////+//3//f/9/AID/f/9//38AgP9//3//fwCA/3///////7//f///////v/9///////+/AAD/f/////8AAP9//////wAA/3//////AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCA////f/9//7////9//3//v////3//f/+///////9/AID//////38AgP//////fwCA//////9/AID//////38AgP//////fwCA////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA////f/9//7////9//3//v////3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD///9/AIAAAP///38AgAAA////fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD///9/AIAAAP///38AgAAA////fwCA////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9//7////9//3//v////3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA////f/9//7////9//3//v////3//f/+/////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA////f/9//7////9//3//v////3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA////f/9//7////9//3//v////3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCA////f/9//7////9//3//v////3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9//7////9//3//v////3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA////f/9//7////9//3//v////3//f/+/")
 }]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nn2y2"]
+albedo_color = Color(0.577009, 0.577008, 0.577008, 1)
+emission_energy_multiplier = 4.46
+rim = 0.79
+clearcoat = 0.46
+anisotropy = 0.09
+texture_repeat = false
+proximity_fade_distance = 0.01
+distance_fade_max_distance = 0.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sqqcm"]
+particle_flag_rotate_y = true
+emission_shape_scale = Vector3(50, 20, 50)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+orbit_velocity_min = -1.0
+orbit_velocity_max = 1.0
+radial_velocity_min = -1.00002
+radial_velocity_max = 0.999978
+gravity = Vector3(0, 0, 0)
+damping_max = 1.0
+scale_min = 0.2
+scale_max = 0.3
+scale_over_velocity_min = 0.1
+scale_over_velocity_max = 1.0
+turbulence_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_su1dq"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_texture = ExtResource("2_wsecj")
+rim_enabled = true
+refraction_scale = -0.47
+
+[sub_resource type="QuadMesh" id="QuadMesh_g7dei"]
+material = SubResource("StandardMaterial3D_su1dq")
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_c0s5l"]
 viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sqqcm"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nn2y2"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_wsecj"]
+width = 124
+height = 124
+noise = SubResource("FastNoiseLite_nn2y2")
+
+[sub_resource type="FogMaterial" id="FogMaterial_g7dei"]
+density = 0.05
+height_falloff = 0.674132
+edge_fade = 0.627664
+density_texture = SubResource("NoiseTexture3D_wsecj")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_su1dq"]
 lightmap_size_hint = Vector2i(5458, 5470)
@@ -63,40 +121,43 @@ _surfaces = [{
 "vertex_data": PackedByteArray("BgDwQAAAcMECAPBABgDwwAAAcMEAALRBAgDwQAAAcMH+/7NBAwDwQAAAcMEBABbC/v+zQQAAcMEAABbCAABIQgAAcMEAAEjCAAAWQgAAcMEBABbCAQAWQgAAcMEAALTBAAAWQgAAcMEFAPDAAAC0QQAAcMH+/7PB//+zQQAAcMEDAPDAAQAWwgAAcMH//7NBAABIwgAAcMFiMRZCAAAWwgAAcMEBABZCAAAWwgAAcMEGAPBA/v+zwQAAcMECAPBAAABIQgAAcMEAAEhCAQAWwgAAcMECAPDAAgDwQAAAcMEGAPDA//+zQQAAcMEFAPBAAABIwgAAcMFiMRZCAABIwlDxSsE4gjPCAABIwlDxSsFiMRZCBgDwwAAAcMECAPDAAAC0wQAAcMEGAPDAAgDwwAAAcMEGAPBA//+zQQAAcMEBABZC//+zQQAAcMH//7NBAwDwwAAAcMH//7PBBQDwQAAAcMH//7PB//+zwQAAcMEAABZCAgDwwAAAcMEBABZC/v+zwQAAcMEAALTBBgDwQAAAcMEAABZCAABIwgAAcMEAAEjCAABIwgAAcEE4gjPCYjEWwlDxSsEAAEhCAABIQgAAcMEAAEhCYjEWwgAAcMEAAEhCYjEWwgAAcMEAAEhCAABIwgAAcEEAAEjCAABIQgAAcMEAAEjCAABIwgAAcEEAAEjCAABIwgAAcMEAAEjCAABIwgAAcEEAAEjCPIIzQgAAcEE4gjPCAABIwgAAcEE4gjPC//+zwQAAcMH//7NBBQDwwAAAcMEAABbCAABIwgAAcMEAAEjCAAAWQgAAcMH//7NBAQAWQgAAcMEDAPBAAAC0wQAAcMEBABbCAQAWQgAAcMEAABZCAABIQgAAcEEAAEjCAABIQgAAcEEAAEjCAAAWwgAAcMH+/7PBAABIQgAAcMEAAEjCAABIQgAAcEEAAEhCAABIQgAAcEEAAEjCAABIQgAAcEEAAEhCAABIQgAAcMEAAEhCPIIzQlDxSsEAAEhCAABIQgAAcEEAAEhCAQAWwgAAcMEAABbCPIIzQgAAcEEAAEhCPIIzQgAAcEEAAEhCAgDwQFDxSsH+/7NB//+zQVDxSsH//7NBBgDwQFDxSsEAABZCPIIzQmQYQkEAAPDBPIIzQgAAcEE4gjPCPIIzQmQYQkEAAPBBAgDwwFDxSsEBABZCPIIzQlDxSsEAAEhCYjEWwlDxSsEAAEhCBQDwQFDxSsH//7PB/v+zQVDxSsEAABbCAAC0QVDxSsH+/7PB/P/vQTjP+8A4gjPCPIIzQlDxSsE4gjPCBADwwTjP+8A4gjPCAgDwQFDxSsEGAPDAAwDwwFDxSsH//7PB//+zQVDxSsEFAPBAAAAWQlDxSsH//7NBAQAWQlDxSsEDAPBAAwDwQFDxSsEBABbC/P/vQWQYQkE4gjPCPIIzQgAAcEE4gjPCPIIzQlDxSsE4gjPCBQDwwFDxSsEAABbCBADwwWQYQkE4gjPCAABIwgAAcEE4gjPCPIIzQlDxSsE4gjPCPIIzQlDxSsEAAEhCPIIzQjjP+8AAAPBBPIIzQgAAcEEAAEhCAABIwlDxSsE4gjPC//+zQVDxSsEBABZCAQAWQlDxSsEAABZCPIIzQjjP+8AAAPDBAAAWQlDxSsEFAPDAAQAWQlDxSsEAALTB//+zQVDxSsEDAPDABgDwQFDxSsECAPBAAAAWQlDxSsEBABbCAgDwwFDxSsEGAPBAAABIwlDxSsE4gjPCAAC0wVDxSsEBABbC//+zwVDxSsH//7NB//+zwVDxSsEAABZCAAC0wVDxSsEGAPDABgDwwFDxSsECAPDA/v+zwVDxSsECAPBA/v+zwVDxSsEAALTBAAAWwlDxSsH+/7PBBgDwwFDxSsEAALRBAAAWwlDxSsEGAPBAAABIwlDxSsFiMRZCAQAWwlDxSsH//7NBAAAWwlDxSsEBABZCAQAWwlDxSsECAPDAAQAWwlDxSsEAABbCYjEWwlDxSsEAAEhCYjEWwgAAcMEAAEhCAABIwgAAcMFiMRZCAABIwlDxSsFiMRZCxNwfwnhYcsEgIyDCPCMgQjwsycEgIyDCxNwfwjwsycEgIyDCxNwfwjwsycEgIyDC/lhkwjwsycHkplPCxNwfwjwsycHg3B9C/lhkwnhYcsHkplPCxNwfwnhYcsEgIyDCxNwfwnhYcsHg3B9CxNwfwjwsycHg3B9CxNwfwnhYcsEgIyDCxNwfwjwsycEgIyDC/lhkwjwsycHkplPCAqdTQjwsycHkplPC/lhkwnhYcsHkplPCAqdTQjwsycHkplPCPCMgQjwsycHg3B9CPCMgQnhYcsHg3B9CxNwfwjwsycHg3B9C/lhkwjwsycEcWWRCAqdTQjwsycEcWWRCPCMgQjwsycHg3B9CAqdTQnhYcsEcWWRCAqdTQjwsycEcWWRC/lhkwjwsycEcWWRCPCMgQnhYcsHg3B9CAqdTQnhYcsEcWWRCPCMgQnhYcsHg3B9CPCMgQjwsycHg3B9CPCMgQjwsycEgIyDCAqdTQnhYcsHkplPCxNwfwnhYcsHg3B9C/lhkwnhYcsEcWWRC/lhkwjwsycEcWWRC/lhkwnhYcsHkplPC/lhkwnhYcsEcWWRCAqdTQnhYcsEcWWRCAqdTQjwsycHkplPCAqdTQjwsycEcWWRC/lhkwjwsycHkplPCPCMgQjwsycEgIyDCPCMgQnhYcsEgIyDCPCMgQnhYcsEgIyDCPCMgQnhYcsEgIyDCAqdTQnhYcsHkplPCAqdTQnhYcsHkplPCxNwfwnhYcsHg3B9C/lhkwnhYcsEcWWRC/P/vQWQYQkE4gjPC/P/vQTjP+8A4gjPC/P/vQWQYQkGS/0XCBADwwTjP+8A4gjPCBADwwTjP+8CS/0XC/P/vQTjP+8CS/0XC/P/vQTjP+8A4gjPCBADwwWQYQkGS/0XC/P/vQWQYQkGS/0XC/P/vQTjP+8CS/0XC/P/vQWQYQkE4gjPC/P/vQWQYQkGS/0XCBADwwWQYQkGS/0XCBADwwTjP+8A4gjPCBADwwWQYQkE4gjPCBADwwTjP+8CS/0XCBADwwWQYQkGS/0XC/P/vQTjP+8CS/0XCBADwwTjP+8CS/0XCBADwwWQYQkE4gjPCPIIzQjjP+8AAAPDBPIIzQmQYQkEAAPDBB+lFQjjP+8AAAPDBB+lFQmQYQkEAAPDBBelFQmQYQkEAAPBBBelFQjjP+8AAAPBBBelFQjjP+8AAAPBBBelFQmQYQkEAAPBBPIIzQjjP+8AAAPBBPIIzQmQYQkEAAPBBBelFQmQYQkEAAPBBB+lFQmQYQkEAAPDBPIIzQmQYQkEAAPBBPIIzQmQYQkEAAPDBBelFQjjP+8AAAPBBPIIzQjjP+8AAAPDBB+lFQjjP+8AAAPDBB+lFQmQYQkEAAPDBPIIzQjjP+8AAAPBBB+lFQjjP+8AAAPDBAQAWQgAAcMEAALTBAAAWQgAAcMEBABbCAQAWQlDxSsEAALTB/v+zQQAAcMEAABbCAAC0QQAAcMH+/7PB/v+zQVDxSsEAABbCAAC0QVDxSsH+/7PBAAAWQlDxSsEBABbCAQAWQgAAcMEAALTBAAC0QVDxSsH+/7PBAAC0QQAAcMH+/7PBAQAWQlDxSsEAALTB/v+zQQAAcMEAABbC/v+zQVDxSsEAABbCAAAWQlDxSsEBABbCAAAWQgAAcMEBABbCBQDwwAAAcMEAABbCAwDwwAAAcMH//7PBBQDwwFDxSsEAABbCAwDwQFDxSsEBABbCAwDwQAAAcMEBABbCBQDwwAAAcMEAABbCAwDwQFDxSsEBABbCBQDwQFDxSsH//7PBAwDwQAAAcMEBABbCBQDwQAAAcMH//7PBBQDwwFDxSsEAABbCAwDwwFDxSsH//7PBAwDwwFDxSsH//7PBAwDwwAAAcMH//7PBBQDwQAAAcMH//7PBBQDwQFDxSsH//7PBAQAWwgAAcMEAABbCAAAWwgAAcMH+/7PBAQAWwlDxSsEAABbCAAC0wVDxSsEBABbCAAC0wQAAcMEBABbCAQAWwgAAcMEAABbCAAC0wVDxSsEBABbC/v+zwVDxSsEAALTBAAC0wQAAcMEBABbC/v+zwQAAcMEAALTBAAAWwlDxSsH+/7PBAAAWwgAAcMH+/7PB/v+zwQAAcMEAALTBAQAWwlDxSsEAABbC/v+zwVDxSsEAALTBAAAWwlDxSsH+/7PBAQAWQgAAcMEDAPBAAAAWQgAAcMEFAPDAAQAWQlDxSsEDAPBAAQAWQgAAcMEDAPBAAQAWQlDxSsEDAPBA//+zQVDxSsEFAPBA//+zQQAAcMEDAPDA//+zQVDxSsEDAPDAAAAWQlDxSsEFAPDA//+zQQAAcMEDAPDA//+zQQAAcMEFAPBA//+zQVDxSsEDAPDAAAAWQgAAcMEFAPDAAAAWQlDxSsEFAPDA//+zQQAAcMEFAPBA//+zQVDxSsEFAPBABgDwwFDxSsECAPDAAgDwwAAAcMEGAPBAAgDwwFDxSsEGAPBAAgDwQAAAcMEGAPDABgDwQFDxSsECAPBABgDwQAAAcMECAPBABgDwwAAAcMECAPDAAgDwQFDxSsEGAPDAAgDwQAAAcMEGAPDABgDwwFDxSsECAPDAAgDwwFDxSsEGAPBABgDwQAAAcMECAPBABgDwQFDxSsECAPBAAgDwwAAAcMEGAPBAAgDwQFDxSsEGAPDABgDwwAAAcMECAPDAAAAWwlDxSsEGAPBAAAAWwgAAcMEGAPBA/v+zwQAAcMECAPBAAAC0wVDxSsEGAPDAAAC0wQAAcMEGAPDAAQAWwgAAcMECAPDAAAC0wVDxSsEGAPDA/v+zwVDxSsECAPBAAAC0wQAAcMEGAPDA/v+zwQAAcMECAPBA/v+zwVDxSsECAPBAAAAWwlDxSsEGAPBAAQAWwlDxSsECAPDAAAAWwgAAcMEGAPBAAQAWwgAAcMECAPDAAQAWwlDxSsECAPDAAQAWQgAAcMEAABZCAAAWQgAAcMH//7NBAQAWQlDxSsEAABZCAQAWQgAAcMEAABZCAQAWQlDxSsEAABZC//+zQVDxSsEBABZC//+zQQAAcMH//7NB//+zQQAAcMEBABZC//+zQVDxSsH//7NB//+zQQAAcMEBABZCAAAWQlDxSsH//7NB//+zQVDxSsEBABZCAAAWQlDxSsH//7NBAAAWQgAAcMH//7NB//+zQQAAcMH//7NB//+zQVDxSsH//7NBBgDwQAAAcMEAABZCBgDwQFDxSsEAABZCAgDwwFDxSsEBABZCAgDwQFDxSsH+/7NBAgDwQAAAcMH+/7NBBgDwwAAAcMEAALRBBgDwQAAAcMEAABZCAgDwQAAAcMH+/7NBBgDwQFDxSsEAABZCAgDwwAAAcMEBABZCAgDwwFDxSsEBABZCBgDwwFDxSsEAALRBAgDwwAAAcMEBABZCBgDwwFDxSsEAALRBBgDwwAAAcMEAALRBAgDwQFDxSsH+/7NB//+zwVDxSsH//7NB//+zwQAAcMH//7NBAQAWwgAAcMH//7NBAQAWwlDxSsH//7NB//+zwQAAcMH//7NB//+zwVDxSsEAABZC//+zwQAAcMEAABZC//+zwVDxSsH//7NBAAAWwlDxSsEBABZCAQAWwlDxSsH//7NBAAAWwgAAcMEBABZCAAAWwlDxSsEBABZCAAAWwgAAcMEBABZC//+zwQAAcMEAABZC//+zwVDxSsEAABZCAQAWwgAAcMH//7NBAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAAAAAID/f/5/AAAAgP9//n8AAACA/3/+fwCAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAAACA/3/+fwAAAID/f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8/AIAAAP//AAAAAACA/3/+f/////8AAP8//////wAA/z//////AAD/PwCA/////wAAAID/////AAAAgP////8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACAAAD//wAA/////wAA/z8AgP////8AAACAAAD//wAA//8AgP9//n///wCA/3/+f///AID/f/5/AID/////AAD//wCA/3/+f/9//38AAP8//3//fwAA/z8AgAAA//8AAACA/////wAA/3//fwAA/z8AgP///////wCA////////AID//wAA/v8AAACA/38AgAAAAID/fwCAAAAAgP9/AIAAgP///////wCA////////AID///////8AgP///////wCA//////7/AID/////////f/9/AAD/v/9//38AAP+//3//fwAA/78AgP///////wCA////////AID///////8AgP//AAD+/wCA////////AID//wAA/v//f/9/AAD/v/9//38AAP+/AID///////8AgP/////+//9//38AAP+//3//fwAA/78AAACA/38AgAAAAID/fwCAAAAAgP9/AIAAAACA/38AgP9//38AAP+/AID//////v8AgP///////wAAAID/fwCAAID///////8AgP//AAD+/wCA////////AID//wAA/v8AgP///////wCA////////AID///////8AgP//AAD+/wCA////////AID///////8AgP///////wCA////////AID///////8AgP///////wCA////////AID///////8AgP///////wCA////////AID///////8AgP/////+/wCA////////AID/////////P/9/AAD/3/8//38AAP/f/z//fwAA/9//P/9/AAD/3/9//38AAP+//3//fwAA/7//f/9/AAD/vwCAAAD//wAAAIAAAP//AAAAgAAA//8AAACA/////wAAAID/////AAAAgP////8AAP//AID/fwCA//8AgP9/AID//wCA/38AgP////8AAP8//////wAA/z//////AAD/PwCAAAD//wAA/////wAA/7//////AAD/v/////8AAP+/AIAAAP//AAAAgAAA//8AAACAAAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/AID/////AAAAgP////8AAAAAAID/fwCAAAAAgP9/AIAAAACA/38AgACA/////wAA//8AgP9/AIAAAACA/3/+fwAAAID/f/5/AAAAgP9//n8AgP////8AAP//AID/f/5///8AgP9//n///wCA/3/+fwAAAID/f/5/AIAAAP//AAAAgP////8AAP9//38AAP+/AAAAgP9/AID/////AAD/P///AID/f/5//////wAA/7//f/9/AAD/PwAAAID/fwCAAAAAgP9/AIAAAACA/38AgACA////////AID///////8AgP///////wCA/////////3//fwAA/7//f/9/AAD/v/9//38AAP+/AIAAAP////8AgAAA/////wCAAAD///////8AgP9/AID//wCA/38AgP//AID/fwCA//8AgP9/AIAAAACA/38AgP9//38AAP+/AIAAAP//////f/9//38AgP9//3//fwCA/3//f/9/AIAAAACA/////wAAAID/////AAAAgP///////////38AgP//////fwCA//////9/AIAAgAAA////vwCAAAD///+/AIAAAP///7///////38AgACAAAD///+/AID//////78AgP//////vwCA//////+//3//f/9/AIAAgP//////vwAAAID/////AAAAgP9//78AAACA/3//vwAAAID/f/+///8AgP9//7///wCA/3//v///AID/f/+///8AgP9//78AAACA/3//vwAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//wCA/3//v///AID/f/+///8AgP9//7//f/9//38AgP9//3//fwCA/3//f/9/AIAAAACA/3//vwAAAID/f/+/AAAAgP9//78AAACA/3//v/9//3//fwCA//8AgP9//7///////38AgP//////fwCA//////9/AID//////38AgP//AID/f/+///8AgP9//7///wCA/3//v/9//3//fwCA/3//f/9/AID/f/9//38AgAAAAID/f/+/AAAAgP9//78AAACA/3//vwAAAID/f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AIAAAP7//38AgP//AID/f/+/AAAAgP9//78AAACA/3//vwAAAID/f/+///////9/AID//////38AgP//////fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA//8AgP9//7///wCA/3//v///AID/f/+//3//f/9/AIAAAACA/3//v///////fwCA//8AgP9//7///wCA/3//v///AID/f/+///8AgP9//78AAACA/3//vwAAAID/f/+/AAAAgP9//7//f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCAAAAAgP9//7///wCA/3//vwAA/v//fwCAAAD+//9/AIAAAP7//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgAAAAID/f/+/AAAAgP9//78AAACA/3//vwAAAID/f/+/AAD+//9/AID//wCA/3//v///AID/f/+///8AgP9//7///wCA/3//v/9//3//fwCAAAAAgP9//78AAACA/3//vwAAAID/f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCA//8AgP9//7///wCA/3//v///AID/f/+/AAD+//9/AIAAAACA/3//v///AID/f/+//3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AID/f/9//38AgP9//3//fwCA/3//f/9/AIAAAACA/3//vwAAAID/f/+/AAAAgP9//78AAP7//38AgP//AID/f/+///8AgP9//7///wCA/3//v/9//3//fwCA//8AgP9//78AAACA/3//v/9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCAAAAAgP9//78AAACA/3//vwAAAID/f/+/AAAAgP9//7///wCA/3//v///AID/f/+///8AgP9//78AAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgP//AID/f/+/")
 }]
 
-[node name="WingScene" type="Node3D"]
-script = ExtResource("1_lfhxq")
-r1_is_empty = true
-r2_is_empty = true
-r3_is_empty = true
-r4_is_empty = true
-r5_is_empty = true
-r6_is_empty = true
-r7_is_empty = true
-r8_is_empty = true
-r9_is_empty = true
+[node name="WingRender" type="Node3D"]
+script = ExtResource("1_nn2y2")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 2.75, 59.1058, -1)
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 2.75, 57.0739, -15)
 doppler_tracking = 1
 projection = 1
 current = true
 fov = 37.2
-size = 100.0
-far = 315.74
+size = 125.0
+near = 0.001
+far = 250.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_g7dei")
 camera_attributes = SubResource("CameraAttributesPractical_bityt")
 
 [node name="MeshRender" type="Node3D" parent="."]
-transform = Transform3D(0.707106, 3.72529e-09, 0.707107, -0.078526, 0.993815, 0.078526, -0.702733, -0.111053, 0.702733, 0, -42.7558, -150)
+transform = Transform3D(0.707106, 3.72529e-09, 0.707107, -0.078526, 0.993815, 0.078526, -0.702733, -0.111053, 0.702733, 4.00853e-07, 26.0028, -71.1793)
 
-[node name="Structure" type="MeshInstance3D" parent="MeshRender"]
+[node name="StructureMesh" type="MeshInstance3D" parent="MeshRender"]
 mesh = SubResource("ArrayMesh_sqqcm")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_nn2y2")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MeshRender/Structure"]
-transform = Transform3D(0.652582, -0.673378, -0.347418, 0.673378, 0.305163, 0.673378, -0.347418, -0.673378, 0.652582, 0, 0, 0)
+[node name="Particles" type="Node3D" parent="MeshRender"]
+transform = Transform3D(1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 5.96046e-08, 7.45058e-09, 1, 0, 0, 0)
+
+[node name="ScreenDust" type="GPUParticles3D" parent="MeshRender/Particles"]
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, 0, 1, 0, 0, 0, 1, -0.632168, 8.00056, 0.632164)
+amount = 100
+lifetime = 5.0
+preprocess = 1.0
+explosiveness = 0.5
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_sqqcm")
+draw_pass_1 = SubResource("QuadMesh_g7dei")
 
 [node name="Labeling" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 7.62939e-06, 2, -38.9639)
@@ -104,11 +165,10 @@ transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 7.62939e
 [node name="FloorLabel" type="Label3D" parent="MeshRender/Labeling"]
 transform = Transform3D(-4.37114e-08, 0, -0.999999, 0, 1, 0, 1, 0, -4.37113e-08, -57.0994, -21.8119, 40)
 pixel_size = 0.02
-shaded = true
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
 text = "FLOOR 1"
-font = ExtResource("2_onjb5")
+font = ExtResource("3_8vjbp")
 font_size = 240
 outline_size = 0
 uppercase = true
@@ -117,11 +177,10 @@ line_spacing = 20.0
 [node name="WingLabel" type="Label3D" parent="MeshRender/Labeling"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, -21.5831, 96.0721)
 pixel_size = 0.02
-shaded = true
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
 text = "WING A"
-font = ExtResource("2_onjb5")
+font = ExtResource("3_8vjbp")
 font_size = 240
 outline_size = 0
 uppercase = true
@@ -145,13 +204,13 @@ shaded = true
 double_sided = false
 text = "Stay vigilant, 
 stay alive."
-font = ExtResource("2_onjb5")
+font = ExtResource("3_8vjbp")
 
 [node name="SubViewport" type="SubViewport" parent="MeshRender/Billboards/Left"]
 size = Vector2i(3200, 1000)
 
 [node name="TextureRect" type="TextureRect" parent="MeshRender/Billboards/Left/SubViewport"]
-material = ExtResource("3_y3yuo")
+material = ExtResource("4_jx7vp")
 custom_minimum_size = Vector2(3200, 1400)
 offset_right = 40.0
 offset_bottom = 40.0
@@ -171,13 +230,13 @@ pixel_size = 0.1
 shaded = true
 double_sided = false
 text = "Everything is fine."
-font = ExtResource("2_onjb5")
+font = ExtResource("3_8vjbp")
 
 [node name="SubViewport" type="SubViewport" parent="MeshRender/Billboards/Right"]
 size = Vector2i(2090, 1000)
 
 [node name="TextureRect" type="TextureRect" parent="MeshRender/Billboards/Right/SubViewport"]
-material = ExtResource("3_y3yuo")
+material = ExtResource("4_jx7vp")
 custom_minimum_size = Vector2(2900, 1400)
 offset_right = 40.0
 offset_bottom = 40.0
@@ -186,250 +245,218 @@ texture = SubResource("NoiseTexture2D_sqqcm")
 [node name="Rooms" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 8.9407e-08, -3.72529e-09, 1, 3.72529e-09, -8.9407e-08, 0, 1, 7.62939e-06, -22, -7.62939e-06)
 
-[node name="R1" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R1" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -30)
 
-[node name="R2" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R2" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30)
 
-[node name="R3" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R3" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -30)
 
-[node name="R4" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R4" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 0)
 
-[node name="R5" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R5" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 
-[node name="R6" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R6" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
 
-[node name="R7" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R7" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 30)
 
-[node name="R8" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R8" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
 
-[node name="R9" parent="MeshRender/Rooms" instance=ExtResource("2_pf1vf")]
+[node name="R9" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 30)
 
 [node name="Gates" type="Node3D" parent="MeshRender"]
 transform = Transform3D(0.707107, 0, -0.707107, 2.83547e-11, 1, 7.45058e-09, 0.707107, 0, 0.707107, -1.05367e-08, -13.7707, 1.05367e-08)
 
-[node name="G1" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G1" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -42, 0, 0)
 
-[node name="G2" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G2" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -21.1405, -1.86265e-09, -21.1405)
 
-[node name="G3" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G3" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -42)
 
-[node name="G4" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G4" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -21.1784, 0, 21.1784)
 
-[node name="G5" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G5" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
 
-[node name="G6" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G6" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 21.3656, -6.98492e-10, -21.3656)
 
-[node name="G7" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G7" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -0.049804, 0, 42.1615)
 
-[node name="G8" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G8" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 21.0826, 0, 21.0826)
 
-[node name="G9" parent="MeshRender/Gates" instance=ExtResource("1_gfang")]
+[node name="G9" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 42.4463, -3.60887e-09, -0.322935)
+
+[node name="Markers" type="Node3D" parent="MeshRender"]
+transform = Transform3D(1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 5.96046e-08, 7.45058e-09, 1, 0, 0, 0)
+
+[node name="M1" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 4.47035e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, -30, -10, -30)
+
+[node name="M2" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 4.47035e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, 0, -10, -30)
+
+[node name="M3" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 4.47035e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, 30, -10, -30)
+
+[node name="M4" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 5.96046e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 4.47035e-08, 1, -30, -10, 0)
+
+[node name="M5" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, 0, 1, 0, 1.19209e-07, 1.49012e-08, 1, 0, -10, 0)
+
+[node name="M6" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 4.47035e-08, 2.98023e-08, 0, 1, 0, 1.19209e-07, 4.47035e-08, 1, 30, -10, 0)
+
+[node name="M7" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 6.70552e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, -30, -10, 30)
+
+[node name="M8" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 6.70552e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, 0, -10, 30)
+
+[node name="M9" type="Marker3D" parent="MeshRender/Markers"]
+transform = Transform3D(1, 6.70552e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.72529e-08, 1, 30, -10, 30)
 
 [node name="Lighting" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
 
-[node name="OverheadDirectional" type="DirectionalLight3D" parent="MeshRender/Lighting"]
-transform = Transform3D(0.802307, 0.557536, 0.213209, -0.50274, 0.823718, -0.262186, -0.321802, 0.103165, 0.94117, 0.176666, 50.8898, 0.899162)
-visible = false
-light_color = Color(0.86272, 0.82641, 0.75422, 1)
-light_energy = 3.32
+[node name="WorldLight" type="DirectionalLight3D" parent="MeshRender/Lighting"]
+transform = Transform3D(0.782476, -0.614598, 0.100012, -0.194003, -0.0880037, 0.977045, -0.591688, -0.783917, -0.188094, 0, 0, 0)
+light_color = Color(0.948614, 0.946679, 0.99251, 1)
+light_energy = 0.9
+light_specular = 10.0
+
+[node name="Laser" type="SpotLight3D" parent="MeshRender/Lighting"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 0.999999, 0, -1, -4.37114e-08, 0, 20, 0)
+light_color = Color(0.990498, 0, 0.121469, 1)
+light_energy = 16.0
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
-directional_shadow_mode = 0
-directional_shadow_fade_start = 0.67
-sky_mode = 1
+light_specular = 3.167
+shadow_bias = 0.333
+spot_range = 80.0
+spot_attenuation = -0.72
+spot_angle = 1.92
+spot_angle_attenuation = 0.901254
+
+[node name="Laser2" type="SpotLight3D" parent="MeshRender/Lighting/Laser"]
+transform = Transform3D(1, 2.98023e-08, 0, 0, 1, 0, 0, 7.45058e-09, 1, -1.77636e-15, -5.96046e-08, -4.81022)
+light_color = Color(0.878414, 0.205366, 0.6387, 1)
+light_energy = 0.849
+light_volumetric_fog_energy = 6.869
+light_specular = 3.167
+shadow_bias = 0.333
+spot_range = 80.0
+spot_attenuation = -0.73
+spot_angle = 4.65
+spot_angle_attenuation = 0.901254
+
+[node name="SpotLight3D" type="SpotLight3D" parent="MeshRender/Lighting/Laser"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.02914e-08, 7.45058e-09, -28.7293)
+visible = false
+light_color = Color(0.98609, 0.666205, 0.791794, 1)
+light_energy = 0.758
+light_indirect_energy = 0.0
+spot_range = 15.0
+spot_attenuation = -1.57
+spot_angle = 63.1
+spot_angle_attenuation = 1.18921
 
 [node name="BaseLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 5.96046e-08, 7.45058e-09, 1, -32.1165, 15.0404, -37.09)
+visible = false
 
-[node name="MoodLight" type="DirectionalLight3D" parent="MeshRender/Lighting/BaseLights"]
-transform = Transform3D(-0.79798, -0.540705, 0.266208, -0.0102998, 0.453874, 0.891006, -0.602596, 0.708263, -0.367751, 32.1165, 34.9596, 37.09)
-light_color = Color(0.152374, 0.000678752, 0.266764, 1)
-light_energy = 2.071
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.782
-directional_shadow_mode = 0
-
-[node name="CustomSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_sqqcm")]
+[node name="CustomSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
 transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, -6.84801, -6, -7.3788)
 light_color = Color(0.869053, 0.843562, 0.909928, 1)
+godray_color = Color(0.830003, 0.718143, 0.997852, 1)
 godray_energy = 5.0
 spot_range = 30.0
 spot_energy = 10.0
 omni_range = 0.0
 disable_reverse_shadow = true
-include_dust_particles = null
 
-[node name="CustomSpotlight2" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_sqqcm")]
+[node name="CustomSpotlight2" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
 transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, 76.5123, -6, 77.0045)
 light_color = Color(0.869053, 0.843562, 0.909928, 1)
+godray_color = Color(0.830003, 0.718143, 0.997852, 1)
 godray_energy = 5.0
 spot_range = 30.0
 spot_energy = 10.0
 omni_range = 0.0
 disable_reverse_shadow = true
-include_dust_particles = null
 
-[node name="CustomSpotlight3" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_sqqcm")]
+[node name="CustomSpotlight3" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
 transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, 76.3886, -6, -7.06356)
 light_color = Color(0.869053, 0.843562, 0.909928, 1)
+godray_color = Color(0.830003, 0.718143, 0.997852, 1)
 godray_energy = 5.0
 spot_range = 30.0
 spot_energy = 20.0
 omni_range = 0.0
 disable_reverse_shadow = true
-include_dust_particles = null
-
-[node name="FloorLights" type="SpotLight3D" parent="MeshRender/Lighting/BaseLights"]
-transform = Transform3D(1, -2.98023e-08, -3.72529e-09, -3.72529e-09, -4.84288e-08, 1, 0, -1, -4.47035e-08, 29.0578, 10.9272, 42.4198)
-light_color = Color(0.869053, 0.843562, 0.909928, 1)
-light_energy = 1.654
-shadow_enabled = true
-spot_range = 73.2868
-spot_attenuation = -0.49
-spot_angle = 56.5091
-spot_angle_attenuation = 1.23115
 
 [node name="BillboardLight" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
 visible = false
 
 [node name="SpotLight3D" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 43.6489, 1.47021, -2.90956)
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_volumetric_fog_energy = 8.078
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 43.3746, 1.47021, -2.90956)
+light_color = Color(0.997938, 0.698585, 0.494682, 1)
+light_energy = 0.7
+light_volumetric_fog_energy = 2.0
 spot_range = 34.136
-spot_attenuation = -1.84
+spot_attenuation = -1.7
 spot_angle = 89.99
-spot_angle_attenuation = 0.307786
-
-[node name="SpotLight3D3" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight/SpotLight3D"]
-transform = Transform3D(-1, 5.00145e-08, -1.38257e-07, -3.72529e-09, 0.932324, 0.361625, 1.78814e-07, 0.361625, -0.932324, 14.1759, -3.18265, -3.68495)
-visible = false
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_energy = 0.123
-light_volumetric_fog_energy = 8.078
-shadow_enabled = true
-spot_range = 55.708
-spot_attenuation = -1.64
-spot_angle = 50.0
-spot_angle_attenuation = 0.307786
-
-[node name="SpotLight3D4" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight/SpotLight3D"]
-transform = Transform3D(-1, 5.23521e-08, -1.37388e-07, -3.72529e-09, 0.92719, 0.37459, 1.78814e-07, 0.37459, -0.92719, -8.32219, -2.46452, -4.74148)
-visible = false
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_energy = 0.123
-light_volumetric_fog_energy = 8.078
-shadow_enabled = true
-spot_range = 55.708
-spot_attenuation = -1.64
-spot_angle = 50.0
 spot_angle_attenuation = 0.307786
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3181, 1.47021, -43.9068)
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_volumetric_fog_energy = 8.078
+light_color = Color(0.997938, 0.698585, 0.494682, 1)
+light_energy = 0.7
+light_volumetric_fog_energy = 2.0
 spot_range = 38.236
-spot_attenuation = -1.84
+spot_attenuation = -1.7
 spot_angle = 89.99
-spot_angle_attenuation = 0.307786
-
-[node name="SpotLight3D3" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight/SpotLight3D2"]
-transform = Transform3D(-1, 2.87101e-08, -8.2574e-08, 0, 0.944537, 0.328405, 8.74228e-08, 0.328405, -0.944537, -13.7899, 0.982511, -5.05519)
-visible = false
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_energy = 0.1
-shadow_enabled = true
-spot_range = 55.0
-spot_attenuation = -1.64
-spot_angle = 50.0
-spot_angle_attenuation = 0.307786
-
-[node name="SpotLight3D4" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight/SpotLight3D2"]
-transform = Transform3D(-1, 3.90802e-08, -7.82015e-08, 0, 0.894521, 0.447025, 8.74228e-08, 0.447025, -0.894521, 8.17874, 2.6348, -5.27238)
-visible = false
-light_color = Color(0.81892, 0.423566, 0.0260025, 1)
-light_energy = 0.1
-shadow_enabled = true
-spot_range = 55.0
-spot_attenuation = -1.64
-spot_angle = 50.0
 spot_angle_attenuation = 0.307786
 
 [node name="EmergencyLights" type="Node3D" parent="MeshRender/Lighting"]
 visible = false
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MeshRender/Lighting/EmergencyLights"]
-transform = Transform3D(-0.0214485, 1.49012e-08, -0.99977, 0.851614, 0.523852, -0.01827, 0.523732, -0.851809, -0.0112358, 38.9285, -20.4932, -42.028)
+[node name="EmergencyFlareLight" type="DirectionalLight3D" parent="MeshRender/Lighting/EmergencyLights"]
+transform = Transform3D(-0.0214485, -0.121374, -0.992376, 0.851613, 0.517759, -0.0817311, 0.523732, -0.846873, 0.0922579, 38.9285, -20.4932, -42.028)
 light_color = Color(0.266801, 0.501126, 1, 1)
-light_energy = 0.0
+light_energy = 14.017
+light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
-light_angular_distance = 25.43
 
-[node name="LargeSpinLights" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_sqqcm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2013, -12.2798, 16.2912)
+[node name="LargeSpinLights" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_n6jqu")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.864487, 12.5295, -45.3155)
 spin_speed = 0.05
 
-[node name="LargeSpinLights2" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_sqqcm")]
-transform = Transform3D(-0.0227921, 0, 0.99974, 0, 1, 0, -0.99974, 0, -0.0227921, -16.3892, -12.2798, -14.9222)
+[node name="LargeSpinLights2" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_n6jqu")]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 43.9351, 13.4741, 7.1422)
 spin_speed = 0.05
 
-[node name="OmniLight3D" type="OmniLight3D" parent="MeshRender/Lighting"]
-transform = Transform3D(-0.547679, 0.00834852, -0.836648, -0.119152, 0.98898, 0.087867, 0.828161, 0.147811, -0.540649, -29.0168, -14.8133, 7.62939e-06)
-visible = false
-light_energy = 6.963
-omni_range = 1.989
-omni_attenuation = 2.764
-
-[node name="SpotLight3D" type="SpotLight3D" parent="MeshRender/Lighting/OmniLight3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.33299e-08, 1.126, 3.46142)
-light_color = Color(1, 0.894642, 0.554666, 1)
-light_energy = 6.673
-shadow_enabled = true
-spot_range = 15.0
-spot_attenuation = -2.17
-spot_angle = 24.54
-spot_angle_attenuation = 1.56917
-
-[node name="SpotLight3D2" type="SpotLight3D" parent="MeshRender/Lighting/OmniLight3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5.4073e-07, 1.126, -3.363)
-light_color = Color(1, 0.894642, 0.554666, 1)
-light_energy = 6.673
-shadow_enabled = true
-spot_range = 15.0
-spot_attenuation = -2.17
-spot_angle = 24.54
-spot_angle_attenuation = 1.56917
-
-[node name="SpotLight3D3" type="SpotLight3D" parent="MeshRender/Lighting/OmniLight3D"]
-transform = Transform3D(-0.912544, 0.0537112, 0.405436, -0.407255, -0.0284384, -0.912871, -0.0375015, -0.998151, 0.0478254, 0.0768604, -5.63808, -0.819092)
-light_color = Color(1, 0.894642, 0.554666, 1)
-light_energy = 4.0
-light_volumetric_fog_energy = 4.636
-shadow_enabled = true
-spot_range = 25.466
-spot_attenuation = -2.08
-spot_angle = 13.09
-spot_angle_attenuation = 1.56917
+[node name="FogVolume" type="FogVolume" parent="MeshRender"]
+transform = Transform3D(0.0132904, 0.00158752, -0.995076, -0.000579489, 0.999999, 0.00158764, 0.995107, 0.000555576, 0.0132934, 5.54795, 4.94192, -43.7669)
+size = Vector3(300, 50, 300)
+material = SubResource("FogMaterial_g7dei")
+script = ExtResource("9_ie5r3")
 
 [node name="OriginalMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, -42.7558, -150)

@@ -45,10 +45,7 @@ fsr_sharpness = 2.0
 size = Vector2i(1920, 1080)
 
 [node name="CellSceneRender" parent="RenderSubviewport" instance=ExtResource("4_h1wtw")]
-enable_emergency_lighting = false
-enable_dust_particles = false
-power_computer = true
-power_terminal = true
+enable_interogation_lighting = true
 
 [node name="FadeOverlay" type="ColorRect" parent="."]
 visible = false

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=4 uid="uid://dd18gu8px7b47"]
 
-[ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/parts/RoomRender/room_render.gd" id="1_cmd18"]
+[ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_cmd18"]
 _surfaces = [{

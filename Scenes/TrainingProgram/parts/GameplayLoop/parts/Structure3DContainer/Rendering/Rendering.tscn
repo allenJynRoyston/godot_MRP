@@ -88,6 +88,7 @@ texture = SubResource("ViewportTexture_0nplc")
 layout_mode = 1
 
 [node name="BorderControl" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

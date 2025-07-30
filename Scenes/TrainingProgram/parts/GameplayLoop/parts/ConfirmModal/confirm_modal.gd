@@ -26,7 +26,7 @@ const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 	set(val):
 		allow_controls = val
 		check_for_unavailable_rooms()
-		#GBL.find_node(REFS.ROOM_NODES).enable_room_focus = val
+		#GBL.find_node(REFS.WING_RENDER).enable_room_focus = val
 
 var title:String = "" : 
 	set(val):

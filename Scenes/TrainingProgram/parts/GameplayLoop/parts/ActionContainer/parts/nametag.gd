@@ -183,7 +183,7 @@ func update_node(shift_val:int = 10) -> void:
 # --------------------------------------------
 func on_process_update(delta:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
-	var tag_pos:Vector2 = GBL.find_node(REFS.ROOM_NODES).get_room_position(index) * GBL.game_resolution 
+	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
 	self.global_position = tag_pos #+  offset - Vector2(self.size.x/2, 0)
 
 func _physics_process(delta: float) -> void:

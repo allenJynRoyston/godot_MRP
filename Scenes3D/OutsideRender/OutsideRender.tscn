@@ -132,6 +132,7 @@ spot_range = 18.0
 spot_energy = 1.0
 omni_range = 5.0
 disable_reverse_shadow = true
+include_dust_particles = true
 
 [node name="StreetLight2" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -15.0901, 4.84705, 9.38507)
@@ -151,6 +152,7 @@ spot_range = 18.0
 spot_energy = 5.0
 omni_range = 5.0
 disable_reverse_shadow = true
+include_dust_particles = true
 
 [node name="StreetLight3" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.9395, 4.84705, 4.52634)
@@ -170,6 +172,7 @@ spot_range = 18.0
 spot_energy = 1.0
 omni_range = 5.0
 disable_reverse_shadow = true
+include_dust_particles = true
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -3.61857, 8.85668, -36.1537)
@@ -194,6 +197,7 @@ godray_energy = 4.0
 spot_range = 30.0
 spot_energy = 5.0
 omni_range = 10.0
+include_dust_particles = true
 
 [node name="Sirens" parent="Node3D" instance=ExtResource("4_sqf7y")]
 transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -36.3368, 6.56622, -30.1381)

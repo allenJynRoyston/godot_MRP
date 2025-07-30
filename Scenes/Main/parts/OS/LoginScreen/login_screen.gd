@@ -31,7 +31,7 @@ func start() -> void:
 		LoginRTL.text += "\r"  # Move to new line after each string
 
 		if i == login_arr.size() - 1:
-			await U.set_timeout(2.0)
+			await U.set_timeout(1.0)
 		else:
 			await U.set_timeout(0.2)  # Short pause between lines
 

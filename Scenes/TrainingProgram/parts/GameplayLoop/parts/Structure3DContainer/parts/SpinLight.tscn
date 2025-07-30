@@ -27,7 +27,7 @@ visible = false
 mesh = SubResource("PlaneMesh_7bloh")
 
 [node name="SpinLightMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.199821, -7.86998e-10, 0.00900237, 0, -0.2, -1.74846e-08, 0.00900237, 1.74688e-08, -0.199821, 0, 0, 0)
+transform = Transform3D(0.0124084, -1.74532e-08, 0.199641, 0, -0.2, -1.74846e-08, 0.199641, 1.0848e-09, -0.0124084, 0, 0, 0)
 visible = false
 mesh = SubResource("CapsuleMesh_x55mc")
 skeleton = NodePath("SpotLight3D")
@@ -60,7 +60,7 @@ spot_range = 60.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null
+include_dust_particles = false
 
 [node name="CustomSpotlight2" parent="SpinLightMesh2" instance=ExtResource("2_iv5lu")]
 transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
@@ -70,4 +70,4 @@ spot_range = 60.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null
+include_dust_particles = false

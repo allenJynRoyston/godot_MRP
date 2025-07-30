@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://bl0fcbjjnqeux"]
 
 [ext_resource type="Script" uid="uid://oc8w27gluocd" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/wing.gd" id="1_qq608"]
-[ext_resource type="PackedScene" uid="uid://b0xcdsr0gn57k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/WingScene.tscn" id="2_n8dix"]
+[ext_resource type="PackedScene" uid="uid://b0xcdsr0gn57k" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.tscn" id="2_n8dix"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_778r6"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="4_i1dve"]
 [ext_resource type="PackedScene" uid="uid://wo1fm5yw1mj7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Room/RoomNode3d.tscn" id="5_k4egc"]
@@ -124,7 +124,8 @@ transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="WingScene" parent="SubViewport" instance=ExtResource("2_n8dix")]
+[node name="WingRender" parent="SubViewport" instance=ExtResource("2_n8dix")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.9421, -11.0501, -8.80886)
 
 [node name="RoomColumn" type="Node3D" parent="SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

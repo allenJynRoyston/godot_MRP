@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 
 @onready var Flap1:MeshInstance3D = $Flap1

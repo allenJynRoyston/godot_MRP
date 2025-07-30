@@ -40,6 +40,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
+visible = false
 layout_mode = 2
 
 [node name="HeaderControl" parent="." instance=ExtResource("13_goe6f")]

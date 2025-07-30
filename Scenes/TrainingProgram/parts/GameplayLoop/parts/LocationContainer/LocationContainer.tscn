@@ -125,7 +125,6 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingA" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect" instance=ExtResource("5_0rbbm")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -150,7 +149,6 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingB" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect2" instance=ExtResource("5_0rbbm")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -175,7 +173,6 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingC" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect3" instance=ExtResource("5_0rbbm")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -200,7 +197,6 @@ size_flags_horizontal = 3
 color = Color(0, 0, 0, 1)
 
 [node name="WingD" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/WingBtns/ColorRect4" instance=ExtResource("5_0rbbm")]
-modulate = Color(1, 1, 1, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

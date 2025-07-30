@@ -18,25 +18,25 @@ _surfaces = [{
 script = ExtResource("1_15d04")
 
 [node name="SpinLightMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.81482, 0, 0.579722, 0, 1, 0, -0.579722, 0, -0.81482, 0, 0, 0)
+transform = Transform3D(-0.484676, 0, -0.874781, 0, 1, 0, 0.874781, 0, -0.484676, 0, 0, 0)
 mesh = SubResource("ArrayMesh_jghc7")
 
 [node name="CustomSpotlight" parent="SpinLightMesh" instance=ExtResource("2_41n73")]
 transform = Transform3D(-1.86265e-09, 2.98023e-08, 1, 0.996346, 0.0854169, 0, -0.085417, 0.996345, 0, -0.00306207, 0.844038, -0.415285)
 light_color = Color(0.79, 0, 0.0131665, 1)
-godray_energy = 10.0
+godray_color = Color(0.973517, 0.414538, 0.700921, 1)
+godray_energy = 1.0
 spot_range = 50.0
 spot_energy = 50.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null
 
 [node name="CustomSpotlight2" parent="SpinLightMesh" instance=ExtResource("2_41n73")]
 transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
 light_color = Color(0, 0.633333, 1, 1)
-godray_energy = 10.0
+godray_color = Color(0.513003, 0.624455, 0.914919, 1)
+godray_energy = 1.0
 spot_range = 50.0
-spot_energy = 50.0
+spot_energy = 30.0
 omni_range = 10.0
 disable_reverse_shadow = true
-include_dust_particles = null

@@ -5,7 +5,7 @@ extends Node3D
 @onready var EmergencyLighting:Node3D = $Lighting/EmergencyLighting
 @onready var InterogationLighting:Node3D = $Lighting/InterogationLighting
 @onready var LowLevelLighting:Node3D = $Lighting/LowLevelLighting
-@onready var DustParticles:GPUParticles3D = $Camera3D/DustParticles
+@onready var DustParticles:GPUParticles3D = $DustParticles
 
 @onready var LookAtCamera:Camera3D = $LookAtCamera
 @onready var LookAtCenter:Marker3D = $Structure/ShelfModel/TvMonitorModel/LookAtCenter

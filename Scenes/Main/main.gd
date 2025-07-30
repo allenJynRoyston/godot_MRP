@@ -530,6 +530,7 @@ func on_current_layer_update() -> void:
 			OsScene.set_process(true)
 			OsScene.set_physics_process(true)
 			OsScene.switch_to()
+			#MousePointer.show()
 
 			# start scene
 			if !OsScene.has_started:
@@ -551,6 +552,7 @@ func on_current_layer_update() -> void:
 			CellScene.set_process(true)
 			CellScene.set_physics_process(true)
 			CellScene.switch_to()
+			#MousePointer.hide()
 			
 			# switch nodes
 			switch_to_node(CellTextureRect)
@@ -568,7 +570,8 @@ func on_current_layer_update() -> void:
 			ArticleScene.set_process(true)
 			ArticleScene.set_physics_process(true)
 			ArticleScene.switch_to()
-
+			#MousePointer.hide()
+			
 			# switch nodes
 			switch_to_node(ArticleTextureRect)
 			ArticleTextureRect.show()

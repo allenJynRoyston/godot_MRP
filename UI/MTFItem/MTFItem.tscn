@@ -1,12 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://ctbrttyqovr35"]
+[gd_scene load_steps=7 format=3 uid="uid://ctbrttyqovr35"]
 
 [ext_resource type="Script" uid="uid://b6befp0vjgbmp" path="res://UI/MTFItem/mtf_item.gd" id="1_2lhwi"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_j4e4i"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="3_2lhwi"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_2lhwi"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vwlts"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_as5qf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yg6du"]
+font = ExtResource("3_2lhwi")
+font_color = Color(0.05, 0.05, 0.05, 1)
+outline_size = 2
+outline_color = Color(0.05, 0.05, 0.05, 0.5)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="MTFItem" type="PanelContainer"]
 custom_minimum_size = Vector2(60, 0)
@@ -25,11 +33,7 @@ alignment = 1
 
 [node name="SVGIcon" parent="VBoxContainer" instance=ExtResource("2_j4e4i")]
 modulate = Color(0.05, 0.05, 0.05, 1)
-custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-icon_size = Vector2(25, 25)
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -38,7 +42,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_as5qf")
 
 [node name="NameLabel" type="Label" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-text = "0"
-label_settings = ExtResource("3_2lhwi")
+text = "alpha"
+label_settings = SubResource("LabelSettings_yg6du")
 horizontal_alignment = 2
 vertical_alignment = 1

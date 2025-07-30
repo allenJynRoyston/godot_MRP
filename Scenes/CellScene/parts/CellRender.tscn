@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://urjnikfy6y5j"]
+[gd_scene load_steps=19 format=3 uid="uid://urjnikfy6y5j"]
 
 [ext_resource type="PackedScene" uid="uid://bs1arpnwcdcdb" path="res://Scenes/CellScene/assets/DeskModel.tscn" id="1_01n06"]
 [ext_resource type="Script" uid="uid://dewg4p4ytk67q" path="res://Scenes/CellScene/parts/cell_render.gd" id="1_baq1p"]
@@ -36,19 +36,29 @@ adjustment_contrast = 1.12
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_65whp"]
 particle_flag_rotate_y = true
 particle_flag_damping_as_friction = true
+emission_shape_scale = Vector3(0.1, 0.1, 0.1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
 angle_min = -372.0
 angle_max = 348.0
 flatness = 1.0
-gravity = Vector3(1, 0, -1)
-tangential_accel_min = -1.67
-tangential_accel_max = -2.23517e-06
-turbulence_noise_speed_random = 0.1
+gravity = Vector3(0, -0.5, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = -2.23517e-06
+radial_accel_min = -2.23517e-06
+radial_accel_max = -2.23517e-06
+tangential_accel_min = -1.0
+tangential_accel_max = 0.999998
+damping_max = 1.0
+scale_min = 0.01
+scale_max = 0.05
+turbulence_enabled = true
+turbulence_noise_strength = 4.26
+turbulence_noise_scale = 0.596
 turbulence_influence_min = 0.0
 turbulence_influence_max = 0.168
-turbulence_initial_displacement_min = -53.0
-turbulence_initial_displacement_max = 54.5
+turbulence_initial_displacement_min = -17.5
+turbulence_initial_displacement_max = 18.6
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c3rb4"]
 transparency = 2
@@ -56,14 +66,50 @@ alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
 blend_mode = 1
 cull_mode = 2
-albedo_color = Color(0.396889, 0.396889, 0.396889, 1)
 albedo_texture = ExtResource("2_c3rb4")
 texture_repeat = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_1a7c7"]
 lightmap_size_hint = Vector2i(2, 2)
 material = SubResource("StandardMaterial3D_c3rb4")
-size = Vector2(0.02, 0.02)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jdl17"]
+particle_flag_rotate_y = true
+emission_shape_scale = Vector3(3, 1, 1)
+emission_shape = 1
+emission_sphere_radius = 1.0
+angular_velocity_min = -1.00002
+angular_velocity_max = 0.999984
+orbit_velocity_min = -0.0429999
+orbit_velocity_max = 0.42
+gravity = Vector3(0.01, 0.001, 0.01)
+scale_min = 0.01
+scale_max = 0.03
+scale_over_velocity_min = 0.5
+scale_over_velocity_max = 1.2
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+turbulence_noise_strength = 5.57
+turbulence_noise_speed_random = 0.1
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.202
+turbulence_initial_displacement_min = -53.0
+turbulence_initial_displacement_max = 54.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydmhf"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+cull_mode = 2
+albedo_texture = ExtResource("2_c3rb4")
+texture_repeat = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_sqrrc"]
+lightmap_size_hint = Vector2i(6, 6)
+material = SubResource("StandardMaterial3D_ydmhf")
+uv2_padding = 1.77
+size = Vector2(0.5, 0.5)
 
 [sub_resource type="SphereMesh" id="SphereMesh_epicg"]
 flip_faces = true
@@ -72,8 +118,10 @@ height = 30.0
 
 [node name="CellRender" type="Node3D"]
 script = ExtResource("1_baq1p")
-enable_emergency_lighting = true
+enable_interogation_lighting = true
 enable_dust_particles = true
+power_computer = true
+power_terminal = true
 
 [node name="OsViewport" type="SubViewport" parent="."]
 disable_3d = true
@@ -114,19 +162,29 @@ fov = 55.0
 near = 0.001
 far = 250.0
 
-[node name="DustParticles" type="GPUParticles3D" parent="Camera3D"]
-transform = Transform3D(2.02969, 0, -4.61936e-07, 0, 0.931609, 0, 1.63913e-07, 0, 1.07234, 0.0724064, 0.025548, -0.929103)
+[node name="DustParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(2.02969, 0, -4.61936e-07, 0, 0.931609, 0, 1.63913e-07, 0, 1.07234, 0.0724074, 0.617573, -2.7433)
 cast_shadow = 0
 gi_mode = 0
-amount = 5000
-lifetime = 3.0
-speed_scale = 0.1
-explosiveness = 0.5
-randomness = 1.0
+amount = 500
+lifetime = 10.0
+preprocess = 1.0
+explosiveness = 0.8
 fixed_fps = 60
 visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
 process_material = SubResource("ParticleProcessMaterial_65whp")
 draw_pass_1 = SubResource("QuadMesh_1a7c7")
+
+[node name="DustParticles2" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.997176, 2.11695e-08, -0.0751005, -7.45058e-09, 1, -7.45058e-09, 0.0751005, 1.65377e-08, 0.997176, 0.391046, -0.417737, 0.0841524)
+gi_mode = 0
+amount = 3000
+lifetime = 3.0
+preprocess = 1.0
+explosiveness = 0.7
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_jdl17")
+draw_pass_1 = SubResource("QuadMesh_sqrrc")
 
 [node name="Structure" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.78405)
@@ -138,7 +196,7 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, -0.
 transform = Transform3D(0.592107, 0, -0.129338, 0, 0.6, 0, 0.0970036, 0, 0.789476, 0.523244, -1.35915, 5.15292)
 
 [node name="TvMonitorModel" parent="Structure/ShelfModel" instance=ExtResource("5_jdl17")]
-transform = Transform3D(0.829786, 0, 0.0662206, 0, 0.833333, 0, -0.0241548, 0, 0.625745, -0.0693095, 1.40728, 0.0473084)
+transform = Transform3D(0.829786, 0, 0.0662206, 0, 0.833333, 0, -0.0241548, 0, 0.625745, -0.0578534, 1.40728, 0.155562)
 
 [node name="LookAtCenter" type="Marker3D" parent="Structure/ShelfModel/TvMonitorModel"]
 transform = Transform3D(2.00173, 0, 0.166892, 0, 2, 0, -0.24569, 0, 1.97778, 0.00873423, 0.159961, 0.699711)
@@ -186,9 +244,9 @@ shadow_bias = 0.0
 shadow_normal_bias = 0.0
 distance_fade_shadow = 220.67
 distance_fade_length = 0.0
-spot_range = 7.188
-spot_attenuation = -0.11
-spot_angle = 29.72
+spot_range = 5.70682
+spot_attenuation = -0.2
+spot_angle = 43.6683
 spot_angle_attenuation = 1.68179
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting/AmbientLighting"]
@@ -220,7 +278,7 @@ godray_energy = 2.0
 spot_range = 3.5
 spot_energy = 0.2
 omni_range = 0.0
-enable_debug = true
+include_dust_particles = false
 
 [node name="InterogationLighting" type="Node3D" parent="Lighting"]
 visible = false
@@ -232,9 +290,9 @@ godray_color = Color(0.776411, 0.409267, 0.111463, 1)
 godray_energy = 5.0
 spot_range = 3.5
 spot_energy = 1.0
+include_dust_particles = false
 
 [node name="LowLevelLighting" type="Node3D" parent="Lighting"]
-visible = false
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Lighting/LowLevelLighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7803, -0.0650684)

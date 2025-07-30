@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=4 uid="uid://da46sqhr4dsg3"]
 
-[ext_resource type="Script" uid="uid://msp6bf3cru8w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingScene/parts/GateRender/gate_render.gd" id="1_lnxyw"]
+[ext_resource type="Script" uid="uid://msp6bf3cru8w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/GateRender/gate_render.gd" id="1_lnxyw"]
 [ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="2_62k34"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_62k34"]
@@ -61,3 +61,4 @@ mesh = SubResource("ArrayMesh_lnxyw")
 
 [node name="SpinLights" parent="SafetyGate" instance=ExtResource("2_62k34")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.13005, 0)
+visible = false
