@@ -22,10 +22,10 @@ func calc_starting_data() -> Dictionary:
 # ------------------------------------------------------------------------------
 var starting_data:Dictionary = {	
 	"starting_resources": {
-		RESOURCE.CURRENCY.MONEY: 500,
-		RESOURCE.CURRENCY.SCIENCE: 250,
-		RESOURCE.CURRENCY.MATERIAL: 100,
-		RESOURCE.CURRENCY.CORE: 10
+		RESOURCE.CURRENCY.MONEY: 1,
+		RESOURCE.CURRENCY.SCIENCE: 1,
+		RESOURCE.CURRENCY.MATERIAL: 1,
+		RESOURCE.CURRENCY.CORE: 1
 	},		
 	"resources": {
 		RESOURCE.CURRENCY.MONEY: 0,
@@ -74,64 +74,64 @@ var data:Array[Dictionary] = [
 			# ---------------------------
 			{
 				"details": {
-					"name": "MONEY +100",
+					"name": "MONEY +1",
 				},
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.resources[RESOURCE.CURRENCY.MONEY] += 100
+					starting_data.resources[RESOURCE.CURRENCY.MONEY] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +100 to starting funds.",
+					"description": "Start with extra MONEY.",
 					"icon": SVGS.TYPE.MONEY
 				}
 			},
 			# ---------------------------
 			{
 				"details": {
-					"name": "RESEARCH +50",
+					"name": "RESEARCH +1",
 				},
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.resources[RESOURCE.CURRENCY.SCIENCE] += 50
+					starting_data.resources[RESOURCE.CURRENCY.SCIENCE] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +50 to starting RESEARCH.",
+					"description": "Start with extra RESEARCH.",
 					"icon": SVGS.TYPE.RESEARCH
 				}
 			},
 			# ---------------------------
 			{
 				"details": {
-					"name": "MATERIAL +25",
+					"name": "MATERIAL +1",
 				},
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.resources[RESOURCE.CURRENCY.MATERIAL] += 25
+					starting_data.resources[RESOURCE.CURRENCY.MATERIAL] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +25 to starting MATERIAL.",
+					"description": "Start with extra MATERIAL.",
 					"icon": SVGS.TYPE.RING
 				}
 			},
 			# ---------------------------
 			{
 				"details": {
-					"name": "CORE +5",
+					"name": "CORE +1",
 				},
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.resources[RESOURCE.CURRENCY.CORE] += 5
+					starting_data.resources[RESOURCE.CURRENCY.CORE] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +5 to starting CORE.",
+					"description": "start with extra CORE.",
 					"icon": SVGS.TYPE.GLOBAL
 				}					
 			}
@@ -145,16 +145,16 @@ var data:Array[Dictionary] = [
 			# ---------------------------
 			{
 				"details": {
-					"name": "MONEY +50",
+					"name": "MONEY +1",
 				},
 				"cost": 25,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.diff[RESOURCE.CURRENCY.MONEY] += 50
+					starting_data.diff[RESOURCE.CURRENCY.MONEY] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +50 to starting MONEY income.",
+					"description": "Earn extra MONEY.",
 					"icon": SVGS.TYPE.MONEY
 				}
 			},
@@ -167,10 +167,10 @@ var data:Array[Dictionary] = [
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.diff[RESOURCE.CURRENCY.SCIENCE] += 25
+					starting_data.diff[RESOURCE.CURRENCY.SCIENCE] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +25 to starting RESEARCH income.",
+					"description": "Earn extra RESEARCH.",
 					"icon": SVGS.TYPE.RESEARCH
 				}
 			},
@@ -183,10 +183,10 @@ var data:Array[Dictionary] = [
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
-					starting_data.diff[RESOURCE.CURRENCY.MATERIAL] += 10
+					starting_data.diff[RESOURCE.CURRENCY.MATERIAL] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +10 to starting MATERIAL income.",
+					"description": "Earn extra MATERIAL.",
 					"icon": SVGS.TYPE.RING
 				}
 			},
@@ -202,7 +202,7 @@ var data:Array[Dictionary] = [
 					starting_data.diff[RESOURCE.CURRENCY.CORE] += 1
 					return starting_data,
 				"hint": {
-					"description": "Add an extra +1 to starting CORE income.",
+					"description": "Earn extra CORE.",
 					"icon": SVGS.TYPE.GLOBAL
 				}
 			}

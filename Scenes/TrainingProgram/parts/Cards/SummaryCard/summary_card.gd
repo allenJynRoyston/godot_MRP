@@ -8,11 +8,13 @@ extends MouseInteractions
 
 @onready var EmptyContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer
 
+@onready var ActivationContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer
+@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer/CardDrawerResearchers
+
+
 @onready var RoomDetailsContainer:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer
 @onready var UpgradeBtn:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/RoomDetailsContainer/UpgradeBtn
 
-@onready var PersonnelContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer
-@onready var CardDrawerResearchers:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer/CardDrawerResearchers
 
 @onready var AbilityContainer:VBoxContainer = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer
 @onready var CardDrawerActiveAbilities:Control = $CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/AbilityContainer/CardDrawerActiveAbilities
@@ -98,7 +100,7 @@ func on_room_ref_update() -> void:
 		RoomDetailsContainer.hide()
 		UpgradeBtn.title = "BUILD MODE"		
 		UpgradeBtn.is_selected = true
-		PersonnelContainer.hide()		
+		ActivationContainer.hide()		
 		AbilityContainer.hide()
 		PassiveContainer.hide()
 		ScpContinaer.hide()
@@ -169,9 +171,9 @@ func on_room_ref_update() -> void:
 	
 	# hide container
 	EmptyContainer.hide()
+	ActivationContainer.show() 	
 	RoomDetailsContainer.show() if !room_details.is_empty() else RoomDetailsContainer.hide()
-	PersonnelContainer.show() if required_staffing.size() > 0 and !preview_mode else PersonnelContainer.hide()	
-	AbilityContainer.show() if show_abilities else AbilityContainer.hide()
+	#AbilityContainer.show() if show_abilities else AbilityContainer.hide()
 	PassiveContainer.show() if show_passives else PassiveContainer.hide()
 	ScpContinaer.show() if show_scp else ScpContinaer.hide()
 
@@ -192,14 +194,34 @@ func deselect_btns() -> void:
 
 # ------------------------------------------------------------------------------
 func get_ability_btns() -> Array:
-	var btn_list:Array = [UpgradeBtn]
-	for node in [CardDrawerResearchers, CardDrawerPassiveAbilities, CardDrawerActiveAbilities,  CardDrawerScp]:
+	var btn_list:Array = []
+	
+	# activation buttons first
+	for node in [CardDrawerResearchers]:
+		for btn in node.get_btns():
+			btn_list.push_back(btn)	
+	
+	# remove this later
+	btn_list.push_back(UpgradeBtn)
+	
+	# add passive, active and scp button
+	for node in [CardDrawerPassiveAbilities, CardDrawerActiveAbilities,  CardDrawerScp]:
 		for btn in node.get_btns():
 			btn_list.push_back(btn)
-	#
+	
 	return btn_list
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func get_starting_btn_index() -> int:
+	var abilty_btns:Array = get_ability_btns()
+	for index in abilty_btns.size():
+		if abilty_btns[index] == UpgradeBtn:
+			print(index)
+			return index
+	return 0
+# ------------------------------------------------------------------------------
+		
 # ------------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	if !is_node_ready():return

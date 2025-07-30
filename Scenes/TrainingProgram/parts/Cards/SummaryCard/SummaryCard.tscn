@@ -112,7 +112,29 @@ content = "EMPTY"
 center_text = false
 title = ""
 
-[node name="RoomDetailsContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="ActivationContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTIVATION "
+label_settings = ExtResource("6_wqrfb")
+
+[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer" instance=ExtResource("6_ihy8r")]
+layout_mode = 2
+
+[node name="RoomDetailsContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -135,28 +157,6 @@ label_settings = ExtResource("6_wqrfb")
 layout_mode = 2
 title = "UPGRADE TO LVL 1"
 icon = 24
-
-[node name="PersonnelContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
-layout_mode = 2
-theme_override_constants/separation = -3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer"]
-layout_mode = 2
-
-[node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
-custom_minimum_size = Vector2(15, 15)
-layout_mode = 2
-icon = 37
-icon_color = Color(1, 1, 1, 1)
-icon_size = Vector2(15, 15)
-
-[node name="Label" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer/HBoxContainer"]
-layout_mode = 2
-text = "PERSONNEL"
-label_settings = ExtResource("6_wqrfb")
-
-[node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelContainer" instance=ExtResource("6_ihy8r")]
-layout_mode = 2
 
 [node name="PassiveContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
 layout_mode = 2

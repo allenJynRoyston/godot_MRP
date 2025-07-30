@@ -88,24 +88,24 @@ var initial_values:Dictionary = {
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MONEY] + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 9999, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MONEY] + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
 				"diff": 0,
-				"capacity": 9999
+				"capacity": 99
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1000, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
 				"diff": 0,
-				"capacity": 1000
+				"capacity": 99
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 500, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
 				"diff": 0,
-				"capacity": 500
+				"capacity": 99
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount":starting_data.starting_resources[RESOURCE.CURRENCY.CORE] + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 100, 
+				"amount":starting_data.starting_resources[RESOURCE.CURRENCY.CORE] + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
 				"diff": 0,
-				"capacity": 100
+				"capacity": 99
 			},						
 		},
 		

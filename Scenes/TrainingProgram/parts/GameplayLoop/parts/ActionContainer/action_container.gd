@@ -1452,7 +1452,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			var max_upgrade_lvl:int = extract_room_data.room.max_upgrade_lvl if !is_room_empty else -1
 
 			BtnControls.itemlist = SummaryCard.get_ability_btns()
-			BtnControls.item_index = 0
+			BtnControls.item_index = SummaryCard.get_starting_btn_index()
 			BtnControls.directional_pref = "UD"
 			BtnControls.offset = SummaryCard.global_position
 		

@@ -25,39 +25,34 @@ theme_override_constants/separation = -1
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-text = "ECONOMY"
 label_settings = ExtResource("3_4d3ey")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Money" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 31
-amount = 123
-burn_val = "0000"
+burn_val = "00"
 
 [node name="Research" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 44
-amount = 123
-burn_val = "0000"
+burn_val = "00"
 
 [node name="Material" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 40
-amount = 123
-burn_val = "0000"
+burn_val = "00"
 
 [node name="Core" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 39
-amount = 123
-burn_val = "0000"
+burn_val = "00"
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -71,21 +66,13 @@ theme_override_constants/separation = 0
 alignment = 1
 
 [node name="IncomeMoney" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-val = 1
 
 [node name="IncomeResearch" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-val = 1
 
 [node name="IncomeMaterial" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-val = 1
 
 [node name="IncomeCore" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-modulate = Color(1, 1, 1, 1)
 layout_mode = 2
-val = 1

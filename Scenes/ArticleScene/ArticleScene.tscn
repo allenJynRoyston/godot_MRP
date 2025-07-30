@@ -20,17 +20,9 @@ color = Color(0, 0.964706, 0.278431, 1)
 thickness = 2
 vertical = true
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6riif"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0j6g6"]
 bg_color = Color(0, 0.964706, 0.278431, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0j6g6"]
-bg_color = Color(0, 0, 0, 0.8)
-border_color = Color(0, 0.964706, 0.278431, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -45,12 +37,8 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqe1g"]
-bg_color = Color(0, 0, 0, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.8)
+border_color = Color(0, 0.964706, 0.278431, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -69,6 +57,18 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idrt8"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hafhr"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 2
 border_width_top = 2
@@ -224,7 +224,7 @@ layout_mode = 2
 
 [node name="ItemBtn" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6riif")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0j6g6")
 index = 0
 title = "SPECIAL CONTAINMENT PROCEDURES"
 is_selected = true
@@ -232,14 +232,14 @@ COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
 [node name="ItemBtn2" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0j6g6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_r8dox")
 index = 1
 title = "DESCRIPTION"
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
 
 [node name="ItemBtn3" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r8dox")
+theme_override_styles/panel = SubResource("StyleBoxFlat_pqe1g")
 index = 2
 title = "DISCOVERY"
 COLOR_A = Color(0, 0.964706, 0.278431, 1)
@@ -247,7 +247,7 @@ COLOR_A = Color(0, 0.964706, 0.278431, 1)
 [node name="ItemBtn4" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pqe1g")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3j23j")
 index = 3
 title = "REDACTED"
 is_disabled = true
@@ -257,7 +257,7 @@ COLOR_A = Color(0, 0.964706, 0.278431, 1)
 [node name="ItemBtn5" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3j23j")
+theme_override_styles/panel = SubResource("StyleBoxFlat_idrt8")
 index = 4
 title = "REDACTED"
 is_disabled = true
@@ -267,7 +267,7 @@ COLOR_A = Color(0, 0.964706, 0.278431, 1)
 [node name="ItemBtn6" parent="MarginContainer/HBoxContainer/LeftPanel/VBoxContainer/Header2/MarginContainer/TabContainer" instance=ExtResource("5_6riif")]
 modulate = Color(1, 1, 1, 0.5)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_idrt8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hafhr")
 index = 5
 title = "REDACTED"
 is_disabled = true

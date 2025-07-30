@@ -166,7 +166,7 @@ var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
 	"energy_cost": 4,
 	"scp_required": true,
 	"currencies":{
-		RESOURCE.CURRENCY.SCIENCE: 100
+		RESOURCE.CURRENCY.SCIENCE: 1
 	}
 }
 
@@ -177,7 +177,7 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 	"energy_cost": 4,
 	"scp_required": true,
 	"currencies":{
-		RESOURCE.CURRENCY.MONEY: 100
+		RESOURCE.CURRENCY.MONEY: 1
 	}
 }
 # ---------------------------------
@@ -189,7 +189,7 @@ var GENERATE_MONEY_LVL_1:Dictionary = {
 	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
-		RESOURCE.CURRENCY.MONEY: 50
+		RESOURCE.CURRENCY.MONEY: 1
 	}
 }
 
@@ -199,7 +199,7 @@ var GENERATE_SCIENCE_LVL_1:Dictionary = {
 	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
-		RESOURCE.CURRENCY.SCIENCE: 25
+		RESOURCE.CURRENCY.SCIENCE: 1
 	}
 }
 
@@ -209,7 +209,7 @@ var GENERATE_MATERIAL_LVL_1:Dictionary = {
 	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
-		RESOURCE.CURRENCY.MATERIAL: 10
+		RESOURCE.CURRENCY.MATERIAL: 1
 	}
 }
 

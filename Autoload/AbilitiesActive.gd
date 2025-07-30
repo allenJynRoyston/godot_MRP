@@ -125,7 +125,7 @@ var HIRE_RESEARCHERS:Dictionary = {
 	"description": "Hire 5 researcher (if room is available).",
 	"cooldown_duration":  7, 
 	"effect": func() -> bool:
-		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire researchers?", "You have room for X reseearchers", "", costs )
 		
 		if confirm:
@@ -141,7 +141,7 @@ var HIRE_SECURITY:Dictionary = {
 	"description": "Hire 5 SECURITY (if room is available).",
 	"cooldown_duration":  7, 
 	"effect": func() -> bool:
-		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire SECURITY?", "You have room for X reseearchers", "", costs )
 		
 		if confirm:
@@ -157,7 +157,7 @@ var HIRE_ADMIN:Dictionary = {
 	"description": "Hire 5 ADMIN (if room is available).",
 	"cooldown_duration":  7, 
 	"effect": func() -> bool:
-		var costs := [{"amount": -(5 * 50), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire ADMIN?", "You have room for X reseearchers", "", costs )
 		
 		if confirm:
@@ -173,7 +173,7 @@ var HIRE_DCLASS:Dictionary = {
 	"description": "Hire 5 DCLASS (if room is available).",
 	"cooldown_duration":  7, 
 	"effect": func() -> bool:
-		var costs := [{"amount": -(5 * 20), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire DCLASS?", "You have room for X reseearchers", "res://Media/images/dclass.jpg", costs )
 		
 		if confirm:
@@ -268,44 +268,50 @@ var UNHAPPY_HOUR:Dictionary = {
 # -------------------------------------------------------------------------------------------------- RESOURCE GAIN
 var INSTANT_MONEY_LVL_1:Dictionary = {
 	"name": "INSTANT_MONEY_LVL_1", 
-	"description": "Gain +200 MONEY instantly..",
+	"description": "Gain +3 MONEY instantly.",
 	"science_cost": 50,
 	"cooldown_duration":  3, 
 	"effect": func() -> bool:
-		var costs := [{"amount": 200, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
+		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
 		
 		return confirm,
 }
 
 var INSTANT_SCIENCE_LVL_1:Dictionary = {
-	"name": "SCIENCE HACK", 
-	"description": "Gain +25% of your current SCIENCE.",
+	"name": "INSTANT_SCIENCE_LVL_1", 
+	"description": "Gain +3 SCIENCE instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
 var INSTANT_MATERIAL_LVL_1:Dictionary = {
 	"name": "SCIENCE HACK", 
-	"description": "Gain +25% of your current SCIENCE.",
+	"description": "Gain +3 MATERIAL instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
 var INSTANT_CORE_LVL_1:Dictionary = {
-	"name": "SCIENCE HACK", 
-	"description": "Gain +25% of your current SCIENCE.",
+	"name": "INSTANT_CORE_LVL_1", 
+	"description": "Gain +3 CORE instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)}]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
 
@@ -315,8 +321,13 @@ var CONVERT_MONEY_INTO_SCIENCE:Dictionary = {
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [
+			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
+			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE) }
+		]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
 var CONVERT_MONEY_INTO_MATERIAL:Dictionary = {
@@ -325,8 +336,13 @@ var CONVERT_MONEY_INTO_MATERIAL:Dictionary = {
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [
+			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
+			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL) }
+		]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 
 var CONVERT_MONEY_INTO_CORE:Dictionary = {
@@ -335,8 +351,13 @@ var CONVERT_MONEY_INTO_CORE:Dictionary = {
 	"science_cost": 0,
 	"cooldown_duration":  1, 
 	"effect": func() -> bool:
-		await U.set_timeout(0.5)
-		return true,
+		var costs := [
+			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
+			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE) }
+		]	
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		
+		return confirm,
 }
 # ---------------------------------
 

@@ -21,10 +21,10 @@ var DEBUG_ROOM:Dictionary = {
 
 	# ------------------------------------------	
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: -10,
-		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 0,
-		RESOURCE.CURRENCY.CORE: 0,
+		RESOURCE.CURRENCY.MONEY: 1,
+		RESOURCE.CURRENCY.MATERIAL: 1,
+		RESOURCE.CURRENCY.SCIENCE: 1,
+		RESOURCE.CURRENCY.CORE: 1,
 	},
 	"metrics": {
 		RESOURCE.METRICS.MORALE: 1,
@@ -35,8 +35,8 @@ var DEBUG_ROOM:Dictionary = {
 	
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -113,17 +113,17 @@ var DIRECTORS_OFFICE:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
 	# ------------------------------------------
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 100,
-		RESOURCE.CURRENCY.SCIENCE: 50,
-		RESOURCE.CURRENCY.MATERIAL: 25,
-		RESOURCE.CURRENCY.CORE: 0,
+		RESOURCE.CURRENCY.MONEY: 1,
+		RESOURCE.CURRENCY.SCIENCE: 1,
+		RESOURCE.CURRENCY.MATERIAL: 1,
+		RESOURCE.CURRENCY.CORE: 1,
 	},
 	# ------------------------------------------
 	
@@ -171,8 +171,8 @@ var HQ:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -224,8 +224,8 @@ var HR_DEPARTMENT:Dictionary = {
 	
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -260,8 +260,8 @@ var OPERATIONS_SUPPORT:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -298,8 +298,8 @@ var GENERATOR_SUBSTATION:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -333,8 +333,8 @@ var	PROBABILITY_ROOM:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -368,8 +368,8 @@ var CHRONO_ROOM:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -443,8 +443,8 @@ var PRISONER_BLOCK:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -475,8 +475,8 @@ var ADMIN_OFFICE:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -507,8 +507,8 @@ var SECURITY_DEPARTMENT:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -539,8 +539,8 @@ var ACADEMIC_OUTREACH:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -572,8 +572,8 @@ var MTF_BARRICKS:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 500,
-		"purchase": 2000,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -605,8 +605,8 @@ var MINIERAL_MINING:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -637,8 +637,8 @@ var GEOTHERMAL_POWER:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 0,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -678,8 +678,8 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 400,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 		
@@ -719,11 +719,11 @@ var MONEY_GEN_1:Dictionary = {
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 50,
+		RESOURCE.CURRENCY.MONEY: 1,
 		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.CORE: 0,
@@ -759,11 +759,11 @@ var MONEY_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
 	"costs": {
-		"unlock": 250,
-		"purchase": 600,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 100,
+		RESOURCE.CURRENCY.MONEY: 2,
 		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.CORE: 0,
@@ -799,13 +799,13 @@ var RESEARCH_GEN_1:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
 		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 50,
+		RESOURCE.CURRENCY.SCIENCE: 1,
 		RESOURCE.CURRENCY.CORE: 0,
 	},	
 	# ------------------------------------------
@@ -839,13 +839,13 @@ var RESEARCH_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
 	"costs": {
-		"unlock": 250,
-		"purchase": 600,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
 		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 50,
+		RESOURCE.CURRENCY.SCIENCE: 1,
 		RESOURCE.CURRENCY.CORE: 0,
 	},		
 	# ------------------------------------------
@@ -878,12 +878,12 @@ var MATERIAL_GEN_1:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],	
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 10,
+		RESOURCE.CURRENCY.MATERIAL: 1,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.CORE: 0,
 	},	
@@ -918,12 +918,12 @@ var MATERIAL_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
 	"costs": {
-		"unlock": 250,
-		"purchase": 600,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
-		RESOURCE.CURRENCY.MATERIAL: 20,
+		RESOURCE.CURRENCY.MATERIAL: 2,
 		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.CORE: 0,
 	},		
@@ -958,8 +958,8 @@ var CORE_GEN_1:Dictionary = {
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],	
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
@@ -998,8 +998,8 @@ var CORE_GEN_2:Dictionary = {
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
 	"costs": {
-		"unlock": 250,
-		"purchase": 600,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 0,
@@ -1041,8 +1041,8 @@ var MONEY_CONVERTER:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 		
@@ -1077,8 +1077,8 @@ var ENERGY_STORAGE:Dictionary = {
 	
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1121,8 +1121,8 @@ var ENERGY_SYPHON:Dictionary = {
 	
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1176,8 +1176,8 @@ var UI_ASSIST:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
-		"purchase": 50,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1208,8 +1208,8 @@ var STAFF_ROOM:Dictionary = {
 		
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1246,8 +1246,8 @@ var CAFETERIA:Dictionary = {
 		
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 200,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1284,8 +1284,8 @@ var WEAPONS_RANGE:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 50,
-		"purchase": 100,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 
@@ -1318,8 +1318,8 @@ var SCRANTON_REALITY_ANCHOR:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 500,
-		"purchase": 1000,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 
@@ -1350,8 +1350,8 @@ var HP_CLINIC:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	
@@ -1382,8 +1382,8 @@ var SP_CLINIC:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 100,
-		"purchase": 300,
+		"unlock": 1,
+		"purchase": 1,
 	},
 	# ------------------------------------------
 	

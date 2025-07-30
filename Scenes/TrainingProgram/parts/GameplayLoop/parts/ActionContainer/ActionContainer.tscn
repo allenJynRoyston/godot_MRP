@@ -310,7 +310,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
-bg_color = Color(0.749104, 1, 0.749104, 1)
+bg_color = Color(0.89294, 1, 0.89294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3de1l"]
 
