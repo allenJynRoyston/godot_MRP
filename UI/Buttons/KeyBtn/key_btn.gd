@@ -2,11 +2,12 @@
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
-@onready var IconPanelContainer:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer
-@onready var IconBtn:Control = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/PanelContainer/IconBtn
 
-@onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/TitleHeader
-@onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer2/HBoxContainer/KeyLabel
+@onready var TitleHeader:Label = $VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/TitleHeader
+@onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/KeyLabel
+@onready var SmallKeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/SmallKeyLabel
+@onready var SvgIcon:Control = $VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/SVGIcon
+
 
 @export var title:String = "" : 
 	set(val): 
@@ -103,8 +104,14 @@ func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
 # ------------------------------------------------------------------------------
 func on_assigned_key_update() -> void:
 	if !is_node_ready():return
-	KeyLabel.text = assigned_key
-	
+	if assigned_key.length() > 1:
+		KeyLabel.text = assigned_key.substr(0, 1) 
+		SmallKeyLabel.text = assigned_key.substr(1) 
+		SmallKeyLabel.show()
+	else:
+		KeyLabel.text = assigned_key 
+		SmallKeyLabel.hide() 
+
 #func on_has_new_update() -> void:
 	#if !is_node_ready():return
 	#if !has_new:
@@ -139,11 +146,11 @@ func on_title_update() -> void:
 
 func on_icon_update() -> void:
 	if !is_node_ready():return
-	IconBtn.icon = icon	
+	SvgIcon.icon = icon	
 	
 func on_hide_icon_panel_update() -> void:
 	if !is_node_ready():return
-	IconPanelContainer.show() if !hide_icon_panel else IconPanelContainer.hide()
+	#IconPanelContainer.show() if !hide_icon_panel else IconPanelContainer.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

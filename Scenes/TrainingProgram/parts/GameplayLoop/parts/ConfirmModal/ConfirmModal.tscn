@@ -203,8 +203,7 @@ layout_mode = 2
 
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/before" instance=ExtResource("7_kq5a2")]
 layout_mode = 2
-max_amount = -1
-burn_val = "0000"
+burn_val = "00"
 
 [node name="SVGIcon" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_t4xaw")]
 custom_minimum_size = Vector2(30, 30)
@@ -217,8 +216,7 @@ layout_mode = 2
 
 [node name="ResourceItem" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter/after" instance=ExtResource("7_kq5a2")]
 layout_mode = 2
-max_amount = -1
-burn_val = "0000"
+burn_val = "00"
 
 [node name="BtnControls" parent="." instance=ExtResource("9_t4xaw")]
 layout_mode = 2
