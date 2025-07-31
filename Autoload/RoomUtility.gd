@@ -160,6 +160,13 @@ func return_data_via_location(use_location:Dictionary) -> Dictionary:
 	return {}
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func is_under_construction(use_location:Dictionary) -> bool:
+	for item in purchased_facility_arr:
+		if use_location == item.location:
+			return item.under_construction
+	return false
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func return_unavailable_rooms(ref:int, room_config:Dictionary) -> Array: 
@@ -242,6 +249,7 @@ func add_to_unlocked_list(ref:int) -> void:
 func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	purchased_facility_arr.push_back({
 		"ref": ref,
+		"under_construction": true,
 		"location": {
 			"floor": use_location.floor,
 			"ring": use_location.ring,

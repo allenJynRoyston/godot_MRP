@@ -1,6 +1,8 @@
 @tool
 extends Control
 
+@onready var ActiveIcon:Control = $MarginContainer/HBoxContainer/ActiveIcon
+
 @onready var IconPanel:PanelContainer = $MarginContainer/HBoxContainer/IconPanel
 @onready var Icon:Control = $MarginContainer/HBoxContainer/IconPanel/MarginContainer/SVGIcon
 
@@ -117,6 +119,7 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------
 func on_is_selected_update() -> void:
+	ActiveIcon.icon = SVGS.TYPE.NONE if !is_selected else SVGS.TYPE.NEXT
 	U.debounce(str(self, "_update_all"), update_all)
 
 func on_is_disabled_update() -> void:

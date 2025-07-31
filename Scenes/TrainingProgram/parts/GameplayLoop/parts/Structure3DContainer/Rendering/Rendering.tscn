@@ -194,6 +194,7 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="WingTransitionFloor" parent="SubViewport/Rendering/WingScene/SubViewport2" instance=ExtResource("4_ujma6")]
+visible = false
 offset_top = 800.0
 offset_bottom = 800.0
 
@@ -213,7 +214,8 @@ double_sided = false
 texture = SubResource("ViewportTexture_pgdfi")
 
 [node name="Sprite3D2" type="Sprite3D" parent="SubViewport/Rendering/WingScene/WingCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.039, -0.026, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.669156, -0.026, -2)
+visible = false
 modulate = Color(0, 0, 0, 1)
 pixel_size = 0.0013
 double_sided = false

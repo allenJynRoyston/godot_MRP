@@ -1,4 +1,3 @@
-@tool
 extends FogVolume
 
 var time:float = 0

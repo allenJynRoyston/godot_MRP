@@ -284,9 +284,6 @@ func start() -> void:
 	BuildBtn.onClick = func() -> void:
 		current_mode = MODE.BUILD
 
-	AbilityBtn.onClick = func() -> void:
-		current_mode = MODE.ABILITY			
-		
 	DeconstructBtn.onClick = func() -> void:
 		investigate_wrapper(func():
 			await GAME_UTIL.reset_room(current_location)
@@ -304,14 +301,14 @@ func start() -> void:
 	
 	SettingsBtn.onClick = func() -> void:
 		#ControllerOverlay.hide()
-		NameControl.hide()
+		#NameControl.hide()
 		reveal_notification(false)		
 		await lock_actions(true)
 		show_settings()
 		
 	HintInfoBtn.onClick = func() -> void:
 		# ControllerOverlay.hide()
-		NameControl.hide()
+		#NameControl.hide()
 		GameplayNode.TimelineContainer.show_details(true)
 		reveal_notification(false)
 		set_backdrop_state(true)
@@ -332,7 +329,7 @@ func start() -> void:
 			lock_actions(false)
 			set_backdrop_state(false)
 			# ControllerOverlay.show()
-			NameControl.show()
+			#NameControl.show()
 	
 	TutorialBtn.onClick = func() -> void:
 		freeze_inputs = true
@@ -534,8 +531,7 @@ func show_build_options() -> void:
 					},
 			},
 		]:
-	
-			
+
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
 		var query_results:Array = await query_complete
 		for index in query_results.size():
@@ -546,7 +542,6 @@ func show_build_options() -> void:
 					"items": items,
 					"footer": "%s / %s" % [index + 1, items.size() ],
 				})		
-
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update card
@@ -1123,6 +1118,8 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
 	
 	match camera_settings.type:
+		CAMERA.TYPE.ROOM_SELECT:
+			NameControl.show()
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
@@ -1144,7 +1141,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			reveal_floorpreview(false)
-			NameControl.show()
+			NameControl.hide()
 			#ControllerOverlay.show()
 			#ControllerOverlay.show_directional = true
 			
@@ -1198,6 +1195,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
 	var can_deconstruct:bool = false if is_room_empty else room_extract.room.can_destroy 
+	var is_under_construction:bool = false if is_room_empty else ROOM_UTIL.is_under_construction(current_location)
 	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
 	
 	if !room_extract.is_empty():
@@ -1212,7 +1210,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	match current_mode:
 		# -----------
 		MODE.ACTIONS:
-			NameControl.show()
+			#NameControl.show()
 			# ControllerOverlay.show_directional = true
 			WingActionBtn.is_disabled = !is_powered or in_lockdown
 			ProgramBtn.is_disabled = GAME_UTIL.get_list_of_abilities().is_empty()
@@ -1222,7 +1220,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			SUBSCRIBE.camera_settings = camera_settings
 		# -----------
 		MODE.INVESTIGATE:
-			NameControl.hide()
+			#NameControl.hide()
 			# ControllerOverlay.show_directional = false
 			
 			# update mouse
@@ -1247,8 +1245,24 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			
 			# set button states
 			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated or !is_powered
+			DeconstructBtn.hide() if is_under_construction or is_room_empty else DeconstructBtn.show()
 			DeconstructBtn.is_disabled = !can_deconstruct or nuke_activated
-			AbilityBtn.is_disabled = !can_take_action 
+			AbilityBtn.is_disabled = !can_take_action and !is_under_construction
+			
+			AbilityBtn.title = "CANCEL CONSTRUCTION" if is_under_construction else "CHECK"
+			AbilityBtn.onClick = func() -> void:
+				if is_under_construction:
+					await lock_investigate(true)
+					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
+					if made_changes:
+						SummaryCard.room_ref = -1
+						await U.tick()
+						on_current_location_update()
+					lock_investigate(false)
+				else:
+					current_mode = MODE.ABILITY			
+							
+			
 	
 			# update line draw
 			var get_node_pos:Callable = func() -> Vector2: 

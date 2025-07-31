@@ -191,12 +191,11 @@ func dec_ring(wrap_around:bool = true) -> void:
 # --------------------------------------------------------------------------------------------------
 func room_up(allow_floor_change:bool = false) -> void:
 	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
-	
 	if room_index == -1:
 		if current_location.floor - 1 >= 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
-			current_location.room = 4
+			current_location.room =  U.location_lookup_opposite(current_location.room, U.DIR.UP)
 	else:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
@@ -207,7 +206,7 @@ func room_down(allow_floor_change:bool = false) -> void:
 		if current_location.floor + 1 < room_config.floor.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
-			current_location.room = 4	
+			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.DOWN)
 	else:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
@@ -218,7 +217,7 @@ func room_right(allow_floor_change:bool = false) -> void:
 		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
-			current_location.room = 4	
+			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.RIGHT)
 	else:
 		current_location.room = room_index	
 	SUBSCRIBE.current_location = current_location
@@ -229,7 +228,7 @@ func room_left(allow_floor_change:bool = false) -> void:
 		if current_location.ring > 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
-			current_location.room = 4
+			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.LEFT)
 	else:
 		current_location.room = room_index	
 	SUBSCRIBE.current_location = current_location
@@ -269,64 +268,102 @@ func save_screenshot(viewport:SubViewport) -> void:
 	#viewport_capture.save_png(file_path)
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func location_lookup_opposite(val:int, dir: DIR) -> int:
+	print(val)
+	match val:
+		0:
+			match dir:
+				DIR.UP: return 3
+				DIR.LEFT: return 5
+		1:
+			match dir:
+				DIR.LEFT: return 7
+		2:
+			match dir:
+				DIR.UP: return 7
+		3:
+			match dir:
+				DIR.DOWN: return 0
+				DIR.LEFT: return 8
+		5:
+			match dir:
+				DIR.UP: return 8
+				DIR.RIGHT: return 0
+		6:
+			match dir:
+				DIR.DOWN: return 2
+		7:
+			match dir:				
+				DIR.RIGHT: return 1
+		8:
+			match dir:
+				DIR.DOWN: return 5
+				DIR.RIGHT: return 3
+		_:
+			return -1
+	return -1
+
+	return -1
+# --------------------------------------------------------------------------------------------------		
+
 # -----------------------------------------------------------------------------------------------
-func location_lookup(val:int, dir:DIR) -> int:
+func location_lookup(val: int, dir: DIR) -> int:
 	match val:
 		0:
 			match dir:
 				DIR.UP: return -1
-				DIR.DOWN: return 4
-				DIR.LEFT: return 1
+				DIR.DOWN: return 1
+				DIR.LEFT: return -1
 				DIR.RIGHT: return 2
 		1:
 			match dir:
 				DIR.UP: return 0
-				DIR.DOWN: return 6
-				DIR.LEFT: return 3
-				DIR.RIGHT: return 2
+				DIR.DOWN: return 3
+				DIR.LEFT: return -1
+				DIR.RIGHT: return 4
 		2:
 			match dir:
-				DIR.UP: return 0
-				DIR.DOWN: return 7
-				DIR.LEFT: return 1
-				DIR.RIGHT: return 5	
+				DIR.UP: return -1
+				DIR.DOWN: return 4
+				DIR.LEFT: return 0
+				DIR.RIGHT: return 5
 		3:
 			match dir:
 				DIR.UP: return 1
-				DIR.DOWN: return 6
+				DIR.DOWN: return -1
 				DIR.LEFT: return -1
-				DIR.RIGHT: return 4
+				DIR.RIGHT: return 6
 		4:
 			match dir:
-				DIR.UP: return 0
-				DIR.DOWN: return 8
-				DIR.LEFT: return 3
-				DIR.RIGHT: return 5
+				DIR.UP: return 2
+				DIR.DOWN: return 6
+				DIR.LEFT: return 1
+				DIR.RIGHT: return 7
 		5:
 			match dir:
-				DIR.UP: return 2
+				DIR.UP: return -1
 				DIR.DOWN: return 7
-				DIR.LEFT: return 4
+				DIR.LEFT: return 2
 				DIR.RIGHT: return -1
 		6:
 			match dir:
-				DIR.UP: return 1
-				DIR.DOWN: return 8
-				DIR.LEFT: return 3
-				DIR.RIGHT: return 7
-		7:
-			match dir:
-				DIR.UP: return 2
-				DIR.DOWN: return 8
-				DIR.LEFT: return 6
-				DIR.RIGHT: return 5
-		8:
-			match dir:
 				DIR.UP: return 4
 				DIR.DOWN: return -1
+				DIR.LEFT: return 3
+				DIR.RIGHT: return 8
+		7:
+			match dir:
+				DIR.UP: return 5
+				DIR.DOWN: return 8
+				DIR.LEFT: return 4
+				DIR.RIGHT: return -1
+		8:
+			match dir:
+				DIR.UP: return 7
+				DIR.DOWN: return -1
 				DIR.LEFT: return 6
-				DIR.RIGHT: return 7
-	
+				DIR.RIGHT: return -1
 	return val
 # -----------------------------------------------------------------------------------------------
 

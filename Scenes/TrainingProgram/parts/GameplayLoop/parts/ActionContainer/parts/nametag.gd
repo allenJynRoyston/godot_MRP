@@ -1,7 +1,7 @@
 extends Control
 
-@onready var NameLabel:Label = $VBoxContainer/HBoxContainer/NameLabel
-@onready var Icon:Control = $VBoxContainer/HBoxContainer/SVGIcon
+@onready var NameLabel:Label = $VBoxContainer/NameLabel
+@onready var Icon:Control = $VBoxContainer/SVGIcon
 
 @onready var MoneyIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MoneyIcon
 @onready var MatIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MatIcon
@@ -184,7 +184,7 @@ func update_node(shift_val:int = 10) -> void:
 func on_process_update(delta:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos #+  offset - Vector2(self.size.x/2, 0)
+	self.global_position = tag_pos - Vector2(self.size.x/2 - 20, -50)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return

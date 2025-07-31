@@ -203,13 +203,13 @@ func on_activation_requirements_update() -> void:
 			
 		before_node.icon = item.resource.icon
 		before_node.amount = current_amount
-		before_node.burn_val = str("0000")
+		before_node.burn_val = str("00")
 		BeforeList.add_child(before_node)
 		
 		after_node.icon = item.resource.icon		
 		after_node.amount = U.min_max( current_amount + item.amount, 0, 9999)
 		after_node.is_negative = disable_btn
-		after_node.burn_val = str("0000")
+		after_node.burn_val = str("00")
 		AfterList.add_child(after_node) 
 
 	await U.tick()

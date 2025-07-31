@@ -200,7 +200,7 @@ func shift_horizontally(state:bool, duration:float, current_location:Dictionary)
 	U.tween_node_property(BottomRightBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
 
 	U.tween_node_property(WingCurrentFloor, "position:x", 0, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
-	await U.tween_node_property(WingTransitionFloor, "position:x", distance if state else -distance, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
+	await U.tween_node_property(WingTransitionFloor, "position:x", distance if state else -distance/2, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
 
 	
 	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_a, 0.1, func(val:float) -> void:

@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 @onready var TitleHeader:Label = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/TitleHeader

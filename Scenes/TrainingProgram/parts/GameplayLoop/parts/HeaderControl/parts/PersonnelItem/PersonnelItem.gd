@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 @onready var RootPanel:PanelContainer = $"."

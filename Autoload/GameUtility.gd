@@ -332,14 +332,14 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	
 	# check for passive and active abilities, grab their max level; that's what becomes the max level
 	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
-	
-				
+
 	return {
 		# -----------
 		"room": {
 			"details": room_details,
 			"can_destroy": room_details.can_destroy,
 			"can_contain": room_details.can_contain,
+			"is_under_construction": false,
 			"is_activated": false if is_room_empty else room_config_data.is_activated,
 			"metrics": metrics,
 			"max_upgrade_lvl": max_upgrade_lvl,
@@ -396,23 +396,36 @@ func reset_room(use_location:Dictionary = current_location) -> bool:
 	if room_details.is_empty():
 		return false
 
-	var refund_val:int = floori(room_details.costs.purchase/2)
-	var costs:Array = [{
-		"amount": refund_val, 
-		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
-	}]	
-	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "Room will be reset and half the building cost will be refunded.", room_details.img_src, costs)
+	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
 	
 	if confirm:	
 		RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
-		#var refund_val:int = floori(room_details.costs.purchase/2)
-		#print(refund_val)
-		#await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: refund_val}, Color(1, 1, 1, 0) )
-
 
 	return confirm
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func cancel_construction(use_location:Dictionary = current_location) -> bool:
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+
+	if room_details.is_empty():
+		return false
+
+	var refund_val:int = floori(room_details.costs.purchase)
+	var costs:Array = [{
+		"amount": refund_val, 
+		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	}]	
+	var confirm:bool = await create_modal("Cancel construction of %s?" % room_details.name, "Construction costs will be refunded.", room_details.img_src, costs)
+	
+	if confirm:	
+		RESEARCHER_UTIL.remove_assigned_location(use_location)
+		ROOM_UTIL.reset_room(use_location)
+
+	return confirm
+# --------------------------------------------------------------------------------------------------		
+
 
 # -----------------------------------
 func add_objectives_to_timeline(objectives:Array = []) -> void:
@@ -458,14 +471,14 @@ func open_objectives() -> void:
 	GameplayNode.restore_player_hud()
 	disable_taskbar(false)
 # -----------------------------------
-
-# ------------------------------------------------------------------------------	
-func construct_room(allow_placement:bool = true) -> void:	
-	GameplayNode.current_builder_step = GameplayNode.BUILDER_STEPS.OPEN
-	await U.tick()
-	#GameplayNode.BuildContainer.allow_placement = allow_placement
-	await GameplayNode.on_store_purchase_complete	
-# ---------------------
+#
+## ------------------------------------------------------------------------------	
+#func construct_room(allow_placement:bool = true) -> void:	
+	#GameplayNode.current_builder_step = GameplayNode.BUILDER_STEPS.OPEN
+	#await U.tick()
+	##GameplayNode.BuildContainer.allow_placement = allow_placement
+	#await GameplayNode.on_store_purchase_complete	
+## ---------------------
 
 # ---------------------
 func trigger_event(event_data:Array) -> Dictionary:

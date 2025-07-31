@@ -1,4 +1,3 @@
-@tool
 extends MouseInteractions
 
 enum STATUS {NO_ISSUES, WARNING, DANGER}

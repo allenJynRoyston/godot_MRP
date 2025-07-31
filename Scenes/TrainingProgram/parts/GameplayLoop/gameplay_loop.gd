@@ -88,22 +88,22 @@ var initial_values:Dictionary = {
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MONEY] + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MONEY] + starting_data.resources[RESOURCE.CURRENCY.MONEY] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 99, 
 				"diff": 0,
 				"capacity": 99
 			},
 			RESOURCE.CURRENCY.SCIENCE: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.SCIENCE] + starting_data.resources[RESOURCE.CURRENCY.SCIENCE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 99, 
 				"diff": 0,
 				"capacity": 99
 			},
 			RESOURCE.CURRENCY.MATERIAL: {
-				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
+				"amount": starting_data.starting_resources[RESOURCE.CURRENCY.MATERIAL] + starting_data.resources[RESOURCE.CURRENCY.MATERIAL] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 99, 
 				"diff": 0,
 				"capacity": 99
 			},
 			RESOURCE.CURRENCY.CORE: {
-				"amount":starting_data.starting_resources[RESOURCE.CURRENCY.CORE] + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 1, 
+				"amount":starting_data.starting_resources[RESOURCE.CURRENCY.CORE] + starting_data.resources[RESOURCE.CURRENCY.CORE] if !DEBUG.get_val(DEBUG.GAMEPLAY_ALL_RESOURCES) else 99, 
 				"diff": 0,
 				"capacity": 99
 			},						
@@ -294,8 +294,6 @@ var gameplay_conditionals:Dictionary
 #region LOCAL DATA
 var onGameOver:Callable = func() -> void:pass
 var onExitGame:Callable = func(_exit_game:bool) -> void:pass
-
-var processing_next_day:bool = false
 
 var is_busy:bool = false : 
 	set(val):
@@ -920,7 +918,6 @@ func on_current_phase_update() -> void:
 			show_marked_objectives = false
 			
 
-			#
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await U.set_timeout(0.5)
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
@@ -934,6 +931,16 @@ func on_current_phase_update() -> void:
 			# ADD TO PROGRESS DATA day count
 			progress_data.day += 1
 			
+			# set under_construction flags to true
+			# TODO: only allow if the current wing has power
+			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
+				var floor_index:int = x.location.floor
+				var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
+				if floor_base_state.is_powered:
+					x.under_construction = false
+				return x
+			)
+				
 			# mark rooms and push to subscriptions
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
@@ -1596,7 +1603,8 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var ring:int = item.location.ring
 		var room:int = item.location.room		
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		
+		var is_under_construction:bool = item.under_construction
+
 		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		var required_staffing:Array = room_details.required_staffing

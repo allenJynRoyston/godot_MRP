@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=4 uid="uid://da46sqhr4dsg3"]
+[gd_scene load_steps=15 format=4 uid="uid://da46sqhr4dsg3"]
 
 [ext_resource type="Script" uid="uid://msp6bf3cru8w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/GateRender/gate_render.gd" id="1_lnxyw"]
 [ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="2_62k34"]
+[ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="3_7np6m"]
+[ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="4_8q6u5"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_62k34"]
 _surfaces = [{
@@ -36,6 +38,39 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAAgwQAAAMAAACDBAAAYQQAAAMAAABjBAAAgQQAAAMAAACDBAAAYQQAAAEAAABhBAAAgQQAAAEAAACDBAAAgQQAAAEAAACBBAAAgwQAAAEAAACBBAAAYQQAAAEAAABhBAAAgQQAAAEAAACBBAAAYQQAAAEAAABjBAAAgQQAAAEAAACDBAAAYQQAAAEAAABhBAAAgQQAAAEAAACBBAAAgQQAAAEAAACDBAAAgQQAAAMAAACDBAAAgQQAAAEAAACDBAAAYQQAAAEAAABjBAAAYwQAAAEAAABjBAAAgQQAAAMAAACDBAAAgQQAAAEAAACDBAAAgwQAAAEAAACDBAAAgQQAAAMAAACBBAAAgQQAAAEAAACBBAAAgQQAAAMAAACDBAAAYQQAAAMAAABhBAAAgQQAAAMAAACBBAAAYQQAAAMAAABjBAAAgQQAAAEAAACBBAAAgQQAAAMAAACBBAAAgwQAAAMAAACBBAAAgQQAAAMAAACBBAAAYQQAAAMAAABhBAAAYwQAAAMAAABhBAAAYQQAAAMAAABjBAAAgQQAAAMAAACBBAAAgQQAAAMAAACDBAAAYwQAAAMAAABjBAAAgwQAAAMAAACDBAAAYwQAAAMAAABhBAAAgwQAAAEAAACBBAAAYwQAAAEAAABhBAAAYQQAAAEAAABhBAAAgQQAAAMAAACBBAAAYwQAAAMAAABhBAAAgwQAAAMAAACBBAAAgwQAAAMAAACBBAAAgwQAAAMAAACDBAAAgwQAAAEAAACDBAAAgwQAAAMAAACDBAAAYwQAAAMAAABjBAAAYQQAAAMAAABjBAAAgQQAAAMAAACDBAAAgwQAAAEAAACDBAAAgwQAAAMAAACDBAAAYwQAAAMAAABhBAAAgwQAAAMAAACDBAAAgwQAAAMAAACBBAAAgwQAAAEAAACBBAAAgQQAAAEAAACBBAAAgwQAAAMAAACBBAAAYwQAAAEAAABjBAAAgwQAAAEAAACBBAAAgwQAAAEAAACDBAAAgQQAAAEAAACDBAAAYwQAAAEAAABjBAAAgwQAAAEAAACDBAAAgwQAAAEAAACDBAAAgwQAAAEAAACBBAAAgwQAAAMAAACBBAAAYwQAAAEAAABhBAAAgwQAAAEAAACBBAAAYwQAAAEAAABjBAAAYQQAAAEAAABhBAAAYQQAAAMAAABhBAAAYQQAAAMAAABjBAAAYwQAAAMAAABhBAAAYQQAAAMAAABhBAAAYQQAAAEAAABhBAAAYwQAAAEAAABjBAAAYQQAAAEAAABjBAAAYQQAAAMAAABjBAAAYQQAAAMAAABjBAAAYwQAAAMAAABjBAAAYwQAAAEAAABjBAAAYQQAAAMAAABjBAAAYQQAAAEAAABjBAAAYQQAAAEAAABhBAAAYwQAAAMAAABhBAAAYwQAAAEAAABhBAAAYwQAAAEAAABjBAAAYwQAAAEAAABjBAAAYwQAAAMAAABjBAAAYwQAAAMAAABhBAAAYQQAAAEAAABhBAAAYwQAAAEAAABhBAAAYwQAAAMAAABhB/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA/////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5//38AAAAAAAD/fwAAAAAAAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAAAAAAD/fwAAAAAAAP9/AAAAAAAA/38AAP//AAD/fwAAAAAAAP9/AAD//wAA/38AAP//AAD/fwAA//8AAP9/AAAAAAAA/3//////AAD/f/////8AAP9//////wAA/38AAAAAAAD/fwAAAAAAAP9/AAD//wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8//38AAAAAAAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9//////wAAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/////wAA/7//////AAD/v/////8AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCA////f/9/AID///9//38AgP///3//fwCA////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+/")
 }]
 
+[sub_resource type="Gradient" id="Gradient_8q6u5"]
+colors = PackedColorArray(0.68382, 0.875024, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_d5qij"]
+gradient = SubResource("Gradient_8q6u5")
+
+[sub_resource type="Curve" id="Curve_6jgyh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.516854), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_h7kq0"]
+curve = SubResource("Curve_6jgyh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_d5qij"]
+direction = Vector3(1, -5, 0)
+flatness = 0.01
+initial_velocity_min = -20.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, -5, 0)
+scale_min = 0.5
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_h7kq0")
+color = Color(1, 0.18, 0.18, 1)
+color_ramp = SubResource("GradientTexture1D_d5qij")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6jgyh"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("4_8q6u5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_h7kq0"]
+material = SubResource("StandardMaterial3D_6jgyh")
+
 [node name="GateRender" type="Node3D"]
 script = ExtResource("1_lnxyw")
 
@@ -62,3 +97,44 @@ mesh = SubResource("ArrayMesh_lnxyw")
 [node name="SpinLights" parent="SafetyGate" instance=ExtResource("2_62k34")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.13005, 0)
 visible = false
+
+[node name="ConstructionMesh" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, 0)
+size = Vector3(19, 30, 19)
+
+[node name="ConstructionLights" type="Node3D" parent="ConstructionMesh"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, -0.0307665, 10.8152, 9.80711)
+visible = false
+
+[node name="C1" parent="ConstructionMesh/ConstructionLights" instance=ExtResource("3_7np6m")]
+transform = Transform3D(0.979042, -1.02251e-15, -0.203659, 0.203659, -4.37114e-08, 0.979042, -8.90222e-09, -1, -4.27953e-08, -2.018, -10, -8.745)
+spin_speed = 4.5
+blink_speed = 0.3
+
+[node name="C2" parent="ConstructionMesh/ConstructionLights" instance=ExtResource("3_7np6m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.332, -0.884589, 0)
+spin_speed = 5.0
+blink_speed = 0.3
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="ConstructionMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.338004, 8.45196, -0.361875)
+emitting = false
+amount = 30
+lifetime = 2.0
+speed_scale = 2.0
+process_material = SubResource("ParticleProcessMaterial_d5qij")
+draw_pass_1 = SubResource("QuadMesh_h7kq0")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="ConstructionMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.17828, 0)
+operation = 2
+size = Vector3(16, 40, 16)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="ConstructionMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.256989, 0)
+light_color = Color(0.163639, 0.68978, 1, 1)
+light_energy = 1.1
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+omni_range = 18.961
+omni_attenuation = -0.693

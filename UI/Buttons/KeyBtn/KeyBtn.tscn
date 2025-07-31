@@ -1,11 +1,21 @@
-[gd_scene load_steps=11 format=3 uid="uid://dhkyb6t56c2fk"]
+[gd_scene load_steps=13 format=3 uid="uid://dhkyb6t56c2fk"]
 
 [ext_resource type="Script" uid="uid://dw4yaadsasl86" path="res://UI/Buttons/KeyBtn/key_btn.gd" id="1_5n3hm"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_f1p3b"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="6_nf7q3"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="6_nkjw7"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nf7q3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1p3b"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_753p1"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -25,8 +35,13 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1a54a"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f1p3b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yubgd"]
 bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1ehi"]
+bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_yubgd"]
 font = ExtResource("4_f1p3b")
@@ -38,7 +53,7 @@ modulate = Color(1, 1, 1, 0.5)
 offset_right = 54.0
 offset_bottom = 32.0
 size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxEmpty_nf7q3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1p3b")
 script = ExtResource("1_5n3hm")
 title = "TITLE"
 is_disabled = true
@@ -65,7 +80,7 @@ theme_override_constants/separation = 0
 [node name="KeyLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 5
-text = "E"
+text = "X"
 label_settings = SubResource("LabelSettings_p1ehi")
 visible_characters = 1
 
@@ -74,6 +89,7 @@ layout_mode = 2
 theme_override_constants/margin_bottom = 2
 
 [node name="SmallKeyLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/MarginContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 5
 text = "NTER"
@@ -84,7 +100,15 @@ visible_ratio = 2.5
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1a54a")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f1p3b")
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_yubgd")
+theme_override_styles/fill = SubResource("StyleBoxFlat_p1ehi")
+max_value = 1.0
+show_percentage = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer2"]
 layout_mode = 2
@@ -99,7 +123,7 @@ alignment = 1
 
 [node name="SVGIcon" parent="VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer" instance=ExtResource("6_nf7q3")]
 layout_mode = 2
-icon = 15
+icon = 24
 icon_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="TitleHeader" type="Label" parent="VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer"]

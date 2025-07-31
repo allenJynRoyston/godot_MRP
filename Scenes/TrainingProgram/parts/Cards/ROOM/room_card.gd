@@ -1,4 +1,3 @@
-@tool
 extends MouseInteractions
 
 # --------
@@ -182,6 +181,7 @@ func on_ref_update() -> void:
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_activated:bool = preview_mode
+	var under_construction:bool = false
 	var metrics:Dictionary = room_details.metrics
 	var personnel_capacity:Dictionary = room_details.personnel_capacity
 	var currency_list:Array = []
@@ -202,6 +202,7 @@ func on_ref_update() -> void:
 			is_activated = extract_data.room.is_activated
 			metrics = extract_data.room.metrics
 			currency_list = extract_data.room.currency_list
+		under_construction = ROOM_UTIL.is_under_construction(use_location)
 			
 	CardBody.border_color = default_border_color if is_activated else COLORS.disabled_color
 	CardBody.modulate = Color(1, 1, 1, 1)
@@ -213,29 +214,35 @@ func on_ref_update() -> void:
 		abl_lvl = (room_config_data.abl_lvl + ring_config_data.abl_lvl)
 
 	var hide_currency:bool = true
-	for item in currency_list:
-		var amount:int = int(item.title) if is_activated else 0
-		if amount != 0:
-			hide_currency = false
-			break
+	if !under_construction:
+		for item in currency_list:
+			var amount:int = int(item.title) if is_activated else 0
+			if amount != 0:
+				hide_currency = false
+				break
 			
 	var hide_metrics:bool = true 
-	for key in metrics:
-		var amount:int = metrics[key] if is_activated else 0
-		if amount != 0:
-			hide_metrics = false
-			break
+	if !under_construction:
+		for key in metrics:
+			var amount:int = metrics[key] if is_activated else 0
+			if amount != 0:
+				hide_metrics = false
+				break
 			
 	var hide_personnel_capacity:bool = true
-	for key in personnel_capacity:
-		var amount:int = personnel_capacity[key] if is_activated else 0
-		if amount != 0:
-			hide_personnel_capacity = false
-			break
+	if !under_construction:
+		for key in personnel_capacity:
+			var amount:int = personnel_capacity[key] if is_activated else 0
+			if amount != 0:
+				hide_personnel_capacity = false
+				break
 			
 	# -----------
 	CardDrawerLevel.content = str(abl_lvl)
-	CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
+	if under_construction:
+		CardDrawerName.content = "%s (CONSTRUCTING)" % [room_details.name]
+	else:
+		CardDrawerName.content = "%s" % [room_details.name] if is_activated else "%s (INACTIVE)" % [room_details.name]
 	CardDrawerImage.img_src = room_details.img_src
 	CardDrawerImage.use_static = !is_activated
 	CardDrawerDescription.content = room_details.description

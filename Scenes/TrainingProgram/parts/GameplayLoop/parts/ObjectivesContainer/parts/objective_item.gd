@@ -1,4 +1,3 @@
-@tool
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."

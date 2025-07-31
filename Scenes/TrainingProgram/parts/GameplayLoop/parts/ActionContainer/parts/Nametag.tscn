@@ -7,23 +7,36 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ohcx"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1lms"]
-
 [sub_resource type="LabelSettings" id="LabelSettings_o1lms"]
 font = ExtResource("3_6ohcx")
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 0.623529)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1lms"]
+
 [node name="Nametag" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 94.0
+offset_bottom = 49.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6ohcx")
 script = ExtResource("1_or75n")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = -5
+
+[node name="SVGIcon" parent="VBoxContainer" instance=ExtResource("3_o1lms")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon_color = Color(1, 0, 0, 1)
+icon_size = Vector2(40, 40)
+
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+z_index = 1
+layout_mode = 2
+text = " Nametag"
+label_settings = SubResource("LabelSettings_o1lms")
+horizontal_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 visible = false
@@ -87,20 +100,3 @@ is_hoverable = false
 layout_mode = 2
 icon = 33
 is_hoverable = false
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = -10
-
-[node name="SVGIcon" parent="VBoxContainer/HBoxContainer" instance=ExtResource("3_o1lms")]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-icon_color = Color(1, 0, 0, 1)
-icon_size = Vector2(40, 40)
-
-[node name="NameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
-z_index = 1
-layout_mode = 2
-text = " Nametag"
-label_settings = SubResource("LabelSettings_o1lms")
-horizontal_alignment = 1

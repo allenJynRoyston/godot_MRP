@@ -1,4 +1,3 @@
-@tool
 extends Control
 
 @onready var ColorBG:ColorRect = $ColorRect

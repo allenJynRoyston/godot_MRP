@@ -48,6 +48,11 @@ theme_override_constants/margin_left = 0
 layout_mode = 2
 theme_override_constants/separation = 5
 
+[node name="ActiveIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_3wkh5")]
+layout_mode = 2
+icon = 27
+icon_color = Color(1, 1, 1, 1)
+
 [node name="IconPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2

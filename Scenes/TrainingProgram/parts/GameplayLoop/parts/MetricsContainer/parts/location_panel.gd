@@ -1,4 +1,3 @@
-@tool
 extends PanelContainer
 
 @onready var FloorLabel:Label = $HBoxContainer/PanelContainer2/MarginContainer2/VBoxContainer/HBoxContainer2/HBoxContainer2/FloorLabel

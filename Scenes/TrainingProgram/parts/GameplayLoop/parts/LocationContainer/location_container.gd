@@ -1,4 +1,3 @@
-@tool
 extends GameContainer
 
 @onready var FloorLabel:Label = $SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorLabel

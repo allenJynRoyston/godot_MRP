@@ -120,16 +120,20 @@ func on_room_ref_update() -> void:
 	var abl_lvl:int = extract_room_data.room.abl_lvl 
 	var max_upgrade_lvl:int = extract_room_data.room.max_upgrade_lvl 
 	var at_max_level:bool = abl_lvl >= max_upgrade_lvl
+	var is_under_construction:bool = false
 	
 	if !use_location.is_empty():
 		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
 		is_activated = extract_data.room.is_activated
+		is_under_construction = ROOM_UTIL.is_under_construction(use_location)
 	
-	# attach researcher data
-	UpgradeBtn.title = "%s - LVL %s" % [room_details.name, abl_lvl if !at_max_level else "MAX"]
-	UpgradeBtn.icon = SVGS.TYPE.DELETE if at_max_level else SVGS.TYPE.SETTINGS
-	UpgradeBtn.hide_icon = at_max_level
-
+	if is_under_construction:
+		UpgradeBtn.title = "CONSTRUCTING"
+	else:	
+		UpgradeBtn.title = "LVL %s" % [abl_lvl if !at_max_level else "MAX"]
+		
+	UpgradeBtn.icon = SVGS.TYPE.DELETE if at_max_level else SVGS.TYPE.SETTINGS	
+	UpgradeBtn.hide_icon = is_under_construction
 	UpgradeBtn.hint_title = "HINT"
 	UpgradeBtn.hint_icon =  SVGS.TYPE.SETTINGS
 	UpgradeBtn.hint_description = "Room is at max level." if at_max_level else "Room can be upgraded to level %s." % (abl_lvl + 1)			
@@ -171,11 +175,11 @@ func on_room_ref_update() -> void:
 	
 	# hide container
 	EmptyContainer.hide()
-	ActivationContainer.show() 	
+	ActivationContainer.show() if !is_under_construction else ActivationContainer.hide()
 	RoomDetailsContainer.show() if !room_details.is_empty() else RoomDetailsContainer.hide()
 	#AbilityContainer.show() if show_abilities else AbilityContainer.hide()
-	PassiveContainer.show() if show_passives else PassiveContainer.hide()
-	ScpContinaer.show() if show_scp else ScpContinaer.hide()
+	PassiveContainer.show() if show_passives and !is_under_construction else PassiveContainer.hide()
+	ScpContinaer.show() if show_scp and !is_under_construction else ScpContinaer.hide()
 
 	await U.tick()
 	CardControlBody.size = Vector2(1, 1)

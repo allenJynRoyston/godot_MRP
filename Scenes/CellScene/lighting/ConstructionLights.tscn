@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=4 uid="uid://dvmu5sm7wwcjo"]
+
+[ext_resource type="Script" uid="uid://d0wy8ju5276or" path="res://Scenes/CellScene/lighting/construction_lights.gd" id="1_seo5b"]
+[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_0yje4"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_jghc7"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AABAPwAAAAAAAGA/AAAAAAAAYD8AAIA/eoJaPwAAAAAAAIA/AAAAAAAAAD8AAAA/AAAAPgAAgD8AAAAAAACAPwAAAAAAAAAA////PgAAAAB6glo/AAAAAAAAAD8AAAA/AACAPgAAgD8AAAA+AACAPwAAAD4AAAAAAACAPwAAAAB4glo/AAAAAAAAAD8AAAA/AAAAAAAAgD8AAGA/AACAPwAAYD8AAAAAeIJaPwAAAAAAAAA/AAAAAAAAAD8AAAA/AABgPwAAgD8AAEA/AACAPwAAQD8AAAAAAAAAAAAAAAAAAAA+AAAAAAAAAD4AAIA/////PgAAAAB6glo/AAAAAAAAgD8AAAAAAAAAPgAAAAAAAIA+AAAAAAAAgD4AAIA/GvYVPgAAAAD///8+AAAAAAAAgD8AAAAAAABgPwAAAAAAAAAAAAAAAAAAAAAAAIA/eIJaPwAAAAAAAAA/AAAAAAAAgD8AAAAAAAAAPwAAAAAAACA/AAAAAAAAID8AAIA/AAAAPwAAAAAY9hU+AAAAAAAAgD8AAAAAGvYVPgAAAAD///8+AAAAAAAAAD8AAAA/AADAPgAAgD8AAIA+AACAPwAAgD4AAAAAAAAAAAAAAAAa9hU+AAAAAAAAAD8AAAA/AAAAPwAAgD8AAMA+AACAPwAAwD4AAAAAAAAAPwAAAAAY9hU+AAAAAAAAAD8AAAA/AABAPwAAgD8AACA/AACAPwAAID8AAAAAGPYVPgAAAAAAAAAAAAAAAAAAAD8AAAA/AAAgPwAAgD8AAAA/AACAPwAAAD8AAAAAAACAPgAAAAAAAMA+AAAAAAAAwD4AAIA/AAAAAAAAAAAa9hU+AAAAAAAAgD8AAAAAAADAPgAAAAAAAAA/AAAAAAAAAD8AAIA/AAAgPwAAAAAAAEA/AAAAAAAAQD8AAIA/GPYVPgAAAAAAAAAAAAAAAAAAgD8AAAAA"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 90,
+"vertex_data": PackedByteArray("Lt5MMgAAgL8AAIC/8QQ1PwAAgL/1BDW/8QQ1PwAAgD/1BDW/AACAPwAAgD8AAAAA8wQ1PwAAgD/zBDU/AAAAAAAAgD8AAAAA8wQ1PwAAgD/zBDU/AACAPwAAgD8AAAAAAACAPwAAgL8AAAAA8wQ1PwAAgD/zBDU/Lr07swAAgD8AAIA/AAAAAAAAgD8AAAAALr07swAAgD8AAIA/8wQ1PwAAgD/zBDU/8wQ1PwAAgL/zBDU/8QQ1PwAAgD/1BDW/AACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAA8QQ1PwAAgD/1BDW/8QQ1PwAAgL/1BDW/Lt5MMgAAgD8AAIC/8QQ1PwAAgD/1BDW/AAAAAAAAgD8AAAAA8QQ1PwAAgD/1BDW/Lt5MMgAAgD8AAIC/Lt5MMgAAgL8AAIC/AACAPwAAgL8AAAAA8wQ1PwAAgL/zBDU/8wQ1PwAAgD/zBDU/Lr07swAAgL8AAIA/8wQ1PwAAgL/zBDU/AACAPwAAgL8AAAAA8wQ1PwAAgL/zBDU/Lr07swAAgL8AAIA/Lr07swAAgD8AAIA/8wQ1vwAAgL/zBDU/Lr07swAAgL8AAIA/AACAPwAAgL8AAAAA8QQ1PwAAgL/1BDW/AACAPwAAgL8AAAAAAACAPwAAgD8AAAAA8QQ1PwAAgL/1BDW/Lt5MMgAAgL8AAIC/AACAPwAAgL8AAAAAAACAvwAAgL8uvbuz9AQ1vwAAgL/yBDW/9AQ1vwAAgD/yBDW/Lt5MMgAAgL8AAIC/9AQ1vwAAgL/yBDW/AACAPwAAgL8AAAAALr07swAAgD8AAIA/8wQ1vwAAgD/zBDU/AAAAAAAAgD8AAAAA8wQ1vwAAgD/zBDU/Lr07swAAgD8AAIA/Lr07swAAgL8AAIA/8wQ1vwAAgD/zBDU/AACAvwAAgD8uvbuzAAAAAAAAgD8AAAAAAACAvwAAgD8uvbuz8wQ1vwAAgD/zBDU/8wQ1vwAAgL/zBDU/9AQ1vwAAgD/yBDW/Lt5MMgAAgD8AAIC/AAAAAAAAgD8AAAAALt5MMgAAgD8AAIC/9AQ1vwAAgD/yBDW/9AQ1vwAAgL/yBDW/AACAvwAAgD8uvbuz9AQ1vwAAgD/yBDW/AAAAAAAAgD8AAAAA9AQ1vwAAgD/yBDW/AACAvwAAgD8uvbuzAACAvwAAgL8uvbuzLr07swAAgL8AAIA/8wQ1vwAAgL/zBDU/8wQ1vwAAgD/zBDU/AACAvwAAgL8uvbuz8wQ1vwAAgL/zBDU/AACAPwAAgL8AAAAA8wQ1vwAAgL/zBDU/AACAvwAAgL8uvbuzAACAvwAAgD8uvbuz9AQ1vwAAgL/yBDW/Lt5MMgAAgL8AAIC/Lt5MMgAAgD8AAIC/9AQ1vwAAgL/yBDW/AACAvwAAgL8uvbuzAACAPwAAgL8AAAAA//938Hfw/7///ym3Kbf/v///1cjVyP+//3///4Ja/7//f///glr/v/9///+CWv+/1cj/f9VI/7///4aPho//v3fw/394cP+//3///30l/7//f///fSX/v/9///99Jf+/ho//f4cP/7/VyP9/1Uj/vym3/38pN/+//3///wAAvhL/f///AAC+Ev9///8AAL4S//+GjwAAwwf//9XIAABqJP//KbcAAJQb/3///wAAQS3/f///AABBLf9///8AAEEt///VyNXI/78AAHfw///Cx///d/B38P+/d/D/f3hw/78pt/9/KTf/v9XI/3/VSP+//38AAP///7//fwAA////v/9/AAD///+/Kbf/fyk3/794cP9/AADCx4aP/3+HD/+//38AAP///7//fwAA////v/9/AAD///+///8ptwAAlBt38P9////DB///ho8AAMMH/38AAP///7//fwAA////v/9/AAD///+/AACGj///O/gAANXI//+U2wAAKbf//2rk/38AAP///7//fwAA////v/9/AAD///+//3///wAAvdL/f///AAC90v9///8AAL3S1Uj/fwAAlNuGj/9/hw//v3hw/38AAMLH/3///wAAQO3/f///AABA7f9///8AAEDthw//fwAAO/jVSP9/AACU2yk3/38AAGrk/3///30l/z//f///fSX/P/9///99Jf8/AAB38P//wscAACm3//9q5AAA1cj//5Tb/3///4Ja/z//f///glr/P/9///+CWv8/AAApt///auSHD/9/AAA7+AAAho///zv4eHD/fwAAwscpN/9/AABq5NVI/38AAJTb/38AAP///7//fwAA////v/9/AAD///+/KTf/fwAAauQAAIaP//87+IcP/38AADv4AADVyP//lNv//3fwd/D/vwAAd/D//8LH/38AAP///7//fwAA////v/9/AAD///+/")
+}]
+
+[node name="ConstructionLights" type="Node3D"]
+script = ExtResource("1_seo5b")
+blink_speed = null
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(-0.996381, -0.0849416, 0.00322633, -0.00965392, 0.150789, 0.988519, -0.0844529, 0.98491, -0.151063, 0.0029576, 3.59412, -0.410136)
+light_color = Color(1, 0.916, 0.58, 1)
+light_energy = 0.0
+spot_range = 3.798
+spot_attenuation = -2.66
+spot_angle = 30.4426
+spot_angle_attenuation = 1.27456
+
+[node name="SpinLightMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.93038, 0, -0.367493, 0, 1, 0, 0.367493, 0, -0.93038, 0, 0, 0)
+mesh = SubResource("ArrayMesh_jghc7")
+
+[node name="CustomSpotlight" parent="SpinLightMesh" instance=ExtResource("2_0yje4")]
+transform = Transform3D(-9.31323e-10, 1.49012e-08, 1, 0.996346, 0.0854169, 0, -0.085417, 0.996345, 1.49012e-08, -0.00306207, 0.844038, -0.415285)
+light_color = Color(1, 0.745178, 0.380506, 1)
+godray_color = Color(1, 0.8245, 0.19, 1)
+godray_energy = 5.0
+spot_range = 10.0
+spot_energy = 5.0
+omni_range = 0.0
+disable_reverse_shadow = true
+include_dust_particles = false
+
+[node name="CustomSpotlight2" parent="SpinLightMesh" instance=ExtResource("2_0yje4")]
+transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
+visible = false
+light_color = Color(1, 0.745178, 0.380506, 1)
+godray_color = Color(0.717416, 0.793948, 0.0360311, 1)
+godray_energy = 5.0
+spot_range = 8.0
+spot_energy = 5.0
+omni_range = 0.0
+disable_reverse_shadow = true
+include_dust_particles = false

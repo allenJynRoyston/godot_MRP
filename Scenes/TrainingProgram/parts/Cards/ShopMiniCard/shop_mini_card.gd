@@ -1,4 +1,3 @@
-@tool
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody

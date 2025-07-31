@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 
 @onready var SpinLightMesh2:MeshInstance3D = $SpinLightMesh

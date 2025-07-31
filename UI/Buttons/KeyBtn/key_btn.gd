@@ -2,6 +2,7 @@
 extends BtnBase
 
 @onready var RootPanel:PanelContainer = $"."
+@onready var ProgressBarPanel:ProgressBar = $VBoxContainer/PanelContainer2/ProgressBar
 
 @onready var TitleHeader:Label = $VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/TitleHeader
 @onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/KeyLabel
@@ -30,22 +31,7 @@ extends BtnBase
 		on_panel_color_update()		
 		
 @export var is_flashing:bool = false 
-	
-#@export var text_active_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.ACTIVE) :
-	#set(val): 
-		#text_active_color = val
-		#on_focus()
-		#
-#@export var text_inactive_color:Color = COLOR_UTIL.get_text_color(COLORS.TEXT.INACTIVE) :
-	#set(val): 
-		#text_inactive_color = val
-		#on_focus()
 
-#@export var has_new:bool = false : 
-	#set(val):
-		#has_new = val
-		#on_has_new_update()		
-		
 @export var hide_icon_panel:bool = false : 
 	set(val):
 		hide_icon_panel = val
@@ -112,32 +98,25 @@ func on_assigned_key_update() -> void:
 		KeyLabel.text = assigned_key 
 		SmallKeyLabel.hide() 
 
-#func on_has_new_update() -> void:
-	#if !is_node_ready():return
-	#if !has_new:
-		#IndicatorBtn.hide()
-	#else:
-		#IndicatorBtn.show()
-		
 func on_is_disabled_updated() -> void:
 	modulate.a = 0.5 if is_disabled else 1
 	
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	var stylebox_copy = StyleBoxFlat.new()
-	stylebox_copy.bg_color = primary_color
-	stylebox_copy.corner_radius_bottom_left = 5
-	stylebox_copy.corner_radius_bottom_right = 5
-	stylebox_copy.corner_radius_top_left = 5
-	stylebox_copy.corner_radius_top_right = 5
-	
-	stylebox_copy.border_width_bottom = 2
-	stylebox_copy.border_width_left = 2
-	stylebox_copy.border_width_right = 2
-	stylebox_copy.border_width_top = 2
-	stylebox_copy.border_color = Color.WHITE if is_focused else Color.BLACK
-		
-	RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
+	#var stylebox_copy = StyleBoxFlat.new()
+	#stylebox_copy.bg_color = primary_color
+	#stylebox_copy.corner_radius_bottom_left = 5
+	#stylebox_copy.corner_radius_bottom_right = 5
+	#stylebox_copy.corner_radius_top_left = 5
+	#stylebox_copy.corner_radius_top_right = 5
+	#
+	#stylebox_copy.border_width_bottom = 2
+	#stylebox_copy.border_width_left = 2
+	#stylebox_copy.border_width_right = 2
+	#stylebox_copy.border_width_top = 2
+	#stylebox_copy.border_color = Color.WHITE if is_focused else Color.BLACK
+		#
+	#RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
 		
 
 func on_title_update() -> void:
@@ -150,32 +129,49 @@ func on_icon_update() -> void:
 	
 func on_hide_icon_panel_update() -> void:
 	if !is_node_ready():return
-	#IconPanelContainer.show() if !hide_icon_panel else IconPanelContainer.hide()
+	SvgIcon.show() if !hide_icon_panel else SvgIcon.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+var is_active_key_pressed:bool = false
 func on_control_input_update(input_data:Dictionary) -> void:
+	is_active_key_pressed = false
 	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
-	var key:String = input_data.key
-	if key == assigned_key and !is_pressed:		
-		onClick.call()
-		is_pressed = true
+	if input_data.key == assigned_key:
+		is_active_key_pressed = true
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_control_input_release_update() -> void:
 	if !is_node_ready():return
-	is_pressed = false
+	if is_active_key_pressed:
+		if ProgressBarPanel.value == 1:
+			onClick.call()		
+		
+		btn_press_duration = 0
+		is_active_key_pressed = false
+		ProgressBarPanel.value = 0
 # ------------------------------------------------------------------------------	
 
 # --------------------------------		
+const speed:float = 5.0
+const btn_press_required_duration:float = 0.05
 var time:float = 0
-var speed:float = 5.0
+var btn_press_duration:float = 0
+
 func _process(delta: float) -> void:
+	if is_active_key_pressed and !is_disabled:
+		btn_press_duration += delta
+		var normalized_value = btn_press_duration / btn_press_required_duration
+		if normalized_value > 1:
+			normalized_value = 1
+
+		ProgressBarPanel.value = normalized_value		
+		
 	if !is_flashing:return
 	time += delta
 	var value := (sin(time * speed) + 1.2) / 2.0  # Oscillates smoothly between 0 and 1
-	var stylebox_copy = StyleBoxFlat.new()
-	stylebox_copy.bg_color = Color(1 - value, 1, 1 - value)
-	RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
+	#var stylebox_copy = StyleBoxFlat.new()
+	#stylebox_copy.bg_color = Color(1 - value, 1, 1 - value)
+	#RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
 # --------------------------------

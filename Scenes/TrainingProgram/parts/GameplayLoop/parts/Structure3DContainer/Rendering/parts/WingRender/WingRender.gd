@@ -1,7 +1,9 @@
 extends Node3D
 
-@onready var Laser:SpotLight3D = $MeshRender/Lighting/Laser
 @onready var SceneCamera:Camera3D = $Camera3D
+@onready var MeshRender:Node3D = $MeshRender
+@onready var Laser:SpotLight3D = $MeshRender/Laser
+@onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 
 @onready var GateContainer:Node3D = $MeshRender/Gates
 @onready var RoomContainer:Node3D = $MeshRender/Rooms
@@ -22,6 +24,7 @@ extends Node3D
 var current_location:Dictionary
 var camera_settings:Dictionary 
 var room_config:Dictionary
+var purchased_facility_arr:Array
 
 var previous_nuke_state:bool = false
 var nuke_is_triggered:bool = false 
@@ -47,46 +50,62 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.WING_RENDER)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _ready() -> void:	
 	for n in range(0, 8):
-		await set_empty_room(n, true)
+		set_empty_room(n, true, true)
 	
 
 # --------------------------------------------------------
-func set_empty_room(index:int, is_empty: bool) -> void:
+func set_empty_room(index:int, is_empty: bool, instant:bool = false) -> void:
 	if !is_node_ready(): return
 	var actual:int = index_to_room_lookup(index)
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
 	var GateNode:Node3D = GateContainer.get_child(actual)
 	
+	GateNode.animation_speed = 0 if instant else 0.7
+	
 	GateNode.raise_gate = !is_empty
 	GateNode.open_flaps = !is_empty
 	RoomNode.raise = !is_empty
 
-func update_room_gate(room: Node3D, gate: Node3D, is_under_construction: bool) -> void:
+func room_is_under_construction(index:int, instant:bool = false) -> void:
 	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(index)	
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	var GateNode:Node3D = GateContainer.get_child(actual)	
 	
-	if !is_under_construction:
-		if gate:
-			gate.raise_gate = is_under_construction
-			await U.set_timeout(0.5)
-			gate.open_flaps = !is_under_construction
-			await U.set_timeout(0.5)
-		room.raise = !is_under_construction
-	else:
-		room.raise = !is_under_construction
+	GateNode.animation_speed = 0 if instant else 0.7
+
+	GateNode.raise_gate = true
+	await U.set_timeout(0.5)
+	GateNode.open_flaps = true
+	RoomNode.raise = false
+	
+func room_is_constructed(index:int, instant:bool = false) -> void:
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(index)	
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	var GateNode:Node3D = GateContainer.get_child(actual)	
+	
+	GateNode.animation_speed = 0 if instant else 0.7
+	
+	if RoomNode.raise == false:
+		GateNode.raise_gate = false
 		await U.set_timeout(0.5)
-		if gate:
-			gate.open_flaps = !is_under_construction
-			await U.set_timeout(0.5)
-			gate.raise_gate = is_under_construction
+		GateNode.open_flaps = true
+		await U.set_timeout(0.5)
+		RoomNode.raise = true
+				
+
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -104,20 +123,34 @@ func index_to_room_lookup(val:int) -> int:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func on_purchased_facility_arr_update(new_val:Array) -> void:
+	purchased_facility_arr = new_val
+	if !is_node_ready() or purchased_facility_arr.is_empty():return
+	U.debounce(str(self, "_update_room_buildings"), update_room_buildings.bind(false))
+
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
 	var index:int = current_location.room
 	var actual:int = index_to_room_lookup(current_location.room)
 	var marker:Marker3D = MarkersContainer.get_child(actual)
-	await U.tween_node_property(Laser, "position", Vector3( marker.position.x, Laser.position.y, marker.position.z), 0.2, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
+	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)	
+	MeshSelector.position = Vector3(new_pos.x, MeshSelector.position.y, new_pos.z)
+	await U.tween_node_property(Laser, "position", new_pos, 0.2, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
 
 func on_use_location_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
 	FloorLabel.text = "FLOOR %s" % use_location.floor
 	WingLabel.text = "WING %s" % use_location.ring
+
+	for n in range(0, 8):
+		set_empty_room(n, true, true)	
+	await U.tick()
+	
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)	
-	U.debounce(str(self, "_update_billboards"), update_billboards)	
+	U.debounce(str(self, "_update_billboards"), update_billboards)
+	U.debounce(str(self, "_update_room_buildings"), update_room_buildings.bind(true))
+	
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
@@ -139,12 +172,15 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.ROOM_SELECT:
 			Laser.show()		
+			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.7, 0, Tween.TRANS_SINE)
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			Laser.show()
+			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.7, 0, Tween.TRANS_SINE)
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			Laser.hide()
+			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.7, 0, Tween.TRANS_SINE)
 # --------------------------------------------------------------------------------------------------		
 
 
@@ -203,7 +239,7 @@ func update_room_lighting() -> void:
 func update_billboards() -> void:
 	if use_location.is_empty() or room_config.is_empty():return
 
-	LeftBillbordLabel.text = "WELCOME TO FLOOR %s WING %s" % [use_location.floor, use_location.ring]
+	LeftBillbordLabel.text = "WELCOME TO WING %s-%s" % [use_location.floor, use_location.ring]
 	RightBillboardLabel.text = "EVERYTHING IS FINE"
 	
 	if in_lockdown:
@@ -228,17 +264,27 @@ func update_camera_size(val:int) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func update_room_buildings(is_instant:bool = false) -> void:
+	for item in purchased_facility_arr:
+		if use_location.floor != 0:return
+		
+		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
+			if item.under_construction:
+				room_is_under_construction(item.location.room, is_instant)
+			else:	
+				room_is_constructed(item.location.room, is_instant)	
+# --------------------------------------------------------
+
+# --------------------------------------------------------
 func get_room_position(room_index:int) -> Vector2:
 	if !is_node_ready():
 		return Vector2(-1, -1)
-	
 
 	var marker:Marker3D = MarkersContainer.get_child( index_to_room_lookup(room_index) ) 
 	var viewport := SceneCamera.get_viewport()
 	var screen_position := SceneCamera.unproject_position(marker.global_position)
 
 	# Convert screen position to Control node's local space
-	
 	return screen_position / Vector2(viewport.size)
 # --------------------------------------------------------
 #

@@ -1,4 +1,3 @@
-@tool
 extends Control
 
 @onready var LeftIconBtn:BtnBase = $PanelContainer/CenterContainer/MarginContainer/HBoxContainer/IconBtn
