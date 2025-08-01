@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=14 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
 [ext_resource type="Shader" uid="uid://cmqkpk1mn6eq7" path="res://CanvasShader/AudioShader/audio_shader_3.gdshader" id="2_uoiph"]
@@ -22,8 +22,6 @@ shader_parameter/angle = 0.0
 [sub_resource type="ViewportTexture" id="ViewportTexture_0nplc"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uoiph"]
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_urwmy"]
 viewport_path = NodePath("SubViewport/Rendering/OverviewScene/SubViewport")
 
@@ -31,7 +29,7 @@ viewport_path = NodePath("SubViewport/Rendering/OverviewScene/SubViewport")
 viewport_path = NodePath("SubViewport/Rendering/WingScene/SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kgjio"]
-viewport_path = NodePath("SubViewport/Rendering/WingScene/SubViewport2")
+viewport_path = NodePath("SubViewport/Rendering/WingScene/SpriteB/SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uoiph"]
 viewport_path = NodePath("SubViewport/Rendering/GeneratorScene/SubViewport")
@@ -87,62 +85,6 @@ texture = SubResource("ViewportTexture_0nplc")
 [node name="TransitionScreen" parent="." instance=ExtResource("3_kgjio")]
 layout_mode = 1
 
-[node name="BorderControl" type="Control" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="TopLeft" type="PanelContainer" parent="BorderControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -100.0
-offset_right = -100.0
-offset_bottom = -100.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_uoiph")
-
-[node name="ColorRect" type="ColorRect" parent="BorderControl/TopLeft"]
-custom_minimum_size = Vector2(125, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-color = Color(0.0807833, 0.0807833, 0.0807833, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="BorderControl/TopLeft"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 0
-color = Color(0.0807833, 0.0807833, 0.0807833, 1)
-
-[node name="BottomRight" type="PanelContainer" parent="BorderControl"]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_uoiph")
-
-[node name="ColorRect" type="ColorRect" parent="BorderControl/BottomRight"]
-custom_minimum_size = Vector2(125, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-color = Color(0.0807833, 0.0807833, 0.0807833, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="BorderControl/BottomRight"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 8
-color = Color(0.0807833, 0.0807833, 0.0807833, 1)
-
 [node name="ControllerOverlay" parent="." instance=ExtResource("4_kgjio")]
 layout_mode = 1
 show_directional = true
@@ -155,7 +97,6 @@ size = Vector2i(1920, 1080)
 
 [node name="OverviewScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
-visible = false
 
 [node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/OverviewScene"]
 own_world_3d = true
@@ -179,6 +120,29 @@ texture = SubResource("ViewportTexture_urwmy")
 [node name="WingScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 2.89305, 0, 0)
 
+[node name="WingCamera" type="Camera3D" parent="SubViewport/Rendering/WingScene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0488782, 0, 0)
+cull_mask = 1023
+projection = 1
+current = true
+fov = 68.2
+size = 1.35
+near = 0.001
+far = 20.0
+
+[node name="SpriteA" type="Sprite3D" parent="SubViewport/Rendering/WingScene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+visible = false
+pixel_size = 0.0013
+double_sided = false
+texture = SubResource("ViewportTexture_pgdfi")
+
+[node name="SpriteB" type="Sprite3D" parent="SubViewport/Rendering/WingScene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+double_sided = false
+no_depth_test = true
+texture = SubResource("ViewportTexture_kgjio")
+
 [node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/WingScene"]
 own_world_3d = true
 transparent_bg = true
@@ -186,40 +150,6 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 
 [node name="WingCurrentFloor" parent="SubViewport/Rendering/WingScene/SubViewport" instance=ExtResource("4_ujma6")]
-
-[node name="SubViewport2" type="SubViewport" parent="SubViewport/Rendering/WingScene"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-
-[node name="WingTransitionFloor" parent="SubViewport/Rendering/WingScene/SubViewport2" instance=ExtResource("4_ujma6")]
-visible = false
-offset_top = 800.0
-offset_bottom = 800.0
-
-[node name="WingCamera" type="Camera3D" parent="SubViewport/Rendering/WingScene"]
-cull_mask = 1023
-projection = 1
-current = true
-fov = 52.2
-size = 1.35
-near = 0.001
-far = 20.0
-
-[node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/WingScene/WingCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0387301, -0.0257486, -1)
-pixel_size = 0.0013
-double_sided = false
-texture = SubResource("ViewportTexture_pgdfi")
-
-[node name="Sprite3D2" type="Sprite3D" parent="SubViewport/Rendering/WingScene/WingCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.669156, -0.026, -2)
-visible = false
-modulate = Color(0, 0, 0, 1)
-pixel_size = 0.0013
-double_sided = false
-texture = SubResource("ViewportTexture_kgjio")
 
 [node name="GeneratorScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 5.93274, 0, 0)

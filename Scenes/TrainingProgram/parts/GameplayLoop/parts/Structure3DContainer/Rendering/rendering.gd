@@ -8,10 +8,6 @@ extends Control
 @onready var MaterialRect:ColorRect = $ColorRect
 @onready var NukeSplashContainer:Control = $NukeSplashContainer
 
-@onready var BorderControl:Control = $BorderControl
-@onready var TopLeftBorder:PanelContainer = $BorderControl/TopLeft
-@onready var BottomRightBorder:PanelContainer = $BorderControl/BottomRight
-
 @onready var OverviewScene:Node3D = $SubViewport/Rendering/OverviewScene
 @onready var OverviewCamera:Camera3D = $SubViewport/Rendering/OverviewScene/OverviewCamera
 @onready var OverviewSubviewport:SubViewport = $SubViewport/Rendering/OverviewScene/SubViewport
@@ -21,9 +17,10 @@ extends Control
 @onready var WingCamera:Camera3D = $SubViewport/Rendering/WingScene/WingCamera
 @onready var WingSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SubViewport
 @onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
-@onready var WingTransitionFloor:Control = $SubViewport/Rendering/WingScene/SubViewport2/WingTransitionFloor
-@onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/WingCamera/Sprite3D
-@onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/WingCamera/Sprite3D2
+@onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/SpriteA
+@onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/SpriteB
+#@onready var WingSpriteBSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SpriteB/SubViewport
+#@onready var WingTransitionFloor:Control = $SubViewport/Rendering/WingScene/SpriteB/SubViewport2/WingTransitionFloor
 
 @onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
 @onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
@@ -74,13 +71,6 @@ func _ready() -> void:
 # ------------------------------------------------
 func transition() -> void:
 	await TransitionScreen.start(0.3, true)
-	#TransitionRect.show()
-	#TransitionRect.texture = U.get_viewport_texture(RenderSubviewport)
-	#var current_val:float = TransitionRect.material.get_shader_parameter("sensitivity")
-	#await U.tween_range(0.0, 1.0, 0.3, func(val:float) -> void:
-		#TransitionRect.material.set_shader_parameter("sensitivity", val)
-	#).finished	
-	#TransitionRect.hide()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -101,13 +91,13 @@ func enable_wing(state:bool) -> void:
 	if state:
 		WingScene.show()
 		WingCurrentFloor.show()
-		WingTransitionFloor.show()
+		#WingTransitionFloor.show()
 		WingCurrentFloor.set_process(true)
 		WingCamera.make_current()
 	else:
 		WingScene.hide()
 		WingCurrentFloor.hide()
-		WingTransitionFloor.hide()
+		#WingTransitionFloor.hide()
 		WingCurrentFloor.set_process(false)
 # ------------------------------------------------
 
@@ -126,93 +116,50 @@ func enable_generator(state:bool) -> void:
 
 # ------------------------------------------------
 func shift_vertically(state:bool, duration:float, current_location:Dictionary) -> void:
-	var distance:int = MainViewportTexture.size.y
-	const pixel_size_a:float = 0.0013
-	const pixel_size_b:float = 0.0012
-	const border_size:int = 200
-	
-	TopLeftBorder.position = Vector2(-border_size, -border_size)
-	BottomRightBorder.position = Vector2(border_size, border_size)
-
-	TopLeftBorder.show()
-	BottomRightBorder.show()
-	WingTransitionFloor.show()
-
-	WingCurrentFloor.set_current_location( current_location )
-	WingTransitionFloor.set_current_location(  {"floor": U.min_max(current_location.floor + (1 if !state else -1), 0, 6, true), "ring": current_location.ring, "room": current_location.room} )	
-		
-	WingCurrentFloor.position = Vector2(0, distance if !state else -distance)
-	WingTransitionFloor.position = Vector2(0, 0)
-	
-	
-	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_b, 0.1, func(val:float) -> void:
-		for sprite in WingCamera.get_children():
-			sprite.pixel_size = val
-	)			
-
-	U.tween_node_property(TopLeftBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
-	U.tween_node_property(BottomRightBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
-
-	U.tween_node_property(WingCurrentFloor, "position:y", 0, duration, 0, Tween.TRANS_SINE)
-	await U.tween_node_property(WingTransitionFloor, "position:y", distance if state else -distance, duration, 0, Tween.TRANS_SINE)
-
-	
-	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_a, 0.1, func(val:float) -> void:
-		for sprite in WingCamera.get_children():
-			sprite.pixel_size = val
-	)	
-
-
-	U.tween_node_property(TopLeftBorder, "position", Vector2(-border_size, -border_size), 0.1, 0, Tween.TRANS_SINE)
-	U.tween_node_property(BottomRightBorder, "position", Vector2(border_size, border_size), 0.1, 0, Tween.TRANS_SINE)
-
-	WingTransitionFloor.hide()
-# ------------------------------------------------
-
-# ------------------------------------------------
-func shift_horizontally(state:bool, duration:float, current_location:Dictionary) -> void:
-	var distance:int = MainViewportTexture.size.x 
-	const pixel_size_a:float = 0.0013
-	const pixel_size_b:float = 0.0012
-	const border_size:int = 200
-		
-	TopLeftBorder.position = Vector2(-border_size, -border_size)
-	BottomRightBorder.position = Vector2(border_size, border_size)
-
+	# first, take snapshot
+	var shift_pos:float = 1.5 if !state else -1.5
+	WingSpriteA.show()
 	WingSpriteB.show()
-	TopLeftBorder.show()
-	BottomRightBorder.show()
-	WingTransitionFloor.show()
 
 	WingCurrentFloor.set_current_location( current_location )
-	WingTransitionFloor.set_current_location(  {"floor": U.min_max(current_location.floor + (1 if !state else -1), 0, 6, true), "ring": current_location.ring, "room": current_location.room} )	
+	WingSpriteB.texture = U.get_viewport_texture(WingSubviewport)
 	
-	WingCurrentFloor.position = Vector2(distance if !state else -distance, 0)
-	WingTransitionFloor.position = Vector2(0, 0)
+	WingSpriteB.pixel_size = 0.0013
+	WingSpriteB.position.y = 0
+	WingSpriteB.position.x = 0
+	WingSpriteA.position.y = -(shift_pos)
 	
-	
-	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_b, 0.1, func(val:float) -> void:
-		for sprite in WingCamera.get_children():
-			sprite.pixel_size = val
-	)			
+	await U.tween_node_property(WingCamera, "size", 2, duration/2, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteA, "position:y", 0, duration, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteB, "pixel_size", 0.0005, duration, 0, Tween.TRANS_SINE)		
+	await U.tween_node_property(WingSpriteB, "position:y", shift_pos, duration, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingCamera, "size", 1.35, duration/2, 0, Tween.TRANS_SINE)
 
-	U.tween_node_property(TopLeftBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
-	U.tween_node_property(BottomRightBorder, "position", Vector2(0, 0), 0.1, 0, Tween.TRANS_SINE)
-
-	U.tween_node_property(WingCurrentFloor, "position:x", 0, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
-	await U.tween_node_property(WingTransitionFloor, "position:x", distance if state else -distance/2, duration, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
-
-	
-	U.tween_range(WingCamera.get_child(0).pixel_size, pixel_size_a, 0.1, func(val:float) -> void:
-		for sprite in WingCamera.get_children():
-			sprite.pixel_size = val
-	)	
-
-	U.tween_node_property(TopLeftBorder, "position", Vector2(-border_size, -border_size), 0.1, 0, Tween.TRANS_SINE)
-	U.tween_node_property(BottomRightBorder, "position", Vector2(border_size, border_size), 0.1, 0, Tween.TRANS_SINE)
-	
 	WingSpriteB.hide()
-	WingTransitionFloor.hide()
+# ------------------------------------------------
+
+# ------------------------------------------------
+func shift_horizontally(state:bool, duration:float, previous_location:Dictionary, current_location:Dictionary) -> void:		
+	# first, take snapshot
+	var shift_pos:float = 2.2 if state else -2.2
+	WingSpriteA.show()
+	WingSpriteB.show()
+
+	WingCurrentFloor.set_current_location( current_location )
+	WingSpriteB.texture = U.get_viewport_texture(WingSubviewport)
+	
+	WingSpriteB.pixel_size = 0.0013	
+	WingSpriteB.position.y = 0
+	WingSpriteB.position.x = 0
+	WingSpriteA.position.x = -(shift_pos)
+	
+	await U.tween_node_property(WingCamera, "size", 1.7, duration/2, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteA, "position:x", 0, duration, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteB, "pixel_size", 0.0005, duration, 0, Tween.TRANS_SINE)	
+	await U.tween_node_property(WingSpriteB, "position:x", shift_pos, duration, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingCamera, "size", 1.35, duration/2, 0, Tween.TRANS_SINE)
+
+	WingSpriteB.hide()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -258,12 +205,11 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			enable_overview(false)
 			enable_wing(false)
 
-	
 	MaterialRect.material = material_dupe
 	U.tween_range(material_dupe.get_shader_parameter("zoom"), new_amount, 0.5, func(val:float) -> void:
 		material_dupe.set_shader_parameter("zoom", val)
 	)	
-				
+
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
 # ------------------------------------------------
 
@@ -275,7 +221,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 
 # --------------------------------------------------------
 func set_wing_camera_size(new_size:int) -> void:
-	for node in [WingCurrentFloor, WingTransitionFloor]:
+	for node in [WingCurrentFloor]:
 		node.update_camera_size(new_size)
 # --------------------------------------------------------
 
@@ -305,12 +251,13 @@ func animate_wing() -> void:
 	if camera_settings.type == CAMERA.TYPE.WING_SELECT or camera_settings.type == CAMERA.TYPE.ROOM_SELECT:
 		if previous_floor != current_location.floor and !GBL.has_animation_in_queue():
 			GBL.add_to_animation_queue(self)
-			await shift_vertically(previous_floor > current_location.floor, 0.3, current_location)
+			await shift_vertically(previous_floor > current_location.floor, 0.25, current_location)
 			GBL.remove_from_animation_queue(self)
 			
 		if previous_ring != current_location.ring:
 			GBL.add_to_animation_queue(self)
-			await shift_horizontally(previous_ring > current_location.ring, 0.3, current_location)
+			var previous_location:Dictionary = {"floor": current_location.floor, "ring": previous_ring, "room": current_location.room}
+			await shift_horizontally(previous_ring > current_location.ring, 0.25, previous_location, current_location)
 			GBL.remove_from_animation_queue(self)
 			
 		previous_floor = current_location.floor

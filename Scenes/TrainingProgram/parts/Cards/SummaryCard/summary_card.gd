@@ -94,8 +94,9 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 var previous_room_ref:int
 func on_room_ref_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
+	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 
-	if room_ref == -1:
+	if room_ref == -1 or extract_room_data.room.is_empty():
 		EmptyContainer.show()
 		RoomDetailsContainer.hide()
 		UpgradeBtn.title = "BUILD MODE"		
@@ -109,7 +110,6 @@ func on_room_ref_update() -> void:
 		return
 
 	var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)	
-	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
 	var is_activated:bool = false	
 	var show_passives:bool = false

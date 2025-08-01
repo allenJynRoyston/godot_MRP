@@ -286,7 +286,10 @@ func start() -> void:
 
 	DeconstructBtn.onClick = func() -> void:
 		investigate_wrapper(func():
-			await GAME_UTIL.reset_room(current_location)
+			var confirm:bool = await GAME_UTIL.reset_room(current_location)
+			if confirm:
+				GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
+			
 		)
 	# -------------------------------------
 	
@@ -1255,6 +1258,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 					await lock_investigate(true)
 					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
 					if made_changes:
+						GBL.find_node(REFS.WING_RENDER).construction_is_canceled(current_location)
 						SummaryCard.room_ref = -1
 						await U.tick()
 						on_current_location_update()

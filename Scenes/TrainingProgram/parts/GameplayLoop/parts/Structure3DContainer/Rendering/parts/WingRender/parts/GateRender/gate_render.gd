@@ -135,9 +135,3 @@ func _process(delta: float) -> void:
 		# Apply to light
 		ConstructionOmniLight.omni_attenuation = current_attenuation				
 		return
-
-	## 🚪 Gate is not raised: reset everything
-	#is_flashing = false
-	#flash_timer = 0.0
-	#gap_timer = 0.0
-	#current_cooldown = 0.0

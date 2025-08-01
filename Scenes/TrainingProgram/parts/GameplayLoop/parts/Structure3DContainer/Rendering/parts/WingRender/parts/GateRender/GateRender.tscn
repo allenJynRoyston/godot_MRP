@@ -41,14 +41,14 @@ _surfaces = [{
 [sub_resource type="Gradient" id="Gradient_8q6u5"]
 colors = PackedColorArray(0.68382, 0.875024, 0, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_d5qij"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8q6u5"]
 gradient = SubResource("Gradient_8q6u5")
 
 [sub_resource type="Curve" id="Curve_6jgyh"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.516854), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_h7kq0"]
+[sub_resource type="CurveTexture" id="CurveTexture_d5qij"]
 curve = SubResource("Curve_6jgyh")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_d5qij"]
@@ -59,9 +59,9 @@ initial_velocity_max = 5.0
 gravity = Vector3(0, -5, 0)
 scale_min = 0.5
 scale_max = 2.0
-scale_curve = SubResource("CurveTexture_h7kq0")
+scale_curve = SubResource("CurveTexture_d5qij")
 color = Color(1, 0.18, 0.18, 1)
-color_ramp = SubResource("GradientTexture1D_d5qij")
+color_ramp = SubResource("GradientTexture1D_8q6u5")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6jgyh"]
 transparency = 1
@@ -108,12 +108,10 @@ visible = false
 
 [node name="C1" parent="ConstructionMesh/ConstructionLights" instance=ExtResource("3_7np6m")]
 transform = Transform3D(0.979042, -1.02251e-15, -0.203659, 0.203659, -4.37114e-08, 0.979042, -8.90222e-09, -1, -4.27953e-08, -2.018, -10, -8.745)
-spin_speed = 4.5
 blink_speed = 0.3
 
 [node name="C2" parent="ConstructionMesh/ConstructionLights" instance=ExtResource("3_7np6m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.332, -0.884589, 0)
-spin_speed = 5.0
 blink_speed = 0.3
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="ConstructionMesh"]

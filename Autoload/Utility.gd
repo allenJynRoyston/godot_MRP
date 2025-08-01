@@ -270,7 +270,6 @@ func save_screenshot(viewport:SubViewport) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func location_lookup_opposite(val:int, dir: DIR) -> int:
-	print(val)
 	match val:
 		0:
 			match dir:

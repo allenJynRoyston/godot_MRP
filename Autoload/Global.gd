@@ -271,7 +271,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					4194325:
 						key = "SHIFT"
 					32:
-						key = "SPACEBAR"
+						key = "SPACE"
 					# --------------
 					67:
 						key = "C"

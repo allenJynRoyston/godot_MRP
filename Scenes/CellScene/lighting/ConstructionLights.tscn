@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=4 uid="uid://dvmu5sm7wwcjo"]
+[gd_scene load_steps=3 format=4 uid="uid://dvmu5sm7wwcjo"]
 
 [ext_resource type="Script" uid="uid://d0wy8ju5276or" path="res://Scenes/CellScene/lighting/construction_lights.gd" id="1_seo5b"]
-[ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_0yje4"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_jghc7"]
 _surfaces = [{
@@ -16,40 +15,16 @@ _surfaces = [{
 
 [node name="ConstructionLights" type="Node3D"]
 script = ExtResource("1_seo5b")
-blink_speed = null
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.996381, -0.0849416, 0.00322633, -0.00965392, 0.150789, 0.988519, -0.0844529, 0.98491, -0.151063, 0.0029576, 3.59412, -0.410136)
-light_color = Color(1, 0.916, 0.58, 1)
-light_energy = 0.0
+light_color = Color(0.97, 0.97, 0, 1)
+light_energy = 3.0
 spot_range = 3.798
-spot_attenuation = -2.66
+spot_attenuation = -1.83
 spot_angle = 30.4426
 spot_angle_attenuation = 1.27456
 
 [node name="SpinLightMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.93038, 0, -0.367493, 0, 1, 0, 0.367493, 0, -0.93038, 0, 0, 0)
+transform = Transform3D(-0.620974, 0, 0.784362, 0, 1, 0, -0.784362, 0, -0.620974, 0, 0, 0)
 mesh = SubResource("ArrayMesh_jghc7")
-
-[node name="CustomSpotlight" parent="SpinLightMesh" instance=ExtResource("2_0yje4")]
-transform = Transform3D(-9.31323e-10, 1.49012e-08, 1, 0.996346, 0.0854169, 0, -0.085417, 0.996345, 1.49012e-08, -0.00306207, 0.844038, -0.415285)
-light_color = Color(1, 0.745178, 0.380506, 1)
-godray_color = Color(1, 0.8245, 0.19, 1)
-godray_energy = 5.0
-spot_range = 10.0
-spot_energy = 5.0
-omni_range = 0.0
-disable_reverse_shadow = true
-include_dust_particles = false
-
-[node name="CustomSpotlight2" parent="SpinLightMesh" instance=ExtResource("2_0yje4")]
-transform = Transform3D(-5.58794e-09, 2.98023e-08, -1, 0.996346, 0.0854169, 0, 0.085417, -0.996344, -5.96046e-08, -0.00306205, 0.996391, 0.0709981)
-visible = false
-light_color = Color(1, 0.745178, 0.380506, 1)
-godray_color = Color(0.717416, 0.793948, 0.0360311, 1)
-godray_energy = 5.0
-spot_range = 8.0
-spot_energy = 5.0
-omni_range = 0.0
-disable_reverse_shadow = true
-include_dust_particles = false
