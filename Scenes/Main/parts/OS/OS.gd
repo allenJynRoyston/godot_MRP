@@ -1,6 +1,7 @@
 extends PanelContainer
 
 @onready var BG:TextureRect = $BG
+@onready var TaskbarCornerPanel:PanelContainer = $HeaderControls/TaskbarCornerPanel
 @onready var AudioVisualizer:PanelContainer = $AudioVisualizer
 
 @onready var BtnControls:Control = $BtnControl
@@ -20,7 +21,7 @@ extends PanelContainer
 @onready var NotificationContainer:PanelContainer = $NodeControl/NotificationContainer
 
 @onready var HeaderControls:Control = $HeaderControls
-@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
+#@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
 
 const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
@@ -418,9 +419,9 @@ func _ready() -> void:
 		if freeze_inputs or Taskbar.is_busy:return
 		toggle_show_taskbar(false)
 				
-	TaskbarBtn.onClick = func() -> void:
-		if freeze_inputs or Taskbar.is_busy:return		
-		toggle_show_taskbar()
+	#TaskbarBtn.onClick = func() -> void:
+		#if freeze_inputs or Taskbar.is_busy:return		
+		#toggle_show_taskbar()
 # -----------------------------------
 
 # -----------------------------------
@@ -730,7 +731,7 @@ func render_desktop_icons() -> void:
 # -----------------------------------
 func on_freeze_inputs_update() -> void:
 	if !is_node_ready():return
-	TaskbarBtn.is_disabled = freeze_inputs
+	#TaskbarBtn.is_disabled = freeze_inputs
 	
 func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 	show_taskbar = state
@@ -745,8 +746,8 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 	if !state and currently_running_app != null:
 		currently_running_app.unpause()
 		
-	TaskbarBtn.title = "TASKBAR"	if !show_taskbar else "RETURN"
-	TaskbarBtn.icon = SVGS.TYPE.CLEAR if show_taskbar else SVGS.TYPE.ARROW_DOWN
+	#TaskbarBtn.title = "TASKBAR"	if !show_taskbar else "RETURN"
+	#TaskbarBtn.icon = SVGS.TYPE.CLEAR if show_taskbar else SVGS.TYPE.ARROW_DOWN
 		
 	if show_taskbar:		
 		if currently_running_app == null:
@@ -772,10 +773,24 @@ func switch_to() -> void:
 # -----------------------------------
 
 # ------------------------------------------
+var show_taskbar_preview:bool = false 
 func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_node_ready() or freeze_inputs or Taskbar.is_busy:return		
 
 	match input_data.key:
 		"BACKSPACE":
-			toggle_show_taskbar()
+			if !show_taskbar_preview:
+				BtnControls.hide_a_btn = true
+				await U.tween_node_property(TaskbarCornerPanel, "size:y", 300)
+				BtnControls.onBack = func() -> void:
+					BtnControls.hide_a_btn = false
+					show_taskbar_preview = false
+					U.tween_node_property(TaskbarCornerPanel, "size:y", 50)
+				show_taskbar_preview = true
+			
+			else:
+				await U.tween_node_property(TaskbarCornerPanel, "size:y", 50)
+				toggle_show_taskbar()
+				BtnControls.hide_a_btn = false
+				show_taskbar_preview = false
 # ------------------------------------------

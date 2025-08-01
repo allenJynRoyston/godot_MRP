@@ -164,9 +164,9 @@ func start(new_differential:Dictionary) -> void:
 	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].show)
 	await U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].show)
 	
-	BtnControls.reveal(true)
-	
-	await U.set_timeout(0.5)
+	#BtnControls.reveal(true)
+	#
+	#await U.set_timeout(0.5)
 	initiate_tally()	
 	await tally_complete
 	
@@ -201,7 +201,7 @@ func initiate_tally() -> void:
 		index += 1
 			
 	
-	await U.set_timeout(1.0)
+	await U.set_timeout(0.5)
 	tally_complete.emit()
 # -------------------------------------------------------------------------------------------------
 
