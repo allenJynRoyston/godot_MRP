@@ -215,6 +215,8 @@ func _input(event:InputEvent) -> void:
 
 # ------------------------------------------------------------------------------
 var control_input_subscriptions:Array = []
+var key_delay:float = 0.02
+var key_on_cooldown:float = false
 func subscribe_to_control_input(node:Node) -> void:
 	if node not in control_input_subscriptions:
 		control_input_subscriptions.push_back(node)
@@ -223,6 +225,8 @@ func unsubscribe_to_control_input(node:Node) -> void:
 	control_input_subscriptions.erase(node)
 		
 func _unhandled_key_input(event: InputEvent) -> void:
+	if key_on_cooldown:return
+			
 	if event.is_released():
 		for node in control_input_subscriptions:
 			if "on_control_input_release_update" in node:

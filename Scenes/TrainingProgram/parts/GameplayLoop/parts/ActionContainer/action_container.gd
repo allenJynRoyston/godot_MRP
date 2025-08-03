@@ -1054,6 +1054,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 var previous_designation:String
+var modal_open:bool = false
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if current_location.is_empty() or room_config.is_empty():return
@@ -1195,42 +1196,48 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			current_mode = MODE.NONE
 		# -----------	
 		MODE.BUILD:	
-			DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
-			
-			DesignControls.onAction = func() -> void:				
-				await DesignControls.reveal(false)
-				# if cancel construction
-				if is_under_construction:
-					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
-					if made_changes:
-						GBL.find_node(REFS.WING_RENDER).construction_is_canceled(current_location)
+			if !modal_open:
+				DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+				
+				DesignControls.onAction = func() -> void:				
+					await DesignControls.reveal(false)
+					# if cancel construction
+					if is_under_construction:
+						modal_open = true
+						var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
+						if made_changes:
+							GBL.find_node(REFS.WING_RENDER).construction_is_canceled(current_location)
+							await U.tick()
+							on_current_location_update()
+						DesignControls.reveal(true)
+						modal_open = false
+						return
+					
+					# if build new room
+					if is_room_empty:
+						current_mode = MODE.ACTIVE_MENU_OPEN
+						await show_build_options()					
+						await DesignControls.reveal(true)
+						current_mode = MODE.BUILD
+						return
+						
+					
+					# ...else destroy room
+					modal_open = true
+					var confirm:bool = await GAME_UTIL.reset_room(current_location)
+					if confirm:
+						GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
 						await U.tick()
 						on_current_location_update()
 					DesignControls.reveal(true)
-					return
-				
-				# if build new room
-				if is_room_empty:
-					current_mode = MODE.ACTIVE_MENU_OPEN
-					await show_build_options()
-					current_mode = MODE.BUILD
-					await DesignControls.reveal(true)
-					return
-					
-				
-				# ...else destroy room
-				var confirm:bool = await GAME_UTIL.reset_room(current_location)
-				if confirm:
-					GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
-					await U.tick()
-					on_current_location_update()
-				DesignControls.reveal(true)
-						
-			DesignControls.onBack = func() -> void:
-				await DesignControls.reveal(false)
-				lock_actions(false)
-				GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
-				current_mode = MODE.NONE
+					modal_open = false
+							
+				DesignControls.onBack = func() -> void:
+					await DesignControls.reveal(false)
+					lock_actions(false)
+					GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
+					current_mode = MODE.NONE
+					modal_open = false
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
