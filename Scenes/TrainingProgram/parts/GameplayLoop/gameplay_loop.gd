@@ -544,6 +544,8 @@ func start_new_game() -> void:
 		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.STARTUP
+	NOTES.use(NOTES.REF.FIRST_NOTE)
+
 	
 #endregion
 # ------------------------------------------------------------------------------

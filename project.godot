@@ -57,6 +57,7 @@ STORY="*res://Autoload/StoryData.gd"
 OS_STORE="*res://Autoload/enums/OS_STORE.gd"
 OS_AUDIO="*res://Autoload/enums/OS_AUDIO.gd"
 OS_EMAIL="*res://Autoload/enums/OS_EMAIL.gd"
+NOTES="*res://Autoload/Notes.gd"
 
 [display]
 

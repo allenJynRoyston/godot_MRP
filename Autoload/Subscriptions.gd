@@ -529,3 +529,23 @@ func subscribe_to_hints_unlocked(node:Node) -> void:
 func unsubscribe_to_hints_unlocked(node:Node) -> void:
 	hints_unlocked_subscriptions.erase(node)				
 # ------------------------------------------------------------	
+
+# ------------------------------------------------------------	
+var notes_subscriptions:Array = []
+
+var note:Dictionary = {} :
+	set(val):
+		note = val 
+		for node in notes_subscriptions:
+			if "on_note_update" in node:
+				node.on_note_update.call( note )
+				
+func subscribe_to_notes(node:Node) -> void:
+	if node not in notes_subscriptions:
+		notes_subscriptions.push_back(node)
+		if "on_note_update" in node:
+			node.on_note_update.call( note )
+			
+func unsubscribe_to_notes(node:Node) -> void:
+	notes_subscriptions.erase(node)				
+# ------------------------------------------------------------	
