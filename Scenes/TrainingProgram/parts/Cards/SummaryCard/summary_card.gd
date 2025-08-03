@@ -10,6 +10,14 @@ extends PanelContainer
 @onready var StatusOverlay:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay
 @onready var StatusLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay/CenterContainer/StatusLabel
 
+# economy
+@onready var EconomyContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer
+@onready var EconomyPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer/PanelContainer2/MarginContainer/EconomyPanel
+
+# vibes
+@onready var VibeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer
+@onready var VibePanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer2/VibePanel
+
 # activation
 @onready var ActivationContainer:VBoxContainer = $MarginContainer/VBoxContainer/ActivationContainer
 @onready var ActivationGrid:GridContainer = $MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid
@@ -25,6 +33,7 @@ extends PanelContainer
 # scpcontainer
 @onready var ScpContainer:VBoxContainer = $MarginContainer/VBoxContainer/ScpContainer
 @onready var ScpComponent:PanelContainer = $MarginContainer/VBoxContainer/ScpContainer/ScpComponent
+
 
 @onready var node_list:Array = [StatusOverlay, ActivationContainer, ModuleContainer, ProgramContainer, ScpContainer]
 
@@ -49,6 +58,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_hired_lead_researchers_arr(self)
+	
 	
 func _ready() -> void:
 	pass
@@ -105,6 +115,8 @@ func on_update() -> void:
 	show()
 	var room_details:Dictionary = extract_room_data.room
 	var scp_details:Dictionary = extract_room_data.scp
+	var metrics:Dictionary = extract_room_data.room.metrics
+	var currency_list:Array = extract_room_data.room.currency_list	
 	var is_under_construction:bool = room_details.is_under_construction
 	var is_activated:bool = room_details.is_activated
 	var can_contain:bool = room_details.can_contain
@@ -116,6 +128,18 @@ func on_update() -> void:
 	NameTag.text = room_details.details.name
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "★"]
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
+	
+	print(use_location)
+	# economy
+	EconomyPanel.use_location = use_location	
+	EconomyPanel.list = currency_list
+	EconomyPanel.preview_mode = false
+
+	# vibe
+	VibePanel.use_location = use_location	
+	VibePanel.metrics = metrics
+	VibePanel.preview_mode = false
+	
 	
 	# under construction
 	if is_under_construction:

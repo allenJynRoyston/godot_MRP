@@ -50,7 +50,7 @@ func get_is_activated() -> bool:
 
 # -----------------------------
 func on_list_update() -> void:
-	if !is_node_ready() or room_config.is_empty():return
+	if !is_node_ready() or room_config.is_empty() or use_location.is_empty():return
 		
 	for node in [ListContainer]:
 		for child in node.get_children():
@@ -58,12 +58,10 @@ func on_list_update() -> void:
 		
 	if list.is_empty():return
 	
-	var is_activated:bool = get_is_activated()
-	
 
 	for item in list:
 		# gets the amount of just the room, but the room_config contains values of any passives and bonuses also applied
-		var amount:int = int(item.title) if !is_activated else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
+		var amount:int = int(item.title) if !preview_mode else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
 
 		if amount != 0:		
 			var new_node:Control = EconItemPreload.instantiate()
