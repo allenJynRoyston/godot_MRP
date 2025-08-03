@@ -504,6 +504,16 @@ func trigger_event(event_data:Array) -> Dictionary:
 # ---------------------
 
 # ---------------------
+func toggle_onsite_nuke() -> void:
+	base_states.base.onsite_nuke.triggered = !base_states.base.onsite_nuke.triggered
+	SUBSCRIBE.base_states = base_states		
+	
+	if base_states.base.onsite_nuke.triggered:
+		add_debuff_to_base(BASE.DEBUFF.PANIC, 3)
+# ---------------------
+		
+
+# ---------------------
 func set_onsite_nuke() -> bool:
 	var confirm:bool = await create_warning("Set the onsite nuclear to trigger?", "The site WILl be destroyed along with everything in it.", "res://Media/images/Defaults/nuke_explosion.jpg")
 	
@@ -1122,6 +1132,24 @@ func activate_room(use_location:Dictionary = current_location, state:bool = true
 	return confirm
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func toggle_is_ventilated(use_loction:Dictionary) -> void:
+	base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func set_is_ventilated(use_loction:Dictionary, state:bool) -> void:
+	base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = state
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+func toggle_is_powered(floor_val:int) -> void:
+	base_states.floor[str(floor_val)].is_powered = !base_states.floor[str(floor_val)].is_powered
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func activate_floor(floor_val:int) -> void:

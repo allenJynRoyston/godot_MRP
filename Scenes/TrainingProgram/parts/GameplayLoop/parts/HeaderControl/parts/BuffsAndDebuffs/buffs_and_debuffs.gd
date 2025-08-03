@@ -86,7 +86,7 @@ func update() -> void:
 			"duration": debuff.duration,
 			"hint_description": debuff.data.description,
 			"type": BASE.TYPE.DEBUFF
-		})		
+		})
 	
 	# get buffs
 	for buff in floor_config_data.buffs:
@@ -104,6 +104,18 @@ func update() -> void:
 			"hint_description": debuff.data.description,
 			"type": BASE.TYPE.DEBUFF
 		})
+	
+	
+	print(ring_config_data.debuffs)
+	
+	for debuff in ring_config_data.debuffs:
+		status_list.push_back({
+			"title": debuff.data.name,
+			"duration": debuff.duration,
+			"hint_description": debuff.data.description,
+			"type": BASE.TYPE.DEBUFF
+		})
+		
 	
 	
 	for node in FloorBuffsContainer.get_children():
