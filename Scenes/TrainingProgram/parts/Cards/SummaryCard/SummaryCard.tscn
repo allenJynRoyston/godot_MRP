@@ -1,7 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=28 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
+[ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="2_dchg3"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_s7sdo"]
+[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_uh585"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_0krab"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_djb7u"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_ihy8r"]
 [ext_resource type="PackedScene" uid="uid://cus6h1nu75y1e" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerRoomAbilities.tscn" id="5_djb7u"]
@@ -10,9 +13,26 @@
 [ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="6_uh585"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_wqrfb"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_ihy8r"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="7_w56pt"]
 [ext_resource type="PackedScene" uid="uid://bwdoedxrhp17b" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerScp.tscn" id="7_wi2bx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wi2bx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q31gb"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uq7ee"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5g6vn"]
+bg_color = Color(1, 0.745178, 0.380506, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgan4"]
+bg_color = Color(0.06, 0.06, 0.06, 0.784314)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r0nu"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_wqrfb"]
 viewport_path = NodePath("SubViewport")
@@ -51,7 +71,316 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_wi2bx")
 script = ExtResource("1_pe6gu")
 
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InfoContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_w56pt")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ImageTextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(250, 125)
+layout_mode = 2
+texture = ExtResource("2_dchg3")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_q31gb")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="NameTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "ECONOMIC REDISTRUBTION ROOM"
+label_settings = ExtResource("6_wqrfb")
+autowrap_mode = 3
+
+[node name="Spacing" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_uq7ee")
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_q31gb")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "lvl 1"
+label_settings = ExtResource("6_wqrfb")
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "ECON"
+label_settings = ExtResource("4_0krab")
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer2/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer2/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "VIBE"
+label_settings = ExtResource("4_0krab")
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HBoxContainer2/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="StatusOverlay" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jgan4")
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay/CenterContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "inactive"
+label_settings = ExtResource("6_wqrfb")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ActivationContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ActivationContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ActivationContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTIVATION COST"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ActivationContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 51
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(25, 25)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ActivationContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+layout_mode = 2
+icon = 10
+icon_color = Color(1, 1, 1, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_w56pt")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ActivationGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid"]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8r0nu")
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid/PanelContainer"]
+layout_mode = 2
+color = Color(1, 0.203922, 0, 1)
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid/PanelContainer" instance=ExtResource("4_ihy8r")]
+layout_mode = 2
+icon = 44
+
+[node name="ModuleContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ModuleContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ModuleContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 51
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(25, 25)
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ModuleContainer/HBoxContainer"]
+layout_mode = 2
+text = "MODULES"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="ModuleComponent" parent="MarginContainer/VBoxContainer/ModuleContainer" instance=ExtResource("5_djb7u")]
+layout_mode = 2
+size_flags_vertical = 3
+ability_type = 1
+
+[node name="ProgramContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ProgramContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ProgramContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ProgramContainer/HBoxContainer"]
+layout_mode = 2
+text = "PROGRAMS"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="ProgramComponent" parent="MarginContainer/VBoxContainer/ProgramContainer" instance=ExtResource("5_djb7u")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScpContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScpContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/ScpContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+visible = false
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 37
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ScpContainer/HBoxContainer"]
+layout_mode = 2
+text = "CONTAINMENT"
+label_settings = ExtResource("6_wqrfb")
+
+[node name="ScpComponent" parent="MarginContainer/VBoxContainer/ScpContainer" instance=ExtResource("7_wi2bx")]
+layout_mode = 2
+
 [node name="CardBody" parent="." instance=ExtResource("2_s7sdo")]
+visible = false
 layout_mode = 2
 card_size = Vector2(275, 450)
 border_color = Color(0.337255, 0.27451, 1, 1)
@@ -79,7 +408,12 @@ theme_override_constants/margin_bottom = 0
 [node name="FrontDrawerContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
 theme_override_constants/separation = 20
 
-[node name="EmptyContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0"]
+[node name="CardDrawerImage" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_uh585")]
+layout_mode = 2
+title = ""
+
+[node name="EmptyContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -89,7 +423,6 @@ layout_mode = 2
 [node name="SVGIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/EmptyContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 37
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(15, 15)
 
@@ -112,7 +445,8 @@ content = "EMPTY"
 center_text = false
 title = ""
 
-[node name="ActivationContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1"]
+[node name="ActivationContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = -3
 
@@ -134,7 +468,8 @@ label_settings = ExtResource("6_wqrfb")
 [node name="CardDrawerResearchers" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ActivationContainer" instance=ExtResource("6_ihy8r")]
 layout_mode = 2
 
-[node name="RoomDetailsContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="2"]
+[node name="RoomDetailsContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -158,7 +493,8 @@ layout_mode = 2
 title = "UPGRADE TO LVL 1"
 icon = 24
 
-[node name="PassiveContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="3"]
+[node name="PassiveContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = -3
 
@@ -182,7 +518,7 @@ layout_mode = 2
 size_flags_vertical = 3
 ability_type = 1
 
-[node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
+[node name="AbilityContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = -3
@@ -206,7 +542,8 @@ label_settings = ExtResource("6_wqrfb")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ScpContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
+[node name="ScpContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="6"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = -3
 

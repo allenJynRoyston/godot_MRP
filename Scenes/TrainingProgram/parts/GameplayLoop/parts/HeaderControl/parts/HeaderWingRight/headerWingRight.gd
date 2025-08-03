@@ -97,10 +97,6 @@ func update() -> void:
 	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
 	var summary_data:Dictionary = {}
 	
-	
-	#MTFContainer.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.MTF_BARRICKS) else MTFContainer.hide()
-	
-	
 	## update everything else
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -109,7 +105,8 @@ func update() -> void:
 			summary_data = GAME_UTIL.get_ring_summary(current_location)	
 		CAMERA.TYPE.ROOM_SELECT:
 			summary_data = GAME_UTIL.get_room_summary(current_location)
-
+		_:
+			summary_data = GAME_UTIL.get_floor_summary(current_location)
 			#
 	# energy
 	Energy.amount = ring_config_data.energy.available - ring_config_data.energy.used

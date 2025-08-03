@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=24 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="Texture2D" uid="uid://j2sk54heuc2t" path="res://Media/images/OS/bg_0.png" id="2_25k47"]
@@ -13,7 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://clbcu7v8n62o8" path="res://Scenes/Main/parts/OS/Notification/Notification.tscn" id="7_mdufi"]
 [ext_resource type="PackedScene" uid="uid://b3f8ve03806mt" path="res://Components/PauseContainer/PauseContainer.tscn" id="8_13atc"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="8_fxpyd"]
+[ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="8_tw6u7"]
 [ext_resource type="LabelSettings" uid="uid://gtflywuysx2d" path="res://Fonts/small_black_with_glow.tres" id="10_naebg"]
+[ext_resource type="LabelSettings" uid="uid://pao66auopm3c" path="res://Fonts/font_2_black_large.tres" id="15_fxpyd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41nkp"]
 
@@ -62,8 +64,10 @@ shader_parameter/step_count = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25k47"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fxpyd"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jsaqf"]
-bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+bg_color = Color(1, 0.745178, 0.380506, 1)
 shadow_color = Color(0, 0, 0, 1)
 shadow_size = 2
 shadow_offset = Vector2(0, 2)
@@ -108,6 +112,28 @@ size_flags_vertical = 3
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 6
+
+[node name="PanelContainer" type="PanelContainer" parent="Desktop"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="Control" type="Control" parent="Desktop/PanelContainer"]
+layout_mode = 2
+
+[node name="KeyBtn" parent="Desktop/PanelContainer/Control" instance=ExtResource("8_tw6u7")]
+modulate = Color(1, 1, 1, 1)
+layout_mode = 0
+offset_left = -168.0
+offset_top = 25.0
+offset_right = -32.0
+offset_bottom = 96.0
+title = "TASKBAR"
+assigned_key = "BACKSPACE"
+icon = 67
+is_flashing = true
+hide_icon_panel = true
+is_disabled = false
 
 [node name="OptionsMenu" parent="." instance=ExtResource("3_jsaqf")]
 visible = false
@@ -201,16 +227,46 @@ a_btn_title = "SELECT"
 z_index = 4
 layout_mode = 2
 
-[node name="TaskbarCornerPanel" type="PanelContainer" parent="HeaderControls"]
+[node name="PanelContainer" type="PanelContainer" parent="HeaderControls"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 10
 anchor_right = 1.0
-offset_left = -1579.0
-offset_top = -558.0
-offset_right = 821.0
-offset_bottom = -508.0
-grow_horizontal = 0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_fxpyd")
+
+[node name="PanelContainer" type="PanelContainer" parent="HeaderControls/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Control" type="Control" parent="HeaderControls/PanelContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="TaskbarCornerPanel" type="PanelContainer" parent="HeaderControls/PanelContainer/PanelContainer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -603.0
+offset_top = -147.0
+offset_right = 397.0
+offset_bottom = 2.99997
+grow_horizontal = 2
 rotation = 0.785398
-pivot_offset = Vector2(800, 600)
+pivot_offset = Vector2(500, 250)
 theme_override_styles/panel = SubResource("StyleBoxFlat_jsaqf")
+
+[node name="MarginContainer" type="MarginContainer" parent="HeaderControls/PanelContainer/PanelContainer/Control/TaskbarCornerPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 35
+
+[node name="Label" type="Label" parent="HeaderControls/PanelContainer/PanelContainer/Control/TaskbarCornerPanel/MarginContainer"]
+layout_mode = 2
+text = "OPEN
+TASKBAR?"
+label_settings = ExtResource("15_fxpyd")
+horizontal_alignment = 1

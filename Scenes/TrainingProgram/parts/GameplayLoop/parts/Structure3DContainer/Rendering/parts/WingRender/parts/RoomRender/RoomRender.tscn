@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://dd18gu8px7b47"]
+[gd_scene load_steps=19 format=4 uid="uid://dd18gu8px7b47"]
 
 [ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="2_5s4vs"]
@@ -42,12 +42,23 @@ albedo_color = Color(0.856067, 0.856067, 0.856067, 1)
 metallic = 0.32
 metallic_specular = 0.0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_cmd18"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vl5hs"]
+transparency = 1
+blend_mode = 1
+shading_mode = 2
+specular_mode = 2
+albedo_color = Color(0.33, 0.642667, 1, 1)
+metallic = 0.1
+metallic_specular = 1.0
+emission_energy_multiplier = 11.48
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ivnky"]
 lightmap_size_hint = Vector2i(0, -75)
 _surfaces = [{
 "aabb": AABB(-7.5, -7.5, -7.5, 15, 15, 15),
 "attribute_data": PackedByteArray("AAAAAAAAAAAAAIA/AACAPwAAgD8AAAAA/uEVPlotWj0AAIA/AAAAANZfUD4AAAAAAAAAAAAAgD8q/Zo+2F9QPgAAAADWX1A+AAAAAAAAgD/+4RU+d3d3PwAAAAB3d3c/d3d3P3z/Cz4AAIA/AAAAAHd3dz8AAAAAAACAPwAAgD/+4RU+Wi1aPf7hFT53d3c/AACAPwAAgD/+4RU+d3d3PwAAAAAAAIA/AACAPwAAgD93d3c/fP8LPvBPQj58/ws+d3d3P3z/Cz4AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAP7hFT5aLVo9AACAPwAAgD8q/Zo+2F9QPgAAAAAAAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD/wT0I+fP8LPvJPQj41uRQ/Kv2aPthfUD4AAIA/AACAP1BnYj/YX1A+AAAAAAAAgD/yT0I+UGdiPwAAAABQZ2I/UGdiP9hfUD4AAIA/AAAAAFBnYj8AAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD/yT0I+NbkUP/JPQj5QZ2I/AACAPwAAgD/yT0I+UGdiPwAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAgD8AAAAAUGdiP9hfUD4AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/2NcsPwAAAAD/PhM/7HaZPkTQ6z4AAAAAefOuPN4XCj/Knis+UVCmPgAAgD9RUKY+AACAP94XCj9586483hcKPwAAgD9RUKY+ZhNNPxR1pj6jix8/o4sfPxR1pj4UdaY+o4sfP6OLHz8AAAAAo4sfPxR1pj4UdaY+uejAPgAAgD9VRgk/sGoVP3bFLD8AAIA/AAAAABR1pj4UdaY+FHWmPgAAAACjix8/o4sfP6OLHz9mE00/FHWmPkOTcj99Hwo/o4sfP6OLHz9Dk3I/fR8KP0OTcj+jix8/"),
 "format": 34359738391,
+"material": SubResource("StandardMaterial3D_vl5hs"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 96,
@@ -95,7 +106,6 @@ albedo_color = Color(0.899258, 0.899258, 0.899258, 1)
 
 [node name="RoomScene" type="Node3D"]
 script = ExtResource("1_cmd18")
-build_room = null
 
 [node name="Gate" type="Node3D" parent="."]
 
@@ -143,7 +153,7 @@ transform = Transform3D(1, 2.98023e-08, 0, -2.98023e-08, 1, 0, 0, 0, 1, -4, 0, 0
 
 [node name="RoomRender" type="MeshInstance3D" parent="Room"]
 transform = Transform3D(-4.37114e-08, -2.98023e-08, -1, -1.3027e-15, 1, -2.98023e-08, 1, 0, -4.37114e-08, 4, 7, 0)
-mesh = SubResource("ArrayMesh_cmd18")
+mesh = SubResource("ArrayMesh_ivnky")
 skeleton = NodePath("../..")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Room/RoomRender"]

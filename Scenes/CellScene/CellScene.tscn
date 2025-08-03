@@ -27,12 +27,10 @@ expand_mode = 1
 
 [node name="BtnControls" parent="." instance=ExtResource("2_fu8yw")]
 layout_mode = 2
-debug = true
 a_btn_title = "LOGIN"
-b_btn_title = "END"
+b_btn_title = "TURN AROUND"
 b_btn_icon = 16
-hide_b_btn = true
-c_btn_title = "C BTN"
+c_btn_title = "Action"
 
 [node name="StoryNarration" parent="." instance=ExtResource("3_y10y4")]
 modulate = Color(1, 1, 1, 0.262745)
@@ -45,7 +43,6 @@ fsr_sharpness = 2.0
 size = Vector2i(1920, 1080)
 
 [node name="CellSceneRender" parent="RenderSubviewport" instance=ExtResource("4_h1wtw")]
-enable_interogation_lighting = true
 
 [node name="FadeOverlay" type="ColorRect" parent="."]
 visible = false

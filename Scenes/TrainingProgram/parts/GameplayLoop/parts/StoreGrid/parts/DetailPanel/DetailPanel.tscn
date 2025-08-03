@@ -99,6 +99,7 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="FlipBtn" parent="DetailPanel/MarginContainer/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("7_tayen")]
+modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

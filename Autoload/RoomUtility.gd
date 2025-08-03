@@ -209,7 +209,17 @@ func return_activation_cost(ref:int) -> Array:
 	return SHARED_UTIL.return_resource_list(return_data(ref), "activation_cost")
 # ------------------------------------------------------------------------------
 
-## ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func get_room_ability_level(use_location:Dictionary = current_location) -> int:
+	if room_config.is_empty(): return -1
+	
+	var room_abl_lvl:int = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].abl_lvl
+	var wing_abl_lvl:int = room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl
+	var abl_lvl:int = room_abl_lvl + wing_abl_lvl	
+	return abl_lvl
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
 func get_max_level(ref:int) -> int:
 	if ref == -1:
 		return -1
@@ -263,6 +273,18 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 # ------------------------------------------------------------------------------
 func reset_room(use_location:Dictionary) -> void:
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location == use_location))
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func is_room_activated(use_location:Dictionary = current_location) -> bool:
+	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].is_activated
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func set_room_is_active_state(use_location:Dictionary = current_location, is_activated:bool = true) -> void:	
+	var room_base_state:Dictionary = base_states.room[str(use_location.floor, use_location.ring, use_location.room)]
+	room_base_state.is_activated = is_activated
+	SUBSCRIBE.base_states = base_states
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

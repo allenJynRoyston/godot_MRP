@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://urjnikfy6y5j"]
+[gd_scene load_steps=21 format=3 uid="uid://urjnikfy6y5j"]
 
 [ext_resource type="PackedScene" uid="uid://bs1arpnwcdcdb" path="res://Scenes/CellScene/assets/DeskModel.tscn" id="1_01n06"]
 [ext_resource type="Script" uid="uid://dewg4p4ytk67q" path="res://Scenes/CellScene/parts/cell_render.gd" id="1_baq1p"]
@@ -24,6 +24,8 @@ fog_light_energy = 2.6
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.125
 volumetric_fog_emission = Color(0.0418844, 0.00556447, 0.0375506, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_anisotropy = -0.46
 volumetric_fog_length = 124.23
 volumetric_fog_detail_spread = 1.60766
 volumetric_fog_ambient_inject = 2.83
@@ -111,6 +113,15 @@ material = SubResource("StandardMaterial3D_ydmhf")
 uv2_padding = 1.77
 size = Vector2(0.5, 0.5)
 
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jdl17"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_ydmhf"]
+density = 8.0
+emission = Color(0.2484, 0.2484, 0.2484, 1)
+height_falloff = 1e-05
+edge_fade = 0.0757858
+density_texture = SubResource("NoiseTexture3D_jdl17")
+
 [sub_resource type="SphereMesh" id="SphereMesh_epicg"]
 flip_faces = true
 radius = 15.0
@@ -118,10 +129,7 @@ height = 30.0
 
 [node name="CellRender" type="Node3D"]
 script = ExtResource("1_baq1p")
-enable_interogation_lighting = true
 enable_dust_particles = true
-power_computer = true
-power_terminal = true
 
 [node name="OsViewport" type="SubViewport" parent="."]
 disable_3d = true
@@ -178,13 +186,18 @@ draw_pass_1 = SubResource("QuadMesh_1a7c7")
 [node name="DustParticles2" type="GPUParticles3D" parent="."]
 transform = Transform3D(0.997176, 2.11695e-08, -0.0751005, -7.45058e-09, 1, -7.45058e-09, 0.0751005, 1.65377e-08, 0.997176, 0.391046, -0.417737, 0.0841524)
 gi_mode = 0
-amount = 3000
+amount = 500
 lifetime = 3.0
 preprocess = 1.0
 explosiveness = 0.7
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_jdl17")
 draw_pass_1 = SubResource("QuadMesh_sqrrc")
+
+[node name="FogVolume" type="FogVolume" parent="."]
+transform = Transform3D(0.0679456, 0, -0.997689, 0, 1, 0, 0.997689, 0, 0.0679456, 0.505, -2.2, 0.657)
+size = Vector3(4, 2, 4)
+material = SubResource("FogMaterial_ydmhf")
 
 [node name="Structure" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.78405)

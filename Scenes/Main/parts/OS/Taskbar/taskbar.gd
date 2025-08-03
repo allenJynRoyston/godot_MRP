@@ -46,7 +46,13 @@ func _ready() -> void:
 	
 	var update_media_player:Callable = func() -> void:
 		BtnControl.a_btn_title = "RESUME TRACK" if !MediaPlayer.is_already_playing() else 'PAUSE TRACK'	
-		
+	
+	BtnControl.onBack = func() -> void:
+		await set_show_taskbar(false)
+		GBL.find_node(REFS.OS_LAYOUT).return_to_desktop()
+
+
+	
 	BtnControl.onUpdate = func(_node:Control) -> void:
 		selected_node = _node
 		
@@ -57,7 +63,7 @@ func _ready() -> void:
 			PlayBtn:
 				GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = true
 				BtnControl.offset = Vector2(0, 0)
-				BtnControl.hide_c_btn = true
+				BtnControl.hide_c_btn = false
 				update_media_player.call()
 				get_parent().currently_running_app = null
 			NextBtn:

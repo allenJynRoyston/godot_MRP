@@ -5,6 +5,7 @@ extends Control
 @onready var CardBody:Control = $MenuControl/PanelContainer/MarginContainer/CardBody
 @onready var CardControlBody:PanelContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody
 @onready var CardBodySubviewport:SubViewport = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport
+@onready var EmptyList:PanelContainer = $MenuControl/PanelContainer/MarginContainer/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/EmptyList
 
 @onready var MenuPanel:PanelContainer = $MenuControl/PanelContainer
 @onready var MenuMargin:MarginContainer = $MenuControl/PanelContainer/MarginContainer
@@ -202,6 +203,7 @@ func on_options_list_update() -> void:
 	wait_for_release = true
 	clear_list()
 	
+	
 	# ---- IF EMPTY
 	if options_list.is_empty():
 		var btn_node:Control = MenuBtnPreload.instantiate()
@@ -218,13 +220,16 @@ func on_options_list_update() -> void:
 		PrevIcon.icon_color.a = 0.2 if tab_index == 0 else 1
 		NextIcon.icon_color.a = 0.2 if tab_index == options_list.size() - 1 else 1
 	
+	CategoryLabel.text = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
+
+	# if empty...
+	EmptyList.show() if options_list[tab_index].items.is_empty() else EmptyList.hide()
+
 	# render list
 	for index in options_list[tab_index].items.size():
 		var item:Dictionary = options_list[tab_index].items[index]
 		var btn_node:Control = MenuBtnPreload.instantiate()
 		var show:bool = item.show if item.has("show") else true
-		
-		CategoryLabel.text = str(options_list[tab_index].title) if "title" in options_list[tab_index] else ""
 		
 		if show:
 			btn_node.title = item.title

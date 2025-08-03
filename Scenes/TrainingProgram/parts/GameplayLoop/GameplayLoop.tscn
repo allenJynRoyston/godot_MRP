@@ -30,10 +30,12 @@ script = ExtResource("1_15jbj")
 layout_mode = 2
 
 [node name="TimelineContainer" parent="." instance=ExtResource("5_1tp62")]
+z_index = 1
 layout_mode = 2
 
 [node name="MarkedObjectivesContainer" parent="." instance=ExtResource("4_lgd8l")]
 visible = false
+z_index = 1
 layout_mode = 2
 
 [node name="ActionContainer" parent="." instance=ExtResource("7_rbrft")]

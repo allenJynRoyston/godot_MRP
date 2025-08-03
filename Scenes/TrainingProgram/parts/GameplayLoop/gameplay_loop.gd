@@ -199,6 +199,7 @@ var initial_values:Dictionary = {
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
 						"abl_lvl": 0,
+						"is_activated": false,
 						"passives_enabled_list": [],
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
@@ -433,7 +434,7 @@ func start_new_game() -> void:
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, true)	
 
 	# set tutorial flag
-	is_tutorial = options.is_tutorial if "is_tutorial" in options else false
+	is_tutorial = true # options.is_tutorial if "is_tutorial" in options else false
 	
 	# fade in
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7)
@@ -701,10 +702,14 @@ func capture_default_showing_state() -> void:
 
 # ------------------------------------------------------------------------------
 func restore_player_hud() -> void:	
-	var arr:Array = [Structure3dContainer, ActionContainer,  HeaderControl, TimelineContainer, MarkedObjectivesContainer]
-	#if gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val:
-		#arr.push_back(MarkedObjectivesContainer)
-
+	var arr:Array = [Structure3dContainer, ActionContainer,  HeaderControl]
+	
+	if show_marked_objectives:
+		arr.push_back(MarkedObjectivesContainer)
+		
+	if show_timeline:
+		arr.push_back(TimelineContainer)
+	
 	await show_only(arr)
 # ------------------------------------------------------------------------------
 
@@ -889,10 +894,8 @@ func on_current_phase_update() -> void:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
 			
-			if chapter.has("tutorial"):
-				show_only([Structure3dContainer])
-				await GAME_UTIL.add_dialogue(chapter.tutorial)
-					
+			if chapter.has("tutorial") and is_tutorial:
+				await GAME_UTIL.play_tutorial(chapter)
 				
 			# show objectives
 			if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -1345,6 +1348,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 				
 				# room level ability level
 				room_level.abl_lvl = room_base_state.abl_lvl
+				room_level.is_activated = room_base_state.is_activated
 
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
@@ -1545,8 +1549,8 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
 				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
 				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
-				var abl_lvl:int = room_abl_lvl + wing_abl_lvl
-				
+				var abl_lvl:int = ROOM_UTIL.get_room_ability_level(item.location)
+
 				if !is_activated:
 					room_base_state.passives_enabled_list.erase(ability.ref)
 					return
@@ -1612,10 +1616,12 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
 			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		).size()
-		room_config_data.is_activated = assigned_to_room_count >= required_staffing.size() 
+		
+		# carry over the activation state
+		new_room_config.is_activated = base_states.room[str(floor, ring, room)].is_activated
 		
 		# if activated, then check if room has additional properties
-		if room_config_data.is_activated:
+		if new_room_config.is_activated:
 			for key in room_details.personnel_capacity:
 				var amount:int = room_details.personnel_capacity[key]
 				new_room_config.base.staff_capacity[key] += amount

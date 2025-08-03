@@ -21,11 +21,12 @@ var original_rotation_degrees:Vector3
 var fast_animation:bool = false
 var freeze_input:bool = false
 
-var focus_arr:Array = [FOCUS.COMPUTER, FOCUS.CENTER, FOCUS.TERMINAL, FOCUS.EXIT]
+var focus_arr:Array = [FOCUS.COMPUTER, FOCUS.CENTER, FOCUS.TERMINAL]
 var focus_index:int = FOCUS.CENTER : 
 	set(val):
 		focus_index = val
 		on_focus_index_update()
+var previous_focus_index:int = -1
 	
 var play_introduction:bool 
 var gotoOs:Callable = func():pass
@@ -58,12 +59,15 @@ func _ready() -> void:
 
 	MAIN_NODE = GBL.find_node(REFS.MAIN)	
 	
-	BtnControls.reveal(false, true)
+	BtnControls.onBack = func() -> void:
+		if focus_index == FOCUS.EXIT:
+			focus_index = previous_focus_index
+		else:
+			previous_focus_index = focus_index
+			focus_index = FOCUS.EXIT
 	
-	BtnControls.onBack = func() -> void:pass
-	# 
 	BtnControls.onDirectional = func(key:String):
-		if !is_node_ready() or play_introduction:return
+		if !is_node_ready() or play_introduction or focus_index == FOCUS.EXIT:return		
 		match key:
 			"A":
 				if focus_index != 0:
@@ -79,26 +83,41 @@ func _ready() -> void:
 
 # ---------------------------------------------
 func start(use_fast_animation:bool = false) -> void:
-	play_introduction = GBL.active_user_profile.boot_count == 0		
-	CellSceneRender.enable_ambient_lighting = true
-	BtnControls.freeze_and_disable(true)
-
+	# show and reveal
 	show()	
-	modulate.a = 1	
+	BtnControls.reveal(false)
+		
+	# set variables
+	play_introduction = GBL.active_user_profile.boot_count == 0			
+	
+	# start by looking at center, disable controls
+	focus_index = 1
+	BtnControls.freeze_and_disable(true)	
+	BtnControls.hide_a_btn = true
+	BtnControls.hide_b_btn = true
+		
+	# set defaults
+	CellSceneRender.enable_ambient_lighting = false
+	CellSceneRender.enable_emergency_lighting = false
+	CellSceneRender.enable_interogation_lighting = false
+	CellSceneRender.enable_lowlevel_lighting = false
+	CellSceneRender.power_computer = false
+	CellSceneRender.power_terminal = false	
+
+	# get textures
 	RenderSubviewport.set_process(true)	
 	TextureRender.texture = RenderSubviewport.get_texture()
 	
+	# fade in
+	await U.tween_node_property(self, "modulate:a", 1, 1.0)	
+	
 	if play_introduction:
-		await play_introduction_sequence()
+		await normal_boot_sequence()
 	else:
 		await normal_boot_sequence()
-
-	await U.set_timeout(5.0)		
-	GBL.find_node(REFS.AUDIO).fade_out(3.0)	
-	await U.set_timeout(3.0)
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.LOADING,
-	}	
+		
+	BtnControls.reveal(true)		
+	BtnControls.hide_a_btn = false
 
 func end() -> void:
 	hide()
@@ -106,68 +125,98 @@ func end() -> void:
 # ---------------------------------------------
 
 # ---------------------------------------------
-func play_introduction_sequence() -> void:	
-	# setup controls
-	BtnControls.a_btn_title = "???"
-	BtnControls.hide_a_btn = true
-	BtnControls.onAction = func() -> void:
-		BtnControls.reveal(false)		
-		end_introduction_sequence()
+func play_introduction_sequence() -> void:		
+	# set fog and animate it		
+	var FogNode:FogVolume = CellSceneRender.get_fog_node()
+	FogNode.position.y = 0
 	
-	# start with power out
-	CellSceneRender.power_computer = false
-	CellSceneRender.power_terminal = false
-	
-	await U.tween_node_property(self, "modulate:a", 1, 1.0)
-	BtnControls.freeze_and_disable(true)
+	# fade in...
 	await U.tween_node_property(FadeOverlay, "modulate:a", 0, 2.0)		
 	await U.set_timeout(0.5)
+	
+	# play music...
 	SUBSCRIBE.music_data = {
 		"selected": OS_AUDIO.TRACK.OS_STARTUP_SFX,
 	}
-			
-	CellSceneRender.power_computer = true
-	CellSceneRender.computer_screen_color = Color.ORANGE
-	await U.set_timeout(2.0)
-	CellSceneRender.power_terminal = true	
-
-
+	
+	# animte fog scene
+	await U.tween_node_property(FogNode, "material:density", 0.7, 5, 0, Tween.TRANS_SINE )	
+	
+	# power lights
+	await U.set_timeout(2.0)	
 	for duration in U.generate_flicker_pattern(10):
 		await U.set_timeout(duration)
 		CellSceneRender.enable_lowlevel_lighting = !CellSceneRender.enable_lowlevel_lighting
 	CellSceneRender.enable_lowlevel_lighting = true	
 	
+	# turn power on
+	await U.set_timeout(1.0)
+	CellSceneRender.power_computer = true
+	CellSceneRender.computer_screen_color = Color.ORANGE	
+	CellSceneRender.power_terminal = true	
+	
+	# enable controls
 	await U.set_timeout(1.0)	
-	BtnControls.hide_a_btn = false
-	BtnControls.freeze_and_disable(false)
+	BtnControls.a_btn_title = "???"
+	BtnControls.onAction = func() -> void:
+		BtnControls.reveal(false)		
+		end_introduction_sequence()	
 # ---------------------------------------------	
 
 # ---------------------------------------------	
 func end_introduction_sequence() -> void:
 	#REFS.OS_LAYOUT .has_started
-	await transInFx.call()
+	await transInFx.call()	
 	await zoom_into_screen(true, 2)
+	var FogNode:FogVolume = CellSceneRender.get_fog_node()	
+	FogNode.position.y = -2	
 	await play_current_story_sequence()
-
-	CellSceneRender.enable_lowlevel_lighting = false		
-	CellSceneRender.enable_interogation_lighting = true			
-				
-	zoom_into_screen(false)			
-	check_btn_states()
-	BtnControls.reveal(true)
 	
+	# update vars
 	GBL.active_user_profile.boot_count += 1
 	GBL.update_and_save_user_profile()
-	play_introduction = false
+	play_introduction = false	
+	
+	# render scene
+	CellSceneRender.enable_lowlevel_lighting = false		
+	CellSceneRender.enable_interogation_lighting = true			
+	zoom_into_screen(false)	
+	
+	# show buttons
+	BtnControls.hide_b_btn = false		
+	check_btn_states()
+	BtnControls.reveal(true)
 # ---------------------------------------------	
 
 # ---------------------------------------------	
 func normal_boot_sequence() -> void:
-	BtnControls.reveal(false, true)	
-	await U.tween_node_property(self, "modulate:a", 1, 1.0)
+	# setup vars
+	play_introduction = false
+
+	# setup fog
+	var FogNode:FogVolume = CellSceneRender.get_fog_node()
+	FogNode.position.y = -2
+	FogNode.material.density = 0.7
+	
+	# fade in...
 	await U.tween_node_property(FadeOverlay, "modulate:a", 0, 2.0)		
+	await U.set_timeout(0.5)
+	
+	# power lights
+	await U.set_timeout(2.0)	
+	for duration in U.generate_flicker_pattern(10):
+		await U.set_timeout(duration)
+		CellSceneRender.enable_interogation_lighting = !CellSceneRender.enable_interogation_lighting
+	CellSceneRender.enable_interogation_lighting = true
+	
 	await U.set_timeout(1.0)
-	BtnControls.reveal(true)
+	CellSceneRender.power_computer = true
+	CellSceneRender.computer_screen_color = Color.ORANGE	
+	CellSceneRender.power_terminal = true	
+	
+	# enable controls...
+	BtnControls.hide_b_btn = false		
+	check_btn_states()	
 # ---------------------------------------------		
 
 # ---------------------------------------------
@@ -226,7 +275,7 @@ func check_btn_states() -> void:
 	match focus_index:
 		# ------------------------
 		FOCUS.COMPUTER:
-			BtnControls.a_btn_title = "LOGIN"
+			BtnControls.a_btn_title = "INTERACT WITH ANAMOLLY"
 				
 			BtnControls.onAction = func() -> void:				
 				BtnControls.reveal(false)

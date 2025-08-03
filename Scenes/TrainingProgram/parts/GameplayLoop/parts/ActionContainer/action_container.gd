@@ -2,102 +2,84 @@ extends GameContainer
 
 #  ---------------------------------------
 # SPECIAL NODES
-@onready var RootPanel:PanelContainer = $"."
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var BtnControls:Control = $BtnControls
+@onready var SummaryControls:Control = $SummaryControls
 @onready var NameControl:Control = $NameControl
 @onready var RoomDetailsControl:Control = $RoomDetails
-#@onready var ControllerOverlay:Control = $ControllerOverlay
+@onready var TransistionScreen:Control = $TransitionScreen
 #  ---------------------------------------
 
-# NOTIFICATION
 #  ---------------------------------------
+# CONTROLS
+@onready var DesignControls:Control = $DesignControls
+@onready var CommandControls:Control = $CommandControls
+@onready var InfoControls:Control = $InfoControls
+@onready var ProgramControls:Control = $ProgramControls
+#  ---------------------------------------
+
+#  ---------------------------------------
+# NOTIFICATION
 @onready var NotificationPanel:PanelContainer = $NotificationControls/PanelContainer
 @onready var NotificationMargin:MarginContainer = $NotificationControls/PanelContainer/MarginContainer
 @onready var NewMessageBtn:BtnBase = $NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NewMessageBtn
 #  ---------------------------------------
 
 #  ---------------------------------------
-# FLOOR PREVIEW
-@onready var FloorPreviewControl:Control = $FloorPreviewControl
-@onready var FloorPreviewPanel:PanelContainer = $FloorPreviewControl/PanelContainer
-@onready var FloorPreviewMargin:MarginContainer = $FloorPreviewControl/PanelContainer/MarginContainer
-@onready var PreviewTextureRect:TextureRect = $FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/PreviewTextureRect
-#  ---------------------------------------
-
-#  ---------------------------------------
-# MINICARDS
-@onready var MiniCardPanel:PanelContainer = $MiniCardControl/PanelContainer
-@onready var MiniCardMargin:MarginContainer = $MiniCardControl/PanelContainer/MarginContainer
-@onready var SummaryCard:PanelContainer = $MiniCardControl/PanelContainer/MarginContainer/SummaryCard
+# SUMMARY
+@onready var SummaryPanel:PanelContainer = $SummaryControl/PanelContainer
+@onready var SummaryPanelMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
+@onready var SummaryCard:PanelContainer = $SummaryControl/PanelContainer/MarginContainer/SummaryCard
 #  ---------------------------------------
 
 #  ---------------------------------------
 # STATIC CONTROLS 
 # GOTO PANEL
-@onready var ActionControls:Control = $ActionControls
-@onready var ActionPanel:PanelContainer = $ActionControls/PanelContainer
-@onready var ActionMarginPanel:MarginContainer = $ActionControls/PanelContainer/MarginContainer
+@onready var RootControls:Control = $RootControls
+@onready var WingRootPanel:PanelContainer = $RootControls/PanelContainer
+@onready var WingRootMargin:MarginContainer = $RootControls/PanelContainer/MarginContainer
+
+# CURRENT ACTION
+@onready var ActionPanel:PanelContainer = $ActionLabelPanel/PanelContainer
+@onready var ActionMargin:MarginContainer = $ActionLabelPanel/PanelContainer/MarginContainer
+@onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
+
+# SETTINGS
+@onready var SettingsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
 
 # GOTO PANEL
-@onready var GotoBtnPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-@onready var GotoFloorBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoFloorBtn
-@onready var GotoWingBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoWingBtn
-@onready var GotoGeneratorBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
-
-# FACILITY ACTION PANELS
-@onready var FacilityActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions
-@onready var FacilityActionBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer/FacilityActionBtn
-@onready var FacilityEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer/FacilityEndTurnBtn
+@onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
+@onready var GotoFloorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoFloorBtn
+@onready var GotoWingBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoWingBtn
+@onready var GotoGeneratorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
+@onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
 
 # WING ACTION PANELS
-# FaciiltyProgramBtn.on
+@onready var WingActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
+@onready var WingActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingActionBtn
+@onready var WingDesignBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingDesignBtn
+@onready var WingProgramBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingProgramBtn
+@onready var WingInfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/WingInfoBtn
+@onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
-@onready var WingActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
-@onready var WingActionBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingActionBtn
-@onready var ProgramBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ProgramBtn
-@onready var WingEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingEndTurnBtn
+# FACILITY ACTION PANELS
+@onready var FacilityActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions
+@onready var FacilityActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer/FacilityActionBtn
 
 # GENERATION ACTION PANEL
-@onready var GenActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
-@onready var GenActionBtns:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
-@onready var GenEndTurnBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenEndTurnBtn
-
-# PLAYER BTNS
-@onready var PlayerActionPanel:PanelContainer = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions
-@onready var SettingsBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
-@onready var ObjectivesBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/ObjectivesBtn
-@onready var HintInfoBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/HintInfoBtn
-@onready var TutorialBtn:BtnBase = $ActionControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/TutorialBtn
-
-
-# ACTION CONTROLS 
-@onready var RoomBtnPanel:PanelContainer = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/CenterBtnList/RoomBtnPanel
-@onready var RoomBtnPanelLabel:Label = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/RoomBtnPanelLabel
+@onready var GeneratorActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
+@onready var GenActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
 #  ---------------------------------------
 
-#  ---------------------------------------
-# INVESTIGATE CONTROLS 
-# GOTO PANEL
-@onready var InvestigateControls:Control = $InvestigateControls
-@onready var InvestigatePanel:PanelContainer = $InvestigateControls/PanelContainer
-@onready var InvestigateMargin:MarginContainer = $InvestigateControls/PanelContainer/MarginContainer
-@onready var AbilityBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/UseAbilityBtn
-@onready var BuildBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/BuildBtn
-@onready var DeconstructBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer2/CenterBtnList/RoomBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DeconstructBtn
-
-@onready var HotkeyContainer:Control = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/RightSide/VBoxContainer2/HotkeyContainer
-@onready var InvestigateBackBtn:BtnBase = $InvestigateControls/PanelContainer/MarginContainer/HBoxContainer/LeftSide/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvestigateBackBtn
-#  ---------------------------------------
 
 enum MODE { 
 	NONE,
-	ACTIONS,
-	INVESTIGATE, 
+	COMMANDS,
+	SUMMARY_CARD,
+	INFO,
 	ABILITY,
+	PROGRAMS,
 	BUILD,
-	RESET_ROOM, 
-	DISMISS_RESEARCHER 
+	ACTIVE_MENU_OPEN,
 }
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
@@ -112,7 +94,7 @@ var current_mode:MODE = MODE.NONE :
 
 var prev_draw_state:Dictionary	= {}
 var is_in_transition:bool = false 
-var is_busy:bool = false
+
 var is_started:bool = false
 var show_new_message_btn:bool = false : 
 	set(val):
@@ -133,11 +115,16 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()
 	
-	modulate = Color(1, 1, 1, 0)
-	BtnControls.freeze_and_disable(true)
+	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	BtnControls.reveal(false)
+	SummaryControls.reveal(false)
+	DesignControls.reveal(false)
+	CommandControls.reveal(false)
+	InfoControls.reveal(false)
+	ProgramControls.reveal(false)
+	
+	DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
 	# set reference 
 	GBL.direct_ref["SummaryCard"] = SummaryCard	
@@ -155,16 +142,8 @@ func _ready() -> void:
 func activate() -> void:
 	await U.tick()
 	
-	control_pos_default[ActionPanel] = ActionPanel.position
-	control_pos_default[InvestigatePanel] = InvestigatePanel.position
-	control_pos_default[MiniCardPanel] = MiniCardPanel.position
-	control_pos_default[FloorPreviewPanel] = FloorPreviewPanel.position
-	control_pos_default[NotificationPanel] = NotificationPanel.position
-	
-	lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
-
+	lock_panel_btn_state(true)
 	update_control_pos(false)
-	check_action_btn_state()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -172,25 +151,15 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	await U.tick()
 	
 	# for elements in the bottom left corner
-	control_pos[ActionPanel] = {
+	control_pos[WingRootPanel] = {
 		"show": 0, 
-		"hide": ActionMarginPanel.size.y 
+		"hide": WingRootMargin.size.y 
 	}
-	
-	control_pos[InvestigatePanel] = {
-		"show": 0, 
-		"hide": InvestigateMargin.size.y
-	}	
 	
 	# for eelements in the top right
-	control_pos[MiniCardPanel] = {
+	control_pos[SummaryPanel] = {
 		"show": 0, 
-		"hide": -MiniCardMargin.size.x
-	}
-	
-	control_pos[FloorPreviewPanel] = {
-		"show": 0, 
-		"hide":  -FloorPreviewMargin.size.x
+		"hide": -SummaryPanelMargin.size.x
 	}
 	
 	control_pos[NotificationPanel] = {
@@ -198,10 +167,16 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": NotificationMargin.size.x
 	}
 	
-	for node in [ActionPanel, InvestigatePanel]: 
+	# for elements in the bottom left corner
+	control_pos[ActionPanel] = {
+		"show": 0, 
+		"hide": ActionMargin.size.x
+	}	
+	
+	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, FloorPreviewPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel]: 
 		node.position.x = control_pos[node].hide
 	
 	# hide by default
@@ -216,27 +191,23 @@ func start() -> void:
 	is_started = true
 	
 	# -------------------------------------
-	for btn in [GenEndTurnBtn, WingEndTurnBtn, FacilityEndTurnBtn]:
+	for btn in [EndTurnBtn]:
 		btn.onClick = func() -> void:
-			#ControllerOverlay.hide()
-			reveal_notification(false)
 			await lock_actions(true)
 			await GameplayNode.next_day()
-			reveal_notification(true)			
 			lock_actions(false)
-			#ControllerOverlay.show()
 	
 	# -------------------------------------
-	if !GameplayNode.is_tutorial:
-		TutorialBtn.hide()
+	#if !GameplayNode.is_tutorial:
+		#TutorialBtn.hide()
 
 	# -------------------------------------
 	NewMessageBtn.onClick = func() -> void:
-		lock_panel_btn_state(true, [ActionPanel])
-		await reveal_notification(false)
+		lock_panel_btn_state(true)
+		#await reveal_notification(false)
 		show_new_message_btn = false
 		await GBL.find_node(REFS.DOOR_SCENE).play_next_sequence()
-		lock_panel_btn_state(false, [ActionPanel])
+		lock_panel_btn_state(false)
 		
 	# -------------------------------------
 
@@ -245,134 +216,66 @@ func start() -> void:
 		if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT:return
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
+		TransistionScreen.start(0.3, true)		
 	
 	GotoWingBtn.onClick = func() -> void:
 		if camera_settings.type == CAMERA.TYPE.WING_SELECT:return
 		camera_settings.type = CAMERA.TYPE.WING_SELECT
 		SUBSCRIBE.camera_settings = camera_settings
-		
+		TransistionScreen.start(0.3, true)
+
 	GotoGeneratorBtn.onClick = func() -> void:
 		if camera_settings.type == CAMERA.TYPE.GENERATOR:return
 		camera_settings.type = CAMERA.TYPE.GENERATOR
 		SUBSCRIBE.camera_settings = camera_settings	
+		TransistionScreen.start(0.3, true)
+		
+	WingDesignBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.BUILD
 		
 	WingActionBtn.onClick = func() -> void:
-		GameplayNode.show_marked_objectives = false
-		GameplayNode.show_timeline = false
-		on_current_location_update()
-		current_mode = MODE.INVESTIGATE	
-		camera_settings.type = CAMERA.TYPE.ROOM_SELECT
-		SUBSCRIBE.camera_settings = camera_settings
-	
-	ProgramBtn.onClick = func() -> void:
-		show_ability_list()
-	# -------------------------------------
-	
-	# -------------------------------------
-	GenActionBtns.onClick = func() -> void:
 		await lock_actions(true)
-		show_generator_updates()
-		
-	FacilityActionBtn.onClick = func() -> void:
-		#ControllerOverlay.show_directional = false
-		reveal_floorpreview(false)
-		await lock_actions(true)
-		show_facility_updates()
-	# -------------------------------------	
+		current_mode = MODE.COMMANDS	
 	
-	# -------------------------------------
-	BuildBtn.onClick = func() -> void:
-		current_mode = MODE.BUILD
+	WingProgramBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.PROGRAMS
 
-	DeconstructBtn.onClick = func() -> void:
-		investigate_wrapper(func():
-			var confirm:bool = await GAME_UTIL.reset_room(current_location)
-			if confirm:
-				GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
-			
-		)
-	# -------------------------------------
-	
-	# -------------------------------------
-	ObjectivesBtn.onClick = func() -> void:
-		reveal_notification(false)
-		lock_actions(true)
-		await GAME_UTIL.open_objectives()
-		reveal_notification(true)		
-		lock_actions(false)
-		on_current_mode_update()
-	
-	SettingsBtn.onClick = func() -> void:
-		#ControllerOverlay.hide()
-		#NameControl.hide()
-		reveal_notification(false)		
+	WingInfoBtn.onClick = func() -> void:
 		await lock_actions(true)
-		show_settings()
-		
-	HintInfoBtn.onClick = func() -> void:
-		# ControllerOverlay.hide()
-		#NameControl.hide()
-		GameplayNode.TimelineContainer.show_details(true)
-		reveal_notification(false)
+		current_mode = MODE.INFO	
+
+	FacilityActionBtn.onClick = func() -> void:		
 		set_backdrop_state(true)
 		await lock_actions(true)
+		current_mode = MODE.ACTIVE_MENU_OPEN	
+		await show_facility_updates()
+		current_mode = MODE.NONE
 		
-		BtnControls.itemlist = GBL.find_node(REFS.GAMEPLAY_HEADER).get_hint_buttons()
-		BtnControls.item_index = 0
-		
-		BtnControls.directional_pref = "LR"
-		BtnControls.offset = Vector2(0, 0)
-		BtnControls.hide_a_btn = true
-		await BtnControls.reveal(true)
-		
-		BtnControls.onBack = func() -> void:
-			await BtnControls.reveal(false)
-			GameplayNode.TimelineContainer.show_details(false)
-			reveal_notification(true)
-			lock_actions(false)
-			set_backdrop_state(false)
-			# ControllerOverlay.show()
-			#NameControl.show()
-	
-	TutorialBtn.onClick = func() -> void:
-		freeze_inputs = true
+	SettingsBtn.onClick = func() -> void:
+		set_backdrop_state(true)
 		await lock_actions(true)
-		print('load previous message')
-		await U.tick()
-		#await GAME_UTIL.start_tutorial()
-		lock_actions(false)
-		freeze_inputs = false
-	# -------------------------------------
-	
-	# -------------------------------------
-	current_mode = MODE.ACTIONS
-	# -------------------------------------	
+		GameplayNode.show_marked_objectives = false
+		GameplayNode.show_timeline = false			
+		current_mode = MODE.ACTIVE_MENU_OPEN	
+		await show_settings()
+		current_mode = MODE.NONE
 		
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)
-
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func tutorial_is_running(is_running:bool) -> void:
-	freeze_inputs = is_running
+	DebugBtn.onClick = func() -> void:
+		set_backdrop_state(true)
+		await lock_actions(true)
+		GameplayNode.show_marked_objectives = false
+		GameplayNode.show_timeline = false			
+		current_mode = MODE.ACTIVE_MENU_OPEN	
+		await show_debug()
+		current_mode = MODE.NONE
+	# -------------------------------------	
 	
-	var ActiveNode = GBL.find_node(REFS.ACTIVE_MENU)
-	if ActiveNode != null:
-		ActiveNode.tutorial_is_open = is_running
-	
-	match current_mode:
-		MODE.NONE:
-			await BtnControls.reveal(is_running)
-		# --------------
-		MODE.ACTIONS:
-			await lock_actions(is_running)
-		# --------------
-		MODE.INVESTIGATE:	
-			await lock_investigate(is_running)
-		# --------------	
-		MODE.BUILD:
-			await RoomDetailsControl.reveal(is_running)			
+	on_current_mode_update()
+	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)	
 # --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func reveal_new_message(state:bool) -> void:
@@ -448,7 +351,8 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
-		
+
+signal show_build_complete
 func show_build_options() -> void:
 	const query_size:int = 100
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
@@ -547,14 +451,13 @@ func show_build_options() -> void:
 				})		
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
-		# update card
-		RoomDetailsControl.room_ref = item.ref
-		RoomDetailsControl.reveal(true)		
+		# update preview
+		RoomDetailsControl.room_ref = item.details.ref
 		
 		# disable/enable btn
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
-
+		
 		# draw lines
 		var get_node_pos:Callable = func() -> Vector2: 
 			return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size
@@ -566,48 +469,56 @@ func show_build_options() -> void:
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
 		clear_lines()
-		RoomDetailsControl.room_ref = -1		
-		RoomDetailsControl.reveal(false)				
 
 	ActiveMenuNode.onClose = func() -> void:
-		current_mode = MODE.INVESTIGATE
-		previous_designation = ""
-		on_current_location_update()	
+		await U.tick()
+		show_build_complete.emit()
+		RoomDetailsControl.reveal(false)
 		
 		
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
-	# ACTIVATE NODE
+	# SETUP ROOM DETAILS
+	RoomDetailsControl.reveal(true)
+	RoomDetailsControl.show_room_card = true
+	RoomDetailsControl.show_researcher_card = false
+	RoomDetailsControl.show_scp_card = false
+	RoomDetailsControl.preview_mode = true
+	
+	# ACTIVATE NODE	
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate(4)
 	ActiveMenuNode.open(true)	
+	
+	# allows for wait response
+	await show_build_complete
+# --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-					#"index": index, 
-					#"location": location,
-					#"ability": ability, 
-					#"room_details": room_details, 
-# --------------------------------------------------------------------------------------------------
-func show_ability_list() -> void:
+signal show_show_program_list_complete
+func show_program_list() -> void:
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	
+
 	var update_list:Callable = func() -> void:
 		await U.tick()
-		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_abilities().map(func(x): return {
-			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
-			"is_disabled": x.on_cooldown,
-			"hint": {
-				"icon": SVGS.TYPE.ENERGY,
-				"title": "HINT",
-				"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs().map(func(x): 
+			return {
+				"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+				"show": x.at_level_threshold,
+				"is_disabled": x.on_cooldown,
+				"hint": {
+					"icon": SVGS.TYPE.ENERGY,
+					"title": "HINT",
+					"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
 			},			
 		}) )
 		
 
-	var items:Array = GAME_UTIL.get_list_of_abilities().map(func(x): 
+	var items:Array = GAME_UTIL.get_list_of_programs().map(func(x): 
 		return {
 			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			"show": x.at_level_threshold,
 			"is_disabled": x.on_cooldown,
 			"hint": {
 				"icon": SVGS.TYPE.ENERGY,
@@ -625,32 +536,32 @@ func show_ability_list() -> void:
 		
 	var options:Array = [
 		{
-			"title": "ABILITIES",
+			"title": "GLOBAL",
 			"items": items,
-		}
+		},
+		{
+			"title": "FLOOR SPECIFIC",
+			"items": [],
+		}		
 	]
 
 	ActiveMenuNode.onClose = func() -> void:	
-		set_backdrop_state(false)
-		await reveal_cardminipanel(false)
-		on_camera_settings_update()
-		reveal_cardminipanel(true)
-		lock_investigate(false)
+		await U.tick()
+		show_show_program_list_complete.emit()
 		
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
-	reveal_cardminipanel(false)	
-	lock_investigate(true)
-	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
-
+	
+	await show_show_program_list_complete
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+signal show_generator_complete
 func show_generator_updates() -> void:			
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var gen_level:int = base_states.floor[str(current_location.floor)].generator_level
@@ -726,23 +637,21 @@ func show_generator_updates() -> void:
 		}
 	]
 	
-
 	ActiveMenuNode.onClose = func() -> void:	
-		set_backdrop_state(false)
-		await lock_actions(false)
-		on_camera_settings_update()
+		show_generator_complete.emit()
 	
-	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
-	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
+	
+	await show_generator_complete
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-func show_events_debug() -> void:
+signal show_debug_complete
+func show_debug() -> void:
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	
 	var scp_ref:int
@@ -751,6 +660,63 @@ func show_events_debug() -> void:
 			scp_ref = ref
 			
 	var options:Array = [
+		{
+			"title": "EMERGENCY MODE",
+			"items": [
+				{
+					"title": "NORMAL",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: set to NORMAL mode."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.set_emergency_mode_to_normal()
+						ActiveMenuNode.unlock(),
+				},												
+				{
+					"title": "CAUTION",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: set to CAUTION mode."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.set_emergency_mode_to_caution()
+						ActiveMenuNode.unlock(),
+				},								
+				{
+					"title": "WARNING",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: set to WARNING mode."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.set_emergency_mode_to_warning()
+						ActiveMenuNode.unlock(),
+				},								
+				{
+					"title": "DANGER",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: set to DANGER mode."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.set_emergency_mode_to_danger()
+						ActiveMenuNode.unlock(),
+				},				
+			],
+		},
 		{
 			"title": "EVENTS",
 			"items": [
@@ -797,31 +763,20 @@ func show_events_debug() -> void:
 		}
 	]
 
-
-	BtnControls.reveal(false)
-
-	reveal_cardminipanel(false)
-	RoomDetailsControl.reveal(false)
-
 	ActiveMenuNode.onClose = func() -> void:	
-		set_backdrop_state(false)
-		reveal_cardminipanel(true)	
-		RoomDetailsControl.reveal(true)		
-		await BtnControls.reveal(true)
-		
-	
-	ActiveMenuNode.use_color = Color.WHITE
+		show_debug_complete.emit()
+
 	ActiveMenuNode.options_list = options
 	
-	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
-	
 	ActiveMenuNode.open()	
+	
+	await show_debug_complete
 # --------------------------------------------------------------------------------------------------
 
-
 # --------------------------------------------------------------------------------------------------
+signal show_facility_complete
 func show_facility_updates() -> void:			
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var is_powered:bool = base_states.floor[str(current_location.floor)].is_powered
@@ -927,28 +882,23 @@ func show_facility_updates() -> void:
 		}		
 	]
 	
-	GameplayNode.show_marked_objectives = false
-	GameplayNode.show_timeline = false	
-
 	ActiveMenuNode.onClose = func() -> void:	
-		GameplayNode.show_marked_objectives = true #gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
-		GameplayNode.show_timeline = true
-		
-		set_backdrop_state(false)
-		await lock_actions(false)
-		on_camera_settings_update()
+		show_facility_complete.emit()		
 	
-	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	
-	set_backdrop_state(true)
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate(2)
 	ActiveMenuNode.open()	
+	
+	await show_facility_complete
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+signal show_settings_complete
 func show_settings() -> void:
+	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+	
 	var is_fullscreen_checked:Callable = func() -> bool:
 		return GBL.is_fullscreen
 		
@@ -1059,132 +1009,58 @@ func show_settings() -> void:
 		},		
 	]
 
-	set_backdrop_state(true)
-
-	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	
-	
 	ActiveMenuNode.onClose = func() -> void:	
-		set_backdrop_state(false)
-		await lock_actions(false)
-		reveal_notification(true)
-		on_current_mode_update()
+		show_settings_complete.emit()
 		GameplayNode.restore_player_hud()
 
-	ActiveMenuNode.use_color = Color.WHITE
-	ActiveMenuNode.options_list = options
+	ActiveMenuNode.options_list = options	
+	
+	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
 	
 	add_child(ActiveMenuNode)
-	
-	GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-	
 	await ActiveMenuNode.activate(3)
 	ActiveMenuNode.open()	
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func investigate_wrapper(action:Callable) -> void:
-	clear_lines()
 	
-	await lock_investigate(true)
-	await action.call()
-	await U.tick() 
-	await lock_investigate(false)
-	
-	previous_designation = ""
-	on_current_location_update()
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-var previous_room_ref:int 
-func before_use() -> void:
-	previous_room_ref = RoomDetailsControl.room_ref
-	await BtnControls.reveal(false)
-	
-func after_use() -> void:
-	BtnControls.itemlist = SummaryCard.get_ability_btns()
-	await U.tick()
-	BtnControls.reveal(true)
-	RoomDetailsControl.room_ref = previous_room_ref
-	
-		
-func after_use_passive_ability() -> void:
-	pass
-	#update_details()
+	await show_settings_complete
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty() or current_mode == MODE.NONE:return
-	
-	var actionpanels:Array = [WingActionPanel, FacilityActionPanel, GenActionPanel]
+	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
 	
 	match camera_settings.type:
-		CAMERA.TYPE.ROOM_SELECT:
-			NameControl.show()
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
-			#ControllerOverlay.hide()
-			#ControllerOverlay.show_directional = false
-			
-			if camera_settings.is_locked:
-				reveal_floorpreview(false)
-			else:
-				reveal_floorpreview(true)
-			
-					
-			for panel in actionpanels:
-				if panel == FacilityActionPanel:
-					panel.show()
-				else:
-					panel.hide()
-			
+			WingActions.hide()
+			FacilityActions.show()
+			GeneratorActions.hide()
+
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
-			reveal_floorpreview(false)
 			NameControl.hide()
-			#ControllerOverlay.show()
-			#ControllerOverlay.show_directional = true
-			
-			for panel in actionpanels:
-				if panel == WingActionPanel:
-					panel.show()
-				else:
-					panel.hide()
-			
-			#if GameplayNode.is_tutorial:
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.FLOORPLAN, 0.3)
+			WingActions.show()
+			FacilityActions.hide()
+			GeneratorActions.hide()
 			
 		# ----------------------
 		CAMERA.TYPE.GENERATOR:
-			reveal_floorpreview(false)
 			NameControl.hide()
-			#ControllerOverlay.hide()			
-			#ControllerOverlay.show_directional = false
-
-			for panel in actionpanels:
-				if panel == GenActionPanel:
-					panel.show()
-				else:
-					panel.hide()
-					
-			
+			WingActions.hide()
+			FacilityActions.hide()
+			GeneratorActions.show()			
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 var previous_designation:String
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if current_location.is_empty() or room_config.is_empty() or camera_settings.type == CAMERA.TYPE.FLOOR_SELECT or is_in_transition:return
-	
-	var filtered:Array = purchased_facility_arr.filter(func(x): 
-		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
-	)
+	if current_location.is_empty() or room_config.is_empty():return
 	
 	# update room details control
-	RoomDetailsControl.use_location = current_location
+	var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
+	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
@@ -1200,95 +1076,174 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var can_deconstruct:bool = false if is_room_empty else room_extract.room.can_destroy 
 	var is_under_construction:bool = false if is_room_empty else ROOM_UTIL.is_under_construction(current_location)
 	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
-	
+	var lvl:int = -1 if is_room_empty else room_extract.room.abl_lvl 
+	var max_upgrade_lvl:int = -1 if is_room_empty else room_extract.room.max_upgrade_lvl 
+	var at_max_level:bool = lvl >= max_upgrade_lvl
+	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
+		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
+	).size()	
+		
 	if !room_extract.is_empty():
-		AbilityBtn.show() if !is_room_empty else AbilityBtn.hide()
-		BuildBtn.show() if is_room_empty else BuildBtn.hide()
-
 		if previous_designation != U.location_to_designation(current_location):
 			previous_designation = U.location_to_designation(current_location)	
-			SummaryCard.use_location = current_location
-			SummaryCard.room_ref = room_extract.room.details.ref if !is_room_empty else -1
-
+			SummaryCard.use_location = current_location			
+			
 	match current_mode:
-		# -----------
-		MODE.ACTIONS:
-			#NameControl.show()
-			# ControllerOverlay.show_directional = true
-			WingActionBtn.is_disabled = !is_powered or in_lockdown
-			ProgramBtn.is_disabled = GAME_UTIL.get_list_of_abilities().is_empty()
-			WingActionBtn.icon = SVGS.TYPE.DELETE if !is_powered or in_lockdown else SVGS.TYPE.CONTAIN
+		MODE.NONE:
+			GotoWingBtn.is_disabled = !has_one_floor_activated
+			GotoGeneratorBtn.is_disabled = !has_generator_prerequisite
+			WingProgramBtn.is_disabled = GAME_UTIL.get_list_of_programs().is_empty()
+			WingActionBtn.is_disabled = rooms_in_wing_count == 0
+			GenActionBtn.is_disabled = !has_one_floor_activated			
+		# -----------	
+		MODE.INFO:
+			var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
+						
+			# show timeline details
+			GameplayNode.TimelineContainer.show_details(true)
 			
-			camera_settings.type = CAMERA.TYPE.WING_SELECT
-			SUBSCRIBE.camera_settings = camera_settings
-		# -----------
-		MODE.INVESTIGATE:
-			#NameControl.hide()
-			# ControllerOverlay.show_directional = false
+			# set backdrop
+			set_backdrop_state(true)
 			
-			# update mouse
-			var warp_to_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size			
-			Input.warp_mouse(warp_to_pos)
+			# hide tutorial btn if not a tutorial
+			InfoControls.hide_c_btn = !GameplayNode.is_tutorial or !chapter.has("tutorial")
 			
-			# set this flat first
-			RoomDetailsControl.disable_location = false
-
-			# update roomDetailsControl
-			RoomDetailsControl.show_cost = false
-			RoomDetailsControl.preview_mode = false
-			RoomDetailsControl.show_room_card = !is_room_empty
-			RoomDetailsControl.show_scp_card = false
-			RoomDetailsControl.show_researcher_card = false	
+			# show objectives
+			InfoControls.onAction = func() -> void:
+				InfoControls.reveal(false)
+				await GAME_UTIL.open_objectives()
+				InfoControls.reveal(true)
 			
-			RoomDetailsControl.room_ref = -1 if is_room_empty else room_extract.room.details.ref
-			RoomDetailsControl.researcher_uid = -1 
-			RoomDetailsControl.reveal(!is_room_empty)
+			# show current tutorial
+			InfoControls.onCBtn = func() -> void:
+				InfoControls.reveal(false)
+				await GAME_UTIL.play_tutorial(chapter)
+				InfoControls.reveal(true)
 			
-			RoomBtnPanelLabel.text = "EMPTY" if is_room_empty else room_extract.room.details.name if is_activated else "%s - INACTIVE" % [room_extract.room.details.name]
+			# on back
+			InfoControls.onBack = func() -> void:
+				GameplayNode.TimelineContainer.show_details(false)
+				await InfoControls.reveal(false)
+				GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
+				current_mode = MODE.NONE
+		# -----------	
+		MODE.SUMMARY_CARD:
+			SummaryControls.itemlist = SummaryCard.get_ability_btns()
+			SummaryControls.item_index = 0
+			SummaryControls.directional_pref = "UD"
+			SummaryControls.offset = SummaryCard.global_position
 			
-			# set button states
-			BuildBtn.is_disabled = (!is_room_empty) or nuke_activated or !is_powered
-			DeconstructBtn.hide() if is_under_construction or is_room_empty else DeconstructBtn.show()
-			DeconstructBtn.is_disabled = !can_deconstruct or nuke_activated
-			AbilityBtn.is_disabled = !can_take_action and !is_under_construction
+			SummaryControls.onBack = func() -> void:
+				await SummaryControls.reveal(false)
+				current_mode = MODE.COMMANDS
+		
+			SummaryControls.onUpdate = func(node:Control) -> void:
+				for _node in SummaryControls.itemlist:
+					_node.is_selected = _node == node
+					
+				SummaryControls.onAction = func() -> void:pass
+				SummaryControls.hide_c_btn = true
+				SummaryControls.disable_active_btn = false
+				
+				SummaryControls.disable_active_btn = node.ref_data.is_disabled
+				
+				# ----------------------
+				match node.ref_data.type:
+					"active_ability":
+						SummaryControls.a_btn_title = "USE PROGRAM"
+					# ----------------------
+					"passive_ability":
+						SummaryControls.a_btn_title = "TOGGLE MODULE"
+					# ----------------------
+		# -----------	
+		MODE.COMMANDS:
+			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE" if !is_under_construction else "UNDER CONSTRUCTION"
+			CommandControls.disable_active_btn = is_under_construction
+			CommandControls.hide_a_btn = is_room_empty
 			
-			AbilityBtn.title = "CANCEL CONSTRUCTION" if is_under_construction else "CHECK"
-			AbilityBtn.onClick = func() -> void:
+			CommandControls.hide_c_btn = is_room_empty or !is_activated	
+			CommandControls.disable_c_btn = at_max_level or !is_activated
+			
+			CommandControls.onAction = func() -> void:
+				await CommandControls.reveal(false)
+				if is_activated:
+					current_mode = MODE.SUMMARY_CARD						
+				else:
+					var confirm:bool = await GAME_UTIL.activate_room()
+					if confirm:
+						await U.tick()
+						on_current_location_update()
+					CommandControls.reveal(true)
+					
+			CommandControls.onCBtn = func() -> void:
+				await CommandControls.reveal(false)
+				var confirm:bool = await GAME_UTIL.upgrade_facility()
+				if confirm:
+					await U.tick()
+					on_current_location_update()
+				CommandControls.reveal(true)
+				
+			CommandControls.onBack = func() -> void:
+				await CommandControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.NONE
+		# -----------	
+		MODE.PROGRAMS:
+			current_mode = MODE.ACTIVE_MENU_OPEN
+			await show_program_list()
+			current_mode = MODE.NONE
+		# -----------	
+		MODE.BUILD:	
+			DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+			
+			DesignControls.onAction = func() -> void:				
+				await DesignControls.reveal(false)
+				# if cancel construction
 				if is_under_construction:
-					await lock_investigate(true)
 					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
 					if made_changes:
 						GBL.find_node(REFS.WING_RENDER).construction_is_canceled(current_location)
-						SummaryCard.room_ref = -1
 						await U.tick()
 						on_current_location_update()
-					lock_investigate(false)
-				else:
-					current_mode = MODE.ABILITY			
-							
-			
-	
-			# update line draw
-			var get_node_pos:Callable = func() -> Vector2: 
-				return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size			
+					DesignControls.reveal(true)
+					return
+				
+				# if build new room
+				if is_room_empty:
+					current_mode = MODE.ACTIVE_MENU_OPEN
+					await show_build_options()
+					current_mode = MODE.BUILD
+					await DesignControls.reveal(true)
+					return
+					
+				
+				# ...else destroy room
+				var confirm:bool = await GAME_UTIL.reset_room(current_location)
+				if confirm:
+					GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
+					await U.tick()
+					on_current_location_update()
+				DesignControls.reveal(true)
 						
-			GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
-				"draw_to_summary_card": true,
-			}, 0 )
-		# -----------	
-		MODE.BUILD:
-			RoomDetailsControl.show_cost = true
-			RoomDetailsControl.preview_mode = true
-			RoomDetailsControl.show_room_card = true
-			RoomDetailsControl.show_scp_card = false
-			RoomDetailsControl.show_researcher_card = false	
-
+			DesignControls.onBack = func() -> void:
+				await DesignControls.reveal(false)
+				lock_actions(false)
+				GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
+				current_mode = MODE.NONE
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func set_backdrop_state(state:bool) -> void:	
-	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.2 if state else 0.0))	
+	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.7 if state else 0.0))	
 # --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------	
+func reveal_action_label(state:bool, duration:float = 0.3, title:String = "") -> void:
+	CurrentActionLabel.text = str(title)
+	await U.tween_node_property(ActionPanel, "position:x", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
+# --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func reveal_notification(state:bool, duration:float = 0.3) -> void:
@@ -1299,45 +1254,19 @@ func reveal_notification(state:bool, duration:float = 0.3) -> void:
 
 	NewMessageBtn.is_disabled = !show_new_message_btn
 # --------------------------------------------------------------------------------------------------	
-	
-
-# --------------------------------------------------------------------------------------------------	
-func reveal_floorpreview(state:bool, duration:float = 0.3) -> void:
-	if control_pos.is_empty():return
-	pass
-	#if state:
-		#FloorPreviewControl.show()
-		#var subviewport:SubViewport = GBL.find_node(REFS.WING_RENDER).get_preview_viewport()
-		#PreviewTextureRect.texture = subviewport.get_texture()		
-	#
-	#await U.tween_node_property(FloorPreviewPanel, "position:x", control_pos[FloorPreviewPanel].show if state else control_pos[FloorPreviewPanel].hide , duration)
-	#
-	#if !state:
-		#PreviewTextureRect.texture = null
-		#FloorPreviewControl.hide()
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------		
-func reveal_investigate_controls(state:bool, duration:float = 0.2) -> void:
-	if control_pos.is_empty():return
-	
-	is_in_transition = true
-	await U.tween_node_property(InvestigatePanel, "position:y", control_pos[InvestigatePanel].show if state else control_pos[InvestigatePanel].hide, duration)
-	is_in_transition = false
-# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_action_controls(state:bool, duration:float = 0.2) -> void:
 	if control_pos.is_empty():return
 	
 	is_in_transition = true
-	await U.tween_node_property(ActionPanel, "position:y", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
+	await U.tween_node_property(WingRootPanel, "position:y", control_pos[WingRootPanel].show if state else control_pos[WingRootPanel].hide, duration)
 	is_in_transition = false
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_cardminipanel(state:bool, duration:float = 0.2) -> void:
-	await U.tween_node_property(MiniCardPanel, "position:x", control_pos[MiniCardPanel].show if state else control_pos[MiniCardPanel].hide, duration)
+func reveal_summarycard(state:bool, duration:float = 0.2) -> void:
+	await U.tween_node_property(SummaryPanel, "position:x", control_pos[SummaryPanel].show if state else control_pos[SummaryPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------
@@ -1346,54 +1275,37 @@ func enable_room_focus(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
-func lock_panel_btn_state(state:bool, panels:Array) -> void:
-	for panel in panels:		
+var previous_lock_states:Dictionary = {}
+func lock_panel_btn_state(state: bool) -> void:
+	for panel in [WingRootPanel]:
 		var margin_panel = panel.get_node('./MarginContainer') 
 		for root_panel in margin_panel.get_children():
-			if root_panel != null:
-				for child in root_panel.get_children():
-					for node in child.get_children():
-						if node is BtnBase and "is_disabled" in node:
-							node.is_disabled = state
-						
-						var btn_list:HBoxContainer = node.get_node('./MarginContainer/VBoxContainer/HBoxContainer/')
-						if btn_list != null:
-							for btn in btn_list.get_children():
-								btn.is_disabled = state
+			for child in root_panel.get_children():
+				for node in child.get_children():
+					if node is BtnBase and "is_disabled" in node:
+						if state:
+							previous_lock_states[node] = node.is_disabled
+						node.is_disabled = true if state else previous_lock_states.get(node, false)
+
+					var btn_list: HBoxContainer = node.get_node('./MarginContainer/VBoxContainer/HBoxContainer/')
+					if btn_list != null:
+						for btn in btn_list.get_children():
+							if state:
+								previous_lock_states[btn] = btn.is_disabled
+							btn.is_disabled = true if state else previous_lock_states.get(btn, false)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func check_action_btn_state() -> void:
-	var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
-	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)	
-	GotoWingBtn.show() if has_one_floor_activated else GotoWingBtn.hide()
-	GotoGeneratorBtn.show() if has_generator_prerequisite else GotoGeneratorBtn.hide()
-	FacilityEndTurnBtn.is_disabled = !has_one_floor_activated
-
 func lock_actions(state:bool) -> void:
 	if state:
 		freeze_inputs = true		
-		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
+		lock_panel_btn_state(true)
 	
 	await reveal_action_controls(!state)
 	
 	if !state:
 		freeze_inputs = false
-		lock_panel_btn_state(false, [ActionPanel])
-		check_action_btn_state()
-		
-				
-		
-func lock_investigate(state:bool, ignore_panel:bool = false) -> void:
-	if state:
-		freeze_inputs = true
-		lock_panel_btn_state(true, [InvestigatePanel, ActionPanel])
-	
-	await reveal_investigate_controls(!state)
-	
-	if !state:
-		freeze_inputs = false
-		lock_panel_btn_state(false, [InvestigatePanel])		
+		lock_panel_btn_state(false)		
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1402,242 +1314,61 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 	var duration:float = 0.0 if skip_animation else 0.3
 	var RenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 	
-	
 	match current_mode:
+		# --------------
 		MODE.NONE:
-			BtnControls.reveal(false)
-			RoomDetailsControl.reveal(false) 
-			#ControllerOverlay.hide()
-			
-			reveal_new_message(false)
-			reveal_cardminipanel(false, duration)
+			reveal_action_label(false)
+			await RenderNode.update_camera_size(125)
+			GameplayNode.show_marked_objectives = false
+			GameplayNode.show_timeline = true
+			lock_actions(false)
+			set_backdrop_state(false)
+			reveal_summarycard(false, duration)
 		# --------------
-		MODE.ACTIONS:
-			RenderNode.update_camera_size(125)
-			
-			enable_room_focus(false)
-			set_backdrop_state(false)	
-
-			BtnControls.reveal(false)
-			RoomDetailsControl.reveal(false) 
-			# ControllerOverlay.show()
-			
-			reveal_cardminipanel(false, duration)
-			await lock_actions(false)
-			
+		MODE.INFO:			
+			await RenderNode.update_camera_size(180)
+			GameplayNode.show_marked_objectives = true
+			GameplayNode.show_timeline = true
+			GBL.find_node(REFS.WING_RENDER).change_camera_view(0)
+			InfoControls.reveal(true)
 		# --------------
-		MODE.INVESTIGATE:
-			RenderNode.update_camera_size(175)
-			
-			NewMessageBtn.is_disabled = true
-		
-			InvestigateBackBtn.onClick = func() -> void:
-				clear_lines()
-				reveal_cardminipanel(false)
-				reveal_investigate_controls(false)
-				lock_investigate(true)
-				reveal_action_controls(true)
-				U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].show)
-				NewMessageBtn.is_disabled = !show_new_message_btn
-				current_mode = MODE.ACTIONS
-				GameplayNode.show_marked_objectives = true #gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_OBJECTIVES].val
-				GameplayNode.show_timeline = true
-
-			enable_room_focus(true)
-			set_backdrop_state(true)	
-			
-			BtnControls.reveal(false)
-			# ControllerOverlay.hide()
-			
-			reveal_action_controls(false)
-			reveal_cardminipanel(true)
-		
-			lock_investigate(false)
-			await lock_actions(true)			
-			
-		
-			U.tween_node_property(NotificationPanel, 'position:x', control_pos[NotificationPanel].hide)
-			
-			#if GameplayNode.is_tutorial:
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.INVESTIGATE, 0.5)
-		# --------------
-		MODE.ABILITY:
-			var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
-			var is_powered:bool = room_config.floor[current_location.floor].is_powered
-			var is_room_empty:bool = extract_room_data.room.is_empty()
-			var room_name:String = extract_room_data.room.details.name if !is_room_empty else "EMPTY"
-			var abl_lvl:int = extract_room_data.room.abl_lvl if !is_room_empty else -1
-			var max_upgrade_lvl:int = extract_room_data.room.max_upgrade_lvl if !is_room_empty else -1
-
-			BtnControls.itemlist = SummaryCard.get_ability_btns()
-			BtnControls.item_index = SummaryCard.get_starting_btn_index()
-			BtnControls.directional_pref = "UD"
-			BtnControls.offset = SummaryCard.global_position
-		
-			BtnControls.onUpdate = func(node:Control) -> void:
-				for _node in BtnControls.itemlist:
-					_node.is_selected = _node == node
-					
-				BtnControls.onAction = func() -> void:pass
-				BtnControls.hide_c_btn = true
-				BtnControls.hide_a_btn = false
-				BtnControls.disable_active_btn = false
-				
-				# ----------------------
-				match node.ref_data.type:
-					"active_ability":
-						BtnControls.a_btn_title = "USE"
-						BtnControls.hide_c_btn = true
-						
-						RoomDetailsControl.cycle_to_room(true)
-						RoomDetailsControl.show()				
-						RoomDetailsControl.show_room_card = true
-						RoomDetailsControl.show_scp_card = false
-						RoomDetailsControl.show_researcher_card = false
-						return
-					# ----------------------
-					"passive_ability":
-						BtnControls.a_btn_title = "ENABLE"
-						BtnControls.hide_c_btn = true
-						
-						RoomDetailsControl.cycle_to_room(true)
-						RoomDetailsControl.show()				
-						RoomDetailsControl.show_room_card = true
-						RoomDetailsControl.show_scp_card = false
-						RoomDetailsControl.show_researcher_card = false
-						return					
-					# ----------------------
-					"researcher":
-						# check if there are any available researchers
-						var filter_for_spec:Array = [extract_room_data.room.details.required_staffing[node.index]]
-						var available_researchers:Array = RESEARCHER_UTIL.get_list_of_available(filter_for_spec)
-						var node_researcher_data = node.ref_data.data
-						
-						BtnControls.a_btn_title = "ASSIGN" if node_researcher_data.is_empty() else "UNASSIGN"
-						BtnControls.hide_c_btn = !node_researcher_data.is_empty() and available_researchers.size() > 0
-						BtnControls.disable_c_btn = available_researchers.is_empty()
-						BtnControls.c_btn_title = "AUTO ASSIGN"
-						BtnControls.onCBtn = func() -> void:
-							var researcher_details:Dictionary = RESEARCHER_UTIL.get_user_object(available_researchers[0])
-							var new_uid:String = GAME_UTIL.auto_assign_staff(researcher_details.specialization.ref, node.index)
-							RoomDetailsControl.show()
-							RoomDetailsControl.researcher_uid = new_uid
-						
-						RoomDetailsControl.hide() if node_researcher_data.is_empty() else RoomDetailsControl.show()
-						RoomDetailsControl.researcher_uid = node_researcher_data.uid if !node_researcher_data.is_empty() else -1
-						RoomDetailsControl.cycle_to_reseacher(true)
-						RoomDetailsControl.show_room_card = false
-						RoomDetailsControl.show_scp_card = false
-						RoomDetailsControl.show_researcher_card = true
-						return
-					# ----------------------
-					"scp":
-						BtnControls.a_btn_title = "CONTAIN"
-						
-						BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
-						BtnControls.disable_c_btn = node.ref_data.data.is_empty()
-						BtnControls.c_btn_title = "DEBUG EVENT"
-						BtnControls.onCBtn = func() -> void:
-							show_events_debug()
-						
-						RoomDetailsControl.hide() if node.ref_data.data.is_empty() else RoomDetailsControl.show()
-						RoomDetailsControl.scp_ref = -1 if node.ref_data.data.is_empty() else node.ref_data.data.ref
-						RoomDetailsControl.cycle_to_scp(true)
-						RoomDetailsControl.show_room_card = false
-						RoomDetailsControl.show_scp_card = true
-						RoomDetailsControl.show_researcher_card = false
-						return
-
-				# on nametag
-				BtnControls.hide_a_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
-				BtnControls.disable_active_btn = is_room_empty or abl_lvl >= max_upgrade_lvl
-				BtnControls.a_btn_title = "UPGRADE" if abl_lvl < max_upgrade_lvl else "AT MAX LEVEL"
-				
-				RoomDetailsControl.cycle_to_room(true)
-				RoomDetailsControl.show()
-				RoomDetailsControl.show_room_card = true
-				RoomDetailsControl.show_scp_card = false
-				RoomDetailsControl.show_researcher_card = false
-
-			BtnControls.onBack = func() -> void:
-				RoomDetailsControl.cycle_to_room(true)
-				RoomDetailsControl.show()				
-
-				RoomDetailsControl.show_room_card = true
-				RoomDetailsControl.show_scp_card = false
-				RoomDetailsControl.show_researcher_card = false
-								
-				current_mode = MODE.INVESTIGATE	
-				SummaryCard.deselect_btns()				
-			
-			clear_lines()
-			await lock_investigate(true)			
-			await BtnControls.reveal(true)
-			
-			#if GameplayNode.is_tutorial:
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.ACTIONS)			
+		MODE.SUMMARY_CARD:
+			SummaryControls.reveal(true)
 		# --------------
 		MODE.BUILD:
-			clear_lines()
-			reveal_cardminipanel(false)
-			RoomDetailsControl.reveal(false)
-			await lock_investigate(true)						
-			show_build_options()
+			await RenderNode.update_camera_size(180)
+			GameplayNode.show_marked_objectives = false
+			GameplayNode.show_timeline = false	
+			reveal_summarycard(true)
+			reveal_action_label(true, 0.4, "BUILD MODE")
+			GBL.find_node(REFS.WING_RENDER).change_camera_view(0)
+			DesignControls.reveal(true)			
+		# --------------
+		MODE.COMMANDS:
+			await RenderNode.update_camera_size(180)
+			GameplayNode.show_marked_objectives = false
+			GameplayNode.show_timeline = false	
+			reveal_action_label(true, 0.4, "SELECT A ROOM")
+			reveal_summarycard(true)
+			CommandControls.reveal(true)
+		# -----------	
+		MODE.PROGRAMS:
+			await RenderNode.update_camera_size(180)
+			GameplayNode.show_marked_objectives = false
+			GameplayNode.show_timeline = false	
+			reveal_action_label(true, 0.4, "PROGRAMS")
 
-			
-			#if GameplayNode.is_tutorial:
-				#await GAME_UTIL.check_tutorial(TUTORIAL.TYPE.BUILD, 0.5)
-	
-	on_current_location_update()	
+	on_current_location_update()
 	on_camera_settings_update()
-	
 # --------------------------------------------------------------------------------------------------			
 
-## --------------------------------------------------------------------------------------------------	
-#func check_if_remove_is_valid() -> void:
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	#var is_room_empty:bool = room_extract.room.is_empty()
-	#
-	##ConfirmBtn.title = "DESTROY"
-	##ConfirmBtn.is_disabled = is_room_empty
-## --------------------------------------------------------------------------------------------------		
-#
-## --------------------------------------------------------------------------------------------------
-#func check_if_contain_is_valid() -> void:
-	#var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)	
-	#var is_room_empty:bool = room_extract.room.is_empty()
-	#var can_contain:bool = false if is_room_empty else room_extract.room.can_contain
-	##
-	##ConfirmBtn.title = "CONTAIN"
-	##ConfirmBtn.is_disabled = is_room_empty or !can_contain
-## --------------------------------------------------------------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or !is_showing or is_in_transition or freeze_inputs or is_busy:return	
-	if current_mode == MODE.ABILITY:return
+func on_control_input_update(input_data:Dictionary) -> void:	
+	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or is_in_transition:return	
 	var key:String = input_data.key
-	is_busy = true	
-	
-	match camera_settings.type:
-		# ----------------------------
-		CAMERA.TYPE.FLOOR_SELECT:
-			match key:
-				# ----------------------------
-				"W":
-					U.inc_floor()
-				# ----------------------------
-				"S":
-					U.dec_floor()
-				# ----------------------------
-				#"D":
-					#U.inc_ring()
-				# ----------------------------
-				#"A":
-					#camera_settings.is_locked = !camera_settings.is_locked
-					#SUBSCRIBE.camera_settings = camera_settings
-		# ----------------------------
-		CAMERA.TYPE.WING_SELECT:
+		
+	match current_mode:
+		MODE.NONE:
 			match key:
 				# ----------------------------
 				"W":
@@ -1651,8 +1382,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.dec_ring(false)
-		# ----------------------------
-		CAMERA.TYPE.ROOM_SELECT:
+		MODE.COMMANDS:
 			match key:
 				# ----------------------------
 				"W":
@@ -1666,8 +1396,19 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.room_left(true)
-	
+		MODE.BUILD:
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up(true)
+				# ----------------------------
+				"S":
+					U.room_down(true)
+				# ----------------------------
+				"D":
+					U.room_right(true)
+				# ----------------------------
+				"A":
+					U.room_left(true)
 
-		
-	is_busy = false
 # --------------------------------------------------------------------------------------------------	

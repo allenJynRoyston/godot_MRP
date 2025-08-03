@@ -1,7 +1,7 @@
 extends PanelContainer
 
 @onready var BG:TextureRect = $BG
-@onready var TaskbarCornerPanel:PanelContainer = $HeaderControls/TaskbarCornerPanel
+@onready var TaskbarCornerPanel:PanelContainer = $HeaderControls/PanelContainer/PanelContainer/Control/TaskbarCornerPanel
 @onready var AudioVisualizer:PanelContainer = $AudioVisualizer
 
 @onready var BtnControls:Control = $BtnControl
@@ -464,6 +464,7 @@ func return_to_desktop() -> void:
 	currently_running_app = null	
 	PauseContainer.hide()
 	await toggle_show_taskbar(false)
+	assign_default_btn_events()
 	BtnControls.reveal(true)
 	
 func return_to_app(ref:int) -> void:
@@ -707,18 +708,8 @@ func render_desktop_icons() -> void:
 	# sets 
 	await U.tick()
 	BtnControls.offset = Vector2(5, 5)
-	BtnControls.directional_pref = "LR"
-	BtnControls.itemlist = desktop_itemlist
-	BtnControls.item_index = previous_desktop_index
-	
-	BtnControls.onBack = func() -> void:		
-		BtnControls.reveal(false)
-		onBack.call()	
 
-	BtnControls.onAction = func() -> void:
-		if selected_app.is_empty():return
-		await BtnControls.reveal(false)
-		selected_app.events.open.call(selected_app.details)
+	assign_default_btn_events()
 	
 	if currently_running_app == null:
 		await BtnControls.reveal(true)
@@ -772,24 +763,70 @@ func switch_to() -> void:
 	BtnControls.reveal(true)
 # -----------------------------------
 
+# -----------------------------------
+func assign_default_btn_events() -> void:
+	BtnControls.a_btn_title = "SELECT"
+	BtnControls.b_btn_title = "BACK"
+	BtnControls.directional_pref = "LR"
+	BtnControls.itemlist = desktop_itemlist
+	BtnControls.item_index = previous_desktop_index	
+
+	BtnControls.onAction = func() -> void:
+		if selected_app.is_empty():return
+		BtnControls.reveal(false)
+		selected_app.events.open.call(selected_app.details)	
+		
+	BtnControls.onBack = func() -> void:		
+		BtnControls.reveal(false)
+		onBack.call()	
+# -----------------------------------
+
+# -----------------------------------
+func assign_taskbar_btn_events() -> void:
+	BtnControls.itemlist = []
+	BtnControls.item_index = 0
+		
+	BtnControls.onAction = func() -> void:
+		BtnControls.freeze_and_disable(true)
+		await U.tween_node_property(TaskbarCornerPanel, "size:y", 150, 0.3, 0, Tween.TRANS_CIRC)
+		BtnControls.freeze_and_disable(false)
+		toggle_show_taskbar()
+		BtnControls.hide_a_btn = false
+		show_taskbar_preview = false
+		
+	BtnControls.onBack = func() -> void:
+		BtnControls.freeze_and_disable(true)
+		await U.tween_node_property(TaskbarCornerPanel, "size:y", 150, 0.3, 0, Tween.TRANS_CIRC)
+		BtnControls.freeze_and_disable(false)
+		BtnControls.hide_hint = false
+		BtnControls.hide_a_btn = false
+		show_taskbar_preview = false		
+		assign_default_btn_events()
+# -----------------------------------
+
+
 # ------------------------------------------
 var show_taskbar_preview:bool = false 
 func on_control_input_update(input_data:Dictionary) -> void:
-	if !is_node_ready() or freeze_inputs or Taskbar.is_busy:return		
+	if !is_node_ready() or freeze_inputs or Taskbar.is_busy or Taskbar.show_taskbar:return		
 
 	match input_data.key:
 		"BACKSPACE":
 			if !show_taskbar_preview:
-				BtnControls.hide_a_btn = true
-				await U.tween_node_property(TaskbarCornerPanel, "size:y", 300)
-				BtnControls.onBack = func() -> void:
-					BtnControls.hide_a_btn = false
-					show_taskbar_preview = false
-					U.tween_node_property(TaskbarCornerPanel, "size:y", 50)
 				show_taskbar_preview = true
-			
+				previous_desktop_index = BtnControls.item_index
+				
+				BtnControls.hide_hint = true
+				BtnControls.a_btn_title = "OPEN"
+				BtnControls.b_btn_title = "CLOSE"
+				BtnControls.freeze_and_disable(true)
+				await U.tween_node_property(TaskbarCornerPanel, "size:y", 300, 0.3, 0, Tween.TRANS_CIRC)
+				BtnControls.freeze_and_disable(false)
+				assign_taskbar_btn_events()	
 			else:
-				await U.tween_node_property(TaskbarCornerPanel, "size:y", 50)
+				BtnControls.freeze_and_disable(true)
+				await U.tween_node_property(TaskbarCornerPanel, "size:y", 150, 0.3, 0, Tween.TRANS_CIRC)
+				BtnControls.freeze_and_disable(false)
 				toggle_show_taskbar()
 				BtnControls.hide_a_btn = false
 				show_taskbar_preview = false

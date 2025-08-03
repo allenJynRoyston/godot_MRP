@@ -55,9 +55,6 @@ func end() -> void:
 	BtnControls.reveal(false)
 	await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 	
-	# SET THE TUTORIAL FLAG (disables inputs)
-	GBL.find_node(REFS.ACTION_CONTAINER).tutorial_is_running(false)
-	
 	user_response.emit()
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
@@ -67,17 +64,12 @@ func start(data:Dictionary) -> void:
 	line_index = 0
 	text_arr = data.text
 	
-	# SET THE TUTORIAL FLAG (disables inputs)
-	GBL.find_node(REFS.ACTION_CONTAINER).tutorial_is_running(true)
-	
 	next_line()
 	
 	U.tween_node_property(self, 'modulate', Color(1, 1, 1, 1), 0.3)
 	
 	U.tween_node_property(ContentPanel, 'position:y', control_pos[ContentPanel].show)
 	await BtnControls.reveal(true)
-	
-	
 # -------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------	

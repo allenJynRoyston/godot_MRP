@@ -75,6 +75,18 @@ func _exit_tree() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func room_assign_designation(index:int, assigned_location:Dictionary) -> void:
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(index)	
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	RoomNode.assigned_location = {"floor": assigned_location.floor, "ring": assigned_location.ring, "room": index}
+		
+func room_is_activated(index:int) -> void:
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(index)	
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	RoomNode.set_under_construction(true)	
+
 func room_is_under_construction(index:int) -> void:
 	if !is_node_ready(): return
 	var actual:int = index_to_room_lookup(index)	
@@ -135,6 +147,10 @@ func on_use_location_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
 	FloorLabel.text = "FLOOR %s" % use_location.floor
 	WingLabel.text = "WING %s" % use_location.ring
+	
+	for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		room_assign_designation(i, use_location)
+		
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)	
@@ -152,27 +168,22 @@ func on_base_states_update(new_base_state:Dictionary) -> void:
 		previous_nuke_state = nuke_is_triggered
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 
-func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
-	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
-	
-	if previous_camera_type != camera_settings.type:
-		previous_camera_type = camera_settings.type
-	
-		match camera_settings.type:
-			# ----------------------
-			CAMERA.TYPE.ROOM_SELECT:
-				Laser.show()		
-				BillboardLights.hide()
-				BaseLights.hide()
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.7, 0, Tween.TRANS_SINE)
-			# ----------------------
-			_:
-				Laser.hide()
-				BaseLights.show() if previous_baselights_state else BaseLights.hide()
-				BillboardLights.show() if previous_billboard_state else BillboardLights.hide()
-				EmergencyLights.show() if previous_emergency_state else EmergencyLights.hide()
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.7, 0, Tween.TRANS_SINE)
+func change_camera_view(val:int) -> void:
+	match val:
+		# ----------------------
+		0:
+			Laser.show()		
+			BillboardLights.hide()
+			BaseLights.hide()
+			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.7, 0, Tween.TRANS_SINE)
+		# ----------------------
+		1:
+			Laser.show()
+			BaseLights.show() if previous_baselights_state else BaseLights.hide()
+			BillboardLights.show() if previous_billboard_state else BillboardLights.hide()
+			EmergencyLights.show() if previous_emergency_state else EmergencyLights.hide()
+			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.7, 0, Tween.TRANS_SINE)
+
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------
@@ -214,7 +225,7 @@ func update_room_lighting() -> void:
 			WorldLight.light_energy = 1.2
 			EmergencyLights.show()
 		ROOM.EMERGENCY_MODES.WARNING:
-			BaseLights.show()
+			BaseLights.hide()
 			BillboardLights.show()
 		ROOM.EMERGENCY_MODES.CAUTION:
 			BaseLights.show()
@@ -263,7 +274,7 @@ func on_enable_room_focus() -> void:
 
 # --------------------------------------------------------
 func update_camera_size(val:int) -> void:
-	U.tween_node_property(SceneCamera, "size", val, 0.7)	
+	await U.tween_node_property(SceneCamera, "size", val, 0.3)	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -275,6 +286,7 @@ func update_room_buildings() -> void:
 	for item in purchased_facility_arr:
 		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
 			empty_rooms_list.erase(item.location.room)
+			
 			if item.under_construction:
 				room_is_under_construction(item.location.room)
 			else:	
@@ -284,6 +296,7 @@ func update_room_buildings() -> void:
 		var actual:int = index_to_room_lookup(index)	
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
 		RoomNode.reset_to_default()
+		
 # --------------------------------------------------------
 
 # --------------------------------------------------------

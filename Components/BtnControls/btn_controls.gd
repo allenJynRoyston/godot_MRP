@@ -73,6 +73,10 @@ extends Control
 		hide_c_btn = val
 		on_hide_c_btn_update()		
 
+@export var hide_hint:bool = false : 
+	set(val):
+		hide_hint = val
+		on_hide_hint_update()
 
 var control_pos:Dictionary
 var control_pos_default:Dictionary
@@ -179,7 +183,10 @@ func _ready() -> void:
 	#if !is_node_ready():return
 	#BtnMarginContainer.set('theme_override_constants/margin_left', margin_offsets.x)
 	#BtnMarginContainer.set('theme_override_constants/margin_right', margin_offsets.y)
-	
+func on_hide_hint_update() -> void:
+	if !is_node_ready():return
+	HintContainer.hide() if hide_hint else HintContainer.show()
+
 func on_a_btn_title_update() -> void:
 	if !is_node_ready():return
 	ABtn.title = str(a_btn_title)
@@ -259,12 +266,14 @@ func update_control_pos() -> void:
 # --------------------------------------------------------------------------------------------------
 func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	if control_pos.is_empty():return
+
 	var duration:float = 0 if skip_animation else 0.3
 	var pos_val:int = control_pos[BtnControlPanel].show if state else control_pos[BtnControlPanel].hide
 	is_revealed = state
 	
 	if !state:
 		freeze_and_disable(true)
+	
 	
 	await U.tween_node_property(BtnControlPanel, "position:y", pos_val, duration)
 	
@@ -273,6 +282,7 @@ func reveal(state:bool = is_revealed, skip_animation:bool = false) -> void:
 	
 	if !state:
 		HintContainer.hide()
+		
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------

@@ -339,8 +339,8 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			"details": room_details,
 			"can_destroy": room_details.can_destroy,
 			"can_contain": room_details.can_contain,
-			"is_under_construction": false,
-			"is_activated": false if is_room_empty else room_config_data.is_activated,
+			"is_under_construction": ROOM_UTIL.is_under_construction(use_location),
+			"is_activated": ROOM_UTIL.is_room_activated(use_location),
 			"metrics": metrics,
 			"max_upgrade_lvl": max_upgrade_lvl,
 			"abl_lvl": room_config_data.abl_lvl + ring_level_config.abl_lvl,		
@@ -381,12 +381,19 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 	if ability_uid not in base_states.room[designation].passives_enabled:
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
+	print("old val: ", base_states.room[designation].passives_enabled[ability_uid])
+	
 	var toggle_val:bool = !base_states.room[designation].passives_enabled[ability_uid]
 	if ring_config.energy.used >= ring_config.energy.available and toggle_val:return
+	
+	print("new: ", toggle_val)
 
-	base_states.room[designation].passives_enabled[ability_uid] = toggle_val
-
+	base_states.room[designation].passives_enabled[ability_uid] = toggle_val	
+	#print("A: ", base_states.room["004"].passives_enabled)
+	
 	SUBSCRIBE.base_states = base_states
+	#print("B: ", base_states.room["004"].passives_enabled)
+	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -529,10 +536,41 @@ func cancel_onsite_nuke() -> bool:
 	return false
 # ---------------------
 
-
+# ---------------------
+func set_emergency_mode_to_normal() -> bool:
+	var confirm:bool = await create_modal("Set the wing to NORMAL mode?", "")
+	
+	if !confirm:
+		return false
+			
+	# set emergency mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.NORMAL
+	SUBSCRIBE.base_states = base_states
+	
+	return true
+# ---------------------
 
 # ---------------------
-func set_warning_mode() -> bool:
+func set_emergency_mode_to_caution(add_debuff:bool = true) -> bool:
+	var confirm:bool = await create_modal("Set the wing to CATION mode?", "")
+	
+	if !confirm:
+		return false
+			
+
+	# set emergency mode
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.CAUTION
+	SUBSCRIBE.base_states = base_states
+	
+	# add debuff
+	if add_debuff:
+		add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -1, current_location.floor, [current_location.ring])
+	
+	return true
+# ---------------------
+
+# ---------------------
+func set_emergency_mode_to_warning(add_debuff:bool = true) -> bool:
 	var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
 	
 	if !confirm:
@@ -544,13 +582,14 @@ func set_warning_mode() -> bool:
 	SUBSCRIBE.base_states = base_states
 	
 	# add debuff
-	add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -3, current_location.floor, [current_location.ring])
+	if add_debuff:
+		add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -2, current_location.floor, [current_location.ring])
 	
 	return true
 # ---------------------
 
 # ---------------------
-func set_danger_mode() -> bool:
+func set_emergency_mode_to_danger(add_debuff:bool = true) -> bool:
 	var confirm:bool = await create_modal("Set the wing to DANGER mode?", "")
 	
 	if !confirm:
@@ -561,7 +600,8 @@ func set_danger_mode() -> bool:
 	SUBSCRIBE.base_states = base_states
 	
 	# add debuff
-	add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -3, current_location.floor, [current_location.ring])
+	if add_debuff:
+		add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -3, current_location.floor, [current_location.ring])
 	
 	return true
 # ---------------------
@@ -1051,11 +1091,8 @@ func dismiss_researcher(researcher_data:Dictionary) -> bool:
 
 # ------------------------------------------------------------------------------
 func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) -> bool:
-	var title:String
-	var subtitle:String
-
-	title = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
-	subtitle = "All wings will have their actions frozen." if state else ""
+	var title:String = "Lockdown floor %s?" % [current_location.floor] if state else "Remove lockdown."
+	var subtitle:String = "All wings will have their actions frozen." if state else ""
 			
 	var confirm:bool = await create_modal(title, subtitle)
 	
@@ -1066,6 +1103,25 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 	GameplayNode.restore_showing_state()	
 	return confirm
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func activate_room(use_location:Dictionary = current_location, state:bool = true) -> bool:
+	var room_data:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	
+	var title:String = "Activate %s?" % [room_data.name]
+	var costs:Array = [{
+		"amount": -1, 
+		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	}]	
+				
+	var confirm:bool = await create_modal(title, "", room_data.img_src, costs)
+	
+	if confirm:	
+		ROOM_UTIL.set_room_is_active_state(use_location, state)
+	
+	return confirm
+# ------------------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------------------
 func activate_floor(floor_val:int) -> void:
@@ -1089,7 +1145,7 @@ func upgrade_generator_level(use_location:Dictionary = current_location) -> void
 func upgrade_facility(use_location:Dictionary = current_location) -> bool:	
 	var current_level:int = base_states.room[U.location_to_designation(use_location)].abl_lvl
 	var next_level:int = current_level + 1
-	var activation_requirements = [{"amount": -(100 * next_level), "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]
+	var activation_requirements = [{"amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]
 	var confirm:bool = await create_modal("Upgrade to %s?" % next_level, "", "res://Media/rooms/construction_yard.jpg", activation_requirements)
 	
 	if !confirm:
@@ -1101,7 +1157,7 @@ func upgrade_facility(use_location:Dictionary = current_location) -> bool:
 	# allow for data to update before returning
 	await U.tick()
 	
-	return true
+	return confirm
 # ------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------		
@@ -1240,6 +1296,12 @@ func add_timeline_item(dict:Dictionary) -> void:
 #endregion	
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------
+func play_tutorial(chapter:Dictionary) -> void:	
+	GameplayNode.show_only([GameplayNode.Structure3dContainer])
+	await add_dialogue(chapter.tutorial)
+# ------------------------------------------------------------------------------		
+
 # ------------------------------------------------------------------------------	
 func disable_taskbar(state:bool) -> void:
 	GBL.find_node(REFS.OS_LAYOUT).freeze_inputs = state
@@ -1293,21 +1355,24 @@ func add_currency_to_adjacent_rooms(_new_room_config:Dictionary, amount:int, res
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-func get_list_of_abilities(use_location:Dictionary = current_location) -> Array:
+func get_list_of_programs(use_location:Dictionary = current_location) -> Array:
 	var list:Array = []
 	for item in purchased_facility_arr:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		var abilities:Array = room_details.abilities.call()
 		var location:Dictionary = item.location
 		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]
+		var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(location)
 		var is_activated:bool = room_config_data.is_activated		
-
+		
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
 			var include:bool = use_location.floor == location.floor and use_location.ring == location.ring
 			var room_designation:String = str(location.floor, location.ring, location.room)
 			var ability_uid:String = str(room_details.ref, index)
 			var abilities_on_cooldown:Dictionary = base_states.room[room_designation].ability_on_cooldown
+			var at_level_threshold:bool = ability.lvl_required <= abl_lvl
+			
 						
 			var cooldown_val:int = 0 if ability_uid not in abilities_on_cooldown else abilities_on_cooldown[ability_uid]		
 			var on_cooldown:bool = cooldown_val > 0 
@@ -1317,6 +1382,7 @@ func get_list_of_abilities(use_location:Dictionary = current_location) -> Array:
 					"index": index, 
 					"location": location,
 					"ability": ability, 
+					"at_level_threshold": at_level_threshold,
 					"room_details": room_details, 
 					"cooldown_val": cooldown_val, 
 					"on_cooldown": on_cooldown

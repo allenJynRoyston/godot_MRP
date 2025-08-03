@@ -6,6 +6,7 @@ extends Node3D
 @onready var InterogationLighting:Node3D = $Lighting/InterogationLighting
 @onready var LowLevelLighting:Node3D = $Lighting/LowLevelLighting
 @onready var DustParticles:GPUParticles3D = $DustParticles
+@onready var Fog:FogVolume = $FogVolume
 
 @onready var LookAtCamera:Camera3D = $LookAtCamera
 @onready var LookAtCenter:Marker3D = $Structure/ShelfModel/TvMonitorModel/LookAtCenter
@@ -58,8 +59,6 @@ extends Node3D
 	set(val):
 		power_terminal = val
 		on_power_terminal_update()		
-		
-		
 
 func _ready() -> void:
 	on_enable_ambient_lighting_update()	
@@ -74,6 +73,9 @@ func _ready() -> void:
 func after_ready() -> void:
 	ComputerModel.viewport_feed =  U.get_viewport_feed(GBL.find_node(REFS.MAIN_OS_VIEWPORT))
 	TerminalModel.viewport_feed =  U.get_viewport_feed(GBL.find_node(REFS.MAIN_ARTICLE_VIEWPORT))
+
+func get_fog_node() -> FogVolume:
+	return Fog	
 
 func on_enable_ambient_lighting_update() -> void:
 	if !is_node_ready():return
@@ -127,3 +129,8 @@ func on_power_terminal_update() -> void:
 func zoom(state:bool, zoom_in_val:int = 1) -> void:
 	await U.tween_node_property(SceneCamera, "fov", zoom_in_val if state else 55, 0.7, 0, Tween.TRANS_CIRC)
 	await U.set_timeout(0.1)
+
+func _process(delta: float) -> void:
+	if !is_node_ready():return
+	Fog.rotate_y(0.005)	
+	

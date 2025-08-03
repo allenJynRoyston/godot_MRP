@@ -292,38 +292,29 @@ transform = Transform3D(1, 0, 8.9407e-08, 0, 1, -2.98023e-08, -8.9407e-08, 0, 1,
 
 [node name="R1" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -30)
-build_room = false
 
 [node name="R2" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30)
-build_room = false
 
 [node name="R3" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -30)
-build_room = false
 
 [node name="R4" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 0)
-build_room = false
 
 [node name="R5" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
-build_room = false
 
 [node name="R6" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
-build_room = false
 
 [node name="R7" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 30)
-build_room = false
 
 [node name="R8" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
-build_room = false
 
 [node name="R9" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 30)
-build_room = false
 
 [node name="Gates" type="Node3D" parent="MeshRender"]
 transform = Transform3D(0.707107, 0, -0.707107, 2.83547e-11, 1, 7.45058e-09, 0.707107, 0, 0.707107, -1.05367e-08, -13.7707, 1.05367e-08)

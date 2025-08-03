@@ -113,7 +113,7 @@ func start() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
-	BtnControls.reveal(false)
+	await BtnControls.reveal(false)
 	
 	#await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 

@@ -14,7 +14,7 @@ enum REF {
 	CLONE_RESEARCHER, PROMOTE_RESEARCHER, ADD_TRAIT, REMOVE_TRAIT,
 	
 	# set
-	SET_WARNING_MODE, SET_DANGER_MODE, 
+	SET_NORMAL_MODE, SET_CAUTION_MODE, SET_WARNING_MODE, SET_DANGER_MODE, 
 	
 	# upgrade/unlocks
 	UPGRADE_FACILITY,
@@ -65,24 +65,40 @@ var CANCEL_NUCLEAR_DETONATION:Dictionary = {
 		return await GAME_UTIL.cancel_onsite_nuke(),
 }
 
-
-
-var SET_WARNING_MODE:Dictionary = {
-	"name": "SET WARNING MODE",
-	"description": "Setting the floor level to WARNING.",
+var SET_NORMAL_MODE:Dictionary = {
+	"name": "SET WARNING NORMAL",
+	"description": "Set the emergency level to NORMAL.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.set_warning_mode(),
+		return await GAME_UTIL.set_emergency_mode_to_warning(),
+}
+
+var SET_CAUTION_MODE:Dictionary = {
+	"name": "SET CAUTION MODE",
+	"description": "Set the emergency level to CAUTION.",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.set_emergency_mode_to_caution(),
+}
+
+var SET_WARNING_MODE:Dictionary = {
+	"name": "SET WARNING MODE",
+	"description": "Set the emergency level to WARNING.",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.set_emergency_mode_to_warning(),
 }
 
 var SET_DANGER_MODE:Dictionary = {
 	"name": "SET DANGER MODE",
-	"description": "Setting the floor level to DANGER.",
+	"description": "Set the emergency level to DANGER.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
 	"effect": func() -> bool:
-		return await GAME_UTIL.set_danger_mode(),
+		return await GAME_UTIL.set_emergency_mode_to_warning(),
 }
 
 # ---------------------------------
@@ -373,6 +389,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = TRIGGER_ONSITE_NUKE
 		REF.CANCEL_NUCLEAR_DETONATION:
 			ability = CANCEL_NUCLEAR_DETONATION
+		REF.SET_NORMAL_MODE:
+			ability = SET_NORMAL_MODE
 		REF.SET_WARNING_MODE:
 			ability = SET_WARNING_MODE
 		REF.SET_DANGER_MODE:

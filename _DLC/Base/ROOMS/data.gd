@@ -71,9 +71,9 @@ var DEBUG_ROOM:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE_LVL_1, 0),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MATERIAL_LVL_1, 0),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE_LVL_1, 1),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_MATERIAL_LVL_1, 0),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
 			#ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
 			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
@@ -734,11 +734,12 @@ var MONEY_GEN_1:Dictionary = {
 	"abilities": func() -> Array: 
 		return [
 			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1),
+			ABL.get_ability(ABL.REF.INSTANT_SCIENCE_LVL_1, 1),
 		],	
 			
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1, 0),
 		],	
 	# ------------------------------------------		
 }

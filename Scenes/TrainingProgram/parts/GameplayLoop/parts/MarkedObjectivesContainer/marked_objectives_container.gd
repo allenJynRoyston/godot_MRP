@@ -27,6 +27,7 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	super._ready()	
+	is_showing = false
 	Gradiant.modulate = Color(1, 1, 1, 0)
 	
 	DetectorPanel.onFocus = func() -> void:

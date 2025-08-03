@@ -108,6 +108,7 @@ const mouse_pointer:CompressedTexture2D = preload("res://Media/mouse/icons8-clic
 @export var stdr_skip_loadingscreen:bool = false
 
 @export_category("DEBUG GAMEPLAYLOOP")
+@export var show_debug_menu:bool = false
 @export var skip_setup_progress:bool = false
 @export var start_at_ring_level:bool = false
 @export var skip_objectives:bool = false
@@ -397,6 +398,7 @@ func assign_debugs() -> void:
 	DEBUG.assign(DEBUG.APP_SKIP_TITLESCREEN, stdr_skip_loadingscreen)	
 	
 	# gameplayloop
+	DEBUG.assign(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU, show_debug_menu)
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, skip_setup_progress)	
 	DEBUG.assign(DEBUG.GAMEPLAY_START_AT_RING_LEVEL, start_at_ring_level)	
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_OBJECTIVES, skip_objectives)

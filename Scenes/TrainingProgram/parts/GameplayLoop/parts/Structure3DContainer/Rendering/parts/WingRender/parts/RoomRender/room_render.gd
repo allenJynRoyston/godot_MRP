@@ -24,15 +24,27 @@ extends Node3D
 const RoomRenderUnderConstructionMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/textures/RoomRender_UnderConstruction.tres")
 const RoomRenderBuiltMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/textures/RoomRender_Built.tres")
 
+var current_location:Dictionary
 var camera_settings:Dictionary
+var room_config:Dictionary
+
 var use_omni_light:bool = false
+var room_is_activated:bool = false
+var assigned_location:Dictionary = {} : 
+	set(val):
+		assigned_location = val
+		on_assigned_location_update()
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
 	
 func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _ready() -> void:
 	reset_to_default()
@@ -72,7 +84,7 @@ func destroy_room() -> void:
 func on_under_construction_update(state:bool, force_skip:bool = false, ignore_room_render:bool = false) -> void:
 	under_construction = state
 	if !is_node_ready():return
-	var animation_speed:float = 0 if skip_animation or force_skip else 1.5
+	var animation_speed:float = 0 if skip_animation or force_skip else 0.3
 	
 	# set texture
 	set_texture(RoomRenderUnderConstructionMaterial)	
@@ -122,7 +134,7 @@ func on_build_room_update(force_skip:bool = false) -> void:
 	build_room = true
 	# already built, ignore	
 	if !is_node_ready():return
-	var animation_speed:float = 0 if skip_animation or force_skip else 1.5
+	var animation_speed:float = 0 if skip_animation or force_skip else 0.3
 	
 	# no animation
 	if animation_speed == 0:
@@ -172,6 +184,26 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		CAMERA.TYPE.ROOM_SELECT:
 			if under_construction:
 				ConstructionOmniLight.hide()
+
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
+	if !is_node_ready() or room_config.is_empty():return
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+	
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	if !is_node_ready() or room_config.is_empty():return
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+
+func on_assigned_location_update() -> void:
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+	
+func update_room_data() -> void:
+	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or assigned_location.is_empty():return
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(assigned_location)
+	room_is_activated = ROOM_UTIL.is_room_activated(assigned_location)
+	if room_is_activated:
+		print('room update: ', room_extract)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

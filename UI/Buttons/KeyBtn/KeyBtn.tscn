@@ -51,8 +51,9 @@ shadow_color = Color(1, 0.746667, 0.2, 0.305882)
 
 [node name="KeyBtn" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.5)
-offset_right = 54.0
-offset_bottom = 32.0
+offset_right = 52.0
+offset_bottom = 71.0
+size_flags_horizontal = 0
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_f1p3b")
 script = ExtResource("1_5n3hm")
@@ -90,6 +91,7 @@ layout_mode = 2
 theme_override_constants/margin_bottom = 1
 
 [node name="SmallKeyLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/MarginContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 5
 text = "NTER"

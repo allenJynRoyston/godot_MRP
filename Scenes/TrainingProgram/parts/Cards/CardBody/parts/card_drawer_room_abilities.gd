@@ -115,8 +115,10 @@ func build_list() -> void:
 func update_node() -> void:
 	if !is_node_ready() or room_config.is_empty() or room_details.is_empty() or base_states.is_empty() or resources_data.is_empty() or use_location.is_empty():return
 	var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
-	var is_activated:bool = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].is_activated
+	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location) 
+	var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(use_location)
 	var use_list:Array = List.get_children()
+	
 	
 	for index in NodeList.size():
 		var SummaryBtnNode:Control = NodeList[index]
@@ -129,6 +131,7 @@ func update_node() -> void:
 					var designation:String = U.location_to_designation(use_location)
 					var ability_uid:String = str(room_details.ref, index)	
 					var on_cooldown:bool = false
+					var at_level_threshold:bool = ability.lvl_required <= abl_lvl
 					var cooldown_val:int = 0
 					
 					if ability_uid in base_states.room[designation].ability_on_cooldown:
@@ -137,14 +140,18 @@ func update_node() -> void:
 
 					SummaryBtnNode.ref_data = {
 						"type": 'active_ability', 
-						"data": ability
+						"data": ability,
+						"is_disabled": !is_activated or !at_level_threshold
 					}
 					
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.CONVERSATION
-					SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !on_cooldown else "%s (on cooldown for %s days)." % [ability.description, cooldown_val]
+					if !at_level_threshold:
+						SummaryBtnNode.hint_description = "Requires upgrade (room level too low)."
+					else:					
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !on_cooldown else "%s (on cooldown for %s days)." % [ability.description, cooldown_val]
 					
-					SummaryBtnNode.is_disabled = !is_activated
+					SummaryBtnNode.is_disabled = !is_activated or !at_level_threshold
 					SummaryBtnNode.use_alt = on_cooldown
 					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.name if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
 					SummaryBtnNode.icon =  SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.MEDIA_PLAY
@@ -168,7 +175,8 @@ func update_node() -> void:
 					var designation:String = U.location_to_designation(use_location)
 					var ability_uid:String = str(room_details.ref, index)	
 					var is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false	
-
+					var at_level_threshold:bool = ability.lvl_required <= abl_lvl
+					
 					# check if scp is required for passive to be used
 					if "scp_required" in ability and ability.scp_required:
 						var has_scp:bool = false
@@ -187,14 +195,18 @@ func update_node() -> void:
 					
 					SummaryBtnNode.ref_data = {
 						"type": 'passive_ability', 
-						"data": ability
+						"data": ability,
+						"is_disabled": !is_activated or !at_level_threshold
 					}				
 					
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.ENERGY
-					SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "%s (not enough energy)." % [ability.description]
+					if !at_level_threshold:
+						SummaryBtnNode.hint_description = "Requires upgrade (room level too low)."
+					else:
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "%s (not enough energy)." % [ability.description]
 
-					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy
+					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy or !at_level_threshold
 					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.name
 					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed else SVGS.TYPE.DELETE
 					
