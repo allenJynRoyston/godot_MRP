@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cey4msk4p7tpa"]
+[gd_scene load_steps=23 format=3 uid="uid://cey4msk4p7tpa"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_soqd8"]
 [ext_resource type="Script" uid="uid://c2g08ld7dokr2" path="res://Scenes/TrainingProgram/parts/Cards/ROOM/room_card.gd" id="1_tq8sf"]
@@ -31,6 +31,9 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6kgnm"]
 bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
@@ -38,12 +41,45 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nu0ye"]
 bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvj30"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vjof"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vjof"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqxk8"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [node name="RoomCard" type="PanelContainer"]
 custom_minimum_size = Vector2(275, 425)
@@ -122,6 +158,7 @@ custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_6kgnm")
+hollow = false
 content = "0"
 title = "LVL"
 border_color = Color(1, 0.74902, 0.2, 1)
@@ -130,6 +167,7 @@ border_color = Color(1, 0.74902, 0.2, 1)
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
+hollow = false
 is_small = true
 center_text = false
 title = ""
@@ -156,6 +194,7 @@ label_settings = ExtResource("8_f84t7")
 [node name="CardDrawerCurrency" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CurrencyContainer" instance=ExtResource("7_8cpo2")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+hollow = null
 title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
@@ -183,6 +222,7 @@ label_settings = ExtResource("8_f84t7")
 [node name="CardDrawerVibes" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VibesContainer" instance=ExtResource("7_p42hl")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+hollow = null
 title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
@@ -231,12 +271,15 @@ label_settings = ExtResource("8_f84t7")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
+hollow = false
 is_small = true
 content = "Effect description"
 title = ""
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="ProgramContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="5"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ProgramContainer"]
@@ -276,6 +319,8 @@ label_settings = ExtResource("8_f84t7")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
+hollow = false
 is_small = true
 content = "PHYSICAL"
 title = ""
@@ -291,6 +336,8 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_eqxk8")
+hollow = false
 is_small = true
 content = "-"
 title = "DESCRIPTION"

@@ -7,15 +7,20 @@ extends CardDrawerClass
 		list = val
 		on_list_update()
 
+@export var hollow:bool = false : 
+	set(val):
+		hollow = val
+		on_hollow_update()
+		
 var room_details:Dictionary = {}
 var room_config:Dictionary = {}
 var current_location:Dictionary = {}
 var use_location:Dictionary = {}
 var preview_mode:bool = false
-
 var is_researched:bool = true
 
 const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
+var OrangePanelPreload:StyleBoxFlat = preload("res://Styles/OrangePanel.tres").duplicate()
 
 # -----------------------------
 func _init() -> void:
@@ -32,6 +37,10 @@ func _ready() -> void:
 # -----------------------------
 
 # -----------------------------
+func on_hollow_update() -> void:
+	if !is_node_ready():return
+	$".".set('theme_override_styles/panel', null if hollow else OrangePanelPreload)	
+	
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	U.debounce(str(self.name, "_update_nodes"), on_list_update)
@@ -68,6 +77,7 @@ func on_list_update() -> void:
 			new_node.amount = amount
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon
+			new_node.invert_colors = true
 			
 			ListContainer.add_child(new_node)
 # -----------------------------

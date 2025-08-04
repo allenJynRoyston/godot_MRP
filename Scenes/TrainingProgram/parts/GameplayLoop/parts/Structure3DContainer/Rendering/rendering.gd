@@ -178,10 +178,10 @@ func on_base_states_update(new_base_state:Dictionary) -> void:
 # ------------------------------------------------
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty() or previous_camera_type == camera_settings.type:return
-	previous_camera_type = camera_settings.type	
-	
-	var new_amount:float = 6.0
+	if !is_node_ready() or camera_settings.is_empty():return
+		
+	#if previous_camera_type == camera_settings.type:
+		#previous_camera_type = camera_settings.type
 
 	match camera_settings.type:
 		# --------------------
@@ -190,26 +190,38 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			enable_overview(true)
 			enable_wing(false)
 			enable_generator(false)
+			set_shader_strength(0)
 		# --------------------	
 		CAMERA.TYPE.WING_SELECT:	
 			transition()
 			enable_wing(true)			
 			enable_overview(false)
 			enable_generator(false)
-			new_amount = 3.0
+			set_shader_strength(1)
 		# --------------------		
 		CAMERA.TYPE.ROOM_SELECT:
 			transition()
 			enable_wing(true)			
 			enable_overview(false)
-			enable_generator(false)			
+			enable_generator(false)
+			set_shader_strength(0)
 		# --------------------	
 		CAMERA.TYPE.GENERATOR:
 			transition()
 			enable_generator(true)
 			enable_overview(false)
 			enable_wing(false)
+			set_shader_strength(0)
 
+# ------------------------------------------------
+func set_shader_strength(strength:int) -> void:
+	var new_amount:float
+	match strength:
+		0:
+			new_amount = 6.0
+		1: 
+			new_amount = 3.0
+	
 	MaterialRect.material = material_dupe
 	U.tween_range(material_dupe.get_shader_parameter("zoom"), new_amount, 0.5, func(val:float) -> void:
 		material_dupe.set_shader_parameter("zoom", val)
@@ -223,12 +235,6 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
 # ------------------------------------------------
-
-# --------------------------------------------------------
-func set_wing_camera_size(new_size:int) -> void:
-	for node in [WingCurrentFloor]:
-		node.update_camera_size(new_size)
-# --------------------------------------------------------
 
 # ------------------------------------------------
 func on_nuke_is_triggered_update() -> void:

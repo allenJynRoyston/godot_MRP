@@ -161,6 +161,15 @@ func return_data_via_location(use_location:Dictionary) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func list_of_rooms_in_wing(use_location:Dictionary = current_location) -> Array:	
+	var list:Array = purchased_facility_arr.filter(func(x):
+		if use_location.floor == x.location.floor and use_location.ring == x.location.ring:
+			return x
+		).map(func(x): return x.location.room)
+	return list
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func is_under_construction(use_location:Dictionary) -> bool:
 	for item in purchased_facility_arr:
 		if use_location == item.location:

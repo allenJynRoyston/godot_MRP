@@ -18,6 +18,10 @@ extends PanelContainer
 @onready var VibeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer
 @onready var VibePanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer2/VibePanel
 
+# effect
+@onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
+@onready var EffectPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
+
 # activation
 @onready var ActivationContainer:VBoxContainer = $MarginContainer/VBoxContainer/ActivationContainer
 @onready var ActivationGrid:GridContainer = $MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid
@@ -61,23 +65,8 @@ func _exit_tree() -> void:
 	
 	
 func _ready() -> void:
-	pass
-	#BusyPanel.hide()
-	#
-	#for node in node_list:
-		#node.preview_mode = preview_mode
-		##node.is_left_side = false
-	#
-	#for node in node_list:
-		#node.onLock = func() -> void:
-			#for child in node_list:
-				#child.lock_btns(true)
-			#
-		#node.onUnlock = func() -> void:
-			#for child in node_list:
-				#child.lock_btns(false)
-				#
-	#on_use_location_update()
+	for node in [EffectPanel, VibePanel, EconomyPanel]:
+		node.hollow = true
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -113,6 +102,7 @@ func on_update() -> void:
 	
 	# extract
 	show()
+	
 	var room_details:Dictionary = extract_room_data.room
 	var scp_details:Dictionary = extract_room_data.scp
 	var metrics:Dictionary = extract_room_data.room.metrics
@@ -129,18 +119,33 @@ func on_update() -> void:
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "★"]
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
 	
-	print(use_location)
+
 	# economy
+	var show_economy:bool = false
+	for item in currency_list:
+		if int(item.title) > 0:
+			show_economy = true
+			break
 	EconomyPanel.use_location = use_location	
 	EconomyPanel.list = currency_list
 	EconomyPanel.preview_mode = false
+	EconomyContainer.show() if show_economy else EconomyContainer.hide()
 
 	# vibe
+	var show_metrics:bool = false
+	for key in metrics:
+		if metrics[key] != 0:
+			show_metrics = true
+			break
 	VibePanel.use_location = use_location	
 	VibePanel.metrics = metrics
 	VibePanel.preview_mode = false
+	VibeContainer.show() if show_metrics else VibeContainer.hide()
 	
-	
+	# effect
+	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()
+	EffectPanel.content = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
+
 	# under construction
 	if is_under_construction:
 		StatusLabel.text = "UNDER CONSTRUCTION"

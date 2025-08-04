@@ -6,9 +6,8 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_24nkd"]
+[sub_resource type="LabelSettings" id="LabelSettings_pxje0"]
 font = ExtResource("3_pxje0")
-font_size = 28
 font_color = Color(0.05, 0.05, 0.05, 1)
 
 [node name="PanelContainer" type="PanelContainer"]
@@ -40,5 +39,5 @@ horizontal_alignment = 1
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_24nkd")
+label_settings = SubResource("LabelSettings_pxje0")
 horizontal_alignment = 1

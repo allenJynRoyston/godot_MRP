@@ -189,46 +189,46 @@ func dec_ring(wrap_around:bool = true) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
-func room_up(allow_floor_change:bool = false) -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.UP)
-	if room_index == -1:
+func room_up(allow_floor_change:bool = false, use_angle_table:bool = false) -> void:
+	var room_index:int = location_lookup(current_location.room, U.DIR.UP, use_angle_table)
+	if room_index == -1:	
 		if current_location.floor - 1 >= 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor - 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
-			current_location.room =  U.location_lookup_opposite(current_location.room, U.DIR.UP)
+			current_location.room =  4 if use_angle_table else U.location_lookup_opposite(current_location.room, U.DIR.UP)
 	else:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
 
-func room_down(allow_floor_change:bool = false) -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.DOWN)
+func room_down(allow_floor_change:bool = false, use_angle_table:bool = false) -> void:
+	var room_index:int = location_lookup(current_location.room, U.DIR.DOWN, use_angle_table)
 	if room_index == -1:
 		if current_location.floor + 1 < room_config.floor.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.floor + 1, 0, room_config.floor.size() - 1)
 			current_location.floor = next_val
-			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.DOWN)
+			current_location.room =  4 if use_angle_table else location_lookup_opposite(current_location.room, U.DIR.DOWN)
 	else:
 		current_location.room = room_index
 	SUBSCRIBE.current_location = current_location
 
-func room_right(allow_floor_change:bool = false) -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.RIGHT)
+func room_right(allow_floor_change:bool = false, use_angle_table:bool = false) -> void:
+	var room_index:int = location_lookup(current_location.room, U.DIR.RIGHT, use_angle_table)
 	if room_index == -1:
 		if current_location.ring < room_config.floor[current_location.floor].ring.size() - 1 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring + 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
-			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.RIGHT)
+			current_location.room =  4 if use_angle_table else location_lookup_opposite(current_location.room, U.DIR.RIGHT)
 	else:
 		current_location.room = room_index	
 	SUBSCRIBE.current_location = current_location
 
-func room_left(allow_floor_change:bool = false) -> void:
-	var room_index:int = U.location_lookup(current_location.room, U.DIR.LEFT)
+func room_left(allow_floor_change:bool = false, use_angle_table:bool = false) -> void:
+	var room_index:int = location_lookup(current_location.room, U.DIR.LEFT, use_angle_table)
 	if room_index == -1:
 		if current_location.ring > 0 and allow_floor_change:
 			var next_val:int = clampi(current_location.ring - 1, 0, room_config.floor[current_location.floor].ring.size() - 1)
 			current_location.ring = next_val
-			current_location.room = U.location_lookup_opposite(current_location.room, U.DIR.LEFT)
+			current_location.room =  4 if use_angle_table else location_lookup_opposite(current_location.room, U.DIR.LEFT)
 	else:
 		current_location.room = room_index	
 	SUBSCRIBE.current_location = current_location
@@ -307,62 +307,62 @@ func location_lookup_opposite(val:int, dir: DIR) -> int:
 # --------------------------------------------------------------------------------------------------		
 
 # -----------------------------------------------------------------------------------------------
-func location_lookup(val: int, dir: DIR) -> int:
+func location_lookup(val: int, dir: DIR, use_angle_table:bool = false) -> int:
 	match val:
 		0:
 			match dir:
-				DIR.UP: return -1
-				DIR.DOWN: return 1
-				DIR.LEFT: return -1
-				DIR.RIGHT: return 2
+				DIR.UP: return -1 if !use_angle_table else -1
+				DIR.DOWN: return 1 if !use_angle_table else 4
+				DIR.LEFT: return -1 if !use_angle_table else 1
+				DIR.RIGHT: return 2 if !use_angle_table else 2
 		1:
 			match dir:
-				DIR.UP: return 0
-				DIR.DOWN: return 3
-				DIR.LEFT: return -1
-				DIR.RIGHT: return 4
+				DIR.UP: return 0 if !use_angle_table else 0
+				DIR.DOWN: return 3 if !use_angle_table else 6
+				DIR.LEFT: return -1 if !use_angle_table else 3
+				DIR.RIGHT: return 4 if !use_angle_table else 2
 		2:
 			match dir:
-				DIR.UP: return -1
-				DIR.DOWN: return 4
-				DIR.LEFT: return 0
-				DIR.RIGHT: return 5
+				DIR.UP: return -1 if !use_angle_table else 0
+				DIR.DOWN: return 4 if !use_angle_table else 7
+				DIR.LEFT: return 0 if !use_angle_table else 1
+				DIR.RIGHT: return 5 if !use_angle_table else 5
 		3:
 			match dir:
-				DIR.UP: return 1
-				DIR.DOWN: return -1
-				DIR.LEFT: return -1
-				DIR.RIGHT: return 6
+				DIR.UP: return 1 if !use_angle_table else 1
+				DIR.DOWN: return -1 if !use_angle_table else 6
+				DIR.LEFT: return -1 if !use_angle_table else -1
+				DIR.RIGHT: return 6 if !use_angle_table else 4
 		4:
 			match dir:
-				DIR.UP: return 2
-				DIR.DOWN: return 6
-				DIR.LEFT: return 1
-				DIR.RIGHT: return 7
+				DIR.UP: return 2 if !use_angle_table else 0
+				DIR.DOWN: return 6 if !use_angle_table else 8
+				DIR.LEFT: return 1 if !use_angle_table else 3
+				DIR.RIGHT: return 7 if !use_angle_table else 5
 		5:
 			match dir:
-				DIR.UP: return -1
-				DIR.DOWN: return 7
-				DIR.LEFT: return 2
-				DIR.RIGHT: return -1
+				DIR.UP: return -1 if !use_angle_table else 2
+				DIR.DOWN: return 7 if !use_angle_table else 7
+				DIR.LEFT: return 2 if !use_angle_table else 4
+				DIR.RIGHT: return -1 if !use_angle_table else -1
 		6:
 			match dir:
-				DIR.UP: return 4
-				DIR.DOWN: return -1
-				DIR.LEFT: return 3
-				DIR.RIGHT: return 8
+				DIR.UP: return 4 if !use_angle_table else 1
+				DIR.DOWN: return -1 if !use_angle_table else 8
+				DIR.LEFT: return 3 if !use_angle_table else 3
+				DIR.RIGHT: return 8 if !use_angle_table else 7
 		7:
 			match dir:
-				DIR.UP: return 5
-				DIR.DOWN: return 8
-				DIR.LEFT: return 4
-				DIR.RIGHT: return -1
+				DIR.UP: return 5 if !use_angle_table else 2
+				DIR.DOWN: return 8 if !use_angle_table else -1
+				DIR.LEFT: return 4 if !use_angle_table else 6 
+				DIR.RIGHT: return -1 if !use_angle_table else 5
 		8:
 			match dir:
-				DIR.UP: return 7
-				DIR.DOWN: return -1
-				DIR.LEFT: return 6
-				DIR.RIGHT: return -1
+				DIR.UP: return 7 if !use_angle_table else 4
+				DIR.DOWN: return -1 if !use_angle_table else -1
+				DIR.LEFT: return 6 if !use_angle_table else 6
+				DIR.RIGHT: return -1 if !use_angle_table else 7
 	return val
 # -----------------------------------------------------------------------------------------------
 

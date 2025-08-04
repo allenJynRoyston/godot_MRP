@@ -12,12 +12,18 @@ extends CardDrawerClass
 		metrics = val
 		on_metrics_update()
 
+@export var hollow:bool = false : 
+	set(val):
+		hollow = val
+		on_hollow_update()
+
 var use_location:Dictionary = {}
 var is_researched:bool = true
 var preview_mode:bool = false
 var room_config:Dictionary = {}
 
 const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
+var OrangePanelPreload:StyleBoxFlat = preload("res://Styles/OrangePanel.tres").duplicate()
 
 # -------------------------------
 func _init() -> void:
@@ -42,6 +48,14 @@ func get_is_activated() -> bool:
 		return false if extract_data.room.is_empty() else extract_data.room.is_activated		
 		
 	return true		
+	
+func on_hollow_update() -> void:
+	if !is_node_ready():return
+	
+	for node in [VibeMorale, VibeReadiness, VibeSafety]:
+		node.invert_color = !hollow
+	
+	$".".set('theme_override_styles/panel', null if hollow else OrangePanelPreload)	
 # -------------------------------
 
 

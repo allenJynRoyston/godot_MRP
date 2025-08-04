@@ -26,7 +26,6 @@ const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 	set(val):
 		allow_controls = val
 		check_for_unavailable_rooms()
-		#GBL.find_node(REFS.WING_RENDER).enable_room_focus = val
 
 var title:String = "" : 
 	set(val):
@@ -135,7 +134,7 @@ func end(made_changes:bool) -> void:
 			amount_count += item.amount
 		
 		if !tally_dict.is_empty() and amount_count != 0:
-			await GAME_UTIL.open_tally( tally_dict )
+			await GAME_UTIL.open_tally( tally_dict )			
 			
 	user_response.emit(made_changes)
 	queue_free()

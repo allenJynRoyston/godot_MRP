@@ -106,8 +106,6 @@ func update() -> void:
 		})
 	
 	
-	print(ring_config_data.debuffs)
-	
 	for debuff in ring_config_data.debuffs:
 		status_list.push_back({
 			"title": debuff.data.name,

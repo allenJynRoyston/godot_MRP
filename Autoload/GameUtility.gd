@@ -362,14 +362,15 @@ func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
 	var apply_cooldown:bool = await ability.effect.call()
+	
+	if ability_uid not in base_states.room[designation].ability_on_cooldown:
+		base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
+		
 	if apply_cooldown:
-		if ability_uid not in base_states.room[designation].ability_on_cooldown:
-			base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
-			
 		base_states.room[designation].ability_on_cooldown[ability_uid] = ability.cooldown_duration
 		
-		SUBSCRIBE.resources_data = resources_data
-		SUBSCRIBE.base_states = base_states
+	SUBSCRIBE.resources_data = resources_data
+	SUBSCRIBE.base_states = base_states
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -381,12 +382,8 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 	if ability_uid not in base_states.room[designation].passives_enabled:
 		base_states.room[designation].passives_enabled[ability_uid] = false
 	
-	print("old val: ", base_states.room[designation].passives_enabled[ability_uid])
-	
 	var toggle_val:bool = !base_states.room[designation].passives_enabled[ability_uid]
 	if ring_config.energy.used >= ring_config.energy.available and toggle_val:return
-	
-	print("new: ", toggle_val)
 
 	base_states.room[designation].passives_enabled[ability_uid] = toggle_val	
 	#print("A: ", base_states.room["004"].passives_enabled)
@@ -547,11 +544,12 @@ func cancel_onsite_nuke() -> bool:
 # ---------------------
 
 # ---------------------
-func set_emergency_mode_to_normal() -> bool:
-	var confirm:bool = await create_modal("Set the wing to NORMAL mode?", "")
-	
-	if !confirm:
-		return false
+func set_emergency_mode_to_normal(skip_confirm:bool = false) -> bool:
+	if !skip_confirm:
+		var confirm:bool = await create_modal("Set the wing to NORMAL mode?", "")
+		
+		if !confirm:
+			return false
 			
 	# set emergency mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.NORMAL
@@ -561,11 +559,12 @@ func set_emergency_mode_to_normal() -> bool:
 # ---------------------
 
 # ---------------------
-func set_emergency_mode_to_caution(add_debuff:bool = true) -> bool:
-	var confirm:bool = await create_modal("Set the wing to CATION mode?", "")
-	
-	if !confirm:
-		return false
+func set_emergency_mode_to_caution(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
+	if !skip_confirm:
+		var confirm:bool = await create_modal("Set the wing to CATION mode?", "")
+		
+		if !confirm:
+			return false
 			
 
 	# set emergency mode
@@ -580,13 +579,13 @@ func set_emergency_mode_to_caution(add_debuff:bool = true) -> bool:
 # ---------------------
 
 # ---------------------
-func set_emergency_mode_to_warning(add_debuff:bool = true) -> bool:
-	var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
-	
-	if !confirm:
-		return false
+func set_emergency_mode_to_warning(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
+	if !skip_confirm:
+		var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
+		
+		if !confirm:
+			return false
 			
-
 	# set emergency mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
 	SUBSCRIBE.base_states = base_states
@@ -599,12 +598,13 @@ func set_emergency_mode_to_warning(add_debuff:bool = true) -> bool:
 # ---------------------
 
 # ---------------------
-func set_emergency_mode_to_danger(add_debuff:bool = true) -> bool:
-	var confirm:bool = await create_modal("Set the wing to DANGER mode?", "")
-	
-	if !confirm:
-		return false
-			
+func set_emergency_mode_to_danger(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
+	if !skip_confirm:
+		var confirm:bool = await create_modal("Set the wing to DANGER mode?", "")
+		
+		if !confirm:
+			return false
+				
 	# set emergency mode
 	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 	SUBSCRIBE.base_states = base_states
@@ -1141,6 +1141,18 @@ func toggle_is_ventilated(use_loction:Dictionary) -> void:
 # ------------------------------------------------------------------------------
 func set_is_ventilated(use_loction:Dictionary, state:bool) -> void:
 	base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = state
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func toggle_is_overheated(use_loction:Dictionary) -> void:
+	base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated
+	SUBSCRIBE.base_states = base_states 
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func set_is_overheated(use_loction:Dictionary, state:bool) -> void:
+	base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = state
 	SUBSCRIBE.base_states = base_states 
 # ------------------------------------------------------------------------------
 

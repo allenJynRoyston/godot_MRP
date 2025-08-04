@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=33 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="2_dchg3"]
@@ -17,6 +17,7 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_ihy8r"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="7_w56pt"]
 [ext_resource type="PackedScene" uid="uid://bwdoedxrhp17b" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerScp.tscn" id="7_wi2bx"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="8_budmt"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wi2bx"]
 
@@ -26,13 +27,20 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uq7ee"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5g6vn"]
-bg_color = Color(1, 0.745178, 0.380506, 1)
+bg_color = Color(1, 0.74902, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgan4"]
-bg_color = Color(0.06, 0.06, 0.06, 0.784314)
+bg_color = Color(0.06, 0.06, 0.06, 0.690196)
+
+[sub_resource type="LabelSettings" id="LabelSettings_w56pt"]
+font = ExtResource("8_budmt")
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r0nu"]
 
@@ -40,6 +48,16 @@ bg_color = Color(0.06, 0.06, 0.06, 0.784314)
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqrfb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_budmt"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0krab"]
 bg_color = Color(0, 0, 0, 0.509804)
@@ -167,7 +185,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
 
@@ -182,6 +200,8 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 text = "ECON"
 label_settings = ExtResource("4_0krab")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer"]
 layout_mode = 2
@@ -190,14 +210,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer/PanelContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="EconomyPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EconContainer/PanelContainer2/MarginContainer" instance=ExtResource("6_0krab")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+hollow = true
 title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
@@ -207,21 +228,23 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 0
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "VIBE"
 label_settings = ExtResource("4_0krab")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer"]
 layout_mode = 2
@@ -230,17 +253,62 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer2"]
 layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VibePanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer2" instance=ExtResource("7_budmt")]
+layout_mode = 2
+hollow = true
+title = ""
+is_left_side = true
+border_color = Color(1, 0.74902, 0.2, 1)
+
+[node name="EffectContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer"]
+layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 5
 
-[node name="VibePanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/VibeContainer/PanelContainer2" instance=ExtResource("7_budmt")]
-custom_minimum_size = Vector2(0, 0)
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
+text = "EFFECT"
+label_settings = ExtResource("4_0krab")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="EffectPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer" instance=ExtResource("4_djb7u")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 3
+hollow = true
+is_small = true
+content = "Effect description"
 title = ""
-is_left_side = true
-border_color = Color(1, 0.74902, 0.2, 1)
+border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="StatusOverlay" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer"]
 layout_mode = 2
@@ -253,7 +321,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "inactive"
-label_settings = ExtResource("6_wqrfb")
+label_settings = SubResource("LabelSettings_w56pt")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -456,6 +524,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_budmt")
 is_small = true
 content = "EMPTY"
 center_text = false

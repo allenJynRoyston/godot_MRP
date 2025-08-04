@@ -53,6 +53,7 @@ visible = false
 layout_mode = 2
 
 [node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]
+z_index = 10
 layout_mode = 2
 
 [node name="WaitContainer" type="PanelContainer" parent="."]

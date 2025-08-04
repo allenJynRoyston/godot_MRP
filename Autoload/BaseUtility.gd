@@ -59,6 +59,12 @@ var MIASMA:Dictionary = {
 	"description": "Requires ventaliation.",
 }
 
+var OVERHEATED:Dictionary = {
+	"name": "OVERHEATED",
+	"img_src": "res://Media/rooms/redacted.jpg",
+	"description": "Requires ventaliation.",
+}
+
 var MORALE_DRAIN:Dictionary = {
 	"name": "MORALE DRAIN",
 	"img_src": "res://Media/rooms/redacted.jpg",
@@ -82,6 +88,7 @@ var PANIC:Dictionary = {
 
 var debuff_data:Dictionary = {
 	BASE.DEBUFF.MIASMA: MIASMA,
+	BASE.DEBUFF.OVERHEATED: OVERHEATED,
 	BASE.DEBUFF.UNPOWERED: UNPOWERED,
 	BASE.DEBUFF.MORALE_DRAIN: MORALE_DRAIN,
 	BASE.DEBUFF.PANIC: PANIC

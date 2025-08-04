@@ -134,8 +134,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3e5bh")
 script = ExtResource("1_co4u3")
-is_showing = null
-freeze_inputs = null
 
 [node name="Backdrop" type="ColorRect" parent="."]
 z_as_relative = false

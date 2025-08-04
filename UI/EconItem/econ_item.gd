@@ -40,6 +40,10 @@ extends PanelContainer
 		icon_size = val
 		on_icon_size_update()
 
+@export var invert_colors:bool = false : 
+	set(val):
+		invert_colors = val
+		on_invert_colors_update()
 
 # --------------------------------------
 func _ready() -> void:
@@ -49,6 +53,7 @@ func _ready() -> void:
 	on_icon_update()
 	on_burn_val_amount()
 	on_max_amount_amount()
+	on_invert_colors_update()
 
 func on_icon_update() -> void:
 	if !is_node_ready():return
@@ -62,7 +67,10 @@ func on_burn_val_amount() -> void:
 	if !is_node_ready():return
 	BurnLabel.text = str(burn_val)
 
-
+func on_invert_colors_update() -> void:
+	if !is_node_ready():return
+	U.debounce( str(self, "_update_all"), update)
+	
 func on_update_amount() -> void:
 	if !is_node_ready():return	
 	U.debounce( str(self, "_update_all"), update)
@@ -78,7 +86,7 @@ func on_is_negative_update() -> void:
 	
 func update() -> void:
 	var label_settings_copy:LabelSettings = AmountLabel.label_settings.duplicate()
-	var use_color:Color = negative_color if is_negative else primary_color
+	var use_color:Color = negative_color if is_negative else (primary_color if !invert_colors else Color.WHITE)
 	label_settings_copy.font_color = use_color
 	
 	SvgIcon.icon_color = use_color

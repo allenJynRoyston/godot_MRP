@@ -192,6 +192,7 @@ var initial_values:Dictionary = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
 					"is_ventilated": floor_index in [0, 1],
+					"is_overheated": floor_index not in [0, 1, 2, 3],
 					"buffs": [],
 					"debuffs": [],
 				}
@@ -579,7 +580,8 @@ func get_floor_default(array_size:int) -> Dictionary:
 		# --------------
 		"in_lockdown": false,
 		"is_powered": false,
-		"is_ventilated": true,
+		"is_ventilated": false,
+		"is_overheated": false,
 		"array_size": array_size,
 		# --------------
 		"ring": { 
@@ -743,6 +745,8 @@ func next_day() -> void:
 	var objectives:Array = STORY.get_objectives()
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
+	var previous_location:Dictionary = current_location.duplicate(true)
+	var previous_camera_setting:Dictionary = camera_settings.duplicate(true)
 	
 	if base_states.base.onsite_nuke.triggered:
 		var res:bool = await GAME_UTIL.create_warning("ONSITE NUCLEAR DEVICE IS ACTIVE!", "Game will end if you continue.", "res://Media/images/Defaults/stop_sign.png")
@@ -761,6 +765,10 @@ func next_day() -> void:
 	current_phase = PHASE.RESOURCE_COLLECTION
 	await phase_cycle_complete		
 	GAME_UTIL.disable_taskbar(false)	
+	
+	# revert to user location
+	SUBSCRIBE.camera_settings = previous_camera_setting
+	SUBSCRIBE.current_location = previous_location
 # -----------------------------------
 #endregion
 # ------------------------------------------------------------------------------	
@@ -890,7 +898,7 @@ func on_show_resources_update() -> void:
 
 # ------------------------------------------------------------------------------	SHOP STEPS
 func on_current_phase_update() -> void:
-	if !is_node_ready():return
+	if !is_node_ready():return	
 
 	match current_phase:
 		# ------------------------
@@ -926,7 +934,6 @@ func on_current_phase_update() -> void:
 			
 
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
-			await U.set_timeout(0.5)
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
 			
@@ -938,26 +945,61 @@ func on_current_phase_update() -> void:
 			# ADD TO PROGRESS DATA day count
 			progress_data.day += 1
 			
-			# set under_construction flags to true
-			# TODO: only allow if the current wing has power
-			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
-				var floor_index:int = x.location.floor
-				var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
-				if floor_base_state.is_powered:
-					x.under_construction = false
-				return x
-			)
-				
-			# mark rooms and push to subscriptions
+			# first, get list of rooms that will be completed in order of floor -> ring -> room
+			var construction_complete:Array = []
+			var previous_ring:int = -1
+			var previous_floor:int = -1
+			
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
-					for room_index in room_config.floor[floor_index].ring[ring_index].size():
+					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+						var filtered:Array = purchased_facility_arr.filter(func(x):
+							if x.location.floor == floor_index and x.location.ring == ring_index and x.location.room == room_index:
+								var floor_base_state:Dictionary = base_states.floor[str(x.location.floor)]
+								return floor_base_state.is_powered and x.under_construction
+							return false
+						)
+						construction_complete += filtered
+									
+			# jump to each room...
+			if !construction_complete.is_empty():			
+				# change to wing view
+				if camera_settings.type != CAMERA.TYPE.WING_SELECT:
+					camera_settings.type = CAMERA.TYPE.WING_SELECT
+					SUBSCRIBE.camera_settings = camera_settings
+					await U.set_timeout(0.3)
+				
+				# jumpt to room and show the build
+				for item in construction_complete:
+					previous_floor = current_location.floor
+					previous_ring = current_location.ring
+					SUBSCRIBE.current_location = item.location
+					# at a minimum it has to be above 0.3
+					await U.set_timeout(0.5)
+					
+					# ... then change it's state
+					SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
+						if x.location == item.location:
+							x.under_construction = false
+						return x
+					)
+					
+					await U.set_timeout(0.7)
+					
+				await U.set_timeout(0.7)
+
+			
+			# reduce cooldown in abilities
+			for floor_index in room_config.floor.size():		
+				for ring_index in room_config.floor[floor_index].ring.size():
+					for room_index in room_config.floor[floor_index].ring[ring_index].room.size() :
 						var room_designation:String = str(floor_index, ring_index, room_index)
-						for key in base_states.room[room_designation].ability_on_cooldown:
-							if base_states.room[room_designation].ability_on_cooldown[key] > 0:
-								base_states.room[room_designation].ability_on_cooldown[key] -= 1
-								if base_states.room[room_designation].ability_on_cooldown[key] == 0:
-									ToastContainer.add("[%s] is ready!" % [key])
+						if room_designation in base_states.room[room_designation]:
+							for key in base_states.room[room_designation].ability_on_cooldown:
+								if base_states.room[room_designation].ability_on_cooldown[key] > 0:
+									base_states.room[room_designation].ability_on_cooldown[key] -= 1
+									if base_states.room[room_designation].ability_on_cooldown[key] == 0:
+										ToastContainer.add("[%s] is ready!" % [key])
 				
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
@@ -1274,14 +1316,13 @@ func update_room_config(force_setup:bool = false) -> void:
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
 	transfer_base_states_to_room_config(new_room_config)
-	# check if room is activated
+	## check if room is activated
 	room_activation_check(new_room_config)
 	# ROOM, check for effects
 	room_check_for_effects(new_room_config)	
 	scp_check_for_effects(new_room_config)	
 	# ROOM, setup and loop
 	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
-
 	
 	# check for buffs/debuffs
 	check_for_buffs_and_debuffs(new_room_config)		
@@ -1309,7 +1350,6 @@ func update_room_config(force_setup:bool = false) -> void:
 			var amount:int = floor_level.currencies[key]
 			resource_diff[key] += amount
 	
-
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
@@ -1339,6 +1379,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
 			ring_level.energy.used = 0
 			ring_level.is_ventilated = ring_base_state.is_ventilated
+			ring_level.is_overheated = ring_base_state.is_overheated
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
@@ -1433,6 +1474,10 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 					if !ring_base_state.is_ventilated:
 						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.MIASMA)
 						ring_level.debuffs.push_back({"data": data, "duration": 100})
+						
+					if ring_base_state.is_overheated:
+						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.OVERHEATED)
+						ring_level.debuffs.push_back({"data": data, "duration": 100})						
 						
 
 					ring_added.push_back(ring_designation)
@@ -1683,10 +1728,8 @@ func scp_check_for_effects(new_room_config:Dictionary) -> void:
 			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 			
 			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-			if !scp_details.effect.is_empty():
-				print(scp_details.effect)
-				if scp_details.effect.has("func"):
-					print("called effect?")
+			if !scp_details.effect.is_empty():				
+				if scp_details.effect.has("func"):					
 					new_room_config = scp_details.effect.func.call( new_room_config, sdata )
 
 

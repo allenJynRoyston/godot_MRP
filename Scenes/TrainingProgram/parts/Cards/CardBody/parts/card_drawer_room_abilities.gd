@@ -221,8 +221,8 @@ func update_node() -> void:
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
 						GAME_UTIL.toggle_passive_ability(room_details.ref, index, use_location)
-						if ActionContainerNode.is_visible_in_tree():
-							ActionContainerNode.after_use_passive_ability.call()
+						#if ActionContainerNode.is_visible_in_tree():
+							#ActionContainerNode.after_use_passive_ability.call()
 					
 		if redraw:
 			List.add_child(SummaryBtnNode)

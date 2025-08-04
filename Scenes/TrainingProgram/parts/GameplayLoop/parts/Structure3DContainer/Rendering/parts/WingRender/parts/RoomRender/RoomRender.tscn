@@ -158,6 +158,7 @@ skeleton = NodePath("../..")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Room/RoomRender"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.338004, -12.2338, -0.361875)
+visible = false
 amount = 30
 lifetime = 2.0
 speed_scale = 2.0
@@ -166,6 +167,7 @@ draw_pass_1 = SubResource("QuadMesh_q7q21")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Room/RoomRender"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.96064, 0)
+visible = false
 light_color = Color(0.163639, 0.68978, 1, 1)
 light_energy = 3.0
 light_volumetric_fog_energy = 0.0

@@ -20,7 +20,7 @@ var chapters:Array = [
 		],
 		"objectives": {
 			"title": "SETUP",
-			"complete_by_day": 2,
+			"complete_by_day": 5,
 			"required":[
 				{
 					"custom": {

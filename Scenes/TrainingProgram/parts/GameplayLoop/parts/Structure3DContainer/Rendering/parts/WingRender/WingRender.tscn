@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=30 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gd" id="1_nn2y2"]
 [ext_resource type="Shader" uid="uid://b5dg1k76unpwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gdshader" id="2_8vjbp"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://c7tyen45c8wh7" path="res://Scenes/CellScene/lighting/LargeSpin.tscn" id="8_n6jqu"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="9_8vjbp"]
 [ext_resource type="Script" uid="uid://3ojuguh0qit6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/fog_volume.gd" id="9_ie5r3"]
+[ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="9_jx7vp"]
 
 [sub_resource type="Environment" id="Environment_g7dei"]
 background_mode = 1
@@ -111,7 +112,7 @@ viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 [sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
 density = 0.07
 albedo = Color(0.424, 0.8, 0.706, 1)
-emission = Color(0.539463, 0.00370722, 0.944757, 1)
+emission = Color(0.56144, 0.238819, 0.735833, 1)
 edge_fade = 0.649802
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_nn2y2"]
@@ -145,12 +146,12 @@ _surfaces = [{
 script = ExtResource("1_nn2y2")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 4.76651, 57.0739, -15)
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 5.3, 67, -15)
 doppler_tracking = 1
 projection = 1
 current = true
 fov = 37.2
-size = 125.0
+size = 145.0
 near = 0.001
 far = 250.0
 
@@ -462,6 +463,13 @@ spot_angle_attenuation = 0.307786
 
 [node name="CautionLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, -7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 0, 0)
+visible = false
+
+[node name="SpinLights" parent="MeshRender/Lighting/CautionLights" instance=ExtResource("9_jx7vp")]
+transform = Transform3D(1, 0, 2.23517e-08, -7.45058e-09, -4.47035e-08, -1, 0, 1, -1.49012e-08, -32, 4.1, -44.6056)
+
+[node name="SpinLights2" parent="MeshRender/Lighting/CautionLights" instance=ExtResource("9_jx7vp")]
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 44.4715, 4.1, 32)
 
 [node name="C1" parent="MeshRender/Lighting/CautionLights" instance=ExtResource("9_8vjbp")]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 0.999999, 0, 0.707107, 0, 0.707107, -15, -13, 35)
@@ -509,7 +517,7 @@ spin_speed = 0.05
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="FogVolume" type="FogVolume" parent="MeshRender/Miasma"]
-transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 0.317459, -4.01756, -0.31744)
+transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 1.05965, -13.4106, -1.05963)
 size = Vector3(500, 20, 500)
 material = SubResource("FogMaterial_8vjbp")
 

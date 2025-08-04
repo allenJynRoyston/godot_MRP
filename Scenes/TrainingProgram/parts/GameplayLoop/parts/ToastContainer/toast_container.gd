@@ -18,4 +18,5 @@ func _ready() -> void:
 func add(content:String) -> void:
 	var new_toast:Control = ToastItemPreload.instantiate()
 	new_toast.content = content
+	print('new toast...')
 	ListContainer.add_child(new_toast)

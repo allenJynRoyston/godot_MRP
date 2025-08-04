@@ -92,8 +92,13 @@ var current_mode:MODE = MODE.NONE :
 		current_mode = val
 		on_current_mode_update()
 
+var selected_room:int = -1
+var available_room_index:int = 0
+var list_of_available_rooms:Array = []
+
 var prev_draw_state:Dictionary	= {}
 var is_in_transition:bool = false 
+var active_menu_is_open:bool = false
 
 var is_started:bool = false
 var show_new_message_btn:bool = false : 
@@ -469,9 +474,10 @@ func show_build_options() -> void:
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
 		clear_lines()
-
+	
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
-		await U.tick()
+		active_menu_is_open = false
 		show_build_complete.emit()
 		RoomDetailsControl.reveal(false)
 		
@@ -544,9 +550,11 @@ func show_program_list() -> void:
 			"items": [],
 		}		
 	]
-
+	
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
 		await U.tick()
+		active_menu_is_open = false
 		show_show_program_list_complete.emit()
 		
 	
@@ -637,7 +645,9 @@ func show_generator_updates() -> void:
 		}
 	]
 	
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
+		active_menu_is_open = false
 		show_generator_complete.emit()
 	
 	ActiveMenuNode.options_list = options
@@ -676,6 +686,19 @@ func show_debug() -> void:
 						await GAME_UTIL.toggle_is_powered(current_location.floor)
 						ActiveMenuNode.unlock(),
 				},
+				{
+					"title": "TOGGLE IS_OVERHEATED",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: toggle the IS_OVERHEATED flag.."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.toggle_is_overheated(current_location)
+						ActiveMenuNode.unlock(),
+				},							
 				{
 					"title": "TOGGLE VENTILATION",
 					"icon": SVGS.TYPE.DANGER,
@@ -718,7 +741,7 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.set_emergency_mode_to_normal()
+						await GAME_UTIL.set_emergency_mode_to_normal(true)
 						ActiveMenuNode.unlock(),
 				},												
 				{
@@ -731,7 +754,7 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.set_emergency_mode_to_caution()
+						await GAME_UTIL.set_emergency_mode_to_caution(true)
 						ActiveMenuNode.unlock(),
 				},								
 				{
@@ -744,7 +767,7 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.set_emergency_mode_to_warning()
+						await GAME_UTIL.set_emergency_mode_to_warning(true)
 						ActiveMenuNode.unlock(),
 				},								
 				{
@@ -757,7 +780,7 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.set_emergency_mode_to_danger()
+						await GAME_UTIL.set_emergency_mode_to_danger(true)
 						ActiveMenuNode.unlock(),
 				},				
 			],
@@ -808,7 +831,9 @@ func show_debug() -> void:
 		}
 	]
 
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
+		active_menu_is_open = false
 		show_debug_complete.emit()
 
 	ActiveMenuNode.options_list = options
@@ -927,7 +952,9 @@ func show_facility_updates() -> void:
 		}		
 	]
 	
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
+		active_menu_is_open = false
 		show_facility_complete.emit()		
 	
 	ActiveMenuNode.options_list = options
@@ -1053,8 +1080,10 @@ func show_settings() -> void:
 			]
 		},		
 	]
-
+	
+	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
+		active_menu_is_open = false
 		show_settings_complete.emit()
 		GameplayNode.restore_player_hud()
 
@@ -1094,17 +1123,24 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			NameControl.hide()
 			WingActions.hide()
 			FacilityActions.hide()
-			GeneratorActions.show()			
+			GeneratorActions.show()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-var previous_designation:String
-var modal_open:bool = false
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
-	if current_location.is_empty() or room_config.is_empty():return
+	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+# --------------------------------------------------------------------------------------------------
 	
+# --------------------------------------------------------------------------------------------------
+func check_btn_states() -> void:
+	if current_location.is_empty() or room_config.is_empty():return
 	# update room details control
+	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 	var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
 	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
@@ -1128,19 +1164,16 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
 	).size()	
-		
-	if !room_extract.is_empty():
-		if previous_designation != U.location_to_designation(current_location):
-			previous_designation = U.location_to_designation(current_location)	
-			SummaryCard.use_location = current_location			
-			
+
+	SummaryCard.use_location = current_location
+
 	match current_mode:
 		MODE.NONE:
 			GotoWingBtn.is_disabled = !has_one_floor_activated
 			GotoGeneratorBtn.is_disabled = !has_generator_prerequisite
 			WingProgramBtn.is_disabled = GAME_UTIL.get_list_of_programs().is_empty()
 			WingActionBtn.is_disabled = rooms_in_wing_count == 0
-			GenActionBtn.is_disabled = !has_one_floor_activated			
+			GenActionBtn.is_disabled = !has_one_floor_activated
 		# -----------	
 		MODE.INFO:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -1170,8 +1203,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			# on back
 			InfoControls.onBack = func() -> void:
 				GameplayNode.TimelineContainer.show_details(false)
-				await InfoControls.reveal(false)
-				GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
+				await InfoControls.reveal(false)				
 				current_mode = MODE.NONE
 		# -----------	
 		MODE.SUMMARY_CARD:
@@ -1203,7 +1235,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 						SummaryControls.a_btn_title = "TOGGLE MODULE"
 					# ----------------------
 		# -----------	
-		MODE.COMMANDS:
+		MODE.COMMANDS:			
 			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE" if !is_under_construction else "UNDER CONSTRUCTION"
 			CommandControls.disable_active_btn = is_under_construction
 			CommandControls.hide_a_btn = is_room_empty
@@ -1231,6 +1263,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 				CommandControls.reveal(true)
 				
 			CommandControls.onBack = func() -> void:
+				WingRenderNode.highlight_rooms = []
 				await CommandControls.reveal(false)
 				lock_actions(false)
 				current_mode = MODE.NONE
@@ -1241,49 +1274,38 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 			current_mode = MODE.NONE
 		# -----------	
 		MODE.BUILD:	
-			if !modal_open:
-				DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+			DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+			
+			DesignControls.onAction = func() -> void:				
+				await DesignControls.reveal(false)
 				
-				DesignControls.onAction = func() -> void:				
-					await DesignControls.reveal(false)
-					# if cancel construction
-					if is_under_construction:
-						modal_open = true
-						var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
-						if made_changes:
-							GBL.find_node(REFS.WING_RENDER).construction_is_canceled(current_location)
-							await U.tick()
-							on_current_location_update()
-						DesignControls.reveal(true)
-						modal_open = false
-						return
-					
-					# if build new room
-					if is_room_empty:
-						current_mode = MODE.ACTIVE_MENU_OPEN
-						await show_build_options()					
-						await DesignControls.reveal(true)
-						current_mode = MODE.BUILD
-						return
-						
-					
-					# ...else destroy room
-					modal_open = true
-					var confirm:bool = await GAME_UTIL.reset_room(current_location)
-					if confirm:
-						GBL.find_node(REFS.WING_RENDER).room_is_destroyed(current_location)
+				# if cancel construction
+				if is_under_construction:
+					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
+					if made_changes:
+						WingRenderNode.construction_is_canceled(current_location)
 						await U.tick()
 						on_current_location_update()
 					DesignControls.reveal(true)
-					modal_open = false
-							
-				DesignControls.onBack = func() -> void:
-					await DesignControls.reveal(false)
-					lock_actions(false)
-					GBL.find_node(REFS.WING_RENDER).change_camera_view(1)
-					current_mode = MODE.NONE
-					modal_open = false
-# --------------------------------------------------------------------------------------------------
+					return
+				
+				# if build new room
+				if is_room_empty:
+					await show_build_options()
+					DesignControls.reveal(true)
+					return
+						
+				#...else destroy room
+				var confirm:bool = await GAME_UTIL.reset_room(current_location)
+				if confirm:
+					WingRenderNode.room_is_destroyed(current_location)
+					await U.tick()
+					on_current_location_update()
+				DesignControls.reveal(true)
+						
+			DesignControls.onBack = func() -> void:
+				await DesignControls.reveal(false)
+				current_mode = MODE.NONE
 
 # --------------------------------------------------------------------------------------------------
 func set_backdrop_state(state:bool) -> void:	
@@ -1321,11 +1343,6 @@ func reveal_summarycard(state:bool, duration:float = 0.2) -> void:
 	await U.tween_node_property(SummaryPanel, "position:x", control_pos[SummaryPanel].show if state else control_pos[SummaryPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------
-func enable_room_focus(state:bool) -> void:
-	GBL.find_node(REFS.WING_RENDER).enable_room_focus = state
-# --------------------------------------------------------------------------------------------------	
-
 # --------------------------------------------------------------------------------------------------		
 var previous_lock_states:Dictionary = {}
 func lock_panel_btn_state(state: bool) -> void:
@@ -1349,76 +1366,95 @@ func lock_panel_btn_state(state: bool) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func lock_actions(state:bool) -> void:
-	if state:
-		freeze_inputs = true		
+	if state:		
 		lock_panel_btn_state(true)
 	
 	await reveal_action_controls(!state)
 	
-	if !state:
-		freeze_inputs = false
+	if !state:		
 		lock_panel_btn_state(false)		
+		check_btn_states()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+var previous_mode:int = -1
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
 	var duration:float = 0.0 if skip_animation else 0.3
-	var RenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
+	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
+	var RenderingNode:Control = GBL.find_node(REFS.RENDERING)
 	
-	match current_mode:
-		# --------------
-		MODE.NONE:
-			reveal_action_label(false)
-			await RenderNode.update_camera_size(125)
-			GameplayNode.show_marked_objectives = false
-			GameplayNode.show_timeline = true
-			lock_actions(false)
-			set_backdrop_state(false)
-			reveal_summarycard(false, duration)
-		# --------------
-		MODE.INFO:			
-			await RenderNode.update_camera_size(180)
-			GameplayNode.show_marked_objectives = true
-			GameplayNode.show_timeline = true
-			GBL.find_node(REFS.WING_RENDER).change_camera_view(0)
-			InfoControls.reveal(true)
-		# --------------
-		MODE.SUMMARY_CARD:
-			SummaryControls.reveal(true)
-		# --------------
-		MODE.BUILD:
-			await RenderNode.update_camera_size(180)
-			GameplayNode.show_marked_objectives = false
-			GameplayNode.show_timeline = false	
-			reveal_summarycard(true)
-			reveal_action_label(true, 0.4, "BUILD MODE")
-			GBL.find_node(REFS.WING_RENDER).change_camera_view(0)
-			DesignControls.reveal(true)			
-		# --------------
-		MODE.COMMANDS:
-			await RenderNode.update_camera_size(180)
-			GameplayNode.show_marked_objectives = false
-			GameplayNode.show_timeline = false	
-			reveal_action_label(true, 0.4, "SELECT A ROOM")
-			reveal_summarycard(true)
-			CommandControls.reveal(true)
-		# -----------	
-		MODE.PROGRAMS:
-			await RenderNode.update_camera_size(180)
-			GameplayNode.show_marked_objectives = false
-			GameplayNode.show_timeline = false	
-			reveal_action_label(true, 0.4, "PROGRAMS")
+	if previous_mode != current_mode:
+		previous_mode = current_mode 
+		
+		match current_mode:
+			# --------------
+			MODE.NONE:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
+				RenderingNode.set_shader_strength(0)
+				reveal_action_label(false)			
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = true
+				lock_actions(false)
+				set_backdrop_state(false)
+				reveal_summarycard(false, duration)
+				
+				# recenter...
+				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
+			# --------------
+			MODE.INFO:			
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
+				RenderingNode.set_shader_strength(0)
+				GameplayNode.show_marked_objectives = true
+				GameplayNode.show_timeline = true
+				InfoControls.reveal(true)
+			# --------------
+			MODE.SUMMARY_CARD:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				RenderingNode.set_shader_strength(0)
+				SummaryControls.reveal(true)
+			# --------------
+			MODE.BUILD:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				reveal_summarycard(true)
+				reveal_action_label(true, 0.4, "BUILD MODE")				
+				DesignControls.reveal(true)			
+			# --------------
+			MODE.COMMANDS:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				reveal_action_label(true, 0.4, "SELECT A ROOM")
+				reveal_summarycard(true)
+				CommandControls.reveal(true)
+				
+				list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
+				list_of_available_rooms.sort()
+				selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]			
+				available_room_index = 0
+				WingRenderNode.highlight_rooms = [selected_room]								
+			# -----------	
+			MODE.PROGRAMS:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				reveal_action_label(true, 0.4, "PROGRAMS")
 
-	on_current_location_update()
-	on_camera_settings_update()
+		on_current_location_update()
+		on_camera_settings_update()
 # --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------------------------------------------------	
 func on_control_input_update(input_data:Dictionary) -> void:	
-	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or is_in_transition:return	
+	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or is_in_transition or active_menu_is_open:return	
 	var key:String = input_data.key
 		
+
 	match current_mode:
 		MODE.NONE:
 			match key:
@@ -1436,18 +1472,20 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					U.dec_ring(false)
 		MODE.COMMANDS:
 			match key:
-				# ----------------------------
 				"W":
-					U.room_up(true)
+					U.room_up(true, true)
 				# ----------------------------
 				"S":
-					U.room_down(true)
+					U.room_down(true, true)
 				# ----------------------------
 				"D":
-					U.room_right(true)
+					U.room_right(true, true)
 				# ----------------------------
 				"A":
-					U.room_left(true)
+					U.room_left(true, true)
+					
+			var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
+			WingRenderNode.highlight_rooms = [current_location.room]
 		MODE.BUILD:
 			match key:
 				# ----------------------------

@@ -16,6 +16,8 @@ script = ExtResource("1_g8pd4")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40

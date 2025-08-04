@@ -30,10 +30,24 @@ var room_config:Dictionary
 
 var use_omni_light:bool = false
 var room_is_activated:bool = false
+var is_selected:bool = true : 
+	set(val):
+		is_selected = val
+		on_is_selected_update()
+
 var assigned_location:Dictionary = {} : 
 	set(val):
 		assigned_location = val
 		on_assigned_location_update()
+
+var RoomMesh:Mesh
+var OriginalMaterial:StandardMaterial3D
+var DuplicateMaterial:StandardMaterial3D
+
+var room_render_tween:Tween
+var safety_gate_tween:Tween
+var gate_one_tween:Tween
+var gate_two_tween:Tween
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -48,6 +62,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	reset_to_default()
+	on_is_selected_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -60,12 +75,20 @@ func set_build_room(state:bool) -> void:
 
 func set_under_construction(state:bool) -> void:
 	await on_under_construction_update(state)	
-
-func set_texture(material:BaseMaterial3D) -> void:
-	var mesh_duplicate:Mesh = RoomRender.mesh.duplicate()
-	mesh_duplicate.surface_set_material(0, material.duplicate())
-	RoomRender.mesh = mesh_duplicate	
 # ------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------		
+func custom_tween_node_property(tween:Tween, node:Node, prop:String, new_val, duration:float = 0.3, delay:float = 0, trans:int = Tween.TRANS_QUAD, ease:int = Tween.EASE_IN_OUT) -> void:
+	if tween != null and tween.is_running():
+		tween.stop()
+	tween = create_tween()
+	
+	if duration == 0:
+		duration = 0.02
+		
+	tween.tween_property(node, prop, new_val, duration).set_trans(trans).set_ease(ease).set_delay(delay)
+	await tween.finished
+# --------------------------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func cancel_construction() -> void:
@@ -75,16 +98,15 @@ func cancel_construction() -> void:
 	
 func destroy_room() -> void:
 	# set room render into place
-	await U.tween_node_property(RoomRender, "position:y", -10.0)
+	await custom_tween_node_property(room_render_tween, RoomRender, "position:y", -10.0)
 	under_construction = false
 	build_room = false
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
 func on_under_construction_update(state:bool, force_skip:bool = false, ignore_room_render:bool = false) -> void:
-	under_construction = state
 	if !is_node_ready():return
-	var animation_speed:float = 0 if skip_animation or force_skip else 0.3
+	var animation_speed:float = 0 if skip_animation or force_skip else 0.2
 	
 	# set texture
 	set_texture(RoomRenderUnderConstructionMaterial)	
@@ -111,22 +133,25 @@ func on_under_construction_update(state:bool, force_skip:bool = false, ignore_ro
 		if !ignore_room_render:
 			RoomRender.show()
 		SafetyLights.show()
-		await U.tween_node_property(SafetyGate, "position:y", 1, animation_speed)
+		await custom_tween_node_property(safety_gate_tween, SafetyGate, "position:y", 1, animation_speed)
 		for node in [ParticleEmitter, ConstructionOmniLight]:
 			node.show()
 	
-	U.tween_node_property(Flap1, "position:x", -13 if state else -4, animation_speed)
-	await U.tween_node_property(Flap2, "position:x", 13 if state else 4, animation_speed)
-	U.tween_node_property(Flap3, "position:z", -13 if state else -4, animation_speed)
-	await U.tween_node_property(Flap4, "position:z", 13 if state else 4, animation_speed)
+	custom_tween_node_property(gate_one_tween, Flap1, "position:x", -13 if state else -4, animation_speed)
+	await custom_tween_node_property(gate_two_tween, Flap2, "position:x", 13 if state else 4, animation_speed)
+	custom_tween_node_property(gate_one_tween, Flap3, "position:z", -13 if state else -4, animation_speed)
+	await custom_tween_node_property(gate_two_tween, Flap4, "position:z", 13 if state else 4, animation_speed)
 	
 	if !state:
-		await U.tween_node_property(SafetyGate, "position:y", -1.3, animation_speed)		
+		await custom_tween_node_property(safety_gate_tween, SafetyGate, "position:y", -1.3, animation_speed)		
 		SafetyLights.hide()
 		if !ignore_room_render:
 			RoomRender.hide()
 		for node in [ParticleEmitter, ConstructionOmniLight]:
 			node.hide()
+			
+	under_construction = state
+	U.debounce(str(self, "_update_room_data"), update_room_data)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -153,7 +178,7 @@ func on_build_room_update(force_skip:bool = false) -> void:
 	
 	if under_construction:
 		# set room render into place
-		await U.tween_node_property(RoomRender, "position:y", -10.0, animation_speed)
+		custom_tween_node_property(room_render_tween, RoomRender, "position:y", -10.0, animation_speed)
 
 		# hide construction and barrier
 		await on_under_construction_update(false, force_skip, true)		
@@ -163,11 +188,12 @@ func on_build_room_update(force_skip:bool = false) -> void:
 		
 		# animate in
 		RoomRender.show()
-		await U.tween_node_property(RoomRender, "position:y", 7.0, animation_speed)
+		custom_tween_node_property(room_render_tween, RoomRender, "position:y", 7.0, animation_speed)
 
 		for node in [ParticleEmitter, ConstructionOmniLight]:
 			node.hide()	
-		
+	
+	U.debounce(str(self, "_update_room_data"), update_room_data)
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -181,10 +207,19 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			if under_construction:
 				ConstructionOmniLight.show()
 		# ----------------------
-		CAMERA.TYPE.ROOM_SELECT:
+		_:
 			if under_construction:
 				ConstructionOmniLight.hide()
+				
+func set_texture(material:BaseMaterial3D) -> void:
+	OriginalMaterial = material.duplicate(true)
+	DuplicateMaterial = material.duplicate(true)
+	U.debounce(str(self, "_update_room_data"), update_room_data)
 
+func on_is_selected_update() -> void:
+	if !is_node_ready():return
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+	
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	if !is_node_ready() or room_config.is_empty():return
@@ -202,8 +237,22 @@ func update_room_data() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or assigned_location.is_empty():return
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(assigned_location)
 	room_is_activated = ROOM_UTIL.is_room_activated(assigned_location)
-	if room_is_activated:
-		print('room update: ', room_extract)
+	
+	# default color is current color
+	var final_color:Color = OriginalMaterial.albedo_color
+	
+	if !under_construction:
+		if room_is_activated:
+			final_color = Color.GREEN
+		else:
+			final_color = Color.RED
+	#
+	final_color.a = 1 if is_selected else 0.5
+
+	DuplicateMaterial.albedo_color = final_color
+	RoomMesh = RoomRender.mesh.duplicate()
+	RoomRender.mesh = RoomMesh
+	RoomMesh.surface_set_material(0, DuplicateMaterial)	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

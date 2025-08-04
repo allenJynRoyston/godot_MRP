@@ -104,6 +104,7 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="TitleLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "TITLE"
@@ -113,6 +114,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="SubLabel" type="Label" parent="ModalControl/PanelContainer/MarginContainer2/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "SUBTITLE"
@@ -139,11 +141,11 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_t4xaw")
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 8
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 250
+size_flags_vertical = 4
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="ResourceControl/PanelContainer/MarginContainer"]
 layout_mode = 2

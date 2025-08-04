@@ -57,7 +57,6 @@ var lookup_index:int = 0
 var control_pos_default:Dictionary
 var control_pos:Dictionary
 
-var tutorial_is_open:bool = false
 var wait_for_release:bool = false
 var allow_shortcut:bool = false
 var stored_size:Vector2 
@@ -90,8 +89,15 @@ func _ready() -> void:
 
 	BtnControls.onDirectional = on_key_press
 	
-	BtnControls.onAction = func() -> void:
-		on_action()
+	BtnControls.onAction = func() -> void:		
+		if !SelectedNode.is_disabled and !freeze_inputs:
+			freeze_inputs = true
+			await on_action()
+			# delay stops user from hitting same button and calling the action multiple times, like
+			# opening a modal multiple times
+			# BUG: DONT CHANGE 0.4 VALUE - prevents a huge bug I can't seem to figure out...
+			await U.set_timeout(0.4)
+			freeze_inputs = false
 		
 	BtnControls.onBack = func() -> void:
 		close()		
@@ -139,9 +145,9 @@ func open(has_cost_panel:bool = false) -> void:
 	freeze_inputs = false
 	
 func close() -> void:
+	freeze_inputs = true
 	BtnControls.reveal(false)
 	onBeforeClose.call()
-	freeze_inputs = true
 	await animate_in(false)
 	onClose.call()	
 	queue_free()
@@ -153,7 +159,6 @@ func unlock() -> void:
 	await BtnControls.reveal(true)
 # ------------------------------------------------------------------------------
 
-	
 # ------------------------------------------------------------------------------
 func animate_in(state:bool, duration:float = 0.3) -> void:
 	#CardBody.reveal = state
@@ -202,7 +207,6 @@ func on_options_list_update() -> void:
 	if !is_node_ready():return	
 	wait_for_release = true
 	clear_list()
-	
 	
 	# ---- IF EMPTY
 	if options_list.is_empty():
@@ -289,12 +293,11 @@ func on_use_color_update() -> void:
 
 # ------------------------------------------------------------------------------
 func on_action() -> void:
-	if !SelectedNode.is_disabled:
-		var item:Dictionary = options_list[tab_index].items[SelectedNode.index]
-		await onBeforeAction.call(item)
-		await item.action.call()
-		onAfterAction.call(item)
-		onAction.call()
+	var item:Dictionary = options_list[tab_index].items[SelectedNode.index]
+	await onBeforeAction.call(item)
+	await item.action.call()		
+	onAfterAction.call(item)
+	onAction.call()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -314,7 +317,7 @@ func remap_data(new_data:Array) -> void:
 				
 # ------------------------------------------------------------------------------
 func on_key_press(key:String) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs or tutorial_is_open:return
+	if !is_node_ready() or !is_visible_in_tree() or freeze_inputs:return
 	
 	if options_list.size() > 1:
 		match key:

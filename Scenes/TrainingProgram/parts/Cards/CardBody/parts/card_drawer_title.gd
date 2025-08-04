@@ -3,6 +3,11 @@ extends CardDrawerClass
 
 @onready var ContentLabel:Label = $MarginContainer/MarginContainer/ContentLabel
 
+@export var hollow:bool = false : 
+	set(val):
+		hollow = val
+		on_hollow_update()
+
 @export var is_small:bool = false : 
 	set(val):
 		is_small = val
@@ -22,12 +27,24 @@ extends CardDrawerClass
 	set(val):
 		center_text = val
 		on_center_text_update()
+		
+var OrangePanelPreload:StyleBoxFlat = preload("res://Styles/OrangePanel.tres").duplicate()
 
 func _ready() -> void:
 	super._ready()
 	on_content_update()
 	update_label_settings()
 	on_center_text_update()
+	on_hollow_update()
+
+func on_hollow_update() -> void:
+	if !is_node_ready():return
+	var label_settings_copy:LabelSettings = ContentLabel.label_settings.duplicate()
+	label_settings_copy.font_color = Color.WHITE if hollow else Color.BLACK
+	label_settings_copy.outline_color = Color(label_settings_copy.font_color.r, label_settings_copy.font_color.g, label_settings_copy.font_color.b, 0.2)
+	ContentLabel.label_settings = label_settings_copy
+	
+	$".".set('theme_override_styles/panel', null if hollow else OrangePanelPreload)
 
 func on_center_text_update() -> void:
 	if !is_node_ready():return
