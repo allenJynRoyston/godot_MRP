@@ -6,6 +6,7 @@ enum FILE {
 
 const save_config:Dictionary = {
 	"folder": "user://",
+	"image_filepath": "user://notes/",
 	"image_ext": ".png",
 	"image_size": 400,
 	"pretty_filenames": {
@@ -323,6 +324,22 @@ func clear_file(type:FILE) -> Dictionary:
 	
 
 	return {"success": success}
+# ---------------------------------
+
+# ---------------------------------
+func save_screenshot(filename: String) -> String:
+	var viewport: SubViewport = GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT)
+	var viewport_capture: Image = viewport.get_texture().get_image()	
+	var dir_path: String = "user://notes"
+	var dir = DirAccess.open("user://")	
+	if not DirAccess.dir_exists_absolute(dir_path):
+		dir.make_dir(dir_path)	
+	var filepath:String = str(dir_path, "/", filename, save_config.image_ext)
+	viewport_capture.save_png(filepath)
+	
+	print("screenshot saved to: ", OS.get_user_data_dir() )
+	
+	return filepath
 # ---------------------------------
 
 

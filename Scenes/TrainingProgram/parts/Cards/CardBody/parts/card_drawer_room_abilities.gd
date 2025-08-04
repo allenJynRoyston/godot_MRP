@@ -159,10 +159,8 @@ func update_node() -> void:
 						if preview_mode or !is_visible_in_tree():return
 						if ActionContainerNode.is_visible_in_tree():
 							onLock.call()
-							await ActionContainerNode.before_use()
 							await GAME_UTIL.use_active_ability(ability, room_details.ref, index, use_location)
 							onUnlock.call()
-							ActionContainerNode.after_use()
 							return
 					
 						GAME_UTIL.use_active_ability(ability, room_details.room_ref, index, use_location)

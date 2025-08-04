@@ -258,17 +258,6 @@ func transition(TransitionRect:TextureRect, UseViewport:SubViewport, UseShader:S
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func save_screenshot(viewport:SubViewport) -> void:
-	pass
-	#var viewport_capture:Image = viewport.get_texture().get_image()
-	#var image_size:Vector2 = viewport_capture.get_size()
-	#var image_ratio:float = float(image_size.y/image_size.x)
-	#viewport_capture.resize(save_config.image_size, save_config.image_size * image_ratio)
-	#var file_path = str(folder, save_file_name, save_config.image_ext)
-	#viewport_capture.save_png(file_path)
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
 func location_lookup_opposite(val:int, dir: DIR) -> int:
 	match val:
 		0:

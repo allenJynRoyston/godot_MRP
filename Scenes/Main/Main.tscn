@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=40 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -10,8 +10,10 @@
 [ext_resource type="Material" uid="uid://ef45nkvjkp5x" path="res://Shader/BrightnessBleed/BrightnessBleed.tres" id="9_wgovn"]
 [ext_resource type="Material" uid="uid://cvsboqb84qqah" path="res://Shader/Glitch/Glitch.tres" id="9_xggvw"]
 [ext_resource type="Material" uid="uid://7vstcliubt2o" path="res://CanvasShader/CRT/CRT.tres" id="10_xd21n"]
+[ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="11_18xdc"]
 [ext_resource type="Shader" uid="uid://b3tekv1p1wml4" path="res://Shader/Outline/Outline.gdshader" id="11_cv8e0"]
 [ext_resource type="Material" uid="uid://uikdv0vflbsc" path="res://Shader/ScreenBend/screen_bend.tres" id="11_iwp64"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="12_epx8f"]
 [ext_resource type="PackedScene" uid="uid://blq88bwlfy7io" path="res://Scenes/Main/parts/Audio/Audio.tscn" id="12_wgovn"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
 
@@ -168,8 +170,28 @@ shader_parameter/bend_offset = 0.351
 [sub_resource type="ViewportTexture" id="ViewportTexture_linol"]
 viewport_path = NodePath("MusicShader")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_cv8e0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_hcu3t"]
 viewport_path = NodePath("FinalComposition")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18xdc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qdkat"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_udh0u"]
+font = ExtResource("11_18xdc")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_qdkat"]
+viewport_path = NodePath("NoteOverlay")
 
 [node name="Main" type="PanelContainer"]
 anchors_preset = 15
@@ -448,6 +470,106 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.136, 0.136, 0.34, 0.117647)
 
+[node name="NoteOverlay" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="TextureRect" type="TextureRect" parent="NoteOverlay"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_hcu3t")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="Notes" type="PanelContainer" parent="NoteOverlay"]
+modulate = Color(3.1285e-06, 0.646691, 0.206366, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_18xdc")
+
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 120
+
+[node name="NoteBtn" type="PanelContainer" parent="NoteOverlay/Notes/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_qdkat")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/MarginContainer/NoteBtn"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "N"
+label_settings = SubResource("LabelSettings_udh0u")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "READ NOTE"
+label_settings = ExtResource("12_epx8f")
+
+[node name="MessageBtn" type="PanelContainer" parent="NoteOverlay/Notes/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_qdkat")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/MarginContainer/MessageBtn"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "M"
+label_settings = SubResource("LabelSettings_udh0u")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "NEW MESSAGE"
+label_settings = ExtResource("12_epx8f")
+
 [node name="FinalOutput" type="Control" parent="."]
 layout_mode = 2
 
@@ -458,7 +580,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("ViewportTexture_cv8e0")
+texture = SubResource("ViewportTexture_qdkat")
 
 [node name="Audio" parent="." instance=ExtResource("12_wgovn")]
 layout_mode = 2

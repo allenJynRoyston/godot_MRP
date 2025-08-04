@@ -34,6 +34,10 @@ extends PanelContainer
 @onready var BorderShaderTextureRect:TextureRect = $BorderShader/TextureRect
 @onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
 
+# NOTE AND MESSAGE BUTTON
+@onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/MarginContainer/NoteBtn
+@onready var MessageBtn:PanelContainer = $NoteOverlay/Notes/MarginContainer/MessageBtn
+
 # COLORRECT bluescreens
 @onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG
 @onready var FinalCompositionColorRect:ColorRect = $FinalComposition/ColorRectBG
@@ -242,6 +246,8 @@ var current_layer:LAYER :
 		current_layer = val
 		on_current_layer_update()
 
+var has_note:bool = false
+var has_message:bool = false
 var note:Dictionary 
 
 # ------------------------------------------------------------------------------
@@ -254,9 +260,9 @@ func _init() -> void:
 			resolution = Vector2(result.resolution_width, result.resolution_height)
 	else:
 		GBL.save_resolution(DisplayServer.screen_get_size())
-	
+		
+	GBL.register_node(REFS.MAIN, self)		
 	GBL.subscribe_to_process(self)
-	GBL.register_node(REFS.MAIN, self)	
 	GBL.subscribe_to_control_input(self)	
 	GBL.subscribe_to_mouse_icons(self)
 	SUBSCRIBE.subscribe_to_notes(self)
@@ -285,6 +291,9 @@ func _ready() -> void:
 	
 	# assign debugs
 	assign_debugs()
+	
+	NoteBtn.modulate.a = 0.1
+	MessageBtn.modulate.a = 0.1
 
 	# assign functions
 	CellScene.transInFx = func(duration:float = 1.3) -> void:
@@ -465,10 +474,12 @@ func toggle_fullscreen() -> void:
 
 # -----------------------------------	
 func on_note_update(new_val:Dictionary) -> void:
+	if !is_node_ready():return
 	note = new_val
-	print("note: ", note)
+	print(note)
+	has_note = !note.is_empty()
+	NoteBtn.modulate.a = 1 if has_note else 0.2
 # -----------------------------------	
-
 
 # -----------------------------------	
 func on_fullscreen_update(use_resolution:Vector2i) -> void:
@@ -711,6 +722,20 @@ func on_shader_profile_update() -> void:
 			add_all_shaders()
 			set_monitor_overlay(true)
 # -----------------------------------	
+
+# -----------------------------------	
+func on_control_input_update(input_data:Dictionary) -> void:	
+	if !is_node_ready():return
+	var key:String = input_data.key	
+	GBL
+	match key:
+		"N":
+			if has_note:
+				print(note)
+		"M":
+			if has_message:
+				print("open message")
+# -----------------------------------				
 
 # -----------------------------------	
 func on_process_update(delta: float) -> void:

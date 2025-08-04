@@ -1,28 +1,41 @@
-[gd_scene load_steps=7 format=3 uid="uid://dkvs5b20lf3pa"]
+[gd_scene load_steps=9 format=3 uid="uid://dkvs5b20lf3pa"]
 
 [ext_resource type="Script" uid="uid://cymni41rf2qxa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/PersonnelItem/PersonnelItem.gd" id="1_ykt78"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="2_g5v65"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_ykt78"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_me31e"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_me31e"]
-font = ExtResource("3_me31e")
-font_size = 28
+font = ExtResource("2_ykt78")
 font_color = Color(0.05, 0.05, 0.05, 1)
+outline_size = 2
+outline_color = Color(0.05, 0.05, 0.05, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="LabelSettings" id="LabelSettings_ykt78"]
+[sub_resource type="LabelSettings" id="LabelSettings_xqbyf"]
+font = ExtResource("3_me31e")
+font_color = Color(0.05, 0.05, 0.05, 1)
+outline_color = Color(0.05, 0.05, 0.05, 0.2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_26run"]
+font = ExtResource("3_me31e")
+font_size = 24
+font_color = Color(0.05, 0.05, 0.05, 1)
+outline_color = Color(0.05, 0.05, 0.05, 0.2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_idlkb"]
 font = ExtResource("3_me31e")
 font_size = 14
 font_color = Color(0.05, 0.05, 0.05, 1)
+outline_color = Color(0.05, 0.05, 0.05, 0.2)
 
 [node name="PersonnelItem" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_ykt78")
-capacity_val = null
-capacity_only = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -39,7 +52,7 @@ alignment = 1
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-label_settings = ExtResource("2_g5v65")
+label_settings = SubResource("LabelSettings_me31e")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -48,22 +61,21 @@ theme_override_constants/separation = -1
 alignment = 1
 
 [node name="Capacity" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 1
-text = "+0"
-label_settings = SubResource("LabelSettings_me31e")
+text = "--1"
+label_settings = SubResource("LabelSettings_xqbyf")
 horizontal_alignment = 1
 
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_me31e")
+label_settings = SubResource("LabelSettings_26run")
 horizontal_alignment = 1
 
 [node name="Max" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "/0"
-label_settings = SubResource("LabelSettings_ykt78")
+label_settings = SubResource("LabelSettings_idlkb")
 horizontal_alignment = 1

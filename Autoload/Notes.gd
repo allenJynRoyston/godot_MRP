@@ -16,7 +16,8 @@ var ref_data:Dictionary = {
 	}
 }
 func use(ref:REF) -> void:
-	var note_data:Dictionary = ref_data[ref]
+	var note_data:Dictionary = ref_data[ref]	
+	note_data.screenshot = FS.save_screenshot(str("note_", ref))
 	notes_in_queue.push_back(note_data)
 
 func _process(delta: float) -> void:
@@ -26,6 +27,8 @@ func _process(delta: float) -> void:
 		SUBSCRIBE.note = current_note
 		await U.set_timeout(5.0)
 		notes_in_queue.pop_at(0)
+		SUBSCRIBE.note = {}
+		await U.set_timeout(1.0)
 		note_playing = false
 		
 		

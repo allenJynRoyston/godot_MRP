@@ -545,7 +545,6 @@ func start_new_game() -> void:
 		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.STARTUP
-	NOTES.use(NOTES.REF.FIRST_NOTE)
 
 	
 #endregion
@@ -917,7 +916,9 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.PLAYER:
 			await restore_player_hud()			
-			GAME_UTIL.disable_taskbar(false)		
+			GAME_UTIL.disable_taskbar(false)
+			await U.set_timeout(0.4)
+			NOTES.use(NOTES.REF.FIRST_NOTE)			
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			await show_only([Structure3dContainer, TimelineContainer])

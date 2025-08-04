@@ -22,6 +22,10 @@ extends PanelContainer
 @onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
 @onready var EffectPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
 
+# capacity
+@onready var CapacityContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/CapacityContainer
+@onready var CapacityPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/CapacityContainer/PanelContainer2/MarginContainer/CapacityPanel
+
 # activation
 @onready var ActivationContainer:VBoxContainer = $MarginContainer/VBoxContainer/ActivationContainer
 @onready var ActivationGrid:GridContainer = $MarginContainer/VBoxContainer/ActivationContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/ActivationGrid
@@ -65,7 +69,7 @@ func _exit_tree() -> void:
 	
 	
 func _ready() -> void:
-	for node in [EffectPanel, VibePanel, EconomyPanel]:
+	for node in [EffectPanel, VibePanel, EconomyPanel, CapacityPanel]:
 		node.hollow = true
 # ------------------------------------------------------------------------------
 
@@ -105,14 +109,15 @@ func on_update() -> void:
 	
 	var room_details:Dictionary = extract_room_data.room
 	var scp_details:Dictionary = extract_room_data.scp
-	var metrics:Dictionary = extract_room_data.room.metrics
-	var currency_list:Array = extract_room_data.room.currency_list	
+	var metrics:Dictionary = room_details.metrics
+	var currency_list:Array = room_details.currency_list	
 	var is_under_construction:bool = room_details.is_under_construction
 	var is_activated:bool = room_details.is_activated
 	var can_contain:bool = room_details.can_contain
 	var lvl:int = room_details.abl_lvl 
 	var max_upgrade_lvl:int = room_details.max_upgrade_lvl 
 	var at_max_level:bool = lvl >= max_upgrade_lvl
+	var personnel_capacity:Dictionary = room_details.details.personnel_capacity	
 
 	# assign details
 	NameTag.text = room_details.details.name
@@ -141,6 +146,15 @@ func on_update() -> void:
 	VibePanel.metrics = metrics
 	VibePanel.preview_mode = false
 	VibeContainer.show() if show_metrics else VibeContainer.hide()
+	
+	# capacity
+	var show_capacity:bool = false
+	for key in personnel_capacity:
+		if personnel_capacity[key] != 0:
+			show_capacity = true
+			break		
+	CapacityPanel.personnel_capacity = personnel_capacity
+	CapacityContainer.show() if show_capacity else CapacityContainer.hide()
 	
 	# effect
 	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()

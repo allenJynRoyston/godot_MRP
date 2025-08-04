@@ -197,10 +197,9 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			CAMERA.VIEWPOINT.ANGLE_FAR:
 				Laser.show()
 				update_room_lighting()
-				
 				update_camera_size(165)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(-20, 67, -15), 0.3, 0, Tween.TRANS_SINE)				
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 67, -15), 0.3, 0, Tween.TRANS_SINE)				
 
 
 func update_camera_size(size:int) -> void:
