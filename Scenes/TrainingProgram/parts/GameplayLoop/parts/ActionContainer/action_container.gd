@@ -661,6 +661,51 @@ func show_debug() -> void:
 			
 	var options:Array = [
 		{
+			"title": "BASE STATES",
+			"items": [
+				{
+					"title": "TOGGLE IS_POWERED",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: toggle the IS_POWERED flag.."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.toggle_is_powered(current_location.floor)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "TOGGLE VENTILATION",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: toggle the IS_VENTILATED flag.."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.toggle_is_ventilated(current_location)
+						ActiveMenuNode.unlock(),
+				},			
+				{
+					"title": "TOGGLE NUKE",
+					"icon": SVGS.TYPE.DANGER,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "DEBUG: toggle the NUKE flag.."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.toggle_onsite_nuke()
+						ActiveMenuNode.unlock(),
+				},		
+								
+			],
+		},		
+		{
 			"title": "EMERGENCY MODE",
 			"items": [
 				{

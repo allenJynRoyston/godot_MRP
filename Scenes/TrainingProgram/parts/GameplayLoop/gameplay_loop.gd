@@ -191,6 +191,7 @@ var initial_values:Dictionary = {
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
+					"is_ventilated": floor_index in [0, 1],
 					"buffs": [],
 					"debuffs": [],
 				}
@@ -543,6 +544,8 @@ func start_new_game() -> void:
 		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.STARTUP
+	NOTES.use(NOTES.REF.FIRST_NOTE)
+
 	
 #endregion
 # ------------------------------------------------------------------------------
@@ -576,6 +579,7 @@ func get_floor_default(array_size:int) -> Dictionary:
 		# --------------
 		"in_lockdown": false,
 		"is_powered": false,
+		"is_ventilated": true,
 		"array_size": array_size,
 		# --------------
 		"ring": { 
@@ -1334,6 +1338,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			# setup initial energy
 			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
 			ring_level.energy.used = 0
+			ring_level.is_ventilated = ring_base_state.is_ventilated
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
@@ -1424,6 +1429,12 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 				
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
 				if ring_designation not in ring_added:
+					
+					if !ring_base_state.is_ventilated:
+						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.MIASMA)
+						ring_level.debuffs.push_back({"data": data, "duration": 100})
+						
+
 					ring_added.push_back(ring_designation)
 					for prop in ["buffs", "debuffs"]:	
 						# buffs only work when nuke is NOT triggered	

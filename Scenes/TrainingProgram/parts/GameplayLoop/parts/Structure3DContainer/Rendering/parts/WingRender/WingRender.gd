@@ -3,6 +3,8 @@ extends Node3D
 @onready var SceneCamera:Camera3D = $Camera3D
 @onready var MeshRender:Node3D = $MeshRender
 @onready var Laser:SpotLight3D = $MeshRender/Laser
+@onready var Miasma:Node3D = $MeshRender/Miasma
+@onready var MiasmaFog:FogVolume = $MeshRender/Miasma/FogVolume
 @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 
 #@onready var GateContainer:Node3D = $MeshRender/Gates
@@ -14,12 +16,13 @@ extends Node3D
 
 @onready var WorldLight:DirectionalLight3D = $MeshRender/Lighting/WorldLight
 @onready var BaseLights:Node3D = $MeshRender/Lighting/BaseLights
+@onready var CautionLights:Node3D = $MeshRender/Lighting/CautionLights
 @onready var BillboardLights:Node3D = $MeshRender/Lighting/BillboardLight
 @onready var EmergencyLights:Node3D = $MeshRender/Lighting/EmergencyLights
 @onready var EmergencyFlareLight:DirectionalLight3D = $MeshRender/Lighting/EmergencyLights/EmergencyFlareLight
-
 @onready var FloorLabel:Label3D = $MeshRender/Labeling/FloorLabel
 @onready var WingLabel:Label3D = $MeshRender/Labeling/WingLabel
+
 
 var current_location:Dictionary
 var camera_settings:Dictionary 
@@ -28,6 +31,7 @@ var purchased_facility_arr:Array
 
 var previous_nuke_state:bool = false
 var nuke_is_triggered:bool = false 
+var apply_miasma:bool = true
 
 var previous_room_index:int = -1
 var previous_billboard_state:bool = false
@@ -39,6 +43,7 @@ var previous_emergency_mode:int = -1
 var in_lockdown:bool = false
 var is_powered:bool = false
 var in_brownout:bool = false
+var is_ventilated:bool  = false
 var emergency_mode:ROOM.EMERGENCY_MODES
 
 
@@ -175,6 +180,7 @@ func change_camera_view(val:int) -> void:
 			Laser.show()		
 			BillboardLights.hide()
 			BaseLights.hide()
+			CautionLights.hide()
 			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.7, 0, Tween.TRANS_SINE)
 		# ----------------------
 		1:
@@ -182,6 +188,7 @@ func change_camera_view(val:int) -> void:
 			BaseLights.show() if previous_baselights_state else BaseLights.hide()
 			BillboardLights.show() if previous_billboard_state else BillboardLights.hide()
 			EmergencyLights.show() if previous_emergency_state else EmergencyLights.hide()
+			CautionLights.hide() if previous_emergency_state else CautionLights.hide()
 			U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.7, 0, Tween.TRANS_SINE)
 
 # --------------------------------------------------------------------------------------------------		
@@ -190,12 +197,17 @@ func change_camera_view(val:int) -> void:
 func update_room_lighting() -> void:
 	if room_config.is_empty() or use_location.is_empty():return
 	
-	var lights:Array = [BaseLights, BillboardLights, EmergencyLights]
-	in_lockdown = room_config.floor[use_location.floor].in_lockdown
-	is_powered = room_config.floor[use_location.floor].is_powered
-	emergency_mode = room_config.floor[use_location.floor].ring[use_location.ring].emergency_mode
+	var lights:Array = [BaseLights, BillboardLights, EmergencyLights, CautionLights]
 	var default_world_light_color:Color = Color(0.949, 0.947, 0.993)
 	var lockdown_light_color:Color = Color.ORANGE_RED	
+	var caution_light_color:Color = Color.ORANGE
+	
+	in_lockdown = room_config.floor[use_location.floor].in_lockdown
+	is_powered = room_config.floor[use_location.floor].is_powered
+	is_ventilated = room_config.floor[use_location.floor].ring[use_location.ring].is_ventilated
+	emergency_mode = room_config.floor[use_location.floor].ring[use_location.ring].emergency_mode	
+	
+	MiasmaFog.show() if !is_ventilated else MiasmaFog.hide()
 	
 	EmergencyFlareLight.light_energy = 0
 	for light in lights:
@@ -204,7 +216,8 @@ func update_room_lighting() -> void:
 	# no power
 	if !is_powered:
 		WorldLight.light_color = default_world_light_color
-		WorldLight.light_energy = 0.5
+		WorldLight.light_energy = 0.15
+		BillboardLights.show()		
 		return
 
 	if in_lockdown:
@@ -223,19 +236,28 @@ func update_room_lighting() -> void:
 		ROOM.EMERGENCY_MODES.DANGER:
 			WorldLight.light_color = lockdown_light_color
 			WorldLight.light_energy = 1.2
+			BillboardLights.hide()
 			EmergencyLights.show()
+			CautionLights.show()	
+					
 		ROOM.EMERGENCY_MODES.WARNING:
 			BaseLights.hide()
-			BillboardLights.show()
+			BillboardLights.hide()
+			CautionLights.hide()
+			
 		ROOM.EMERGENCY_MODES.CAUTION:
-			BaseLights.show()
+			WorldLight.light_color = caution_light_color
+			BaseLights.hide()
 			BillboardLights.show()
+			CautionLights.show()
+
 		ROOM.EMERGENCY_MODES.NORMAL:
 			WorldLight.light_color = default_world_light_color			
 			WorldLight.light_energy = 1.2
 			BaseLights.show()
 			BillboardLights.show()
-	
+			CautionLights.hide()
+
 	# set previous state so can turn on/off 
 	previous_billboard_state = BillboardLights.is_visible_in_tree()	
 	previous_baselights_state = BaseLights.is_visible_in_tree()
@@ -321,6 +343,10 @@ func _process(delta: float) -> void:
 	if !is_node_ready():return
 	time += delta
 	
+	if apply_miasma:
+		Miasma.rotate_y(0.01)
+		MiasmaFog.material.density = 0.1 + (((sin(time * 1.5) + 1.0) * 0.5) * 0.1)
+
 	is_animating =  GBL.has_animation_in_queue()
 
 	if emergency_mode == ROOM.EMERGENCY_MODES.DANGER:

@@ -128,12 +128,14 @@ func shift_vertically(state:bool, duration:float, current_location:Dictionary) -
 	WingSpriteB.position.y = 0
 	WingSpriteB.position.x = 0
 	WingSpriteA.position.y = -(shift_pos)
+	WingSpriteA.modulate = Color(0, 0, 0.2, 1)
 	
 	await U.tween_node_property(WingCamera, "size", 2, duration/2, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingSpriteA, "position:y", 0, duration, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingSpriteB, "pixel_size", 0.0005, duration, 0, Tween.TRANS_SINE)		
 	await U.tween_node_property(WingSpriteB, "position:y", shift_pos, duration, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingCamera, "size", 1.35, duration/2, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteA, "modulate", Color(1, 1, 1, 1), duration/2, 0.2, Tween.TRANS_SINE)
 
 	WingSpriteB.hide()
 # ------------------------------------------------
@@ -147,17 +149,20 @@ func shift_horizontally(state:bool, duration:float, previous_location:Dictionary
 
 	WingCurrentFloor.set_current_location( current_location )
 	WingSpriteB.texture = U.get_viewport_texture(WingSubviewport)
-	
+
 	WingSpriteB.pixel_size = 0.0013	
 	WingSpriteB.position.y = 0
 	WingSpriteB.position.x = 0
 	WingSpriteA.position.x = -(shift_pos)
+	WingSpriteA.modulate = Color(0, 0, 0.2, 1)
+
 	
 	await U.tween_node_property(WingCamera, "size", 1.7, duration/2, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingSpriteA, "position:x", 0, duration, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingSpriteB, "pixel_size", 0.0005, duration, 0, Tween.TRANS_SINE)	
 	await U.tween_node_property(WingSpriteB, "position:x", shift_pos, duration, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingCamera, "size", 1.35, duration/2, 0, Tween.TRANS_SINE)
+	U.tween_node_property(WingSpriteA, "modulate", Color(1, 1, 1, 1), duration/2, 0.2, Tween.TRANS_SINE)
 
 	WingSpriteB.hide()
 # ------------------------------------------------

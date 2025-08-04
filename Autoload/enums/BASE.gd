@@ -11,6 +11,7 @@ enum BUFF {
 }
 
 enum DEBUFF {
+	MIASMA,
 	UNPOWERED,
 	MORALE_DRAIN, 
 	PANIC

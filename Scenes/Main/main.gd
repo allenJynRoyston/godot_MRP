@@ -242,6 +242,7 @@ var current_layer:LAYER :
 		current_layer = val
 		on_current_layer_update()
 
+var note:Dictionary 
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -258,6 +259,7 @@ func _init() -> void:
 	GBL.register_node(REFS.MAIN, self)	
 	GBL.subscribe_to_control_input(self)	
 	GBL.subscribe_to_mouse_icons(self)
+	SUBSCRIBE.subscribe_to_notes(self)
 # ------------------------------------------------------------------------------
 
 # -----------------------------------	
@@ -269,6 +271,8 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.MAIN_OS_VIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
 	GBL.unsubscribe_to_control_input(self)	
+	SUBSCRIBE.unsubscribe_to_notes(self)
+
 # -----------------------------------		
 
 # -----------------------------------	
@@ -458,6 +462,13 @@ func toggle_fullscreen() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update( get_max_resolution() )
 # -----------------------------------	
+
+# -----------------------------------	
+func on_note_update(new_val:Dictionary) -> void:
+	note = new_val
+	print("note: ", note)
+# -----------------------------------	
+
 
 # -----------------------------------	
 func on_fullscreen_update(use_resolution:Vector2i) -> void:
