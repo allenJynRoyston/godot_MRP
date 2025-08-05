@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://bso3mupgofbc6"]
+[gd_scene load_steps=18 format=3 uid="uid://bso3mupgofbc6"]
 
 [ext_resource type="Script" uid="uid://cmd0kpf27mtcp" path="res://Scenes3D/OutsideRender/outside_render.gd" id="1_iu2be"]
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="2_iu2be"]
+[ext_resource type="Script" uid="uid://dthmokaiqjb2a" path="res://Scenes3D/OutsideRender/fog_volume.gd" id="3_sqf7y"]
 [ext_resource type="PackedScene" uid="uid://dxnwt5sjhdab7" path="res://Scenes/CellScene/lighting/Sirens.tscn" id="4_sqf7y"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="5_bqpsx"]
 
@@ -66,6 +67,15 @@ lightmap_size_hint = Vector2i(2, 2)
 material = SubResource("StandardMaterial3D_iu2be")
 size = Vector2(0.02, 0.02)
 
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_bqpsx"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_yyocm"]
+density = 0.2
+albedo = Color(0.83662, 0.302243, 5.77569e-07, 1)
+emission = Color(0.577008, 0.577008, 0.577008, 1)
+edge_fade = 0.131951
+density_texture = SubResource("NoiseTexture3D_bqpsx")
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_rvrtn"]
 top_radius = 0.2
 bottom_radius = 0.2
@@ -114,6 +124,12 @@ fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_yyocm")
 draw_pass_1 = SubResource("QuadMesh_lhit1")
 
+[node name="FogVolume" type="FogVolume" parent="Node3D"]
+transform = Transform3D(-0.841275, 0, 0.540607, 0, 1, 0, -0.540607, 0, -0.841275, -6.93915, -3.06923, -4.38443)
+size = Vector3(400, 10, 400)
+material = SubResource("FogMaterial_yyocm")
+script = ExtResource("3_sqf7y")
+
 [node name="StreetLight" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -5.51382, 4.84705, 12.6339)
 mesh = SubResource("CylinderMesh_rvrtn")
@@ -132,7 +148,6 @@ spot_range = 18.0
 spot_energy = 1.0
 omni_range = 5.0
 disable_reverse_shadow = true
-include_dust_particles = true
 
 [node name="StreetLight2" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -15.0901, 4.84705, 9.38507)
@@ -152,7 +167,6 @@ spot_range = 18.0
 spot_energy = 5.0
 omni_range = 5.0
 disable_reverse_shadow = true
-include_dust_particles = true
 
 [node name="StreetLight3" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.9395, 4.84705, 4.52634)
@@ -172,7 +186,6 @@ spot_range = 18.0
 spot_energy = 1.0
 omni_range = 5.0
 disable_reverse_shadow = true
-include_dust_particles = true
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -3.61857, 8.85668, -36.1537)
@@ -197,7 +210,6 @@ godray_energy = 4.0
 spot_range = 30.0
 spot_energy = 5.0
 omni_range = 10.0
-include_dust_particles = true
 
 [node name="Sirens" parent="Node3D" instance=ExtResource("4_sqf7y")]
 transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -36.3368, 6.56622, -30.1381)

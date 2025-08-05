@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=31 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gd" id="1_nn2y2"]
 [ext_resource type="Shader" uid="uid://b5dg1k76unpwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gdshader" id="2_8vjbp"]
@@ -109,11 +109,14 @@ viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sqqcm"]
 
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jx7vp"]
+
 [sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
-density = 0.07
-albedo = Color(0.424, 0.8, 0.706, 1)
-emission = Color(0.56144, 0.238819, 0.735833, 1)
-edge_fade = 0.649802
+density = 0.015
+albedo = Color(0, 0, 0, 1)
+emission = Color(1, 1, 1, 1)
+edge_fade = 3.42967
+density_texture = SubResource("NoiseTexture3D_jx7vp")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_nn2y2"]
 
@@ -392,6 +395,7 @@ transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
 transform = Transform3D(0.782476, -0.614598, 0.100012, -0.194003, -0.0880037, 0.977045, -0.591688, -0.783917, -0.188094, 0, 0, 0)
 light_color = Color(0.948614, 0.946679, 0.99251, 1)
 light_energy = 0.9
+light_volumetric_fog_energy = 1.2
 light_specular = 10.0
 
 [node name="ConstantDirectional" type="DirectionalLight3D" parent="MeshRender/Lighting"]
@@ -405,7 +409,6 @@ directional_shadow_mode = 0
 
 [node name="BaseLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 5.96046e-08, 7.45058e-09, 1, -32.1165, 15.0404, -37.09)
-visible = false
 
 [node name="CustomSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
 transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, -6.84801, -6, -7.3788)

@@ -32,6 +32,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"own_limit": 99,
 	"unlock_level": 0,
 	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],	
+	"required_energy": 2,
 	# ------------------------------------------
 
 	# ------------------------------------------

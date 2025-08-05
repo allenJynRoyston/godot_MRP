@@ -129,9 +129,10 @@ func update_node() -> void:
 					var designation:String = U.location_to_designation(use_location)
 					var ability_uid:String = str(room_details.ref, index)	
 					var on_cooldown:bool = false
-					var at_level_threshold:bool = ability.lvl_required <= abl_lvl
+					var at_level_threshold:bool = abl_lvl >= ability.lvl_required
 					var cooldown_val:int = 0
 					
+
 					if ability_uid in base_states.room[designation].ability_on_cooldown:
 						cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]		
 						on_cooldown = base_states.room[designation].ability_on_cooldown[ability_uid] > 0
@@ -145,13 +146,13 @@ func update_node() -> void:
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.CONVERSATION
 					if !at_level_threshold:
-						SummaryBtnNode.hint_description = "Requires upgrade (room level too low)."
+						SummaryBtnNode.hint_description = "Requires upgrade to use."
 					else:					
-						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !on_cooldown else "%s (on cooldown for %s days)." % [ability.description, cooldown_val]
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !on_cooldown else "On cooldown for %s days." % [cooldown_val]
 					
 					SummaryBtnNode.is_disabled = !is_activated or !at_level_threshold
 					SummaryBtnNode.use_alt = on_cooldown
-					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.description if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
+					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.description if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
 					SummaryBtnNode.icon =  SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.MEDIA_PLAY
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
@@ -198,12 +199,12 @@ func update_node() -> void:
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.ENERGY
 					if !at_level_threshold:
-						SummaryBtnNode.hint_description = "Requires upgrade (room level too low)."
+						SummaryBtnNode.hint_description = "Requires upgrade to use."
 					else:
-						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "%s (not enough energy)." % [ability.description]
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "Not enough energy."
 
 					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy or !at_level_threshold
-					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.description
+					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.description
 					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed else SVGS.TYPE.DELETE
 					
 					SummaryBtnNode.show_checked_panel = true

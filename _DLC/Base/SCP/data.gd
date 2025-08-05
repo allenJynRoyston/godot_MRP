@@ -18,6 +18,12 @@ var SCP99:Dictionary = {
 		SCP.CONTAINMENT_TYPES.PHYSICAL,
 	],
 
+	"effect": {
+		"description": "All adjacent rooms generate +1 RESEARCH.",
+		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			return GAME_UTIL.add_currency_to_adjacent_rooms(_new_room_config, 1, RESOURCE.CURRENCY.SCIENCE, _item.location),
+	},	
+
 	"event": {
 		# ----------------------------
 		EVT.TYPE.SCP_ON_CONTAINMENT: [
@@ -314,9 +320,9 @@ var SCP0:Dictionary = {
 	],
 
 	"effect": {
-		"description": "All adjacent rooms generate +25 RESEARCH.",
+		"description": "All adjacent rooms generate +1 RESEARCH.",
 		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
-			return GAME_UTIL.add_currency_to_adjacent_rooms(_new_room_config, 25, RESOURCE.CURRENCY.SCIENCE, _item.location),
+			return GAME_UTIL.add_currency_to_adjacent_rooms(_new_room_config, 1, RESOURCE.CURRENCY.SCIENCE, _item.location),
 	},	
 	
 	# ------------------------------------------

@@ -345,7 +345,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await reveal_header(false, duration)
 				current_mode = MODE.TAB_SELECT
 			BtnControls.onAction = func() -> void:
-				pass
+				onAction.call()
 				
 			await U.tick()
 			grid_index = 0

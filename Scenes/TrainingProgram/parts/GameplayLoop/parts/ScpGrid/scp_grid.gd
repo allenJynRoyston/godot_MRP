@@ -19,6 +19,8 @@ const ScpMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/par
 
 enum TYPE { SELECT, CONTAIN, RESEARCH }
 
+var selected_data:Dictionary
+
 var type:TYPE
 
 # --------------------------------------------------------------------------------------------------
@@ -67,44 +69,21 @@ func setup_gridselect() -> void:
 		ScpEffectCard.scp_ref = data.ref
 		DetailPanel.scp_ref = data.ref
 		SummaryImage.texture = CACHE.fetch_image(data.img_src)
+		selected_data = data
 		
-		#match type:
-			#TYPE.SELECT:
-				#GridSelect.BtnControls.disable_active_btn = false			
-			#TYPE.CONTAIN:
-				#GridSelect.BtnControls.disable_active_btn = false #research_level == 0
-			#TYPE.RESEARCH:
-				#GridSelect.BtnControls.disable_active_btn = !can_afford or research_level >= 3
-			
+
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.scp_ref = -1
 	
 	GridSelect.onUpdateNode = func(node:Control, data:Dictionary, index:int) -> void:		
 		node.index = index
 		node.scp_ref = data.ref
-		
-		#node.check_in_containment = type == TYPE.CONTAIN
-		#node.in_containment = !scp_data[data.ref].location.is_empty() if data.ref in scp_data else false
 
-		#node.check_max_level = type == TYPE.RESEARCH
-		#node.at_max_level = scp_data[data.ref].level == 3 if data.ref in scp_data else false
-		#
-		#node.onHover = func() -> void:
-			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			#GridSelect.grid_index = index
-			#DetailPanel.scp_ref = data.ref
-			#
-		#node.onClick = func() -> void:
-			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
-			#GridSelect.freeze_and_disable(true)
-			#GridSelect.grid_index = index
-			#end(data.ref)
-	
 	GridSelect.onValidCheck = func(node:Control) -> bool:
 		return node.scp_ref != -1
 	
 	GridSelect.onAction = func() -> void:
-		pass
+		end(selected_data.ref)
 		
 	GridSelect.onEnd = func() -> void:
 		end()	

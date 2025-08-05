@@ -5,7 +5,11 @@ extends PanelContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 @onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
-@onready var EnergyTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer/EnergyCost
+@onready var EnergyTag:Label = $MarginContainer/VBoxContainer/ModuleContainer/ModuleComponent/MarginContainer/List/SummaryBtn/MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
+@onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
+
+# cost
+@onready var ConstructionCostPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel
 
 # status
 @onready var StatusOverlay:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay
@@ -57,6 +61,7 @@ extends PanelContainer
 @onready var node_list:Array = [StatusOverlay, ModuleContainer, ProgramContainer, ScpContainer, ContainmentContainer]
 
 @export var modules_only:bool = false 
+
 @export var preview_mode:bool = false : 
 	set(val):
 		preview_mode = val
@@ -126,6 +131,8 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 func on_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
 	if preview_mode and preview_mode_ref != -1:
+		ConstructionCostPanel.show()
+		LvlTag.hide()
 		# hide all nodes
 		for node in node_list:
 			node.hide()
@@ -191,6 +198,8 @@ func on_update() -> void:
 		return
 	
 	# hide all nodes
+	ConstructionCostPanel.hide()
+	LvlTag.show()
 	for node in node_list:
 		node.hide()
 	
@@ -244,7 +253,8 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	InfoContainer.show()
 	NameTag.text = room_details.details.name
 	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]
-	EnergyTag.text = str(2)
+	EnergyTag.text = str(room_details.details.required_energy)
+	ConstructionCostTag.text = str(room_details.details.costs.purchase)
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
 	
 	# staffing
@@ -293,9 +303,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ContainmentTypeContainer.show() if !room_details.details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 	
 	# scp
-	ScpPanel.content = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, " (", scp_details.details.nickname, ")")
-	ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)
-	ScpEffect.content = "" if scp_details.is_empty() else "effect goes here..."
+	ScpPanel.content = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
+	ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)	
+	ScpEffect.content = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
 
 	ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
 	ScpEffect.hide() if scp_details.is_empty() else ScpEffect.show()

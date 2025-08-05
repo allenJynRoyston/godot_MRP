@@ -82,6 +82,7 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------------------
 func update_all() -> void:
+	print("update all!")
 	# check for level lock
 	lvl_locked = abl_lvl < ability_data.lvl_required	
 	

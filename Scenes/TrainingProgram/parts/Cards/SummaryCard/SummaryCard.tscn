@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=27 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="2_dchg3"]
@@ -36,9 +36,9 @@ outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uq7ee"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3otej"]
 bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_5g6vn"]
 font = ExtResource("8_budmt")
@@ -47,6 +47,10 @@ font_color = Color(0.162066, 0.162066, 0.162066, 1)
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uq7ee"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5g6vn"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -151,30 +155,62 @@ text = "ECONOMIC REDISTRUBTION ROOM"
 label_settings = SubResource("LabelSettings_q31gb")
 autowrap_mode = 3
 
-[node name="LevelAndEnergyPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ConstructionCostPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uq7ee")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3otej")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/LevelAndEnergyPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 3
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/LevelAndEnergyPanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+layout_mode = 2
+icon = 31
+icon_color = Color(0, 0, 0, 1)
+
+[node name="ConstructionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "2"
+label_settings = SubResource("LabelSettings_5g6vn")
+metadata/_edit_group_ = true
+
+[node name="LevelAndEnergyPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uq7ee")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
+[node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 layout_mode = 2
 icon = 32
 icon_color = Color(0, 0, 0, 1)
 
-[node name="EnergyCost" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer"]
+[node name="EnergyCost" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "2"
 label_settings = SubResource("LabelSettings_5g6vn")
@@ -446,9 +482,9 @@ theme_override_constants/margin_bottom = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 1
 text = "CONTAINING"
 label_settings = ExtResource("6_3otej")
-vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer"]
 layout_mode = 2
@@ -477,10 +513,11 @@ title = ""
 border_color = Color(0.3672, 0.378, 0.9, 1)
 
 [node name="ScpImage" type="TextureRect" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_hex5u")
 expand_mode = 1
+stretch_mode = 5
 
 [node name="ScpEffect" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer" instance=ExtResource("4_djb7u")]
 custom_minimum_size = Vector2(0, 0)
@@ -489,7 +526,6 @@ size_flags_vertical = 3
 hollow = true
 is_small = true
 content = "The effect goes here and it can be quite long."
-center_text = false
 title = ""
 border_color = Color(0.3672, 0.378, 0.9, 1)
 

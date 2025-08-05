@@ -76,8 +76,8 @@ func on_list_update() -> void:
 		
 		if (amount + bonus_amount) != 0:		
 			var new_node:Control = EconItemPreload.instantiate()
-			new_node.amount = amount
-			new_node.bonus_amount = bonus_amount
+			new_node.amount = amount + bonus_amount
+			new_node.bonus_amount = 0
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon
 			new_node.icon_size = Vector2(20, 20)

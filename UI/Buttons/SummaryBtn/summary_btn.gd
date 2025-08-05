@@ -110,6 +110,7 @@ func _ready() -> void:
 	on_cost_update()
 	on_is_checked_update()	
 	is_show_checked_panel_update()
+	on_show_energy_cost_update()
 	on_fill_update()
 	on_cost_val_update()
 	on_show_cost_update()
@@ -134,7 +135,7 @@ func on_fill_update() -> void:
 	
 func on_show_energy_cost_update() -> void:
 	if !is_node_ready():return
-	EnergyPanel.hide()# if show_energy_cost else EnergyPanel.hide()
+	EnergyPanel.show() if show_energy_cost else EnergyPanel.hide()
 
 func on_cost_update() -> void:
 	if !is_node_ready():return

@@ -1661,9 +1661,11 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room		
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var is_under_construction:bool = item.under_construction
-
+		var energy_availble:int = ring_config_data.energy.available - ring_config_data.energy.used
+		
 		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		var required_staffing:Array = room_details.required_staffing
@@ -1672,9 +1674,14 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		).size()
 		
-		# apply is activated state if have enough staff
-		room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
+		# apply is activated state if have enough staff and enough energy
+		if energy_availble >= room_details.required_energy:
+			room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
+			ring_config_data.energy.used += room_details.required_energy
+		else:
+			room_config_data.is_activated = false
 		
+
 		# if activated, then check if room has additional properties
 		if room_config_data.is_activated:
 			for key in room_details.personnel_capacity:

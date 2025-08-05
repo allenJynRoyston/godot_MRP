@@ -26,6 +26,8 @@ func start() -> void:
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.7, 0.5)
 	await U.set_timeout(1.0)
 	BtnControls.reveal(true)
+	await U.set_timeout(3.0)
+	end()
 	
 func end() -> void:
 	Splash.end()	

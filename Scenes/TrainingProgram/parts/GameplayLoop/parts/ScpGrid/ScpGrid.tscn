@@ -73,11 +73,11 @@ shader_parameter/center_falloff_softness = 0.001
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18rtl"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljatq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skfir"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_83phj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhwoo"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
@@ -137,7 +137,7 @@ alignment = 1
 
 [node name="CostResourceItem" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ljatq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_skfir")
 icon = 39
 no_bg = true
 title = "999"
@@ -151,7 +151,7 @@ is_hoverable = false
 
 [node name="CostResourceItemDiff" parent="SummaryControl/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_skfir")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_83phj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nhwoo")
 icon = 39
 no_bg = true
 title = "999"

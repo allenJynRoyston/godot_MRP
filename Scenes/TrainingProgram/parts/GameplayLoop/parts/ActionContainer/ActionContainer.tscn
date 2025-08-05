@@ -188,7 +188,7 @@ custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
+theme_override_constants/margin_top = 130
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true
@@ -427,7 +427,6 @@ is_disabled = false
 allow_hint = false
 
 [node name="WingActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
@@ -467,17 +466,6 @@ icon = 29
 is_disabled = false
 allow_hint = false
 
-[node name="WingProgramBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "PROGRAMS"
-assigned_key = "R"
-icon = 29
-is_disabled = false
-allow_hint = false
-
 [node name="WingActionBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
@@ -485,6 +473,18 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "ACTIONS"
 assigned_key = "E"
+icon = 29
+is_disabled = false
+allow_hint = false
+
+[node name="WingProgramBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+visible = false
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
+title = "PROGRAMS"
+assigned_key = "R"
 icon = 29
 is_disabled = false
 allow_hint = false

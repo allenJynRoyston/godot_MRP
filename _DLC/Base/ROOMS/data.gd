@@ -1071,6 +1071,7 @@ var ENERGY_STORAGE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"required_energy": 0,
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],	

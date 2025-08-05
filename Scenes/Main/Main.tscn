@@ -204,6 +204,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+is_production_build = true
+reset_userprofile_save = true
 audio_mute = true
 skip_splash = true
 skip_intro = true
@@ -223,6 +225,7 @@ skip_setup_progress = true
 start_at_ring_level = true
 skip_objectives = true
 enable_scp_debug = true
+max_energy = false
 all_rooms_available = true
 all_resources = true
 skip_initial_containment = true
@@ -504,6 +507,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qdkat")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/MarginContainer/NoteBtn"]
 layout_mode = 2
+alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)

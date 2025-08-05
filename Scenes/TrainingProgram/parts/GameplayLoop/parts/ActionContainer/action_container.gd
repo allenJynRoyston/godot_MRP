@@ -319,7 +319,9 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 	query = ROOM_UTIL.get_unlocked_category(category, start_at, query_size)	
 
 	return_list.push_back(
-		query.list.map(func(x):return {
+		query.list.map(func(x):
+			
+		return {
 			"title": x.details.name,
 			"img_src": x.details.img_src,
 			"is_disabled": is_disabled_func.call(x),
@@ -373,85 +375,142 @@ func show_build_options() -> void:
 	const query_size:int = 100
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
+	var ring_level_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	var energy_availble:int = ring_level_config.energy.available - ring_level_config.energy.used
 
 	for listitem in [
 			{
 				"title": 'RESOURCES', 
 				"type": ROOM.CATEGORY.RESOURCES,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif energy_availble < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
-						"icon": SVGS.TYPE.MONEY,
+						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
 			},
 			{
 				"title": 'RECRUITMENT', 
 				"type": ROOM.CATEGORY.RECRUITMENT,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif energy_availble < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
-						"icon": SVGS.TYPE.MONEY,
+						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
 			},			
 			{
 				"title": 'ENERGY', 
 				"type": ROOM.CATEGORY.ENERGY,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif energy_availble < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
-						"icon": SVGS.TYPE.MONEY,
+						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At max capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
 			},
 			{
 				"title": 'UTILITY', 
 				"type": ROOM.CATEGORY.UTILITY,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif energy_availble < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
-						"icon": SVGS.TYPE.MONEY,
+						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
 			},			
 			{
 				"title": 'CONTAINMENT', 
 				"type": ROOM.CATEGORY.CONTAINMENT,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif energy_availble < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
-						"icon": SVGS.TYPE.MONEY,
+						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
 			},
 			{
 				"title": 'SPECIAL', 
 				"type": ROOM.CATEGORY.SPECIAL,
 				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x:Dictionary) -> Dictionary:
-					var description:String = x.details.description
+					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
+				"hint_func": func(x: Dictionary) -> Dictionary:
+					var description: String = x.details.description
+					var disabled_reason: String = ""
+
+					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+						disabled_reason = "Insufficient funds."
+					elif ring_level_config.energy.available < x.details.required_energy:
+						disabled_reason = "Not enough energy."
+					elif ROOM_UTIL.at_own_limit(x.ref):
+						disabled_reason = "At building capacity."
+
 					return {
 						"icon": SVGS.TYPE.GLOBAL,
 						"title": x.details.name,
-						"description": description if !ROOM_UTIL.at_own_limit(x.ref) else "At building capacity."
+						"description": description if disabled_reason == "" else disabled_reason
 					},
+
 			},
 		]:
 
@@ -1170,6 +1229,8 @@ func check_btn_states() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
 	var is_powered:bool = room_config.floor[current_location.floor].is_powered
+	var is_ventilated:bool = room_config.floor[current_location.floor].ring[current_location.ring].is_ventilated	
+	var is_overheated:bool = room_config.floor[current_location.floor].ring[current_location.ring].is_overheated	
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.room.is_empty()
 	var is_scp_empty:bool = room_extract.scp.is_empty()
@@ -1196,7 +1257,9 @@ func check_btn_states() -> void:
 		MODE.NONE:
 			GotoWingBtn.is_disabled = !has_one_floor_activated
 			GotoGeneratorBtn.is_disabled = !has_generator_prerequisite
-			WingProgramBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty()
+			WingDesignBtn.is_disabled = !is_powered or !is_ventilated or is_overheated
+			WingDesignBtn.title = "DESIGN" if (is_powered and is_ventilated and !is_overheated) else "UNAVAILABLE"
+			WingProgramBtn.hide() if GAME_UTIL.get_list_of_programs(current_location, true).is_empty() else WingProgramBtn.show()
 			WingActionBtn.is_disabled = rooms_in_wing_count == 0
 			GenActionBtn.is_disabled = !has_one_floor_activated
 		# -----------	
@@ -1256,6 +1319,7 @@ func check_btn_states() -> void:
 				match node.ref_data.type:
 					"scp":						
 						SummaryControls.a_btn_title = "SELECT SCP" if node.ref_data.data.is_empty() else "FULL"
+						SummaryControls.disable_active_btn = !node.ref_data.data.is_empty()
 						
 					"active_ability":
 						SummaryControls.a_btn_title = "USE PROGRAM"
@@ -1268,19 +1332,20 @@ func check_btn_states() -> void:
 			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE"
 			CommandControls.hide_a_btn = is_room_empty or is_under_construction
 			
-			CommandControls.hide_c_btn = is_room_empty or !is_activated	
-			CommandControls.disable_c_btn = at_max_level or !is_activated
+			CommandControls.hide_c_btn = is_room_empty or !is_activated	or at_max_level
+			CommandControls.disable_c_btn = !is_activated
 			
 			CommandControls.onAction = func() -> void:
 				await CommandControls.reveal(false)
 				if is_activated:
 					current_mode = MODE.SUMMARY_CARD						
 				else:
-					var confirm:bool = await GAME_UTIL.activate_room()
-					if confirm:
-						await U.tick()
-						on_current_location_update()
-					CommandControls.reveal(true)
+					print("manually activate...")
+					#var confirm:bool = await GAME_UTIL.activate_room()
+					#if confirm:
+						#await U.tick()
+						#on_current_location_update()
+					#CommandControls.reveal(true)
 					
 			CommandControls.onCBtn = func() -> void:
 				await CommandControls.reveal(false)

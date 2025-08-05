@@ -1156,28 +1156,29 @@ func rush_construction_room(use_location:Dictionary = current_location, state:bo
 	var confirm:bool = await create_modal(title, "", room_data.img_src, costs)
 	
 	if confirm:	
-		print("rush complete?")
 		ROOM_UTIL.finish_construction(use_location)
 	
 	return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func activate_room(use_location:Dictionary = current_location, state:bool = true) -> bool:
-	var room_data:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
-	
-	var title:String = "Activate %s?" % [room_data.name]
-	var costs:Array = [{
-		"amount": -1, 
-		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
-	}]	
-				
-	var confirm:bool = await create_modal(title, "", room_data.img_src, costs)
-	
-	if confirm:	
-		ROOM_UTIL.set_room_is_active_state(use_location, state)
-	
-	return confirm
+# room is automatically updated when you have enough staff
+
+#func activate_room(use_location:Dictionary = current_location, state:bool = true) -> bool:
+	#var room_data:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	#
+	#var title:String = "Activate %s?" % [room_data.name]
+	#var costs:Array = [{
+		#"amount": -1, 
+		#"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	#}]	
+				#
+	#var confirm:bool = await create_modal(title, "", room_data.img_src, costs)
+	#
+	#if confirm:	
+		#ROOM_UTIL.set_room_is_active_state(use_location, state)
+	#
+	#return confirm
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

@@ -71,9 +71,9 @@ func get_items() -> Array:
 func on_focus(state:bool = is_focused) -> void:
 	super.on_focus(state)
 	if !is_node_ready():return
-	for node in ListContainer.get_children():
-		if "show_details" in node:
-			node.show_details = state
+	#for node in ListContainer.get_children():
+		#if "show_details" in node:
+			#node.show_details = state
 # --------------------------------------------------
 
 
