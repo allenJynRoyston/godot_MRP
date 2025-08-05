@@ -34,19 +34,20 @@ func _ready() -> void:
 func change_bus(bus:String) -> void:
 	var stream_position:float = current_audio_stream_player.get_playback_position()
 	var current_track = null
-	AudioStreamPlayerMaster.stop()	
-	AudioStreamPlayerReverb.stop()
-	
 	current_track = current_audio_stream_player.stream
 	
+	AudioStreamPlayerMaster.play(stream_position)
+	AudioStreamPlayerReverb.play(stream_position)
 
-	match bus:
-		"Master":
-			current_audio_stream_player = AudioStreamPlayerMaster
-		"Reverb":
-			current_audio_stream_player = AudioStreamPlayerReverb
-			
-			
+	#match bus:
+		#"Master":
+			#await fade_out(0.7, current_audio_stream_player)
+			#current_audio_stream_player = AudioStreamPlayerMaster
+		#"Reverb":
+			#await fade_out(0.7, current_audio_stream_player)
+			#current_audio_stream_player = AudioStreamPlayerReverb
+			#
+			#
 	var effect = AudioServer.get_bus_effect_instance(0, 0)
 	if effect is AudioEffectSpectrumAnalyzerInstance:
 		spectrum = effect
@@ -79,10 +80,10 @@ func stop_track() -> void:
 # --------------------------------------	
 
 # --------------------------------------	
-func fade_out(duration:float = 3.0) -> void:
-	await U.tween_range(current_audio_stream_player.volume_db, -60, duration, 
+func fade_out(duration:float = 3.0, node:AudioStreamPlayer = current_audio_stream_player) -> void:
+	await U.tween_range(node.volume_db, -60, duration, 
 		func(val):
-			current_audio_stream_player.volume_db = val
+			node.volume_db = val
 	).finished
 	stop_track()
 # --------------------------------------	

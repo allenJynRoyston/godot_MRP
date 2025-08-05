@@ -27,13 +27,18 @@ extends Control
 @onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
 @onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
 
+@onready var main_viewport_texture_material_duplicate:ShaderMaterial = MainViewportTexture.material.duplicate(true)
+@onready var material_rect_duplicate:ShaderMaterial = MaterialRect.material.duplicate(true)
+
 const SplashPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn")
 
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {} 
 var control_pos:Dictionary = {}
+var base_states:Dictionary = {}
+var room_config:Dictionary = {} 
+
 var previous_camera_type:int = -1
-var material_dupe:ShaderMaterial
 
 var previous_floor:int = -1
 var previous_ring:int = 0
@@ -52,19 +57,20 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_audio_data(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
 	
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.RENDERING)
 	GBL.unsubscribe_to_process(self)
-	
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_audio_data(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	SUBSCRIBE.unsubscribe_to_base_states(self)
-	
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+
 	
 func _ready() -> void:
-	material_dupe = MaterialRect.material.duplicate(true)
+	MainViewportTexture.material = main_viewport_texture_material_duplicate
 	on_nuke_is_triggered_update()
 # ------------------------------------------------
 
@@ -173,6 +179,42 @@ func on_base_states_update(new_base_state:Dictionary) -> void:
 	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
 		nuke_is_triggered = new_base_state.base.onsite_nuke.triggered
 		previous_nuke_state = nuke_is_triggered
+	
+	U.debounce(str(self, "_check_for_conditions"), check_for_conditions)
+# ------------------------------------------------
+
+# ------------------------------------------------
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+	if !is_node_ready() or room_config.is_empty():return
+	
+	U.debounce(str(self, "_check_for_conditions"), check_for_conditions)
+# ------------------------------------------------
+
+	
+# ------------------------------------------------
+func check_for_conditions() -> void:
+	if !is_node_ready() or room_config.is_empty() or current_location.is_empty():return
+	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	var is_overheated:bool = ring_config_data.is_overheated
+	var is_ventilated:bool = ring_config_data.is_ventilated
+
+	print("is_overheated: ", is_overheated)
+	print("is_ventilated: ", is_ventilated)
+	if is_overheated:
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)		
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
+		return
+	
+	if !is_ventilated:
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", true)
+		return
+	
+	print(main_viewport_texture_material_duplicate)
+	main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)
+	main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
+
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -222,9 +264,9 @@ func set_shader_strength(strength:int) -> void:
 		1: 
 			new_amount = 3.0
 	
-	MaterialRect.material = material_dupe
-	U.tween_range(material_dupe.get_shader_parameter("zoom"), new_amount, 0.5, func(val:float) -> void:
-		material_dupe.set_shader_parameter("zoom", val)
+	MaterialRect.material = material_rect_duplicate
+	U.tween_range(material_rect_duplicate.get_shader_parameter("zoom"), new_amount, 0.5, func(val:float) -> void:
+		material_rect_duplicate.set_shader_parameter("zoom", val)
 	)	
 
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
@@ -234,6 +276,7 @@ func set_shader_strength(strength:int) -> void:
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	U.debounce(str(self.name, "_animate_wing"), animate_wing)
+	U.debounce(str(self, "_check_for_conditions"), check_for_conditions)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -243,9 +286,9 @@ func on_nuke_is_triggered_update() -> void:
 		child.queue_free()
 
 	BGColorRect.color = Color(1, 0, 0, 0.5) if nuke_is_triggered else Color(0.184, 0.193, 0.212) 	
-	material_dupe.set_shader_parameter("line_color", Color.ORANGE_RED)	
-	material_dupe.set_shader_parameter("angle", 0.5 if nuke_is_triggered else 0 )	
-	material_dupe.set_shader_parameter("speed", 5 if nuke_is_triggered else 0.2 )	
+	material_rect_duplicate.set_shader_parameter("line_color", Color.ORANGE_RED)	
+	material_rect_duplicate.set_shader_parameter("angle", 0.5 if nuke_is_triggered else 0 )	
+	material_rect_duplicate.set_shader_parameter("speed", 5 if nuke_is_triggered else 0.2 )	
 
 	if nuke_is_triggered:
 		for index in range(0, 10):
@@ -282,7 +325,7 @@ func on_process_update(delta: float) -> void:
 	var hue := fmod(time_accum * 0.01, 1.0)  # Adjust 0.1 to control speed
 	var color := Color.from_hsv(hue, 1.0, 1.0)
 	time_accum += delta  # Accumulate time in seconds	
-	material_dupe.set_shader_parameter("line_color", color)
+	material_rect_duplicate.set_shader_parameter("line_color", color)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -292,5 +335,5 @@ func on_audio_data_update(new_val:Dictionary) -> void:
 	var music_position:float = new_val.pos
 	var bass_level:float = new_audio_data[10]
 	var normalized:float = clamp((bass_level - 0.5) / 0.1, 0.1, 1)
-	material_dupe.set_shader_parameter("glow_strength", normalized + 0.5)
+	material_rect_duplicate.set_shader_parameter("glow_strength", normalized + 0.5)
 # ------------------------------------------------

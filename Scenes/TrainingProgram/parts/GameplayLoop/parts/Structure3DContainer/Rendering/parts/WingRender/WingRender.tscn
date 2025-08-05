@@ -400,7 +400,6 @@ light_specular = 10.0
 
 [node name="ConstantDirectional" type="DirectionalLight3D" parent="MeshRender/Lighting"]
 transform = Transform3D(0.872024, -0.0485955, 0.487044, 0.0284972, 0.998412, 0.0485952, -0.488632, -0.0284968, 0.872026, -0.923176, 11.6834, 0.92318)
-visible = false
 light_color = Color(0.915352, 0.923462, 0.978611, 1)
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.5
@@ -466,7 +465,6 @@ spot_angle_attenuation = 0.307786
 
 [node name="CautionLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, -7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 0, 0)
-visible = false
 
 [node name="SpinLights" parent="MeshRender/Lighting/CautionLights" instance=ExtResource("9_jx7vp")]
 transform = Transform3D(1, 0, 2.23517e-08, -7.45058e-09, -4.47035e-08, -1, 0, 1, -1.49012e-08, -32, 4.1, -44.6056)

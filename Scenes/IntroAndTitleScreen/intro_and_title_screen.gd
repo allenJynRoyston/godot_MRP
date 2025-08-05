@@ -103,16 +103,15 @@ func on_current_mode_update() -> void:
 			if !DEBUG.get_val(DEBUG.SKIP_SPLASH):
 				TitleSplash.start()
 				await TitleSplash.on_complete	
-				await TransitionScreen.start(0.6, true)
-				await U.set_timeout(0.5)	
+				TransitionScreen.start(2.0, true)
+				SUBSCRIBE.music_data = {
+					"selected": OS_AUDIO.TRACK.INTRO,
+				}					
+				await U.set_timeout(3.0)	
 			current_mode = MODE.DISPLAY_LOGO	
 		# ---------
 		MODE.DISPLAY_LOGO:
-			if !DEBUG.get_val(DEBUG.INTRO_SKIP_LOGO):
-				SUBSCRIBE.music_data = {
-					"selected": OS_AUDIO.TRACK.INTRO,
-				}	
-					
+			if !DEBUG.get_val(DEBUG.INTRO_SKIP_LOGO):					
 				# fade in
 				U.tween_node_property(StudioLogo, 'scale:x', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
 				U.tween_node_property(StudioLogo, 'scale:y', 1.05, 1.0, 1.0, Tween.TRANS_LINEAR)
@@ -195,8 +194,6 @@ func on_current_mode_update() -> void:
 				U.tween_node_property(FadeOverlay, 'modulate:a', 1, 2)
 				await TransitionScreen.start(3, true)				
 
-				GBL.find_node(REFS.AUDIO).fade_out(3.0)
-				await U.set_timeout(1.0)
 
 			current_mode = MODE.EXIT
 		# ---------

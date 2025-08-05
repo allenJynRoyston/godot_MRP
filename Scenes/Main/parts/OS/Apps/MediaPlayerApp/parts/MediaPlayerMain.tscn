@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://5ra6miceqhv7"]
+[gd_scene load_steps=13 format=3 uid="uid://5ra6miceqhv7"]
 
 [ext_resource type="Script" uid="uid://kmom1pmj4erj" path="res://Scenes/Main/parts/OS/Apps/MediaPlayerApp/parts/media_player_main.gd" id="1_nyf86"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_6akow"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="2_8cl27"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_nyf86"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="3_nyf86"]
@@ -10,7 +11,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8cl27"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp5dc"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.917647)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ypqhe"]
 font = ExtResource("2_nyf86")
@@ -22,7 +23,7 @@ shadow_size = 2
 shadow_color = Color(1, 0.74902, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyf86"]
-bg_color = Color(0.162066, 0.162066, 0.162066, 1)
+bg_color = Color(0.0687983, 0.0687983, 0.0687983, 0.760784)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_8cl27"]
 color = Color(1, 0.745178, 0.380506, 1)
@@ -36,6 +37,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_8cl27")
 script = ExtResource("1_nyf86")
+
+[node name="AudioVisualizer" parent="." instance=ExtResource("2_6akow")]
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -53,7 +57,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer"]

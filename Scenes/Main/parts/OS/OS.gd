@@ -192,14 +192,7 @@ var app_list:Array[Dictionary] = [
 			"fetch_tracks_unlocked": func() -> Array:
 				return os_setting.tracks_unlocked,			
 			"open": func(data:Dictionary) -> void:
-				var options:Array = 	[
-						{
-							"title": "ENABLE AUDIO VISUALIZER", 
-							"key": "enable_visulizer",
-							"value": os_setting.media_player.enable_visulizer,
-							"hint_description": "Enable/Disable audio visulizer."
-						}
-					]
+				var options:Array = 	[]
 				
 				if data.ref not in running_apps_list.map(func(i): return i.ref):
 					open_options(
@@ -324,14 +317,14 @@ var app_list:Array[Dictionary] = [
 		"installed": func() -> bool:
 			return true,
 		"events": {
-			"open": func(data:Dictionary) -> void:
+			"open": func(data:Dictionary) -> void:	
 				open_options(
 					[
 						{
 							"title": "APPLY CHANGES...",
 							"onClick": func(_options:Dictionary) -> void:
 								update_settings_options(_options)
-
+								update_media_options(_options)
 								# reveal controls
 								BtnControls.reveal(true),
 						},
@@ -348,7 +341,14 @@ var app_list:Array[Dictionary] = [
 							"key": "crt_effect",
 							"value": GBL.active_user_profile.graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
-						}
+						},
+						{
+							"title": "ENABLE AUDIO VISUALIZER", 
+							"key": "enable_visulizer",
+							"value": os_setting.media_player.enable_visulizer,
+							"hint_description": "Enable/Disable audio visulizer."
+						}						
+						
 					]
 				),
 				
@@ -410,7 +410,7 @@ func _ready() -> void:
 	HeaderControls.hide()
 	PauseContainer.hide()
 	AudioVisualizer.hide()
-	
+
 	# show
 	LoginContainer.show()
 	
@@ -433,8 +433,10 @@ func start() -> void:
 	check_graphics_settings(true)
 	load_state()	
 	on_simulated_busy_update()
+	update_media_options({})
 	
 	await U.tick()
+		
 	
 	control_pos[LoginPanel] = {
 		"show": 0,
@@ -444,6 +446,7 @@ func start() -> void:
 	
 	await U.set_timeout(1.0 if !skip_boot else 0)
 	
+
 	if skip_boot:
 		LoginContainer.queue_free()
 	else:
@@ -452,12 +455,18 @@ func start() -> void:
 	await render_desktop_icons()	
 	Taskbar.activate()
 	HeaderControls.show()
+	
 		
 	if skip_to_game:
 		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)
 		open_app(app.details)
 	
 	await reveal_logo(true, 0.5)
+	SUBSCRIBE.music_data = {
+		"selected": OS_AUDIO.TRACK.OS_TRACK_ONE if true else OS_AUDIO.TRACK.OS_TRACK_TWO,
+	}
+	
+
 	reveal_logo(false, 3.0)
 		
 func return_to_desktop() -> void:

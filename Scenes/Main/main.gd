@@ -201,10 +201,10 @@ var default_save_profiles:Dictionary = {
 		"apps_installed": [],
 		"store_purchases": [],
 		"media_player": {
-			"enable_visulizer": true	
+			"enable_visulizer": false
 		},
 		"currency": {
-			"amount": 100
+			"amount": 10
 		}
 	},
 	"snapshots": {

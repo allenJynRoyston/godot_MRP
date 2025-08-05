@@ -1,11 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=17 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
+[ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_lh6qf"]
 [ext_resource type="Shader" uid="uid://cmqkpk1mn6eq7" path="res://CanvasShader/AudioShader/audio_shader_3.gdshader" id="2_uoiph"]
 [ext_resource type="PackedScene" uid="uid://m74gitiqvwla" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Overview/Overview.tscn" id="2_urwmy"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="3_kgjio"]
 [ext_resource type="PackedScene" uid="uid://c83wswsjxnmva" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Generator/Generator.tscn" id="4_dy8ob"]
 [ext_resource type="PackedScene" uid="uid://2egdont4wbiv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ControllerOverlay/ControllerOverlay.tscn" id="4_kgjio"]
+[ext_resource type="Shader" uid="uid://dfudwt01nbo8a" path="res://Shader/HV_Interupt/hv_interupt.gdshader" id="4_ocl5o"]
 [ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/Wing.tscn" id="4_ujma6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kgjio"]
@@ -18,6 +20,21 @@ shader_parameter/line_color = Color(0, 1, 1, 1)
 shader_parameter/alpha = 0.419
 shader_parameter/moving = true
 shader_parameter/angle = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocl5o"]
+shader = ExtResource("4_ocl5o")
+shader_parameter/enable_horizontal = true
+shader_parameter/amplitude_h = 10.0
+shader_parameter/frequency_h = 5.0
+shader_parameter/speed_h = 1.0
+shader_parameter/opacity_h = 1.0
+shader_parameter/step_count_h = 6
+shader_parameter/enable_vertical = true
+shader_parameter/amplitude_v = 3.0
+shader_parameter/frequency_v = 5.0
+shader_parameter/speed_v = 1.0
+shader_parameter/opacity_v = 1.0
+shader_parameter/step_count_v = 6
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_0nplc"]
 viewport_path = NodePath("SubViewport")
@@ -52,6 +69,9 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
+[node name="AudioVisualizer" parent="." instance=ExtResource("2_lh6qf")]
+layout_mode = 1
+
 [node name="ColorRect" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_kgjio")
 layout_mode = 1
@@ -77,9 +97,10 @@ scale = Vector2(1.2, 1.2)
 pivot_offset = Vector2(960, 540)
 
 [node name="MainViewportTexture" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_ocl5o")
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_0nplc")
 
 [node name="TransitionScreen" parent="." instance=ExtResource("3_kgjio")]

@@ -184,13 +184,13 @@ size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 
 [node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
-custom_minimum_size = Vector2(500, 0)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 130
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_top = 250
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 metadata/_edit_group_ = true
 
 [node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]

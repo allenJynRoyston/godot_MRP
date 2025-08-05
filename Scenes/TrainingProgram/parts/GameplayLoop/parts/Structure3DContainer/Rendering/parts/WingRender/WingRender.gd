@@ -228,8 +228,8 @@ func update_room_lighting() -> void:
 	var overheated_color:Color = Color.RED
 	var miasma_light_color:Color = Color.MEDIUM_PURPLE
 	var lockdown_light_color:Color = Color.ORANGE_RED	
-	var caution_light_color:Color = Color.ORANGE
-	var warning_light_color:Color = Color.YELLOW
+	var caution_light_color:Color = Color.MEDIUM_PURPLE
+	var warning_light_color:Color = Color.ORANGE
 	var altered:bool = false
 	
 	MiasmaFog.show() if !is_ventilated else MiasmaFog.hide()
@@ -292,13 +292,14 @@ func update_room_lighting() -> void:
 						
 			ROOM.EMERGENCY_MODES.WARNING:
 				WorldLight.light_color = warning_light_color
-				WorldLight.light_energy = 0.8	
+				WorldLight.light_energy = 1.2	
 				BaseLights.hide()
 				BillboardLights.show()
 				CautionLights.show()	
 				
 			ROOM.EMERGENCY_MODES.CAUTION:
 				WorldLight.light_color = caution_light_color
+				WorldLight.light_energy = 1.2	
 				BaseLights.hide()
 				BillboardLights.show()
 				CautionLights.show()
@@ -314,6 +315,9 @@ func update_room_lighting() -> void:
 	previous_billboard_state = BillboardLights.is_visible_in_tree()	
 	previous_baselights_state = BaseLights.is_visible_in_tree()
 	previous_emergency_state = EmergencyLights.is_visible_in_tree()
+	
+	# set light energy constant
+	light_energy_val = WorldLight.light_energy
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -431,6 +435,7 @@ func get_room_position(room_index:int) -> Vector2:
 var time:float = 0
 var toggle_color:bool = false
 var toggle_ready:bool = false
+var light_energy_val:float 
 func _process(delta: float) -> void:
 	if !is_node_ready():return
 	time += delta
@@ -438,15 +443,19 @@ func _process(delta: float) -> void:
 	if !is_ventilated:
 		Miasma.rotate_y(0.005)
 		MiasmaFog.material.density = 0.1 + (((sin(time * 1.5) + 1.0) * 0.5) * 0.1)
-
+	
 	is_animating =  GBL.has_animation_in_queue()
 
+
+	var val: float = sin(time * 1.5) * (8.5 + 7.5) # -1 to 16
+	if val <= 0 and toggle_ready:
+		toggle_color = !toggle_color
+		toggle_ready = false
+	elif val > 0:
+		toggle_ready = true
+	
+	var fluct_val:float = clampf(light_energy_val + (val * 0.1 if toggle_color else 0.1), 0.3, 1.1) 
+	WorldLight.light_energy = fluct_val
 	if emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
-		var val: float = sin(time * 1.5) * (8.5 + 7.5) # -1 to 16
-		if val <= 0 and toggle_ready:
-			toggle_color = !toggle_color
-			toggle_ready = false
-		elif val > 0:
-			toggle_ready = true
 		EmergencyFlareLight.light_energy = val
 		EmergencyFlareLight.light_color = Color.ROYAL_BLUE if toggle_color else Color.ORANGE_RED

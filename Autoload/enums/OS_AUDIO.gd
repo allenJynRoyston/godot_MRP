@@ -35,7 +35,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
-				"file": preload("res://Audio/mp3/R6S Loading Screen - itryti - SoundLoadMate.com.mp3")
+				"file": preload("res://Audio/actual/Erik Satie - Gnossiennes 1,2,3.mp3")
 			},
 			{
 				"details": {
@@ -70,7 +70,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return false,
-				"file": preload("res://Audio/mp3/nagz-2-DO_NOT_USE_IN_FINAL.mp3")
+				"file": preload("res://Audio/actual/scp-mrp_int_1.mp3")
 			},		
 			{
 				"details": {
@@ -81,7 +81,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return false,
-				"file": preload("res://Audio/mp3/nagz-2-DO_NOT_USE_IN_FINAL.mp3")
+				"file": preload("res://Audio/actual/scp-mrp_int_2.mp3")
 			},
 			
 				
@@ -96,7 +96,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
-				"file": preload("res://Audio/mp3/Water - Flanny - SoundLoadMate.com.mp3")
+				"file": preload("res://Audio/actual/scp-mrp_int_3.mp3")
 			},	
 			{
 				"details": {
@@ -107,7 +107,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
-				"file": preload("res://Audio/mp3/Heretic Frypan (Eastward OST Extended).mp3")
+				"file": preload("res://Audio/actual/scp-mrp_main_1.mp3")
 			},
 			{
 				"details": {
@@ -118,7 +118,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
-				"file": preload("res://Audio/mp3/Tokyo Night - Gabtosin - SoundLoadMate.com.mp3")
+				"file": preload("res://Audio/actual/scp-mrp_main_2.mp3")
 			},
 			{
 				"details": {
@@ -129,7 +129,7 @@ var track_data:Array = [
 				"cost": 10,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
-				"file": preload("res://Audio/mp3/stephen-walking-the-difference-between-us-and-the-aliens-scdler.mp3")
+				"file": preload("res://Audio/actual/scp-mrp_main_2.mp3")
 			},
 				
 			

@@ -76,7 +76,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "MONEY +1",
 				},
-				"cost": 10,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -92,7 +92,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "RESEARCH +1",
 				},
-				"cost": 10,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -108,7 +108,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "MATERIAL +1",
 				},
-				"cost": 10,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -124,7 +124,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "CORE +1",
 				},
-				"cost": 10,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -147,7 +147,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "MONEY +1",
 				},
-				"cost": 25,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -161,9 +161,9 @@ var data:Array[Dictionary] = [
 			# ---------------------------
 			{
 				"details": {
-					"name": "RESEARCH +25",
+					"name": "RESEARCH +1",
 				},
-				"cost": 25,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -177,9 +177,9 @@ var data:Array[Dictionary] = [
 			# ---------------------------
 			{
 				"details": {
-					"name": "MATERIAL +10",
+					"name": "MATERIAL +1",
 				},
-				"cost": 25,
+				"cost": 1,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -218,7 +218,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL ADMIN",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -234,7 +234,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL RESEARCHER",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -250,7 +250,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL SECURITY",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -266,7 +266,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL DCLASS",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -289,7 +289,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL ADMIN",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -321,7 +321,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL SECURITY",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
@@ -337,7 +337,7 @@ var data:Array[Dictionary] = [
 				"details": {
 					"name": "ADDITIONAL DCLASS",
 				},
-				"cost": 25,
+				"cost": 5,
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,
 				"effect": func(starting_data:Dictionary) -> Dictionary:
