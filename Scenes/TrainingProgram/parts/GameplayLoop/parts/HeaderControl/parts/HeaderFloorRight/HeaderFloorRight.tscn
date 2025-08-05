@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d4epcxrwe7nax"]
 
 [ext_resource type="Script" uid="uid://dld37lxy32n5w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderFloorRight/HeaderFloorRight.gd" id="1_3kf8t"]
-[ext_resource type="PackedScene" uid="uid://cfmfs2x81vts1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/Personnel.tscn" id="2_2lin6"]
+[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="2_2lin6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hfg5"]
 
@@ -46,5 +46,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("2_2lin6")]
+[node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("2_2lin6")]
 layout_mode = 2
+header = "VIBES"
+morale_tag_val = 0

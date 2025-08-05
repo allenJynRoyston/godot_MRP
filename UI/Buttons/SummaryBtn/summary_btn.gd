@@ -1,4 +1,3 @@
-@tool
 extends Control
 
 @onready var ActiveIcon:Control = $MarginContainer/HBoxContainer/ActiveIcon
@@ -130,12 +129,12 @@ func on_use_alt_update() -> void:
 	
 func on_fill_update() -> void:
 	if !is_node_ready():return
-	TitlePanel.size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
-	$".".size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
+	#TitlePanel.size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
+	#$".".size_flags_horizontal = Control.SIZE_EXPAND_FILL if fill else Control.SIZE_SHRINK_BEGIN
 	
 func on_show_energy_cost_update() -> void:
 	if !is_node_ready():return
-	EnergyPanel.show() if show_energy_cost else EnergyPanel.hide()
+	EnergyPanel.hide()# if show_energy_cost else EnergyPanel.hide()
 
 func on_cost_update() -> void:
 	if !is_node_ready():return

@@ -24,7 +24,7 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s6vk2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8iws"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
@@ -118,7 +118,7 @@ is_left_side = true
 
 [node name="Name" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("4_n8iws")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s6vk2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n8iws")
 is_small = true
 title = ""
 

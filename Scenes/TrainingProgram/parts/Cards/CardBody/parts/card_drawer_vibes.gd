@@ -61,13 +61,17 @@ func on_hollow_update() -> void:
 
 func on_metrics_update() -> void:
 	if !is_node_ready():return
-	for key in metrics:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_metric(key)
-		var amount:int = metrics[key] if (preview_mode or get_is_activated()) else 0
-		match key:
+	for ref in metrics:
+		var item:Dictionary = metrics[ref]
+		var amount:int = item.amount
+		var bonus_amount:int = item.bonus_amount
+		match ref:
 			RESOURCE.METRICS.MORALE:
 				VibeMorale.value = amount
+				VibeMorale.show() if (amount + bonus_amount != 0) else VibeMorale.hide()
 			RESOURCE.METRICS.SAFETY:
 				VibeSafety.value = amount
+				VibeSafety.show() if (amount + bonus_amount != 0) else VibeSafety.hide()
 			RESOURCE.METRICS.READINESS:
 				VibeReadiness.value = amount
+				VibeReadiness.show() if (amount + bonus_amount != 0) else VibeReadiness.hide()

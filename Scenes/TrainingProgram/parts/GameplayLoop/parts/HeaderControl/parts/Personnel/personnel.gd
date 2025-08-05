@@ -1,9 +1,9 @@
 extends PanelContainer
 
-@onready var Admin:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/Admin
-@onready var Researcher:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/Researchers
-@onready var Security:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/Security
-@onready var DClass:PanelContainer = $MarginContainer/VBoxContainer/HBoxContainer/DClass
+@onready var Admin:PanelContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/Admin
+@onready var Researcher:PanelContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/Researchers
+@onready var Security:PanelContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/Security
+@onready var DClass:PanelContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/DClass
 
 # ----------------------------------------------
 @export var admin_count:int :

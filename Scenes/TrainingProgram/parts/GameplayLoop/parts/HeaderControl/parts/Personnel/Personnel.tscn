@@ -12,9 +12,9 @@ script = ExtResource("2_s72um")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
@@ -29,33 +29,37 @@ label_settings = ExtResource("3_x2axq")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/margin_top = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -5
 alignment = 1
 
-[node name="Admin" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+[node name="Admin" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 value = 1
 max_val = 10
 title = "ADMIN"
 
-[node name="Researchers" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+[node name="Researchers" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 value = 1
 max_val = 10
 title = "RESEARCHER"
 
-[node name="Security" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+[node name="Security" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 value = 1
 max_val = 10
 title = "SECURITY"
 
-[node name="DClass" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
+[node name="DClass" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_ukuep")]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 value = 1

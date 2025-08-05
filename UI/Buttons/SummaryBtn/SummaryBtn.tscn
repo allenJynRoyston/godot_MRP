@@ -5,7 +5,7 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_dpcq0"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_3wkh5"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6lokw"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3wkh5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wkh5"]
 bg_color = Color(1, 0.749, 0.2, 0.7)
@@ -33,10 +33,10 @@ shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="SummaryBtn" type="PanelContainer"]
-offset_right = 158.0
-offset_bottom = 35.0
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_6lokw")
+offset_right = 133.0
+offset_bottom = 26.0
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_3wkh5")
 script = ExtResource("1_6lokw")
 icon = 1
 
@@ -50,7 +50,7 @@ theme_override_constants/separation = 5
 
 [node name="ActiveIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_3wkh5")]
 layout_mode = 2
-icon = 27
+icon = 72
 icon_color = Color(1, 1, 1, 1)
 
 [node name="IconPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
@@ -143,8 +143,7 @@ label_settings = SubResource("LabelSettings_dpcq0")
 
 [node name="TitlePanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_3wkh5")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/TitlePanel"]
@@ -171,9 +170,11 @@ theme_override_constants/separation = 5
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/TitlePanel/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(25, 25)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "TITLE"
 label_settings = SubResource("LabelSettings_pchs1")
+horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3

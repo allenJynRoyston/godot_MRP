@@ -574,6 +574,7 @@ func get_floor_default(array_size:int) -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
+		"abl_lvl": 0,
 		"buffs": [],
 		"debuffs": [],
 		# --------------
@@ -979,12 +980,8 @@ func on_current_phase_update() -> void:
 					await U.set_timeout(0.5)
 					
 					# ... then change it's state
-					SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
-						if x.location == item.location:
-							x.under_construction = false
-						return x
-					)
-					
+					ROOM_UTIL.finish_construction(item.location)
+				
 					await U.set_timeout(0.7)
 					
 				await U.set_timeout(0.7)
@@ -1336,7 +1333,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# add metrics/currencies
 	room_calculate(new_room_config)
 	scp_calculate(new_room_config)
-
+#
 	# trigger any gameplay conditional effects
 	for key in new_gameplay_conditionals:
 		var conditional_dict:Dictionary = new_gameplay_conditionals[key]
@@ -1350,6 +1347,7 @@ func update_room_config(force_setup:bool = false) -> void:
 		for key in floor_level.currencies:
 			var amount:int = floor_level.currencies[key]
 			resource_diff[key] += amount
+	
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
@@ -1674,14 +1672,15 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		).size()
 		
-		# carry over the activation state
-		new_room_config.is_activated = base_states.room[str(floor, ring, room)].is_activated
+		# apply is activated state if have enough staff
+		room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
 		
 		# if activated, then check if room has additional properties
-		if new_room_config.is_activated:
+		if room_config_data.is_activated:
 			for key in room_details.personnel_capacity:
 				var amount:int = room_details.personnel_capacity[key]
 				new_room_config.base.staff_capacity[key] += amount
+		
 
 
 
@@ -1701,14 +1700,14 @@ func room_calculate(new_room_config:Dictionary) -> void:
 				if key in room_data.currencies:
 					var amount:int = room_data.currencies[key]
 					# add to totals
-					floor_config_data.currencies[key] += amount
-					ring_config_data.currencies[key] += amount
+					#floor_config_data.currencies[key] += amount
+					#ring_config_data.currencies[key] += amount
 					room_config_data.currencies[key] += amount
 					
 			# tally metrics
 			for key in room_data.metrics:
 				var amount:int = room_data.metrics[key]
-				ring_config_data.metrics[key] += amount
+				#ring_config_data.metrics[key] += amount
 				room_config_data.metrics[key] += amount
 		
 					

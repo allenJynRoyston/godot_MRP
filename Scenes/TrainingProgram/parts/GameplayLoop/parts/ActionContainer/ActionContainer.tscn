@@ -134,13 +134,40 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_3e5bh")
 script = ExtResource("1_co4u3")
-is_showing = null
-freeze_inputs = null
 
 [node name="Backdrop" type="ColorRect" parent="."]
 z_as_relative = false
 layout_mode = 2
 color = Color(0.286684, 0.286684, 0.286684, 0.141176)
+
+[node name="ModulesAndPrograms" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ModulesAndPrograms"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
+
+[node name="MarginContainer" type="MarginContainer" parent="ModulesAndPrograms/PanelContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 180
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+metadata/_edit_group_ = true
+
+[node name="ModulesCard" parent="ModulesAndPrograms/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
+layout_mode = 2
+size_flags_horizontal = 8
+modules_only = true
 
 [node name="SummaryControl" type="Control" parent="."]
 layout_mode = 2
@@ -148,26 +175,30 @@ layout_mode = 2
 [node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 250.0
+grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
 
 [node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 125
+theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true
 
 [node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
+visible = false
 layout_mode = 2
 show_researcher_card = false
 show_room_card = false
@@ -652,7 +683,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_xathl")
 [node name="MarginContainer" type="MarginContainer" parent="ActionLabelPanel/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 130
+theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 

@@ -78,29 +78,27 @@ func setup_gridselect() -> void:
 			
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.scp_ref = -1
-		node.onHover = func() -> void: pass
-		node.onClick = func() -> void: pass		
 	
 	GridSelect.onUpdateNode = func(node:Control, data:Dictionary, index:int) -> void:		
 		node.index = index
 		node.scp_ref = data.ref
 		
-		node.check_in_containment = type == TYPE.CONTAIN
-		node.in_containment = !scp_data[data.ref].location.is_empty() if data.ref in scp_data else false
+		#node.check_in_containment = type == TYPE.CONTAIN
+		#node.in_containment = !scp_data[data.ref].location.is_empty() if data.ref in scp_data else false
 
-		node.check_max_level = type == TYPE.RESEARCH
-		node.at_max_level = scp_data[data.ref].level == 3 if data.ref in scp_data else false
-		
-		node.onHover = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			GridSelect.grid_index = index
-			DetailPanel.scp_ref = data.ref
-			
-		node.onClick = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
-			GridSelect.freeze_and_disable(true)
-			GridSelect.grid_index = index
-			end(data.ref)
+		#node.check_max_level = type == TYPE.RESEARCH
+		#node.at_max_level = scp_data[data.ref].level == 3 if data.ref in scp_data else false
+		#
+		#node.onHover = func() -> void:
+			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
+			#GridSelect.grid_index = index
+			#DetailPanel.scp_ref = data.ref
+			#
+		#node.onClick = func() -> void:
+			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
+			#GridSelect.freeze_and_disable(true)
+			#GridSelect.grid_index = index
+			#end(data.ref)
 	
 	GridSelect.onValidCheck = func(node:Control) -> bool:
 		return node.scp_ref != -1

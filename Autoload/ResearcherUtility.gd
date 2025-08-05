@@ -348,6 +348,16 @@ func return_mood_data(ref:RESEARCHER.MOODS) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func get_spec_available_count(ref:RESEARCHER.SPECIALIZATION) -> int:
+	var filtered:Array = hired_lead_researchers_arr.filter(func(x): 
+		var data:Dictionary = return_data_with_uid(x[0])
+		if data.specialization.ref == ref and data.props.assigned_to_room.is_empty():
+			return x
+	)
+	return filtered.size()
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func get_spec_count(ref:RESEARCHER.SPECIALIZATION) -> int:
 	var filtered:Array = hired_lead_researchers_arr.filter(func(x): 
 		var data:Dictionary = return_data_with_uid(x[0])

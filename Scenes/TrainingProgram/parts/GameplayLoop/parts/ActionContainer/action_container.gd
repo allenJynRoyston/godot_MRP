@@ -29,6 +29,11 @@ extends GameContainer
 @onready var SummaryPanel:PanelContainer = $SummaryControl/PanelContainer
 @onready var SummaryPanelMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
 @onready var SummaryCard:PanelContainer = $SummaryControl/PanelContainer/MarginContainer/SummaryCard
+
+# MODULES
+@onready var ModulesPanel:PanelContainer = $ModulesAndPrograms/PanelContainer
+@onready var ModulesMargin:MarginContainer = $ModulesAndPrograms/PanelContainer/MarginContainer
+@onready var ModulesCard:PanelContainer = $ModulesAndPrograms/PanelContainer/MarginContainer/ModulesCard
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -167,6 +172,12 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": -SummaryPanelMargin.size.x
 	}
 	
+	# for eelements in the top right
+	control_pos[ModulesPanel] = {
+		"show": 0, 
+		"hide": ModulesMargin.size.x
+	}	
+	
 	control_pos[NotificationPanel] = {
 		"show": 0,
 		"hide": NotificationMargin.size.x
@@ -181,7 +192,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel]: 
 		node.position.x = control_pos[node].hide
 	
 	# hide by default
@@ -457,8 +468,8 @@ func show_build_options() -> void:
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
-		RoomDetailsControl.room_ref = item.details.ref
-		
+		SummaryCard.preview_mode_ref = item.ref
+
 		# disable/enable btn
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
@@ -477,20 +488,22 @@ func show_build_options() -> void:
 	
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
+		SummaryCard.preview_mode_ref = -1
+		SummaryCard.preview_mode = false
+		
+		await reveal_summarycard(false)
 		active_menu_is_open = false
 		show_build_complete.emit()
-		RoomDetailsControl.reveal(false)
 		
 		
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
+	ActiveMenuNode.render_on_right = true
 	
-	# SETUP ROOM DETAILS
-	RoomDetailsControl.reveal(true)
-	RoomDetailsControl.show_room_card = true
-	RoomDetailsControl.show_researcher_card = false
-	RoomDetailsControl.show_scp_card = false
-	RoomDetailsControl.preview_mode = true
+	# summary card
+	SummaryCard.preview_mode = true	
+	reveal_summarycard(true, false)	
+
 	
 	# ACTIVATE NODE	
 	add_child(ActiveMenuNode)
@@ -508,11 +521,12 @@ func show_program_list() -> void:
 
 	var update_list:Callable = func() -> void:
 		await U.tick()
-		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs().map(func(x): 
+		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, true).map(func(x): 
 			return {
 				"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
 				"show": x.at_level_threshold,
 				"is_disabled": x.on_cooldown,
+				"data": x.data,
 				"hint": {
 					"icon": SVGS.TYPE.ENERGY,
 					"title": "HINT",
@@ -521,11 +535,12 @@ func show_program_list() -> void:
 		}) )
 		
 
-	var items:Array = GAME_UTIL.get_list_of_programs().map(func(x): 
+	var items:Array = GAME_UTIL.get_list_of_programs(current_location, true).map(func(x): 
 		return {
 			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
 			"show": x.at_level_threshold,
 			"is_disabled": x.on_cooldown,
+			"data": x.data,
 			"hint": {
 				"icon": SVGS.TYPE.ENERGY,
 				"title": "HINT",
@@ -550,6 +565,9 @@ func show_program_list() -> void:
 			"items": [],
 		}		
 	]
+	
+	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
+		SUBSCRIBE.current_location = item.data.location
 	
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:	
@@ -1137,6 +1155,12 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------
 	
 # --------------------------------------------------------------------------------------------------
+func before_scp_selection() -> void:
+	await SummaryControls.reveal(false)
+
+func after_scp_selection() -> void:
+	SummaryControls.reveal(true)
+
 func check_btn_states() -> void:
 	if current_location.is_empty() or room_config.is_empty():return
 	# update room details control
@@ -1155,7 +1179,7 @@ func check_btn_states() -> void:
 	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
 	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
 	var can_take_action:bool = (is_powered and !in_lockdown)
-	var can_deconstruct:bool = false if is_room_empty else room_extract.room.can_destroy 
+	var can_deconstruct:bool = false if is_room_empty else room_extract.room.details.can_destroy 
 	var is_under_construction:bool = false if is_room_empty else ROOM_UTIL.is_under_construction(current_location)
 	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
 	var lvl:int = -1 if is_room_empty else room_extract.room.abl_lvl 
@@ -1166,12 +1190,13 @@ func check_btn_states() -> void:
 	).size()	
 
 	SummaryCard.use_location = current_location
+	ModulesCard.use_location = current_location
 
 	match current_mode:
 		MODE.NONE:
 			GotoWingBtn.is_disabled = !has_one_floor_activated
 			GotoGeneratorBtn.is_disabled = !has_generator_prerequisite
-			WingProgramBtn.is_disabled = GAME_UTIL.get_list_of_programs().is_empty()
+			WingProgramBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty()
 			WingActionBtn.is_disabled = rooms_in_wing_count == 0
 			GenActionBtn.is_disabled = !has_one_floor_activated
 		# -----------	
@@ -1207,12 +1232,13 @@ func check_btn_states() -> void:
 				current_mode = MODE.NONE
 		# -----------	
 		MODE.SUMMARY_CARD:
-			SummaryControls.itemlist = SummaryCard.get_ability_btns()
+			SummaryControls.itemlist = ModulesCard.get_ability_btns()
 			SummaryControls.item_index = 0
 			SummaryControls.directional_pref = "UD"
-			SummaryControls.offset = SummaryCard.global_position
+			SummaryControls.offset = ModulesCard.global_position
 			
 			SummaryControls.onBack = func() -> void:
+				ModulesCard.deselect_btns()
 				await SummaryControls.reveal(false)
 				current_mode = MODE.COMMANDS
 		
@@ -1228,6 +1254,9 @@ func check_btn_states() -> void:
 				
 				# ----------------------
 				match node.ref_data.type:
+					"scp":						
+						SummaryControls.a_btn_title = "SELECT SCP" if node.ref_data.data.is_empty() else "FULL"
+						
 					"active_ability":
 						SummaryControls.a_btn_title = "USE PROGRAM"
 					# ----------------------
@@ -1236,9 +1265,8 @@ func check_btn_states() -> void:
 					# ----------------------
 		# -----------	
 		MODE.COMMANDS:			
-			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE" if !is_under_construction else "UNDER CONSTRUCTION"
-			CommandControls.disable_active_btn = is_under_construction
-			CommandControls.hide_a_btn = is_room_empty
+			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE"
+			CommandControls.hide_a_btn = is_room_empty or is_under_construction
 			
 			CommandControls.hide_c_btn = is_room_empty or !is_activated	
 			CommandControls.disable_c_btn = at_max_level or !is_activated
@@ -1275,6 +1303,18 @@ func check_btn_states() -> void:
 		# -----------	
 		MODE.BUILD:	
 			DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+			DesignControls.c_btn_title = "RUSH CONSTRUCTION"
+			
+			DesignControls.hide_c_btn = !is_under_construction
+			
+			DesignControls.onCBtn = func() -> void:
+				await DesignControls.reveal(false)
+				var confirm:bool = await GAME_UTIL.rush_construction_room()
+				if confirm:
+					await U.tick()
+					on_current_location_update()
+				DesignControls.reveal(true)
+				return
 			
 			DesignControls.onAction = func() -> void:				
 				await DesignControls.reveal(false)
@@ -1293,6 +1333,7 @@ func check_btn_states() -> void:
 				if is_room_empty:
 					await show_build_options()
 					DesignControls.reveal(true)
+					reveal_summarycard(true, false)
 					return
 						
 				#...else destroy room
@@ -1318,7 +1359,6 @@ func reveal_action_label(state:bool, duration:float = 0.3, title:String = "") ->
 	await U.tween_node_property(ActionPanel, "position:x", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func reveal_notification(state:bool, duration:float = 0.3) -> void:
 	if control_pos.is_empty() or !show_new_message_btn:return	
@@ -1339,7 +1379,12 @@ func reveal_action_controls(state:bool, duration:float = 0.2) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_summarycard(state:bool, duration:float = 0.2) -> void:
+func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0.2) -> void:
+	if show_modules:
+		U.tween_node_property(ModulesPanel, "position:x", control_pos[ModulesPanel].show if state else control_pos[ModulesPanel].hide, duration)
+	else:
+		ModulesPanel.position.x = control_pos[ModulesPanel].hide
+		
 	await U.tween_node_property(SummaryPanel, "position:x", control_pos[SummaryPanel].show if state else control_pos[SummaryPanel].hide, duration)
 # --------------------------------------------------------------------------------------------------		
 
@@ -1380,7 +1425,6 @@ func lock_actions(state:bool) -> void:
 var previous_mode:int = -1
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
-	var duration:float = 0.0 if skip_animation else 0.3
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 	var RenderingNode:Control = GBL.find_node(REFS.RENDERING)
 	
@@ -1397,7 +1441,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_timeline = true
 				lock_actions(false)
 				set_backdrop_state(false)
-				reveal_summarycard(false, duration)
+				reveal_summarycard(false, false)
 				
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
@@ -1419,7 +1463,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_summarycard(true)
+				reveal_summarycard(true, false)
 				reveal_action_label(true, 0.4, "BUILD MODE")				
 				DesignControls.reveal(true)			
 			# --------------
@@ -1428,8 +1472,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "SELECT A ROOM")
-				reveal_summarycard(true)
+				reveal_action_label(true, 0.4, "ACTIONS")
+				reveal_summarycard(true, true)
 				CommandControls.reveal(true)
 				
 				list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()

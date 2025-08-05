@@ -285,6 +285,22 @@ func reset_room(use_location:Dictionary) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func finish_construction(use_location:Dictionary) -> void:
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
+		if x.location == use_location:
+			x.under_construction = false
+			
+			# auto activate if possible
+			var room_data:Dictionary = ROOM_UTIL.return_data(x.ref)
+			for index in room_data.required_staffing.size():
+				var ref:int = room_data.required_staffing[index]
+				GAME_UTIL.auto_assign_staff(ref, index, current_location)	
+				
+		return x
+	)	
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func is_room_activated(use_location:Dictionary = current_location) -> bool:
 	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].is_activated
 # ------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cmfetnavdvnoq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderLeft/header_left.gd" id="1_jivws"]
 [ext_resource type="PackedScene" uid="uid://gh5hfdolakbr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/Economy.tscn" id="2_0reg5"]
-[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="3_tqcdw"]
+[ext_resource type="PackedScene" uid="uid://cfmfs2x81vts1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/Personnel.tscn" id="3_0reg5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hfg5"]
 
@@ -43,7 +43,5 @@ theme_override_constants/separation = 10
 layout_mode = 2
 header = "ECONOMY"
 
-[node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_tqcdw")]
+[node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_0reg5")]
 layout_mode = 2
-header = "VIBES"
-morale_tag_val = 0

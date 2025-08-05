@@ -1,22 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://cus6h1nu75y1e"]
+[gd_scene load_steps=4 format=3 uid="uid://cus6h1nu75y1e"]
 
 [ext_resource type="Script" uid="uid://dhdi25jyrhskx" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_room_abilities.gd" id="1_6ymt7"]
+[ext_resource type="PackedScene" uid="uid://c7jvy7pbmduc5" path="res://UI/Buttons/SummaryBtn/SummaryBtn.tscn" id="2_ildx4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ildx4"]
 
 [node name="CardDrawerAblities" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 50)
-offset_right = 200.0
-offset_bottom = 54.0
+offset_right = 300.0
+offset_bottom = 10.0
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ildx4")
 script = ExtResource("1_6ymt7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 8
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 0
 
 [node name="List" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="SummaryBtn" parent="MarginContainer/List" instance=ExtResource("2_ildx4")]
 layout_mode = 2

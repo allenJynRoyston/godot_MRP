@@ -3,7 +3,7 @@ extends Control
 @onready var RootPanel:PanelContainer = $PanelContainer
 @onready var MarginPanel:MarginContainer = $PanelContainer/MarginContainer
 
-@onready var Personnel:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel
+@onready var Vibes:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Vibes
 
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {}
@@ -70,16 +70,32 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 # -----------------------------------------------
 func update() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
+	var base_config_data:Dictionary = room_config.base
+	var floor_config_data:Dictionary = room_config.floor[current_location.floor]
+	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
+	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
+	var current_vibe:Dictionary = GAME_UTIL.get_vibes_summary(current_location)	
+	var summary_data:Dictionary = {}
 	
+	## update everything else
+	match camera_settings.type:
+		CAMERA.TYPE.FLOOR_SELECT:
+			summary_data = GAME_UTIL.get_floor_summary(current_location)
+		CAMERA.TYPE.WING_SELECT:
+			summary_data = GAME_UTIL.get_ring_summary(current_location)	
+		CAMERA.TYPE.ROOM_SELECT:
+			summary_data = GAME_UTIL.get_room_summary(current_location)
+		_:
+			summary_data = GAME_UTIL.get_floor_summary(current_location)
+			
 	#Personnel.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else Personnel.hide()
-	
-	Personnel.admin_count = RESEARCHER_UTIL.get_spec_count(RESEARCHER.SPECIALIZATION.ADMIN)
-	Personnel.researcher_count = RESEARCHER_UTIL.get_spec_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
-	Personnel.security_count = RESEARCHER_UTIL.get_spec_count(RESEARCHER.SPECIALIZATION.SECURITY)
-	Personnel.dclass_count = RESEARCHER_UTIL.get_spec_count(RESEARCHER.SPECIALIZATION.DCLASS)
-	
-	Personnel.admin_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.ADMIN)
-	Personnel.researcher_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
-	Personnel.security_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.SECURITY)
-	Personnel.dclass_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.DCLASS)
+	# update vibes
+	Vibes.morale_val = str(current_vibe[RESOURCE.METRICS.MORALE])
+	Vibes.safety_val = str(current_vibe[RESOURCE.METRICS.SAFETY])
+	Vibes.readiness_val = str(current_vibe[RESOURCE.METRICS.READINESS])		
+	# update metrics
+	Vibes.morale_tag_val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
+	Vibes.safety_tag_val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
+	Vibes.readiness_tag_val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]	
+
 # -----------------------------------------------

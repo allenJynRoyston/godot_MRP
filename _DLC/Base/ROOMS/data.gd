@@ -22,13 +22,13 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------	
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 1,
-		RESOURCE.CURRENCY.MATERIAL: 1,
+		RESOURCE.CURRENCY.MATERIAL: 0,
 		RESOURCE.CURRENCY.SCIENCE: 1,
-		RESOURCE.CURRENCY.CORE: 1,
+		RESOURCE.CURRENCY.CORE: 0,
 	},
 	"metrics": {
 		RESOURCE.METRICS.MORALE: 1,
-		RESOURCE.METRICS.SAFETY: 1,
+		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 1
 	},	
 	# ------------------------------------------

@@ -1,39 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://bca2onq4fhupq"]
+[gd_scene load_steps=6 format=3 uid="uid://bca2onq4fhupq"]
 
 [ext_resource type="Script" uid="uid://cl4l2eumm0uv5" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/card_drawer_staffing_requirements.gd" id="1_n4lo8"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_n4lo8"]
 [ext_resource type="PackedScene" uid="uid://nl3g28hein3g" path="res://UI/ResourceItem/ResourceItem.tscn" id="3_ym2li"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n4lo8"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.108, 0.485, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ym2li"]
 bg_color = Color(1, 1, 1, 0)
 border_color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3kj"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6phn"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j8gm"]
-bg_color = Color(1, 1, 1, 0)
-border_color = Color(1, 1, 1, 0)
-
 [node name="CardDrawerStaffingRequirements" type="PanelContainer"]
-custom_minimum_size = Vector2(200, 50)
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_n4lo8")
 script = ExtResource("1_n4lo8")
@@ -41,10 +19,11 @@ script = ExtResource("1_n4lo8")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -4
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
@@ -55,15 +34,14 @@ horizontal_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
 
 [node name="ListContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
-alignment = 1
 
 [node name="Staff" parent="MarginContainer/MarginContainer/ListContainer" instance=ExtResource("3_ym2li")]
 layout_mode = 2
@@ -71,32 +49,4 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ym2li")
 icon = 35
 no_bg = true
 title = "STF"
-display_at_bottom = true
-is_faded = true
-
-[node name="Technician" parent="MarginContainer/MarginContainer/ListContainer" instance=ExtResource("3_ym2li")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1u3kj")
-icon = 34
-no_bg = true
-title = "TCH"
-display_at_bottom = true
-is_faded = true
-
-[node name="Security" parent="MarginContainer/MarginContainer/ListContainer" instance=ExtResource("3_ym2li")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_o6phn")
-icon = 36
-no_bg = true
-title = "SEC"
-display_at_bottom = true
-is_faded = true
-
-[node name="DClass" parent="MarginContainer/MarginContainer/ListContainer" instance=ExtResource("3_ym2li")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8j8gm")
-icon = 33
-no_bg = true
-title = "DCL"
-display_at_bottom = true
 is_faded = true

@@ -6,7 +6,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_me31e"]
+[sub_resource type="LabelSettings" id="LabelSettings_ykt78"]
 font = ExtResource("2_ykt78")
 font_color = Color(0.05, 0.05, 0.05, 1)
 outline_size = 2
@@ -14,18 +14,18 @@ outline_color = Color(0.05, 0.05, 0.05, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="LabelSettings" id="LabelSettings_xqbyf"]
+[sub_resource type="LabelSettings" id="LabelSettings_me31e"]
 font = ExtResource("3_me31e")
 font_color = Color(0.05, 0.05, 0.05, 1)
 outline_color = Color(0.05, 0.05, 0.05, 0.2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_26run"]
+[sub_resource type="LabelSettings" id="LabelSettings_xqbyf"]
 font = ExtResource("3_me31e")
 font_size = 24
 font_color = Color(0.05, 0.05, 0.05, 1)
 outline_color = Color(0.05, 0.05, 0.05, 0.2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_idlkb"]
+[sub_resource type="LabelSettings" id="LabelSettings_26run"]
 font = ExtResource("3_me31e")
 font_size = 14
 font_color = Color(0.05, 0.05, 0.05, 1)
@@ -39,20 +39,20 @@ script = ExtResource("1_ykt78")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-label_settings = SubResource("LabelSettings_me31e")
+label_settings = SubResource("LabelSettings_ykt78")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -61,21 +61,22 @@ theme_override_constants/separation = -1
 alignment = 1
 
 [node name="Capacity" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 1
 text = "--1"
-label_settings = SubResource("LabelSettings_xqbyf")
+label_settings = SubResource("LabelSettings_me31e")
 horizontal_alignment = 1
 
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_26run")
+label_settings = SubResource("LabelSettings_xqbyf")
 horizontal_alignment = 1
 
 [node name="Max" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "/0"
-label_settings = SubResource("LabelSettings_idlkb")
+label_settings = SubResource("LabelSettings_26run")
 horizontal_alignment = 1

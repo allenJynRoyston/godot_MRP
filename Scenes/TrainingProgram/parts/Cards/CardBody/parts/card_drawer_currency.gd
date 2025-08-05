@@ -2,7 +2,7 @@
 extends CardDrawerClass
 
 @onready var ListContainer:HBoxContainer = $MarginContainer/MarginContainer/VBoxContainer/ListContainer
-@export var list:Array = [] : 
+@export var list:Dictionary = {} : 
 	set(val):
 		list = val
 		on_list_update()
@@ -59,7 +59,7 @@ func get_is_activated() -> bool:
 
 # -----------------------------
 func on_list_update() -> void:
-	if !is_node_ready() or room_config.is_empty() or use_location.is_empty():return
+	if !is_node_ready():return
 		
 	for node in [ListContainer]:
 		for child in node.get_children():
@@ -68,16 +68,21 @@ func on_list_update() -> void:
 	if list.is_empty():return
 	
 
-	for item in list:
+	for ref in list:
+		var item:Dictionary = list[ref]
 		# gets the amount of just the room, but the room_config contains values of any passives and bonuses also applied
-		var amount:int = int(item.title) if !preview_mode else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
-
-		if amount != 0:		
+		var amount:int = item.amount #if !preview_mode else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
+		var bonus_amount:int = item.bonus_amount
+		
+		if (amount + bonus_amount) != 0:		
 			var new_node:Control = EconItemPreload.instantiate()
 			new_node.amount = amount
+			new_node.bonus_amount = bonus_amount
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon
+			new_node.icon_size = Vector2(20, 20)
 			new_node.invert_colors = true
+			new_node.horizontal_mode = true
 			
 			ListContainer.add_child(new_node)
 # -----------------------------

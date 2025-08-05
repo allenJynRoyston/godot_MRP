@@ -295,15 +295,16 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	var floor:int = use_location.floor
 	var ring:int = use_location.ring
 	var room:int = use_location.room
+	
 	var floor_level_config:Dictionary = use_config.floor[floor]
 	var ring_level_config:Dictionary = use_config.floor[floor].ring[ring]
-	var room_config_data:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	var room_level_config:Dictionary = use_config.floor[floor].ring[ring].room[room]
 	
-	var is_room_empty:bool = room_config_data.room_data.is_empty()
-	var is_scp_empty:bool = room_config_data.scp_data.is_empty()
+	var is_room_empty:bool = room_level_config.room_data.is_empty()
+	var is_scp_empty:bool = room_level_config.scp_data.is_empty()
 	
-	var room_details:Dictionary = {} if is_room_empty else room_config_data.room_data.details 
-	var scp_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.details
+	var room_details:Dictionary = {} if is_room_empty else room_level_config.room_data.details 
+	var scp_details:Dictionary = {} if is_scp_empty else room_level_config.scp_data.details
 	
 	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
 		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
@@ -312,38 +313,65 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		return false	
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
-	# compiles metrics
+	# get baseline for metrics
 	var metrics:Dictionary = {}
+	for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
+		var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
+		metrics[ref] = {
+			"metric_data": metric_data,
+			"amount": 0, 
+			"bonus_amount": 0
+		}
+	
+	# ...then get all metrics from room/scp
 	for dict in [room_details, scp_details]:
 		if "metrics" in dict:
 			for ref in dict.metrics:
 				var amount:int = dict.metrics[ref]
-				if ref not in metrics:
-					metrics[ref] = 0
-				metrics[ref] += amount
+				metrics[ref].amount += amount
+				
+	# ... finally add bonuses from room_config
+	for config in [ring_level_config, floor_level_config]:
+		for ref in config.metrics:
+			var amount:int = config.metrics[ref]
+			metrics[ref].bonus_amount = amount
+				
 	
-	# get currency this room is producing (combines room/scp/etc)
-	var currency_list:Array = []
-	for ref in room_config_data.currencies:
+	# get baseline of currency list
+	var currency_list:Dictionary = {}
+	for ref in [RESOURCE.CURRENCY.MONEY, RESOURCE.CURRENCY.SCIENCE, RESOURCE.CURRENCY.MATERIAL, RESOURCE.CURRENCY.CORE]:
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-		var amount:int = room_config_data.currencies[ref]		
-		
-		currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})			
+		currency_list[ref] = {
+			"icon": resource_details.icon, 
+			"amount": 0,
+			"bonus_amount": 0
+		}
+	
+	# ... then get all currency from room
+	if !room_details.is_empty():
+		for ref in room_details.currencies:
+			var amount:int = room_details.currencies[ref]
+			currency_list[ref].amount += amount
+	
+	# ... finally add bonuses from room_config
+	for config in [ring_level_config, floor_level_config]:
+		for ref in config.currencies:
+			var amount:int = config.currencies[ref]		
+			currency_list[ref].bonus_amount = amount
 	
 	# check for passive and active abilities, grab their max level; that's what becomes the max level
+	var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
 	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
 
 	return {
 		# -----------
 		"room": {
 			"details": room_details,
-			"can_destroy": room_details.can_destroy,
-			"can_contain": room_details.can_contain,
 			"is_under_construction": ROOM_UTIL.is_under_construction(use_location),
 			"is_activated": ROOM_UTIL.is_room_activated(use_location),
 			"metrics": metrics,
 			"max_upgrade_lvl": max_upgrade_lvl,
-			"abl_lvl": room_config_data.abl_lvl + ring_level_config.abl_lvl,		
+			"abl_lvl": abl_lvl,		
 			"currency_list": currency_list
 		} if !is_room_empty else {},
 		
@@ -1037,6 +1065,7 @@ func auto_assign_staff(spec_ref:int, slot:int, location_data:Dictionary = curren
 		return i
 	)
 	
+
 	SUBSCRIBE.hired_lead_researchers_arr = hired_lead_researchers_arr	
 	
 	return uid
@@ -1111,6 +1140,25 @@ func set_floor_lockdown(state:bool, use_location:Dictionary = current_location) 
 		SUBSCRIBE.room_config = room_config
 
 	GameplayNode.restore_showing_state()	
+	return confirm
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func rush_construction_room(use_location:Dictionary = current_location, state:bool = true) -> bool:
+	var room_data:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	
+	var title:String = "Rush construction %s?" % [room_data.name]
+	var costs:Array = [{
+		"amount": -2, 
+		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	}]	
+				
+	var confirm:bool = await create_modal(title, "", room_data.img_src, costs)
+	
+	if confirm:	
+		print("rush complete?")
+		ROOM_UTIL.finish_construction(use_location)
+	
 	return confirm
 # ------------------------------------------------------------------------------
 
@@ -1395,7 +1443,7 @@ func add_currency_to_adjacent_rooms(_new_room_config:Dictionary, amount:int, res
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-func get_list_of_programs(use_location:Dictionary = current_location) -> Array:
+func get_list_of_programs(use_location:Dictionary = current_location, include_all:bool = false) -> Array:
 	var list:Array = []
 	for item in purchased_facility_arr:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
@@ -1407,7 +1455,7 @@ func get_list_of_programs(use_location:Dictionary = current_location) -> Array:
 		
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
-			var include:bool = use_location.floor == location.floor and use_location.ring == location.ring
+			var include:bool = true if include_all else use_location.floor == location.floor and use_location.ring == location.ring
 			var room_designation:String = str(location.floor, location.ring, location.room)
 			var ability_uid:String = str(room_details.ref, index)
 			var abilities_on_cooldown:Dictionary = base_states.room[room_designation].ability_on_cooldown
@@ -1420,6 +1468,7 @@ func get_list_of_programs(use_location:Dictionary = current_location) -> Array:
 			if is_activated and include:
 				list.push_back({
 					"index": index, 
+					"data": item,
 					"location": location,
 					"ability": ability, 
 					"at_level_threshold": at_level_threshold,

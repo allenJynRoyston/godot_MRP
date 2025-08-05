@@ -53,6 +53,7 @@ var disable_active_btn:bool = false :
 var retain_height:bool = true
 var render_table:Dictionary
 var lookup_index:int = 0
+var render_on_right:bool = false
 
 var control_pos_default:Dictionary
 var control_pos:Dictionary
@@ -128,10 +129,16 @@ func activate(new_list_size:int = 4) -> void:
 	List.custom_minimum_size.y = list_size * 50
 
 	await U.tick()
-	control_pos[MenuPanel] = {
-		"show": 0, 
-		"hide": -MenuMargin.size.x
-	}
+	if render_on_right:
+		control_pos[MenuPanel] = {
+			"show": GBL.game_resolution.x - MenuMargin.size.x - 40, 
+			"hide": GBL.game_resolution.x - MenuMargin.size.x + MenuMargin.size.x
+		}
+	else:
+		control_pos[MenuPanel] = {
+			"show": 0, 
+			"hide": -MenuMargin.size.x
+		}
 
 	MenuPanel.position.x = control_pos[MenuPanel].hide
 # ------------------------------------------------------------------------------

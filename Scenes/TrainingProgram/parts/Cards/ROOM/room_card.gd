@@ -171,7 +171,7 @@ func on_ref_update() -> void:
 		CardDrawerName.content = "-"
 		CardDrawerDescription.content = "-"
 		CardDrawerImage.img_src = "-"
-		CardDrawerCurrency.list = []
+		CardDrawerCurrency.list = {}
 		CardDrawerVibes.metrics = {}
 		
 		CardDrawerCurrency.hide()
@@ -186,23 +186,23 @@ func on_ref_update() -> void:
 	var personnel_capacity:Dictionary = room_details.personnel_capacity
 	var currency_list:Array = []
 
-	# has location
-	if use_location.is_empty() or preview_mode:
-		for ref in room_details.currencies:
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			var amount:int = room_details.currencies[ref]
-			# apply bonus
-			currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})					
-		
-
-	# if location is provided, return extract data
-	else:
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		if !extract_data.room.is_empty():
-			is_activated = extract_data.room.is_activated
-			metrics = extract_data.room.metrics
-			currency_list = extract_data.room.currency_list
-		under_construction = ROOM_UTIL.is_under_construction(use_location)
+	## has location
+	#if use_location.is_empty() or preview_mode:
+		#for ref in room_details.currencies:
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			#var amount:int = room_details.currencies[ref]
+			## apply bonus
+			#currency_list.push_back({"ref": ref, "icon": resource_details.icon, "title": str(amount)})					
+		#
+#
+	## if location is provided, return extract data
+	#else:
+		#var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
+		#if !extract_data.room.is_empty():
+			#is_activated = extract_data.room.is_activated
+			#metrics = extract_data.room.metrics
+			#currency_list = extract_data.room.currency_list
+		#under_construction = ROOM_UTIL.is_under_construction(use_location)
 			
 	CardBody.border_color = default_border_color if is_activated else COLORS.disabled_color
 	CardBody.modulate = Color(1, 1, 1, 1)
@@ -250,7 +250,7 @@ func on_ref_update() -> void:
 	# -----------
 	CardDrawerVibes.preview_mode = preview_mode	
 	CardDrawerVibes.use_location = use_location
-	CardDrawerVibes.metrics = metrics
+	#CardDrawerVibes.metrics = metrics
 	CardDrawerVibes.show()
 	VibesContainer.hide() if hide_metrics else VibesContainer.show()
 	
@@ -258,7 +258,7 @@ func on_ref_update() -> void:
 	CardDrawerCurrency.preview_mode = preview_mode
 	CardDrawerCurrency.room_details = room_details	
 	CardDrawerCurrency.use_location = use_location
-	CardDrawerCurrency.list = currency_list	
+	#CardDrawerCurrency.list = currency_list	
 	CardDrawerCurrency.show()
 	CurrencyContainer.hide() if hide_currency else CurrencyContainer.show()
 

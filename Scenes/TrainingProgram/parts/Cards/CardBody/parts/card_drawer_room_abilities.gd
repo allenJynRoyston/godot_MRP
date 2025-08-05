@@ -34,8 +34,6 @@ var use_location:Dictionary = {} :
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
-
-
 # -----------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -153,7 +151,7 @@ func update_node() -> void:
 					
 					SummaryBtnNode.is_disabled = !is_activated or !at_level_threshold
 					SummaryBtnNode.use_alt = on_cooldown
-					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.name if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
+					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.description if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
 					SummaryBtnNode.icon =  SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.MEDIA_PLAY
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
@@ -205,7 +203,7 @@ func update_node() -> void:
 						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "%s (not enough energy)." % [ability.description]
 
 					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy or !at_level_threshold
-					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.name
+					SummaryBtnNode.title = "UNAVAILABLE" if !is_activated else ability.description
 					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed else SVGS.TYPE.DELETE
 					
 					SummaryBtnNode.show_checked_panel = true

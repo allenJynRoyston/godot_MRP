@@ -4,7 +4,7 @@ extends Control
 @onready var MarginPanel:MarginContainer = $PanelContainer/MarginContainer
 
 @onready var Economy:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Economy
-@onready var Vibes:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Vibes
+@onready var Personnel:PanelContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Personnel
 
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {}
@@ -81,14 +81,7 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 # -----------------------------------------------
 func update() -> void:
 	if !is_node_ready() or camera_settings.is_empty() or current_location.is_empty() or room_config.is_empty() or resources_data.is_empty():return
-	var base_config_data:Dictionary = room_config.base
-	var floor_config_data:Dictionary = room_config.floor[current_location.floor]
-	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
-	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
-	var current_vibe:Dictionary = GAME_UTIL.get_vibes_summary(current_location)	
 	var summary_data:Dictionary = {}
-	
-	#Vibes.show() if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else Vibes.hide()
 	
 	## update everything else
 	match camera_settings.type:
@@ -107,21 +100,21 @@ func update() -> void:
 	Economy.material_val = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
 	Economy.core_val = resources_data[RESOURCE.CURRENCY.CORE].amount	
 	
-	# update vibes
-	Vibes.morale_val = str(current_vibe[RESOURCE.METRICS.MORALE])
-	Vibes.safety_val = str(current_vibe[RESOURCE.METRICS.SAFETY])
-	Vibes.readiness_val = str(current_vibe[RESOURCE.METRICS.READINESS])		
-	
 	# update income
 	Economy.money_income = summary_data.currency_diff[RESOURCE.CURRENCY.MONEY] + resources_data[RESOURCE.CURRENCY.MONEY].diff
 	Economy.researcher_income = summary_data.currency_diff[RESOURCE.CURRENCY.SCIENCE] + resources_data[RESOURCE.CURRENCY.SCIENCE].diff	
 	Economy.material_income = summary_data.currency_diff[RESOURCE.CURRENCY.MATERIAL] + resources_data[RESOURCE.CURRENCY.MATERIAL].diff
 	Economy.core_income = summary_data.currency_diff[RESOURCE.CURRENCY.CORE]	+ resources_data[RESOURCE.CURRENCY.CORE].diff
 
-
-	# update metrics
-	Vibes.morale_tag_val = summary_data.metric_diff[RESOURCE.METRICS.MORALE]
-	Vibes.safety_tag_val = summary_data.metric_diff[RESOURCE.METRICS.SAFETY]
-	Vibes.readiness_tag_val = summary_data.metric_diff[RESOURCE.METRICS.READINESS]
+	#
+	Personnel.admin_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.ADMIN)
+	Personnel.researcher_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
+	Personnel.security_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.SECURITY)
+	Personnel.dclass_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.DCLASS)
+	
+	Personnel.admin_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.ADMIN)
+	Personnel.researcher_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
+	Personnel.security_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.SECURITY)
+	Personnel.dclass_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.DCLASS)	
 
 # -----------------------------------------------
