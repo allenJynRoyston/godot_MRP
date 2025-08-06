@@ -17,9 +17,10 @@ const login_arr:Array[String] = [
 signal is_complete
 
 func start() -> void:
-	OS_AUDIO.fade_out(OS_AUDIO.CHANNEL.REVERB, 1.0, true)
 	show()	
 	await U.set_timeout(0.5)
+	
+	OS_AUDIO.fade_out(OS_AUDIO.CHANNEL.REVERB, 1.0, true)
 
 	for i in login_arr.size():
 		var str:String = login_arr[i]

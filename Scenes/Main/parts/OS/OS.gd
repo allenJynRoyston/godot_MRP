@@ -16,13 +16,14 @@ extends PanelContainer
 @onready var LoginMargin:MarginContainer = $LoginControl/PanelContainer/MarginContainer
 
 @onready var DesktopGrid:Control =  $Desktop/MarginContainer/DesktopGrid
-@onready var LoginContainer:PanelContainer = $NodeControl/LoginContainer
 @onready var Installer:PanelContainer = $NodeControl/Installer
 @onready var NotificationContainer:PanelContainer = $NodeControl/NotificationContainer
 
 @onready var HeaderControls:Control = $HeaderControls
+
 #@onready var TaskbarBtn:BtnBase = $HeaderControls/PanelContainer/MarginContainer/VBoxContainer/TaskbarBtn
 
+const LoginPreload:PackedScene = preload("res://Scenes/Main/parts/OS/LoginScreen/LoginScreen.tscn")
 const AppItemPreload:PackedScene = preload("res://Scenes/Main/parts/OS/AppItem/AppItem.tscn")
 const SiteDirectorTrainingAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/SiteDirectorTrainingApp/SiteDirectorTrainingApp.tscn")
 const EmailAppPreload:PackedScene = preload("res://Scenes/Main/parts/OS/Apps/EmailApp/EmailApp.tscn")
@@ -339,6 +340,22 @@ var app_list:Array[Dictionary] = [
 								# reveal controls
 								BtnControls.reveal(true),
 						},
+						{
+							"title": "REBOOT OS",
+							"onClick": func(_options:Dictionary) -> void:
+								await U.set_timeout(0.3)
+								modulate.a = 0
+								close_all_apps()
+								OS_AUDIO.stop()
+								await U.set_timeout(1.0)
+								modulate.a = 1
+								var LoginNode:Control = LoginPreload.instantiate()
+								add_child(LoginNode)
+								await LoginNode.start()	
+								BtnControls.reveal(true)
+								BtnControls.item_index = 0
+								pass,
+						},						
 					],	
 					[
 						{
@@ -354,10 +371,10 @@ var app_list:Array[Dictionary] = [
 							"hint_description": "Enable/Disable crt effect."
 						},
 						{
-							"title": "ENABLE AUDIO VISUALIZER", 
+							"title": "ENABLE THE FUNK", 
 							"key": "audio_visulizer_in_background",
 							"value": os_setting.audio_visulizer_in_background,
-							"hint_description": "Enable/Disable audio visulizer."
+							"hint_description": "Enable/Disable the FUNK."
 						},
 						{
 							"title": "PLAY MUSIC ON BOOT", 
@@ -421,14 +438,12 @@ func _exit_tree() -> void:
 func _ready() -> void:	
 	set_process(false)
 	set_physics_process(false)	
+	modulate.a = 0
 	
 	# hide
 	HeaderControls.hide()
 	PauseContainer.hide()
 	AudioVisualizer.hide()
-
-	# show
-	LoginContainer.show()
 	
 	# setup
 	Taskbar.onBack = func() -> void:
@@ -444,10 +459,10 @@ func _ready() -> void:
 func start() -> void:
 	var skip_boot:bool = DEBUG.get_val(DEBUG.OS_SKIP_BOOT)
 	var skip_to_game:bool = DEBUG.get_val(DEBUG.OS_SKIP_TO_GAME)
-
 	has_started = true
-	check_graphics_settings(true)
+	
 	load_state()	
+	check_graphics_settings()
 	on_simulated_busy_update()
 	update_media_options({})
 	
@@ -461,11 +476,11 @@ func start() -> void:
 	
 	await U.set_timeout(1.0 if !skip_boot else 0)
 	
-
-	if skip_boot:
-		LoginContainer.queue_free()
-	else:
-		await LoginContainer.start()
+	modulate.a = 1
+	if !skip_boot:
+		var LoginNode:Control = LoginPreload.instantiate()
+		add_child(LoginNode)
+		await LoginNode.start()
 		
 	await render_desktop_icons()	
 	Taskbar.activate()
@@ -556,12 +571,14 @@ func install_app_complete(ref:APPS) -> void:
 
 # -----------------------------------
 #region SAVE/LOAD
-func check_graphics_settings(instant:bool = false) -> void:
-	var use_crt_effect:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics.shaders.crt_effect
-	if use_crt_effect:
+func check_graphics_settings() -> void:
+	if graphics.shaders.crt_effect:
 		GBL.find_node(REFS.MAIN).apply_shader_effects(false) 
 	else:
 		GBL.find_node(REFS.MAIN).no_shader_effects(false)	
+	
+	AudioVisualizer._ready()
+	TransitionScreen.start(0.3, true)
 
 func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
@@ -574,9 +591,6 @@ func load_state() -> void:
 	os_setting = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
 	graphics = 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics
 
-#func restore_state(restore_os_setting:Dictionary) -> void:
-#	os_setting = restore_os_setting
-#	graphics = 
 
 #endregion		
 # -----------------------------------
@@ -671,6 +685,10 @@ func close_app(ref:int) -> void:
 	BtnControls.reveal(true)
 	
 	mark_as_running()
+	
+func close_all_apps() -> void:
+	for app in running_apps_list:
+		close_app(app.ref)
 
 func mark_as_running() -> void:
 	var active_refs:Array = running_apps_list.map(func(x): return x.ref)

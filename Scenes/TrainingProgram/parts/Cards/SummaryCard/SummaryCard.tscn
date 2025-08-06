@@ -216,6 +216,48 @@ text = "2"
 label_settings = SubResource("LabelSettings_5g6vn")
 metadata/_edit_group_ = true
 
+[node name="Description" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description"]
+visible = false
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "NOTE"
+label_settings = ExtResource("6_3otej")
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="DescriptionPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer" instance=ExtResource("4_djb7u")]
+layout_mode = 2
+hollow = true
+is_small = true
+content = "Description"
+center_text = false
+
 [node name="RequiredStaffingContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0

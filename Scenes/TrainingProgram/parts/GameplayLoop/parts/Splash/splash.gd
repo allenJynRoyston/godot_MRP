@@ -18,9 +18,13 @@ var control_pos:Dictionary
 
 @export var auto_start:bool = false
 
+@export var speed:float = 5.0
+
+@export var modulate_color:Color = Color(1, 1, 1, 1)
+
 # --------------------------------	
 func _ready() -> void:
-	modulate = Color(1, 1, 1, 0)
+	modulate.a = 0
 	set_process(false)
 	on_title_update()
 	if auto_start:
@@ -47,6 +51,7 @@ func start(use_zero:bool = false, duration:float = 0.3, delay:float = 0.0) -> vo
 	set_process(true)	
 	await U.tick()
 	
+	modulate = modulate_color	
 	U.tween_node_property(self, "modulate:a", 1, duration)
 	
 	await U.tween_node_property(MainPanel, "position:y", control_pos[MainPanel].zero if use_zero else control_pos[MainPanel].show, duration, delay)
@@ -71,7 +76,6 @@ func end() -> void:
 
 # --------------------------------		
 var time:float = 0
-var speed:float = 5.0
 func _process(delta: float) -> void:
 	time += delta
 	var value := (sin(time * speed) + 1.2) / 2.0  # Oscillates smoothly between 0 and 1

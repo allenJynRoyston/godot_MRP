@@ -111,8 +111,16 @@ var track_data:Array = [
 	}
 ]
 
+func return_data(track:TRACK) -> Dictionary:
+	
+	for index in track_data[0].list.size():
+		if track_data[0].list[index].details.ref == track:
+			return track_data[0].list[index]
+			break
+	return {}
+	
 func get_track_index(track:TRACK) -> int:
-	for index in track_data[0].list.size() - 1:
+	for index in track_data[0].list.size():
 		if track_data[0].list[index].details.ref == track:
 			return index
 			break

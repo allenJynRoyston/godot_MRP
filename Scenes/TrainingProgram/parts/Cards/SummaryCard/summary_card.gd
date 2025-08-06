@@ -31,6 +31,9 @@ extends PanelContainer
 @onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
 @onready var EffectPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
 
+# Description 
+@onready var DescriptionPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer/DescriptionPanel
+
 # capacity
 @onready var CapacityContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/CapacityContainer
 @onready var CapacityPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/CapacityContainer/PanelContainer2/MarginContainer/CapacityPanel
@@ -253,6 +256,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	InfoContainer.show()
 	NameTag.text = room_details.details.name
 	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]
+	DescriptionPanel.content = room_details.details.description
 	EnergyTag.text = str(room_details.details.required_energy)
 	ConstructionCostTag.text = str(room_details.details.costs.purchase)
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 

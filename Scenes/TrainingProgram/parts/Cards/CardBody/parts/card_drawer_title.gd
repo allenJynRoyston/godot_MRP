@@ -44,7 +44,10 @@ func on_hollow_update() -> void:
 	label_settings_copy.outline_color = Color(label_settings_copy.font_color.r, label_settings_copy.font_color.g, label_settings_copy.font_color.b, 0.2)
 	ContentLabel.label_settings = label_settings_copy
 	
-	$".".set('theme_override_styles/panel', null if hollow else OrangePanelPreload)
+	
+	var new_flat:StyleBoxFlat = StyleBoxFlat.new()
+	new_flat.bg_color = Color.TRANSPARENT
+	$".".set('theme_override_styles/panel', new_flat if hollow else OrangePanelPreload)
 
 func on_center_text_update() -> void:
 	if !is_node_ready():return

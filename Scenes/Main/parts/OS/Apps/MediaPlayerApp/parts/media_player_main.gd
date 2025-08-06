@@ -2,9 +2,11 @@ extends PanelContainer
 
 @onready var WaitContainer:Control = $WaitContainer
 @onready var BtnControls:Control = $BtnControl
+@onready var SplashContainer:Control = $Control/SplashContainer
 @onready var TrackList:VBoxContainer = $HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/List
 
 const SummaryBtnPreload:PackedScene = preload("res://UI/Buttons/SummaryBtn/SummaryBtn.tscn")
+const SplashPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Splash/Splash.tscn")
 
 var music_data:Dictionary
 var track_data:Array = OS_AUDIO.track_data
@@ -46,7 +48,6 @@ func _ready() -> void:
 		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
 		var track_ref:int = item.details.ref
 		var is_unlocked:bool = item.is_unlocked.call(os_settings)
-		print(item)
 		
 		# still locked, so do nothing...
 		if !is_unlocked:
@@ -58,6 +59,14 @@ func _ready() -> void:
 		## play music
 		OS_AUDIO.play(track_ref)
 	
+	for index in range(0, 10):
+		var splash_node:Control = SplashPreload.instantiate()
+		splash_node.auto_start = true
+		splash_node.v_offset = index * 150
+		splash_node.speed = 1
+		SplashContainer.add_child(splash_node)
+		splash_node.hide()
+
 
 func start() -> void:
 	on_music_data_update()
@@ -65,6 +74,8 @@ func start() -> void:
 	BtnControls.item_index = 0
 	await BtnControls.reveal(true)
 	WaitContainer.hide()
+	await U.set_timeout(3.0)
+	on_music_data_update()
 	
 
 func pause() -> void:
@@ -91,6 +102,8 @@ func on_music_track_list_update() -> void:
 		new_btn.title = item.details.name if is_unlocked else "???"
 		new_btn.ref_data = {"ref": item.details.ref}
 		new_btn.show_checked_panel = true		
+		new_btn.hint_description = "Song by %s" % item.details.author if is_unlocked else "???"
+		new_btn.hint_title = "COMPOSER" if is_unlocked else "???"
 		new_btn.hide_icon = true
 		new_btn.fill = true			
 
@@ -102,9 +115,41 @@ func on_music_track_list_update() -> void:
 # ------------------------------------------------------------------------------
 func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	music_data = new_val
-	if !is_node_ready() or music_data.is_empty():return
+	if !is_node_ready():
+		return
+	
+	if music_data.is_empty():
+		for splash_node in SplashContainer.get_children():
+			splash_node.hide()	
+		return
+		
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)
 		n.is_checked = n.ref_data.ref == music_data.track
 		n.use_alt = n.ref_data.ref == music_data.track
+	
+	var has_funk:bool = true
+	if has_funk:
+		for splash_node in SplashContainer.get_children():
+			var audio_details:Dictionary = OS_AUDIO.return_data(music_data.track)
+			if audio_details.is_empty():return
+			var str := ""
+			for n in range(0, 5):
+				str += "🪩 %s 🪩 %s " % [audio_details.details.name, audio_details.details.author]
+			splash_node.title = str
+			splash_node.show()		
 # ------------------------------------------------------------------------------
+
+var time:float = 0
+func _process(delta: float) -> void:
+	time += delta
+	if !is_node_ready():return
+
+	# Scale up and down (optional squashing/growing)
+	var scale_factor := 1.0 + sin(time * 2.0) * 0.1  # Adjust frequency and amplitude
+	SplashContainer.scale = Vector2(scale_factor, 1.0)
+
+	# Left-right sway (in radians)
+	var sway_amplitude := 0.2   # Max rotation in radians (~11 degrees)
+	var sway_speed := 1.2    # How fast it sways
+	SplashContainer.rotation = sin(time * sway_speed) * sway_amplitude
