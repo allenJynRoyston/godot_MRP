@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=32 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="2_dchg3"]
@@ -50,7 +50,7 @@ shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uq7ee"]
 bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_bottom_left = 5
+corner_radius_top_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5g6vn"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -58,7 +58,22 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
 bg_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dchg3"]
+bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0krab"]
+bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_budmt"]
+bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w56pt"]
+bg_color = Color(1, 1, 1, 0)
+
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_hex5u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mee86"]
+bg_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgan4"]
 bg_color = Color(0.06, 0.06, 0.06, 0.690196)
@@ -157,6 +172,7 @@ autowrap_mode = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="ConstructionCostPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -190,7 +206,7 @@ metadata/_edit_group_ = true
 [node name="LevelAndEnergyPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 2
+size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_uq7ee")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel"]
@@ -253,6 +269,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="DescriptionPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer" instance=ExtResource("4_djb7u")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dchg3")
 hollow = true
 is_small = true
 content = "Description"
@@ -416,6 +433,7 @@ theme_override_constants/margin_bottom = 0
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0krab")
 hollow = true
 is_small = true
 content = "Effect description"
@@ -499,6 +517,7 @@ theme_override_constants/margin_bottom = 0
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_budmt")
 hollow = true
 is_small = true
 content = "PHYSICAL"
@@ -547,6 +566,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_w56pt")
 hollow = true
 is_small = true
 content = "SCP-XXXX (The Door)"
@@ -565,6 +585,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_mee86")
 hollow = true
 is_small = true
 content = "The effect goes here and it can be quite long."

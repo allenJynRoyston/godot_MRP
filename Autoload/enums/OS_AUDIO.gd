@@ -55,7 +55,7 @@ var track_data:Array = [
 			# ---------------------------------------------------------------------------------------------- OS TRACKS
 			{
 				"details": {
-					"name": "PROTOCOL STANDARD",
+					"name": "FUNK PROTOCOL",
 					"author": "Dávid Halmi",
 					"ref": TRACK.OS_TRACK_ONE,
 				},

@@ -1,10 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://b4pwrpvr3osgb"]
+[gd_scene load_steps=25 format=3 uid="uid://b4pwrpvr3osgb"]
 
 [ext_resource type="Script" uid="uid://bgdn2muft3ae8" path="res://Scenes/Main/parts/OS/OS.gd" id="1_rk64t"]
 [ext_resource type="Texture2D" uid="uid://j2sk54heuc2t" path="res://Media/images/OS/bg_0.png" id="2_25k47"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
 [ext_resource type="PackedScene" uid="uid://cyjoo87vkcy0s" path="res://Scenes/Main/parts/OS/Options/Options.tscn" id="3_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
+[ext_resource type="Texture2D" uid="uid://q14ayb5jrajl" path="res://Media/images/wondertainment_logo.png" id="4_mpjfr"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_b50hp"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]
@@ -97,6 +98,22 @@ custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 size_flags_vertical = 8
 color = Color(0.0705882, 0.0705882, 0.0705882, 0.760784)
+
+[node name="MarginContainer" type="MarginContainer" parent="AudioVisualizer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="TextureRect" type="TextureRect" parent="AudioVisualizer/MarginContainer"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("4_mpjfr")
+expand_mode = 2
+stretch_mode = 5
 
 [node name="Desktop" type="PanelContainer" parent="."]
 layout_mode = 2

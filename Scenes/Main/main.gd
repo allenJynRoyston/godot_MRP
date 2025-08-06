@@ -201,7 +201,7 @@ var default_save_profiles:Dictionary = {
 		"apps_installed": [],
 		"store_purchases": [],
 		"audio_visulizer_in_background": false,
-		"play_music_on_boot": false,
+		"play_music_on_boot": true,
 		"currency": {
 			"amount": 10
 		}

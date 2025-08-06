@@ -354,18 +354,22 @@ var app_list:Array[Dictionary] = [
 								await LoginNode.start()	
 								BtnControls.reveal(true)
 								BtnControls.item_index = 0
+								if os_setting.play_music_on_boot:
+									OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
+								
+								
 								pass,
 						},						
 					],	
 					[
 						{
-							"title": "FULLSCREEN", 
+							"title": "FULLSCREAM", 
 							"key": "fullscreen",
 							"value": graphics.fullscreen,
 							"hint_description": "Enable/Disable fullscreen mode."
 						},
 						{
-							"title": "CRT FX", 
+							"title": "CRT REALITY FILTER", 
 							"key": "crt_effect",
 							"value": graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
@@ -377,7 +381,7 @@ var app_list:Array[Dictionary] = [
 							"hint_description": "Enable/Disable the FUNK."
 						},
 						{
-							"title": "PLAY MUSIC ON BOOT", 
+							"title": "FUNK ON BOOT", 
 							"key": "play_music_on_boot",
 							"value": os_setting.play_music_on_boot,
 							"hint_description": "Play music when OS is loaded."
@@ -493,7 +497,6 @@ func start() -> void:
 	
 	await reveal_logo(true, 0.5)
 	
-	print(os_setting)
 	if os_setting.play_music_on_boot:
 		OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 	

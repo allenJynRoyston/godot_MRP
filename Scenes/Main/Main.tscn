@@ -204,6 +204,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+is_production_build = true
+reset_userprofile_save = true
 skip_splash = true
 skip_intro = true
 intro_skip_logo = true
@@ -481,7 +483,6 @@ expand_mode = 1
 stretch_mode = 2
 
 [node name="Notes" type="PanelContainer" parent="NoteOverlay"]
-visible = false
 modulate = Color(3.1285e-06, 0.646691, 0.206366, 1)
 anchors_preset = 15
 anchor_right = 1.0
