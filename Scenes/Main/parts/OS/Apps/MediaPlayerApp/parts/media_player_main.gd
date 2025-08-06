@@ -107,6 +107,6 @@ func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	if !is_node_ready() or music_data.is_empty():return
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)
-		n.is_checked = index == music_data.selected
-		n.use_alt = index == music_data.selected
+		n.is_checked = index == music_data.track
+		n.use_alt = index == music_data.track
 # ------------------------------------------------------------------------------
