@@ -40,6 +40,7 @@ enum APPS {
 # -----------------------------------
 #region SAVABLE DATA
 var os_setting:Dictionary = {}
+var graphics:Dictionary = {}
 var apps_installing:Array = []
 var has_started:bool = false
 
@@ -50,23 +51,33 @@ var previous_desktop_index:int = 0
 # -----------------------------------
 #region LOCAL DATA
 func update_media_options(_options:Dictionary) -> void:
+	# NO OPTIONS AVAILABLE (YET)
+	#for key in _options:
+		#var val:bool = _options[key]
+		#if media_player.has(key):
+			#media_player[key] = val
+
+	save_state()
+
+func update_graphics_options(_options:Dictionary) -> void:
 	for key in _options:
 		var val:bool = _options[key]
-		if os_setting.media_player.has(key):
-			os_setting.media_player[key] = val
-	
-	AudioVisualizer.show() if os_setting.media_player.enable_visulizer else AudioVisualizer.hide()
-	TransitionScreen.start(0.3, true)	
+		if graphics.has(key):
+			graphics[key] = val
+			
+		if graphics.shaders.has(key):
+			graphics.shaders[key] = val			
+
+	check_graphics_settings()
 	save_state()
-	
+		
 func update_settings_options(_options:Dictionary) -> void:
 	for key in _options:
 		var val:bool = _options[key]
-		if GBL.active_user_profile.graphics.shaders.has(key):
-			GBL.active_user_profile.graphics.shaders[key] = val
-	
-	# update settings
-	check_graphics_settings()
+		if os_setting.has(key):		
+			os_setting[key] = val
+
+	# update settings	
 	save_state()
 
 var app_list:Array[Dictionary] = [
@@ -324,31 +335,36 @@ var app_list:Array[Dictionary] = [
 							"title": "APPLY CHANGES...",
 							"onClick": func(_options:Dictionary) -> void:
 								update_settings_options(_options)
-								update_media_options(_options)
+								update_graphics_options(_options)
 								# reveal controls
 								BtnControls.reveal(true),
 						},
-					],
+					],	
 					[
 						{
 							"title": "FULLSCREEN", 
 							"key": "fullscreen",
-							"value": false,
+							"value": graphics.fullscreen,
 							"hint_description": "Enable/Disable fullscreen mode."
 						},
 						{
 							"title": "CRT FX", 
 							"key": "crt_effect",
-							"value": GBL.active_user_profile.graphics.shaders.crt_effect,
+							"value": graphics.shaders.crt_effect,
 							"hint_description": "Enable/Disable crt effect."
 						},
 						{
 							"title": "ENABLE AUDIO VISUALIZER", 
-							"key": "enable_visulizer",
-							"value": os_setting.media_player.enable_visulizer,
+							"key": "audio_visulizer_in_background",
+							"value": os_setting.audio_visulizer_in_background,
 							"hint_description": "Enable/Disable audio visulizer."
-						}						
-						
+						},
+						{
+							"title": "PLAY MUSIC ON BOOT", 
+							"key": "play_music_on_boot",
+							"value": os_setting.play_music_on_boot,
+							"hint_description": "Play music when OS is loaded."
+						}												
 					]
 				),
 				
@@ -437,7 +453,6 @@ func start() -> void:
 	
 	await U.tick()
 		
-	
 	control_pos[LoginPanel] = {
 		"show": 0,
 		"hide": -LoginMargin.size.y
@@ -462,8 +477,10 @@ func start() -> void:
 		open_app(app.details)
 	
 	await reveal_logo(true, 0.5)
-
-	OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
+	
+	print(os_setting)
+	if os_setting.play_music_on_boot:
+		OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 	
 
 	reveal_logo(false, 3.0)
@@ -540,7 +557,7 @@ func install_app_complete(ref:APPS) -> void:
 # -----------------------------------
 #region SAVE/LOAD
 func check_graphics_settings(instant:bool = false) -> void:
-	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
+	var use_crt_effect:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics.shaders.crt_effect
 	if use_crt_effect:
 		GBL.find_node(REFS.MAIN).apply_shader_effects(false) 
 	else:
@@ -548,15 +565,18 @@ func check_graphics_settings(instant:bool = false) -> void:
 
 func save_state(duration:float = 0.2) -> void:
 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics = graphics
 	GBL.update_and_save_user_profile()
 	
 	await simulate_wait(duration)
 
 func load_state() -> void:
-	restore_state(GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting)
-		
-func restore_state(restore_os_setting:Dictionary) -> void:
-	os_setting = restore_os_setting
+	os_setting = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+	graphics = 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics
+
+#func restore_state(restore_os_setting:Dictionary) -> void:
+#	os_setting = restore_os_setting
+#	graphics = 
 
 #endregion		
 # -----------------------------------

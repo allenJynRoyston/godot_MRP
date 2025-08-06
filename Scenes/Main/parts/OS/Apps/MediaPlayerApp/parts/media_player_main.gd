@@ -39,14 +39,14 @@ func _ready() -> void:
 			n.is_selected = node == n
 			if node == n:
 				SelectedNode = node
-
 	
 	BtnControls.onAction = func() -> void:
 		if SelectedNode == null:return
-		var item:Dictionary = track_data[tab_index].list[SelectedNode.index]
+		var item:Dictionary = track_data[tab_index].list[ SelectedNode.index ]
 		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
 		var track_ref:int = item.details.ref
 		var is_unlocked:bool = item.is_unlocked.call(os_settings)
+		print(item)
 		
 		# still locked, so do nothing...
 		if !is_unlocked:
@@ -54,12 +54,10 @@ func _ready() -> void:
 		
 		# else, pause music and start next track
 		MediaPlayerNode.on_pause()
-		
-		# open music player, no music selected
-		#SUBSCRIBE.music_data = {
-			#"selected": track_ref
-		#}
-
+		#
+		## play music
+		OS_AUDIO.play(track_ref)
+	
 
 func start() -> void:
 	on_music_data_update()
@@ -91,7 +89,7 @@ func on_music_track_list_update() -> void:
 		
 		new_btn.index = index
 		new_btn.title = item.details.name if is_unlocked else "???"
-		
+		new_btn.ref_data = {"ref": item.details.ref}
 		new_btn.show_checked_panel = true		
 		new_btn.hide_icon = true
 		new_btn.fill = true			
@@ -107,6 +105,6 @@ func on_music_data_update(new_val:Dictionary = music_data) -> void:
 	if !is_node_ready() or music_data.is_empty():return
 	for index in TrackList.get_child_count():
 		var n:Control = TrackList.get_child(index)
-		n.is_checked = index == music_data.track
-		n.use_alt = index == music_data.track
+		n.is_checked = n.ref_data.ref == music_data.track
+		n.use_alt = n.ref_data.ref == music_data.track
 # ------------------------------------------------------------------------------

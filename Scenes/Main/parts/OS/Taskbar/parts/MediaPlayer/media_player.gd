@@ -61,9 +61,9 @@ func on_pause() -> void:
 func on_next() -> void:
 	if track_data.is_empty():return
 	selected_track = (selected_track + 1) % track_data[0].size()
-	#SUBSCRIBE.music_data = {
-		#"track": selected_track,
-	#}
+	
+	# play music	
+	OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 # --------------------------------------	
 
 ## --------------------------------------	
@@ -84,13 +84,15 @@ func on_pause_or_play_update() -> void:
 
 # --------------------------------------	
 func on_music_data_update(new_val:Dictionary) -> void:
-	selected_track = -1 if new_val.is_empty() else new_val.track 
+	selected_track = -1 if new_val.is_empty() else OS_AUDIO.get_track_index( new_val.track )
 	update_track_data()	
 # --------------------------------------	
 
 # --------------------------------------	
 func update_track_data() -> void:
-	if selected_track == -1:return	
+	if selected_track == -1:
+		printerr("ERROR: selected track not found")
+		return
 	var track_data:Dictionary = track_data[0].list[selected_track]
 	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
 	TrackNameLabel.text = "%s by %s" % [details.name, details.author]

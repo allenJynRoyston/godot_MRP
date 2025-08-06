@@ -200,13 +200,21 @@ var default_save_profiles:Dictionary = {
 		"tracks_unlocked": [],
 		"apps_installed": [],
 		"store_purchases": [],
-		"media_player": {
-			"enable_visulizer": false
-		},
+		"audio_visulizer_in_background": false,
+		"play_music_on_boot": false,
 		"currency": {
 			"amount": 10
 		}
 	},
+	"graphics": {
+		"fullscreen": false,
+		"shaders":{
+			"crt_effect": true,
+			"screen_bend": true,
+			"screen_burn": true,
+			"monitor_overlay": true
+		}	
+	},	
 	"snapshots": {
 		"after_setup": {},
 		"restore_checkpoint": {},
@@ -221,15 +229,6 @@ var user_profile_schema:Dictionary = {
 		"on_chapter": skip_to_chapter if debug_story_progress else 0,
 		"messages_played": [],
 		"completed_chapters": []
-	},
-	"graphics": {
-		"fullscreen": false,
-		"shaders":{
-			"crt_effect": true,
-			"screen_bend": true,
-			"screen_burn": true,
-			"monitor_overlay": true
-		}	
 	},
 	"use_save_profile": FS.FILE.SAVE_ONE if !user_profile_ref else user_profile_ref,
 	"save_profiles":{
@@ -518,7 +517,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_texture:TextureRect) -> void:
-	var use_crt_effect:bool = GBL.active_user_profile.graphics.shaders.crt_effect
+	var use_crt_effect:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics.shaders.crt_effect
 
 	for node in [CellTextureRect, OsTextureRect, ArticleTextureRect]:
 		if node == use_texture:

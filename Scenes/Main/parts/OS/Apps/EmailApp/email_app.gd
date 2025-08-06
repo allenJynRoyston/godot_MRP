@@ -24,11 +24,9 @@ func start(fast_load:bool) -> void:
 	LoadingComponent.loading_text = str(details.title).to_upper()
 	await LoadingComponent.start(fast_load)
 	await TransitionScreen.start(0.7, true)
-	
-	#SUBSCRIBE.music_data = {
-		#"selected": OS_AUDIO.TRACK.OS_TRACK_TWO
-	#}
-		
+
+	# play music	
+	OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_TWO, OS_AUDIO.CHANNEL.MAIN)
 
 	# start app
 	EmailComponent.start()

@@ -36,9 +36,7 @@ func start() -> void:
 	var savedata:Dictionary = quicksave_data if !quicksave_data.is_empty() else {}
 
 	# play music
-	#SUBSCRIBE.music_data = {
-		#"selected": OS_AUDIO.TRACK.GAME_MAIN_MENU,
-	#}	
+	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_THREE, OS_AUDIO.CHANNEL.MAIN)
 
 	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT QUICKSAVE, 
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):
@@ -92,6 +90,9 @@ func force_save_and_quit() -> void:
 
 # ---------------------------------------------
 func start_game(filedata:Dictionary) -> void:
+	# play music
+	await OS_AUDIO.fade_out(OS_AUDIO.CHANNEL.MAIN, 1.0)
+		
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	
 	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting

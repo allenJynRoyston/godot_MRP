@@ -152,7 +152,7 @@ func animate_under_construction(state:bool, skip_animation:bool = false) -> void
 		for node in [SafetyLights, ParticleEmitter, RoomRender]:
 			node.show()
 		ConstructionOmniLight.show() if (state and camera_viewpoint != CAMERA.VIEWPOINT.OVERHEAD) else ConstructionOmniLight.hide()		
-
+	
 		# animate		
 		await custom_tween_node_property(safety_gate_tween, SafetyGate, "position:y", 1.3, animation_speed)
 		

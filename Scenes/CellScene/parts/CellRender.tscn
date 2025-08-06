@@ -244,7 +244,6 @@ transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.568989, -0.38
 [node name="Lighting" type="Node3D" parent="."]
 
 [node name="AmbientLighting" type="Node3D" parent="Lighting"]
-visible = false
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Lighting/AmbientLighting"]
 transform = Transform3D(-0.693684, 0.199178, -0.692192, -0.26947, 0.819453, 0.505848, 0.667973, 0.537424, -0.514769, -2.4538, 1.41851, -3.69232)

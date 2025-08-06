@@ -450,9 +450,7 @@ func start_new_game() -> void:
 	await SetupContainer.activate()
 	await SetupContainer.start()	
 	
-	# start game music
-	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_ONE)
-	
+
 	# 1.) loading game data config
 	parse_restore_data()
 	await U.set_timeout(duration)	
@@ -526,6 +524,10 @@ func start_new_game() -> void:
 	restore_player_hud()	
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
+	
+	# start game music
+	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_ONE)
+		
 
 	# then build marked objectives
 	GAME_UTIL.mark_current_objectives()

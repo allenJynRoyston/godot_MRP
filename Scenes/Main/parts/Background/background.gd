@@ -15,7 +15,7 @@ func _ready() -> void:
 	await U.tick()
 	MusicShaderTexture.material = shader_material
 	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting	
-	show() if os_settings.media_player.enable_visulizer	else hide()	
+	show() if os_settings.audio_visulizer_in_background else hide()	
 
 
 func on_audio_data_update(new_val:Dictionary) -> void:

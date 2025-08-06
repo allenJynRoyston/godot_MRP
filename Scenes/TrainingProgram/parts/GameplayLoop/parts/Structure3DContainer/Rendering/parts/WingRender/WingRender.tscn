@@ -465,6 +465,7 @@ spot_angle_attenuation = 0.307786
 
 [node name="CautionLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, -7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 0, 0)
+visible = false
 
 [node name="SpinLights" parent="MeshRender/Lighting/CautionLights" instance=ExtResource("9_jx7vp")]
 transform = Transform3D(1, 0, 2.23517e-08, -7.45058e-09, -4.47035e-08, -1, 0, 1, -1.49012e-08, -32, 4.1, -44.6056)
