@@ -4,13 +4,16 @@ extends Control
 @onready var AudioStreamPlayerMaster:AudioStreamPlayer = $AudioStreamPlayerMaster
 @onready var AudioStreamPlayerReverb:AudioStreamPlayer = $AudioStreamPlayerReverb
 
+var audio_stream_dict:Dictionary = {}
+
 var AudioNode:Control
 var current_audio_stream_player:AudioStreamPlayer
 var spectrum:AudioEffectSpectrumAnalyzerInstance
 
 var track_data:Dictionary	
 
-var max_volumne:float = -60.0
+var max_db:float = 0.0
+var fade_out_db:float = -60
 
 # --------------------------------------	
 func _init() -> void:
@@ -22,85 +25,118 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_music_player(self)
 	
 func _ready() -> void:
-	current_audio_stream_player = AudioStreamPlayerMaster	
 	AudioNode = GBL.find_node(REFS.AUDIO_BG)
-	current_audio_stream_player.stop()
+	current_audio_stream_player = AudioStreamPlayerMaster
 	
-	await U.tick()	
-	max_volumne = -60 if DEBUG.get_val(DEBUG.AUDIO_MUTE) else 0
+	await U.tick()
+	audio_stream_dict = {
+		AudioStreamPlayerMaster: {
+			"max_db": fade_out_db if DEBUG.get_val(DEBUG.AUDIO_MUTE) else AudioStreamPlayerMaster.volume_db 
+		},
+		AudioStreamPlayerReverb: {
+			"max_db": fade_out_db if DEBUG.get_val(DEBUG.AUDIO_MUTE) else AudioStreamPlayerReverb.volume_db
+		}
+	}	
+	
 # --------------------------------------	
 
 # --------------------------------------	
-func change_bus(bus:String) -> void:
+func change_bus(bus:OS_AUDIO.CHANNEL) -> void:
+	if track_data.is_empty():return
+	
 	var stream_position:float = current_audio_stream_player.get_playback_position()
-	var current_track = null
-	current_track = current_audio_stream_player.stream
+	# fade out old one
+	var old_audio_player:AudioStreamPlayer = current_audio_stream_player
+	U.tween_range(old_audio_player.volume_db, fade_out_db, 0.3, 
+		func(val):
+			old_audio_player.volume_db = val
+	).finished	
 	
-	AudioStreamPlayerMaster.play(stream_position)
-	AudioStreamPlayerReverb.play(stream_position)
+	match bus:
+		OS_AUDIO.CHANNEL.MAIN:
+			AudioStreamPlayerMaster.stream = track_data.file
+			AudioStreamPlayerMaster.play(stream_position)
+			current_audio_stream_player = AudioStreamPlayerMaster
+		OS_AUDIO.CHANNEL.REVERB:
+			AudioStreamPlayerReverb.stream = track_data.file
+			AudioStreamPlayerReverb.play(stream_position)
+			current_audio_stream_player = AudioStreamPlayerReverb
+	
+	current_audio_stream_player.volume_db = audio_stream_dict[current_audio_stream_player].max_db
 
-	#match bus:
-		#"Master":
-			#await fade_out(0.7, current_audio_stream_player)
-			#current_audio_stream_player = AudioStreamPlayerMaster
-		#"Reverb":
-			#await fade_out(0.7, current_audio_stream_player)
-			#current_audio_stream_player = AudioStreamPlayerReverb
-			#
-			#
-	var effect = AudioServer.get_bus_effect_instance(0, 0)
-	if effect is AudioEffectSpectrumAnalyzerInstance:
-		spectrum = effect
-		
-	#if current_track != null:
-	current_audio_stream_player.stream = current_track
-	current_audio_stream_player.play(stream_position)
 # --------------------------------------	
 
 # --------------------------------------	
-func play_track(duration:float = 1.0) -> void:
-	if is_already_playing():
-		await fade_out(0.7)
-		
+func play_track(fade_out_duration:float, fade_in_duration:float, channel:OS_AUDIO.CHANNEL) -> void:
 	track_data.file.loop = true
-	current_audio_stream_player.stream = track_data.file
-	current_audio_stream_player.play()
-	#current_audio_stream_player.volume_db = max_volumne - 5
 	
-	await U.tween_range(current_audio_stream_player.volume_db, max_volumne, duration, 
+	match channel:
+		OS_AUDIO.CHANNEL.MAIN:
+			AudioStreamPlayerMaster.stream = track_data.file
+			AudioStreamPlayerMaster.play()
+			current_audio_stream_player = AudioStreamPlayerMaster
+		
+		OS_AUDIO.CHANNEL.REVERB:
+			AudioStreamPlayerReverb.stream = track_data.file
+			AudioStreamPlayerReverb.play()
+			current_audio_stream_player = AudioStreamPlayerReverb
+	
+	current_audio_stream_player.volume_db = audio_stream_dict[current_audio_stream_player].max_db
+# --------------------------------------	
+
+# --------------------------------------	
+func stop() -> void:
+	if current_audio_stream_player.playing:
+		current_audio_stream_player.stop()
+# --------------------------------------		
+
+# --------------------------------------	
+func fade_in(duration:float = 0.3) -> void:
+	U.tween_range(current_audio_stream_player.volume_db, audio_stream_dict[current_audio_stream_player].max_db, duration, 
 		func(val):
 			current_audio_stream_player.volume_db = val
 	).finished
-# --------------------------------------	
-
-
-# --------------------------------------	
-func stop_track() -> void:
-	current_audio_stream_player.stop()
-# --------------------------------------	
-
-# --------------------------------------	
-func fade_out(duration:float = 3.0, node:AudioStreamPlayer = current_audio_stream_player) -> void:
-	await U.tween_range(node.volume_db, -60, duration, 
+	
+func fade_out(duration:float = 3.0, and_stop:bool = true) -> void:
+	U.tween_range(current_audio_stream_player.volume_db, fade_out_db, duration, 
 		func(val):
-			node.volume_db = val
+			current_audio_stream_player.volume_db = val
 	).finished
-	stop_track()
+	
+	if and_stop:
+		stop()
 # --------------------------------------	
 
 # --------------------------------------	
-func is_already_playing() -> bool:
-	return current_audio_stream_player.playing
+func get_current_audio_stream_player() -> AudioStreamPlayer:
+	return current_audio_stream_player
 # --------------------------------------	
+
+## --------------------------------------	
+#func is_already_playing(channel) -> bool:
+	#return current_audio_stream_player.playing
+## --------------------------------------	
 
 # --------------------------------------		
-var previously_selected:int = -1
+var previous_track:int = -1
 func on_music_data_update(music_data:Dictionary) -> void:	
-	if previously_selected != music_data.selected:
-		previously_selected = music_data.selected
+	if music_data.is_empty():
+		stop()
+		return
+	
+	if previous_track != music_data.track:
+		previous_track = music_data.track
 		
-		track_data = OS_AUDIO.track_data[0].list[music_data.selected]
-		# set to loop	
-		play_track()
+		# setup next track
+		track_data = OS_AUDIO.track_data[0].list[music_data.track]
+		
+		# set defaults
+		var channel:int = music_data.channel if music_data.has("channel") else OS_AUDIO.CHANNELS.MAIN
+		var fade_in_duration:float = music_data.fade_in_duration if music_data.has("fade_in_duration") else 0
+		var fade_out_duration:float = music_data.fade_out_duration if music_data.has("fade_out_duration") else 0.3
+		var loop:bool = music_data.loop if music_data.has("loop") else true
+		
+		# play
+		play_track(fade_in_duration, fade_out_duration, channel)
 
 # --------------------------------------		

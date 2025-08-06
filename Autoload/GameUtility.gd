@@ -431,6 +431,9 @@ func reset_room(use_location:Dictionary = current_location) -> bool:
 	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
 	
 	if confirm:	
+		var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
+		await WingRenderNode.destroy_room(current_location)
+		
 		RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
 
@@ -452,6 +455,8 @@ func cancel_construction(use_location:Dictionary = current_location) -> bool:
 	var confirm:bool = await create_modal("Cancel construction of %s?" % room_details.name, "Construction costs will be refunded.", room_details.img_src, costs)
 	
 	if confirm:	
+		var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
+		await WingRenderNode.construction_is_canceled(current_location)
 		RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
 
@@ -742,9 +747,9 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 
 	# update music
 	var previous_track:int = SUBSCRIBE.music_data.selected
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.SCP_INITIAL_CONTAINMENT,
-	}
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.SCP_INITIAL_CONTAINMENT,
+	#}
 	
 	# Check for initial breach event
 	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
@@ -776,9 +781,9 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	GameplayNode.restore_showing_state()	
 	
 	# then revert OS_AUDIO...
-	SUBSCRIBE.music_data = {
-		"selected": previous_track
-	}			
+	#SUBSCRIBE.music_data = {
+		#"selected": previous_track
+	#}			
 
 	# restore previous emergency mode
 	await U.set_timeout(1.0)	
@@ -802,9 +807,9 @@ func trigger_breach_event(scp_ref:int) -> void:
 	)
 	
 	# open music player, no music selected
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
-	}
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
+	#}
 	
 	SUBSCRIBE.current_location = data.location
 	await U.set_timeout(1.0)
@@ -862,9 +867,9 @@ func trigger_containment_event(scp_ref:int) -> void:
 	)
 	
 	# open music player, no music selected
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.SCP_FINAL_CONTAINMENT,
-	}	
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.SCP_FINAL_CONTAINMENT,
+	#}	
 	
 	SUBSCRIBE.current_location = data.location
 	await U.set_timeout(1.0)

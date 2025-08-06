@@ -53,13 +53,6 @@ var use_location:Dictionary :
 		use_location = val
 		on_use_location_update()
 		
-
-var is_animating:bool = false : 
-	set(val):
-		if is_animating != val:
-			is_animating = val
-			on_is_animating_update()
-		
 # --------------------------------------------------------
 func _init() -> void:
 	GBL.register_node(REFS.WING_RENDER, self)	
@@ -77,41 +70,41 @@ func _exit_tree() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+func room_change_viewpoint(index:int, assigned_location:Dictionary, camera_viewpoint:CAMERA.VIEWPOINT) -> void:
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(index)	
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	RoomNode.camera_viewpoint = camera_viewpoint
+	
 func room_assign_designation(index:int, assigned_location:Dictionary) -> void:
 	if !is_node_ready(): return
 	var actual:int = index_to_room_lookup(index)	
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
 	RoomNode.assigned_location = {"floor": assigned_location.floor, "ring": assigned_location.ring, "room": index}
-		
-func room_is_activated(index:int) -> void:
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(index)	
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	RoomNode.set_under_construction(true)	
 
-func room_is_under_construction(index:int) -> void:
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(index)	
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	RoomNode.set_under_construction(true)	
-	
-func room_is_constructed(index:int) -> void:
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(index)	
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	RoomNode.set_build_room(true)
-	
-func room_is_destroyed(use_location:Dictionary) -> void:	
+func start_construction(use_location:Dictionary) -> void:	
 	if !is_node_ready(): return
 	var actual:int = index_to_room_lookup(use_location.room)
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	RoomNode.destroy_room()
+	await RoomNode.start_construction()
+	
+func complete_construction(use_location:Dictionary) -> void:	
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(use_location.room)
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	await RoomNode.complete_construction()
+	
+func destroy_room(use_location:Dictionary) -> void:	
+	if !is_node_ready(): return
+	var actual:int = index_to_room_lookup(use_location.room)
+	var RoomNode:Node3D = RoomContainer.get_child(actual)
+	await RoomNode.destroy_room()
 
 func construction_is_canceled(use_location:Dictionary) -> void:
 	if !is_node_ready(): return
 	var actual:int = index_to_room_lookup(use_location.room)
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	RoomNode.cancel_construction()	
+	await RoomNode.cancel_construction()	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -143,7 +136,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	purchased_facility_arr = new_val
 	if !is_node_ready() or purchased_facility_arr.is_empty():return
-	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
+	#U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 
 func on_use_location_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
@@ -172,6 +165,10 @@ var previous_camera_view:CAMERA.VIEWPOINT = -1
 func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 	if previous_camera_view != val:
 		previous_camera_view = val
+		
+		for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+			room_change_viewpoint(i, use_location, val)		
+		
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
@@ -371,13 +368,6 @@ func update_billboards() -> void:
 	RightBillboardLabel.text = right_billboard_text
 # --------------------------------------------------------
 
-# --------------------------------------------------------
-func on_is_animating_update() -> void:
-	if !is_node_ready():return
-	for node in RoomContainer.get_children():
-		node.skip_animation = is_animating	
-# --------------------------------------------------------	
-
 # --------------------------------------------------------	
 func on_highlight_rooms_update() -> void:
 	if !is_node_ready():return
@@ -399,22 +389,17 @@ func on_highlight_rooms_update() -> void:
 func update_room_buildings() -> void:
 	if use_location.is_empty():return
 
-	var empty_rooms_list:Array = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+	#var empty_rooms_list:Array = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+	#
+	#for item in purchased_facility_arr:
+		#if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
+			#empty_rooms_list.erase(item.location.room)
+			#
+			#if item.under_construction:
+				#room_is_under_construction(item.location.room)
+			#else:	
+				#room_is_constructed(item.location.room)	
 	
-	for item in purchased_facility_arr:
-		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
-			empty_rooms_list.erase(item.location.room)
-			
-			if item.under_construction:
-				room_is_under_construction(item.location.room)
-			else:	
-				room_is_constructed(item.location.room)	
-	
-	for index in empty_rooms_list:
-		var actual:int = index_to_room_lookup(index)	
-		var RoomNode:Node3D = RoomContainer.get_child(actual)
-		RoomNode.reset_to_default()
-		
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -444,9 +429,6 @@ func _process(delta: float) -> void:
 		Miasma.rotate_y(0.005)
 		MiasmaFog.material.density = 0.1 + (((sin(time * 1.5) + 1.0) * 0.5) * 0.1)
 	
-	is_animating =  GBL.has_animation_in_queue()
-
-
 	var val: float = sin(time * 1.5) * (8.5 + 7.5) # -1 to 16
 	if val <= 0 and toggle_ready:
 		toggle_color = !toggle_color
@@ -454,7 +436,7 @@ func _process(delta: float) -> void:
 	elif val > 0:
 		toggle_ready = true
 	
-	var fluct_val:float = clampf(light_energy_val + (val * 0.1 if toggle_color else 0.1), 0.3, 1.1) 
+	var fluct_val:float = clampf(light_energy_val + (val * 0.1 if toggle_color else 0.1), 0.6, 1.1) 
 	WorldLight.light_energy = fluct_val
 	if emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
 		EmergencyFlareLight.light_energy = val

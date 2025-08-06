@@ -57,7 +57,7 @@ func on_reveal_update() -> void:
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
 	if !is_node_ready():return	
-	print(scp_data)
+	#print(scp_data)
 		#
 	#var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 	#var currency_list:Array = []

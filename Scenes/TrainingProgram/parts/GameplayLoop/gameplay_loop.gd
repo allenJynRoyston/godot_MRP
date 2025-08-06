@@ -427,7 +427,6 @@ func start_new_game() -> void:
 	await U.tick()
 	GAME_UTIL.disable_taskbar(true)	
 	
-
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	var duration:float = 0.02 if skip_progress_screen else 0.5
@@ -452,9 +451,7 @@ func start_new_game() -> void:
 	await SetupContainer.start()	
 	
 	# start game music
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.GAME_TRACK_ONE,
-	}		
+	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_ONE)
 	
 	# 1.) loading game data config
 	parse_restore_data()
@@ -906,8 +903,8 @@ func on_current_phase_update() -> void:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
 			
-			if chapter.has("tutorial") and is_tutorial:
-				await GAME_UTIL.play_tutorial(chapter)
+			#if chapter.has("tutorial") and is_tutorial:
+				#await GAME_UTIL.play_tutorial(chapter)
 				
 			# show objectives
 			if !DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_OBJECTIVES):
@@ -948,12 +945,15 @@ func on_current_phase_update() -> void:
 			progress_data.day += 1
 			
 			# first, get list of rooms that will be completed in order of floor -> ring -> room
-			var construction_complete:Array = []
+			var construction_complete:Dictionary = {}
 			var previous_ring:int = -1
 			var previous_floor:int = -1
+			var build_count:int = 0
 			
 			for floor_index in room_config.floor.size():		
+				var floor_list:Dictionary = {}
 				for ring_index in room_config.floor[floor_index].ring.size():
+					var ring_list:Array = []
 					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
 						var filtered:Array = purchased_facility_arr.filter(func(x):
 							if x.location.floor == floor_index and x.location.ring == ring_index and x.location.room == room_index:
@@ -961,31 +961,44 @@ func on_current_phase_update() -> void:
 								return floor_base_state.is_powered and x.under_construction
 							return false
 						)
-						construction_complete += filtered
+						if !filtered.is_empty():
+							ring_list.push_back(filtered[0])
+							build_count += 1
+					floor_list[ring_index] = ring_list
+				construction_complete[floor_index] = floor_list
+
 									
 			# jump to each room...
-			if !construction_complete.is_empty():			
+			if build_count > 0:
 				# change to wing view
 				if camera_settings.type != CAMERA.TYPE.WING_SELECT:
 					camera_settings.type = CAMERA.TYPE.WING_SELECT
 					SUBSCRIBE.camera_settings = camera_settings
 					await U.set_timeout(0.3)
 				
-				# jumpt to room and show the build
-				for item in construction_complete:
-					previous_floor = current_location.floor
-					previous_ring = current_location.ring
-					SUBSCRIBE.current_location = item.location
-					# at a minimum it has to be above 0.3
-					await U.set_timeout(0.5)
-					
-					# ... then change it's state
-					ROOM_UTIL.finish_construction(item.location)
+				# jump to room and show the build
+				for floor_index in construction_complete:
+					var ring_list:Dictionary = construction_complete[floor_index]
+					if !ring_list.is_empty():
+						for ring_index in ring_list:
+							var room_list:Array = ring_list[ring_index]
+							if !room_list.is_empty():
+								# first, move camera to this floor and ring
+								previous_floor = current_location.floor
+								previous_ring = current_location.ring
+								var first_item:Dictionary = room_list[0]
+								SUBSCRIBE.current_location = {"floor": first_item.location.floor, "ring": first_item.location.ring, "room": 4}
+								await U.set_timeout(0.2)
+								# wait for transistion...
+								
+								# now update the state of all the rooms on that ring at once
+								for item in room_list:
+									await ROOM_UTIL.finish_construction(item.location)
+								
+								# wait for animation
+								await U.set_timeout(0.3)
+						
 				
-					await U.set_timeout(0.7)
-					
-				await U.set_timeout(0.7)
-
 			
 			# reduce cooldown in abilities
 			for floor_index in room_config.floor.size():		
@@ -1013,7 +1026,7 @@ func on_current_phase_update() -> void:
 			# CHECK FOR SCP BREACH EVENTS
 			var event_breach_refs:Array = []
 			var event_final_containment:Array = []
-			var previous_track:OS_AUDIO.TRACK = SUBSCRIBE.music_data.selected
+			#var previous_track:OS_AUDIO.TRACK = SUBSCRIBE.music_data.selected
 
 			for ref in scp_data:
 				var data:Dictionary = scp_data[ref]
@@ -1059,9 +1072,9 @@ func on_current_phase_update() -> void:
 						SUBSCRIBE.base_states = base_states
 						
 						# open music player, no music selected
-						SUBSCRIBE.music_data = {
-							"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
-						}
+						#SUBSCRIBE.music_data = {
+							#"selected": OS_AUDIO.TRACK.SCP_CONTAINMENT_BREACH,
+						#}
 						
 						await U.set_timeout(1.5)
 					
@@ -1079,9 +1092,9 @@ func on_current_phase_update() -> void:
 					SUBSCRIBE.base_states = base_states
 			
 			# restore previous music and location
-			SUBSCRIBE.music_data = {
-				"selected": previous_track,
-			}
+			#SUBSCRIBE.music_data = {
+				#"selected": previous_track,
+			#}
 			
 			# next
 			current_phase = PHASE.CONCLUDE

@@ -85,7 +85,7 @@ var initalized_at_fullscreen:bool
 var game_resolution:Vector2 : 
 	set(val):
 		game_resolution = val
-		print("Resolution set to %s." % game_resolution)
+		print("Resolution set to %s." % game_resolution)		
 		
 var fullscreen_nodes:Array[Control] = []
 func subscribe_to_fullscreen(node:Control) -> void:

@@ -24,9 +24,9 @@ func start(fast_load:bool) -> void:
 	await LoadingComponent.start(fast_load)
 	await TransitionScreen.start(0.7, true)
 
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.OS_TRACK_ONE
-	}
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.OS_TRACK_ONE
+	#}
 		
 	# start app
 	StoreComponent.start()

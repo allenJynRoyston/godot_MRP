@@ -18,6 +18,7 @@ var story_progress:Dictionary = {}
 
 var original_fov:float
 var original_rotation_degrees:Vector3
+var finished_start:bool = false
 var fast_animation:bool = false
 var freeze_input:bool = false
 
@@ -118,6 +119,7 @@ func start(use_fast_animation:bool = false) -> void:
 		
 	BtnControls.reveal(true)		
 	BtnControls.hide_a_btn = false
+	finished_start = true
 
 func end() -> void:
 	hide()
@@ -135,9 +137,9 @@ func play_introduction_sequence() -> void:
 	await U.set_timeout(0.5)
 	
 	# play music...
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.OS_STARTUP_SFX,
-	}
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.OS_STARTUP_SFX,
+	#}
 	
 	# animte fog scene
 	await U.tween_node_property(FogNode, "material:density", 0.7, 5, 0, Tween.TRANS_SINE )	
@@ -334,6 +336,8 @@ func zoom_into_screen(state:bool, zoom_in_val:int = 1) -> void:
 
 # ---------------------------------------------
 func switch_to() -> void:	
+	if !finished_start:
+		await start()
 	await zoom_into_screen(false)	
 	BtnControls.reveal(true)
 # ---------------------------------------------

@@ -112,7 +112,7 @@ viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 [sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jx7vp"]
 
 [sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
-density = 0.015
+density = 0.646
 albedo = Color(0, 0, 0, 1)
 emission = Color(1, 1, 1, 1)
 edge_fade = 3.42967
@@ -518,7 +518,7 @@ spin_speed = 0.05
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="FogVolume" type="FogVolume" parent="MeshRender/Miasma"]
-transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 1.05965, -13.4106, -1.05963)
+transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 0.438647, -9.93109, -0.970599)
 size = Vector3(500, 20, 500)
 material = SubResource("FogMaterial_8vjbp")
 

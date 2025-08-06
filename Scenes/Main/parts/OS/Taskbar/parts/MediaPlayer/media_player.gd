@@ -61,9 +61,9 @@ func on_pause() -> void:
 func on_next() -> void:
 	if track_data.is_empty():return
 	selected_track = (selected_track + 1) % track_data[0].size()
-	SUBSCRIBE.music_data = {
-		"selected": selected_track,
-	}
+	#SUBSCRIBE.music_data = {
+		#"track": selected_track,
+	#}
 # --------------------------------------	
 
 ## --------------------------------------	
@@ -73,24 +73,24 @@ func on_next() -> void:
 
 # --------------------------------------	
 func is_already_playing() -> bool:
-	return GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing
+	return GBL.find_node(REFS.AUDIO).get_current_audio_stream_player().playing
 # --------------------------------------	
 
 # --------------------------------------	
 func on_pause_or_play_update() -> void:
 	if !is_node_ready():return
-	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !GBL.find_node(REFS.AUDIO).current_audio_stream_player.playing else SVGS.TYPE.MEDIA_PAUSE
+	PlayPauseBtn.icon = SVGS.TYPE.MEDIA_PLAY if !GBL.find_node(REFS.AUDIO).get_current_audio_stream_player().playing else SVGS.TYPE.MEDIA_PAUSE
 # --------------------------------------	
 
 # --------------------------------------	
 func on_music_data_update(new_val:Dictionary) -> void:
-	selected_track = new_val.selected
+	selected_track = -1 if new_val.is_empty() else new_val.track 
 	update_track_data()	
 # --------------------------------------	
 
 # --------------------------------------	
 func update_track_data() -> void:
-	if selected_track == null:return	
+	if selected_track == -1:return	
 	var track_data:Dictionary = track_data[0].list[selected_track]
 	var details:Dictionary = track_data.details if "details" in track_data else {"name": "No details...", "author": "unknown"}
 	TrackNameLabel.text = "%s by %s" % [details.name, details.author]
@@ -114,7 +114,7 @@ func check_track_scroll() -> void:
 func on_process_update(delta: float) -> void:
 	super.on_process_update(delta)
 	
-	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).current_audio_stream_player
+	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).get_current_audio_stream_player()
 	spectrum = AudioServer.get_bus_effect_instance(0, 0)
 
 	if spectrum != null and current_audio_stream_player.playing:

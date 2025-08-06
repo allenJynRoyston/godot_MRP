@@ -336,9 +336,7 @@ func save_screenshot(filename: String) -> String:
 		dir.make_dir(dir_path)	
 	var filepath:String = str(dir_path, "/", filename, save_config.image_ext)
 	viewport_capture.save_png(filepath)
-	
-	print("screenshot saved to: ", OS.get_user_data_dir() )
-	
+
 	return filepath
 # ---------------------------------
 

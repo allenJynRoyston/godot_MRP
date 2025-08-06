@@ -93,13 +93,13 @@ func _ready() -> void:
 		match selected_node:
 			PlayBtn:
 				if SUBSCRIBE.music_data.is_empty():
-					SUBSCRIBE.music_data = {"selected": 0}
+					SUBSCRIBE.music_data = {"track": 0}
 				else:
 					MediaPlayer.on_pause()
 				update_media_player.call()
 			NextBtn:
 				if SUBSCRIBE.music_data.is_empty():
-					SUBSCRIBE.music_data = {"selected": 0}
+					SUBSCRIBE.music_data = {"track": 0}
 				else:				
 					MediaPlayer.on_next()
 			DesktopBtn:

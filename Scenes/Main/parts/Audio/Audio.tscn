@@ -19,4 +19,3 @@ autoplay = true
 bus = &"Reverb"
 
 [node name="AudioStreamPlayerSFX" type="AudioStreamPlayer" parent="."]
-autoplay = true

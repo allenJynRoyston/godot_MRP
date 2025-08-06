@@ -19,8 +19,6 @@ extends Control
 @onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
 @onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/SpriteA
 @onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/SpriteB
-#@onready var WingSpriteBSubviewport:SubViewport = $SubViewport/Rendering/WingScene/SpriteB/SubViewport
-#@onready var WingTransitionFloor:Control = $SubViewport/Rendering/WingScene/SpriteB/SubViewport2/WingTransitionFloor
 
 @onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
 @onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
@@ -67,7 +65,6 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)	
 	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
-
 	
 func _ready() -> void:
 	MainViewportTexture.material = main_viewport_texture_material_duplicate
@@ -97,13 +94,11 @@ func enable_wing(state:bool) -> void:
 	if state:
 		WingScene.show()
 		WingCurrentFloor.show()
-		#WingTransitionFloor.show()
 		WingCurrentFloor.set_process(true)
 		WingCamera.make_current()
 	else:
 		WingScene.hide()
 		WingCurrentFloor.hide()
-		#WingTransitionFloor.hide()
 		WingCurrentFloor.set_process(false)
 # ------------------------------------------------
 
@@ -199,8 +194,6 @@ func check_for_conditions() -> void:
 	var is_overheated:bool = ring_config_data.is_overheated
 	var is_ventilated:bool = ring_config_data.is_ventilated
 
-	print("is_overheated: ", is_overheated)
-	print("is_ventilated: ", is_ventilated)
 	if is_overheated:
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)		
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
@@ -211,10 +204,8 @@ func check_for_conditions() -> void:
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", true)
 		return
 	
-	print(main_viewport_texture_material_duplicate)
 	main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)
 	main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
-
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -222,9 +213,6 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
 		
-	#if previous_camera_type == camera_settings.type:
-		#previous_camera_type = camera_settings.type
-
 	match camera_settings.type:
 		# --------------------
 		CAMERA.TYPE.FLOOR_SELECT:			
@@ -254,6 +242,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			enable_overview(false)
 			enable_wing(false)
 			set_shader_strength(0)
+# ------------------------------------------------
 
 # ------------------------------------------------
 func set_shader_strength(strength:int) -> void:

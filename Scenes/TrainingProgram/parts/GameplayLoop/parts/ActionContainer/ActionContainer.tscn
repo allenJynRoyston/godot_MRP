@@ -167,6 +167,7 @@ metadata/_edit_group_ = true
 [node name="ModulesCard" parent="ModulesAndPrograms/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
 layout_mode = 2
 size_flags_horizontal = 8
+size_flags_vertical = 0
 modules_only = true
 
 [node name="SummaryControl" type="Control" parent="."]
@@ -188,14 +189,16 @@ custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 250
+theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 metadata/_edit_group_ = true
 
 [node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
 visible = false

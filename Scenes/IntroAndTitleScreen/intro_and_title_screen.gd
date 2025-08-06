@@ -104,9 +104,9 @@ func on_current_mode_update() -> void:
 				TitleSplash.start()
 				await TitleSplash.on_complete	
 				TransitionScreen.start(2.0, true)
-				SUBSCRIBE.music_data = {
-					"selected": OS_AUDIO.TRACK.INTRO,
-				}					
+				
+				OS_AUDIO.play(OS_AUDIO.TRACK.INTRO, OS_AUDIO.CHANNEL.MAIN)
+
 				await U.set_timeout(3.0)	
 			current_mode = MODE.DISPLAY_LOGO	
 		# ---------

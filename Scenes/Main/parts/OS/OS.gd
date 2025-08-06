@@ -462,9 +462,8 @@ func start() -> void:
 		open_app(app.details)
 	
 	await reveal_logo(true, 0.5)
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.OS_TRACK_ONE if true else OS_AUDIO.TRACK.OS_TRACK_TWO,
-	}
+
+	OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 	
 
 	reveal_logo(false, 3.0)

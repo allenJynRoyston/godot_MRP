@@ -39,9 +39,10 @@ func on_data_update() -> void:
 				"render_if": func(_details:Dictionary) -> bool:
 					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
-					GBL.music_data = {
-						"selected": index,
-					},
+					pass,
+					#GBL.music_data = {
+						#"selected": index,
+					#},
 			})
 
 			all_tracks.push_back({
@@ -54,9 +55,10 @@ func on_data_update() -> void:
 				"render_if": func(_details:Dictionary) -> bool:
 					return item.unlocked.call(item.details),
 				"onClick": func(_data:Dictionary):
-					GBL.music_data = {
-						"selected": index,
-					},
+					pass,
+					#GBL.music_data = {
+						#"selected": index,
+					#},
 			})
 
 		list_data.push_back({

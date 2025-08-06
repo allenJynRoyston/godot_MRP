@@ -283,6 +283,10 @@ func _exit_tree() -> void:
 
 # -----------------------------------	
 func _ready() -> void:
+	# print important stuff
+	if !is_production_build:
+		print( "Save files located at: ", OS.get_user_data_dir() )
+	
 	# register node
 	GBL.register_node(REFS.MAIN_ACTIVE_VIEWPORT, ActiveSubviewport)
 	GBL.register_node(REFS.MAIN_ARTICLE_VIEWPORT, ArticleViewport)
@@ -476,7 +480,8 @@ func toggle_fullscreen() -> void:
 func on_note_update(new_val:Dictionary) -> void:
 	if !is_node_ready():return
 	note = new_val
-	print(note)
+	if !note.is_empty():
+		print("NOTE: ", note)
 	has_note = !note.is_empty()
 	NoteBtn.modulate.a = 1 if has_note else 0.2
 # -----------------------------------	
@@ -567,9 +572,8 @@ func on_current_layer_update() -> void:
 				node.hide()
 							
 			# update audio
-			if GBL.find_node(REFS.AUDIO) != null:
-				GBL.find_node(REFS.AUDIO).change_bus('Master')
-				
+			OS_AUDIO.change_bus(OS_AUDIO.CHANNEL.MAIN)
+
 		# -----------
 		LAYER.CELLBLOCK_LAYER:
 			# activate
@@ -577,16 +581,14 @@ func on_current_layer_update() -> void:
 			CellScene.set_physics_process(true)
 			CellScene.switch_to()
 			#MousePointer.hide()
-			
+
 			# switch nodes
 			switch_to_node(CellTextureRect)
 			for node in [ OsScene, CellScene, ArticleScene]:
 				node.show()
 						
-								
 			# update audio
-			if GBL.find_node(REFS.AUDIO) != null:
-				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
+			OS_AUDIO.change_bus(OS_AUDIO.CHANNEL.REVERB)
 
 		# -----------
 		LAYER.SCP_LAYER:
@@ -603,8 +605,7 @@ func on_current_layer_update() -> void:
 				node.hide()	
 				
 			# update audio
-			if GBL.find_node(REFS.AUDIO) != null:
-				GBL.find_node(REFS.AUDIO).change_bus('Reverb')
+			# OS_AUDIO.change_bus_channel(OS_AUDIO.CHANNEL.REVERB)
 
 # -----------------------------------	
 

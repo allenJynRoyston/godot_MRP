@@ -1,4 +1,9 @@
-extends Node
+extends SubscribeWrapper
+
+enum CHANNEL {
+	MAIN,
+	REVERB
+}
 
 enum TRACK {
 	# -------------------- 
@@ -170,3 +175,25 @@ var track_data:Array = [
 		]
 	}
 ]
+
+func play(track:TRACK, channel:OS_AUDIO.CHANNEL = OS_AUDIO.CHANNEL.MAIN) -> void:
+	SUBSCRIBE.music_data = {
+		"track": track,
+		"channel": channel
+	}
+
+func stop() -> void:
+	GBL.find_node(REFS.AUDIO).stop()
+
+func change_bus(change_to:OS_AUDIO.CHANNEL) -> void:
+	GBL.find_node(REFS.AUDIO).change_bus(change_to)
+
+func fade_out(channel:OS_AUDIO.CHANNEL, and_stop_after:bool = false) -> void:
+	GBL.find_node(REFS.AUDIO).fade_out(channel, and_stop_after)
+	
+func fade_in(channel:OS_AUDIO.CHANNEL) -> void:
+	GBL.find_node(REFS.AUDIO).fade_out(channel)
+
+#func change_bus_channel(channel:OS_AUDIO.CHANNEL, stop_current_track:bool = false) -> void:
+	#if GBL.find_node(REFS.AUDIO) != null:
+		#GBL.find_node(REFS.AUDIO).change_bus(channel, stop_current_track)

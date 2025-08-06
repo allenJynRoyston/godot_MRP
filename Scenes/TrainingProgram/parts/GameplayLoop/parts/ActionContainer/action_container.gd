@@ -1388,7 +1388,6 @@ func check_btn_states() -> void:
 				if is_under_construction:
 					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
 					if made_changes:
-						WingRenderNode.construction_is_canceled(current_location)
 						await U.tick()
 						on_current_location_update()
 					DesignControls.reveal(true)
@@ -1404,7 +1403,6 @@ func check_btn_states() -> void:
 				#...else destroy room
 				var confirm:bool = await GAME_UTIL.reset_room(current_location)
 				if confirm:
-					WingRenderNode.room_is_destroyed(current_location)
 					await U.tick()
 					on_current_location_update()
 				DesignControls.reveal(true)

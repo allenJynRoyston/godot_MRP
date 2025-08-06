@@ -546,6 +546,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="ModuleContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = -3
@@ -573,6 +574,7 @@ size_flags_vertical = 3
 ability_type = 1
 
 [node name="ProgramContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = -3
@@ -599,6 +601,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="ContainmentContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = -3

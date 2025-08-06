@@ -36,9 +36,9 @@ func start() -> void:
 	var savedata:Dictionary = quicksave_data if !quicksave_data.is_empty() else {}
 
 	# play music
-	SUBSCRIBE.music_data = {
-		"selected": OS_AUDIO.TRACK.GAME_MAIN_MENU,
-	}	
+	#SUBSCRIBE.music_data = {
+		#"selected": OS_AUDIO.TRACK.GAME_MAIN_MENU,
+	#}	
 
 	# ... DEBUG, JUMP STRAIGHT TO GAME WITH MOST CURRENT QUICKSAVE, 
 	if DEBUG.get_val(DEBUG.APP_SKIP_TITLESCREEN):

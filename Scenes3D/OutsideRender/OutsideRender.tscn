@@ -70,10 +70,7 @@ size = Vector2(0.02, 0.02)
 [sub_resource type="NoiseTexture3D" id="NoiseTexture3D_bqpsx"]
 
 [sub_resource type="FogMaterial" id="FogMaterial_yyocm"]
-density = 0.2
-albedo = Color(0.83662, 0.302243, 5.77569e-07, 1)
-emission = Color(0.577008, 0.577008, 0.577008, 1)
-edge_fade = 0.131951
+density = 0.0871
 density_texture = SubResource("NoiseTexture3D_bqpsx")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_rvrtn"]
@@ -116,17 +113,16 @@ far = 455.57
 [node name="DustParticles" type="GPUParticles3D" parent="Node3D/Camera3D"]
 transform = Transform3D(0.999868, 0, -0.0162481, 0, 1, 0, 0.0162481, 0, 0.999868, -0.0830426, 0, -1.69598)
 gi_mode = 0
-amount = 10000
+amount = 7000
 speed_scale = 0.1
 explosiveness = 0.5
-randomness = 1.0
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_yyocm")
 draw_pass_1 = SubResource("QuadMesh_lhit1")
 
 [node name="FogVolume" type="FogVolume" parent="Node3D"]
-transform = Transform3D(-0.841275, 0, 0.540607, 0, 1, 0, -0.540607, 0, -0.841275, -6.93915, -3.06923, -4.38443)
-size = Vector3(400, 10, 400)
+transform = Transform3D(-0.841275, 0, 0.540607, 0, 1, 0, -0.540607, 0, -0.841275, -99.8133, -10.9624, -48.5647)
+size = Vector3(400, 30, 400)
 material = SubResource("FogMaterial_yyocm")
 script = ExtResource("3_sqf7y")
 
@@ -204,17 +200,18 @@ omni_range = 45.171
 omni_attenuation = -0.573
 
 [node name="CustomSpotlight" parent="Node3D/MeshInstance3D2" instance=ExtResource("2_iu2be")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.769, 1.29222, 1.92695)
-godray_color = Color(0.888751, 0.977465, 0.401527, 1)
-godray_energy = 4.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.02318, 6.17719, 13.3615)
+godray_color = Color(0.837444, 0.716164, 0.957463, 1)
+godray_energy = 5.0
 spot_range = 30.0
 spot_energy = 5.0
-omni_range = 10.0
+omni_range = 25.0
+disable_reverse_shadow = true
 
 [node name="Sirens" parent="Node3D" instance=ExtResource("4_sqf7y")]
-transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, -36.3368, 6.56622, -30.1381)
-fast_speed = 8.0
-slow_speed = -4.0
+transform = Transform3D(0.934702, 0, -0.355433, 0, 1, 0, 0.355433, 0, 0.934702, 17.2325, 4.13826, -33.5349)
+fast_speed = 6.0
+slow_speed = -3.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.76729, -41.4409)

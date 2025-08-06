@@ -17,6 +17,7 @@ const login_arr:Array[String] = [
 signal is_complete
 
 func start() -> void:
+	OS_AUDIO.stop()
 	show()	
 	await U.set_timeout(0.5)
 

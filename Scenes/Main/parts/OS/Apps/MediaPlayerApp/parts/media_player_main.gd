@@ -56,9 +56,9 @@ func _ready() -> void:
 		MediaPlayerNode.on_pause()
 		
 		# open music player, no music selected
-		SUBSCRIBE.music_data = {
-			"selected": track_ref
-		}
+		#SUBSCRIBE.music_data = {
+			#"selected": track_ref
+		#}
 
 
 func start() -> void:

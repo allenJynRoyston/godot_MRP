@@ -15,6 +15,8 @@ var ref_data:Dictionary = {
 		"is_locked": true
 	}
 }
+
+
 func use(ref:REF) -> void:
 	var note_data:Dictionary = ref_data[ref]	
 	note_data.screenshot = FS.save_screenshot(str("note_", ref))
