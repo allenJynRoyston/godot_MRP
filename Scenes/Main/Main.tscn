@@ -482,6 +482,7 @@ expand_mode = 1
 stretch_mode = 2
 
 [node name="Notes" type="PanelContainer" parent="NoteOverlay"]
+visible = false
 modulate = Color(3.1285e-06, 0.646691, 0.206366, 1)
 anchors_preset = 15
 anchor_right = 1.0
@@ -492,10 +493,10 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_18xdc")
 
 [node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes"]
 layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 120
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="NoteBtn" type="PanelContainer" parent="NoteOverlay/Notes/MarginContainer"]
 layout_mode = 2

@@ -532,7 +532,7 @@ spin_speed = 0.05
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="MoodFog" type="FogVolume" parent="MeshRender/Fog"]
-transform = Transform3D(-0.640013, 0.000834741, -0.759377, -0.000579491, 0.999999, 0.00158764, 0.759402, 0.00145619, -0.639994, 5.53789, -7.11326, -43.7845)
+transform = Transform3D(-0.640013, 0.000834741, -0.759377, -0.000579491, 0.999999, 0.00158764, 0.759402, 0.00145619, -0.639994, -17.0996, -7.21848, 20.2894)
 size = Vector3(300, 50, 300)
 material = SubResource("FogMaterial_g7dei")
 script = ExtResource("9_ie5r3")
