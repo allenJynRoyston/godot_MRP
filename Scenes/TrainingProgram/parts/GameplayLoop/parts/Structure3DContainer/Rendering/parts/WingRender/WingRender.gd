@@ -3,8 +3,6 @@ extends Node3D
 @onready var SceneCamera:Camera3D = $Camera3D
 @onready var MeshRender:Node3D = $MeshRender
 @onready var Laser:SpotLight3D = $MeshRender/Laser
-@onready var Miasma:Node3D = $MeshRender/Miasma
-@onready var MiasmaFog:FogVolume = $MeshRender/Miasma/FogVolume
 @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 
 @onready var RoomContainer:Node3D = $MeshRender/Rooms
@@ -12,6 +10,10 @@ extends Node3D
 
 @onready var LeftBillbordLabel:Label3D = $MeshRender/Billboards/Left/LeftWallLabel
 @onready var RightBillboardLabel:Label3D = $MeshRender/Billboards/Right/RightWallLabel
+
+@onready var Fog:Node3D = $MeshRender/Fog
+@onready var MiasmaFog:FogVolume = $MeshRender/Fog/MiasmaFog
+@onready var MoodFog:FogVolume = $MeshRender/Fog/MoodFog
 
 @onready var WorldLight:DirectionalLight3D = $MeshRender/Lighting/WorldLight
 @onready var BaseLights:Node3D = $MeshRender/Lighting/BaseLights
@@ -176,27 +178,39 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				BillboardLights.hide()
 				BaseLights.hide()
 				CautionLights.hide()
+				MeshSelector.show()
 				
 				update_camera_size(180)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
+			
+			# ---------------------- 
+			CAMERA.VIEWPOINT.DISTANCE:
+				Laser.show()
+				MeshSelector.show()
+				update_room_lighting()
 				
+				update_camera_size(250)
+				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 50, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
+				MeshSelector.hide()
 				update_room_lighting()
 				
 				update_camera_size(145)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(6, 67, -15), 0.3, 0, Tween.TRANS_SINE)
-				
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.2, 67, -15), 0.3, 0, Tween.TRANS_SINE)
+			
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_FAR:
 				Laser.show()
+				MeshSelector.show()
 				update_room_lighting()
 				update_camera_size(165)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 67, -15), 0.3, 0, Tween.TRANS_SINE)				
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.5, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 
 
 func update_camera_size(size:int) -> void:
@@ -225,11 +239,13 @@ func update_room_lighting() -> void:
 	var overheated_color:Color = Color.RED
 	var miasma_light_color:Color = Color.MEDIUM_PURPLE
 	var lockdown_light_color:Color = Color.ORANGE_RED	
-	var caution_light_color:Color = Color.MEDIUM_PURPLE
+	var caution_light_color:Color = Color.MEDIUM_VIOLET_RED
 	var warning_light_color:Color = Color.ORANGE
 	var altered:bool = false
 	
-	MiasmaFog.show() if !is_ventilated else MiasmaFog.hide()
+	MiasmaFog.hide()
+	MoodFog.hide()
+	
 	
 	EmergencyFlareLight.light_energy = 0
 	for light in lights:
@@ -249,6 +265,7 @@ func update_room_lighting() -> void:
 		WorldLight.light_color = miasma_light_color
 		WorldLight.light_energy = 0.5
 		BillboardLights.show()		
+		MiasmaFog.show()
 		altered = true
 	
 	# is overheated
@@ -263,6 +280,7 @@ func update_room_lighting() -> void:
 		WorldLight.light_color = default_world_light_color
 		WorldLight.light_energy = 0.15
 		BillboardLights.show()
+		MoodFog.show()
 		altered = true
 
 	if in_lockdown and !altered:
@@ -296,7 +314,7 @@ func update_room_lighting() -> void:
 				
 			ROOM.EMERGENCY_MODES.CAUTION:
 				WorldLight.light_color = caution_light_color
-				WorldLight.light_energy = 1.2	
+				WorldLight.light_energy = 1.8	
 				BaseLights.hide()
 				BillboardLights.show()
 				CautionLights.show()
@@ -381,6 +399,8 @@ func on_highlight_rooms_update() -> void:
 	for index in RoomContainer.get_child_count():
 		var actual:int = index_to_room_lookup(index)
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
+		if actual in actual_list:
+			print(actual)
 		RoomNode.is_selected = actual in actual_list
 			
 # --------------------------------------------------------		
@@ -425,10 +445,6 @@ func _process(delta: float) -> void:
 	if !is_node_ready():return
 	time += delta
 	
-	if !is_ventilated:
-		Miasma.rotate_y(0.005)
-		MiasmaFog.material.density = 0.1 + (((sin(time * 1.5) + 1.0) * 0.5) * 0.1)
-	
 	var val: float = sin(time * 1.5) * (8.5 + 7.5) # -1 to 16
 	if val <= 0 and toggle_ready:
 		toggle_color = !toggle_color
@@ -436,7 +452,7 @@ func _process(delta: float) -> void:
 	elif val > 0:
 		toggle_ready = true
 	
-	var fluct_val:float = clampf(light_energy_val + (val * 0.1 if toggle_color else 0.1), 0.6, 1.1) 
+	var fluct_val: float = 0.85 + 0.25 * sin(time * 0.5)  # Oscillates between 0.6 and 1.1
 	WorldLight.light_energy = fluct_val
 	if emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
 		EmergencyFlareLight.light_energy = val

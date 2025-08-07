@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_b50hp"]
 [ext_resource type="PackedScene" uid="uid://cyjoo87vkcy0s" path="res://Scenes/Main/parts/OS/Options/Options.tscn" id="3_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://tcw2mmfv8vct" path="res://Scenes/Main/parts/OS/Taskbar/Taskbar.tscn" id="3_v00j4"]
-[ext_resource type="Texture2D" uid="uid://q14ayb5jrajl" path="res://Media/images/wondertainment_logo.png" id="4_mpjfr"]
+[ext_resource type="Texture2D" uid="uid://daq44g31rg7ek" path="res://Media/images/logos/wondertainment_logo.png" id="4_mpjfr"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="5_b50hp"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="5_jsaqf"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="6_b7tym"]

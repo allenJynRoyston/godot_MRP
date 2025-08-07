@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://d33nsdab6tg1o"]
+[gd_scene load_steps=15 format=3 uid="uid://d33nsdab6tg1o"]
 
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="1_fauax"]
-[ext_resource type="Script" uid="uid://b4b20axee6byi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_card.gd" id="1_ykk6s"]
+[ext_resource type="Script" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/objective_card.gd" id="1_ykk6s"]
 [ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_bviwu"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_pjqb0"]
 [ext_resource type="PackedScene" uid="uid://bf3827l1mdr17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn" id="4_vnmty"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="5_mbx5t"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="5_pjqb0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pjqb0"]
@@ -14,17 +15,15 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rakey"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbx5t"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qy8ck"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rakey"]
 bg_color = Color(1, 1, 1, 0)
@@ -96,9 +95,9 @@ theme_override_constants/margin_bottom = 10
 [node name="CardDrawerTitle" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_bviwu")]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mbx5t")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qy8ck")
 is_small = true
-content = "Must be complete by day XX"
+content = ""
 title = ""
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle"]
@@ -114,8 +113,8 @@ icon_size = Vector2(30, 30)
 [node name="TitleLabel" type="Label" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "something"
-label_settings = ExtResource("5_pjqb0")
+text = "OBJECTIVES"
+label_settings = ExtResource("5_mbx5t")
 horizontal_alignment = 1
 
 [node name="NextIcon" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerTitle/HBoxContainer" instance=ExtResource("4_pjqb0")]

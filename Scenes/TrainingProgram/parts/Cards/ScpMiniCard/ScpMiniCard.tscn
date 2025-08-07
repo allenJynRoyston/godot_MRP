@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://mvalbebjx6bu"]
+[gd_scene load_steps=18 format=3 uid="uid://mvalbebjx6bu"]
 
 [ext_resource type="Script" uid="uid://tkqatcpj06gb" path="res://Scenes/TrainingProgram/parts/Cards/ScpMiniCard/scp_mini_card.gd" id="1_ca1ce"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_5lpm0"]
 [ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_n8iws"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_4vkgm"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="4_n8iws"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_20tj0"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_n8iws"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n8iws"]
 
@@ -20,14 +21,6 @@ viewport_path = NodePath("SubViewport")
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8iws"]
-bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 shadow_color = Color(0, 0, 0, 0.580392)
@@ -40,6 +33,23 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_saevx"]
+font = ExtResource("4_20tj0")
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_20tj0"]
+bg_color = Color(1, 0.745098, 0.380392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s6vk2"]
+bg_color = Color(1, 0.745098, 0.380392, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_uhka2"]
 font = ExtResource("4_4vkgm")
@@ -75,17 +85,17 @@ stretch_mode = 4
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(200, 175)
+size = Vector2i(175, 175)
 
 [node name="CardBody" parent="SubViewport" instance=ExtResource("2_5lpm0")]
-card_size = Vector2(200, 175)
+card_size = Vector2(175, 175)
 border_color = Color(0, 0, 0, 1)
 
 [node name="TextureRect" parent="SubViewport/CardBody" index="0"]
 texture = SubResource("ViewportTexture_n8iws")
 
 [node name="SubViewport" parent="SubViewport/CardBody" index="1"]
-size = Vector2i(200, 175)
+size = Vector2i(175, 175)
 
 [node name="CardBody" parent="SubViewport/CardBody/SubViewport/Control" index="0"]
 custom_minimum_size = Vector2(200, 175)
@@ -118,27 +128,65 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_uhka2")
 title = ""
 is_left_side = true
 
-[node name="Name" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="1" instance=ExtResource("4_n8iws")]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_n8iws")
-is_small = true
-title = ""
-
-[node name="InContainment" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="1"]
-visible = false
+[node name="StatusContainer" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xe1v1")
 
-[node name="CenterContainer" type="CenterContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/InContainment"]
+[node name="CenterContainer" type="CenterContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/StatusContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/InContainment/CenterContainer"]
+[node name="StatusLabel" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/StatusContainer/CenterContainer"]
+custom_minimum_size = Vector2(150, 1)
 layout_mode = 2
-text = "IN CONTAINMENT"
-label_settings = SubResource("LabelSettings_uhka2")
+text = "inactive"
+label_settings = SubResource("LabelSettings_saevx")
 horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
-[node name="MaxLevel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="2"]
+[node name="PanelContainer2" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_20tj0")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="NameLabel" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "designation"
+label_settings = ExtResource("4_n8iws")
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_s6vk2")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Nickname" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "Nickname"
+label_settings = ExtResource("4_n8iws")
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+
+[node name="MaxLevel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="1"]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xe1v1")

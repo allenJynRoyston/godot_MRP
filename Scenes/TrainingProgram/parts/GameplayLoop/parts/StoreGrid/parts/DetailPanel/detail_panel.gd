@@ -37,7 +37,7 @@ extends Control
 		disable_inputs = val
 		on_disable_inputs_update()
 		
-@export var disable_location:bool = false
+#@export var disable_location:bool = false
 
 @export var preview_mode:bool = false
 @export var show_cost:bool = false
@@ -178,7 +178,7 @@ func on_room_ref_update() -> void:
 	U.debounce(str(self.name, "_update_card_states"), update_card_states)		
 	
 func on_scp_ref_update() -> void:
-	if !is_node_ready() or (use_location.is_empty() and !disable_location):return
+	if !is_node_ready() or use_location.is_empty():return
 	U.debounce(str(self.name, "_update_card_states"), update_card_states)		
 	
 func on_researcher_uid_update() -> void:
@@ -209,11 +209,11 @@ func update_card_states() -> void:
 	RoomCard.show_research_cost = show_research_cost
 	RoomCard.show_cost = show_cost
 	RoomCard.preview_mode = preview_mode
-	RoomCard.use_location = use_location if !disable_location else {}	
+	RoomCard.use_location = use_location # if !disable_location else {}	
 	RoomCard.ref = room_ref
-		
-	ScpCard.use_location = use_location if !disable_location else {}
+	
 	ScpCard.ref = scp_ref
+	ScpCard.use_location = use_location
 	
 	ResearcherCard.uid = str(researcher_uid)
 

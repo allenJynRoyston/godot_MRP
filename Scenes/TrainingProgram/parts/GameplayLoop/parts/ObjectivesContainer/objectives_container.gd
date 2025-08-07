@@ -252,15 +252,15 @@ func on_objective_index_update() -> void:
 	ObjectiveCard.complete_by_day = current_objectives.complete_by_day
 	
 	if is_upcoming:
-		ObjectiveCard.title = "UPCOMING OBJECTIVES"
+		ObjectiveCard.title = "UPCOMING"
 		HintPanel.hide()
 
 	elif is_expired:
-		ObjectiveCard.title = "PREVIOUS OBJECTIVES"
+		ObjectiveCard.title = "PREVIOUS"
 		HintPanel.show()
 	
 	else:
-		ObjectiveCard.title = "OBJECTIVES"
+		ObjectiveCard.title = "CURRENT"
 		HintPanel.show()
 		
 	#await U.tick()

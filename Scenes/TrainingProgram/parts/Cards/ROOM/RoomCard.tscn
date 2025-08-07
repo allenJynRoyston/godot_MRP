@@ -29,6 +29,16 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6kgnm"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nu0ye"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
@@ -69,19 +79,9 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n77o5"]
-bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vjof"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2rkc"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n77o5"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -167,7 +167,7 @@ theme_override_constants/separation = 0
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6kgnm")
 content = "0"
 title = "LVL"
 border_color = Color(1, 0.74902, 0.2, 1)
@@ -175,7 +175,7 @@ border_color = Color(1, 0.74902, 0.2, 1)
 [node name="CardDrawerName" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_uk1cn")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nu0ye")
 is_small = true
 center_text = false
 title = ""
@@ -252,7 +252,7 @@ label_settings = ExtResource("8_f84t7")
 
 [node name="CardDrawerPersonnelCapacity" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/PersonnelCapacity" instance=ExtResource("11_6kgnm")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wvj30")
 
 [node name="EffectContainer" type="VBoxContainer" parent="CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="4"]
 visible = false
@@ -277,7 +277,7 @@ label_settings = ExtResource("8_f84t7")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_eqxk8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6vjof")
 is_small = true
 content = "Effect description"
 title = ""
@@ -325,7 +325,7 @@ label_settings = ExtResource("8_f84t7")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_n77o5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_eqxk8")
 is_small = true
 content = "PHYSICAL"
 title = ""
@@ -341,7 +341,7 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_b2rkc")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n77o5")
 is_small = true
 content = "-"
 title = "DESCRIPTION"

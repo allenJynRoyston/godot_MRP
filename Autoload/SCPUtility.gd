@@ -23,7 +23,7 @@ var SCP_TEMPLATE:Dictionary = {
 		#SCP.CONTAINMENT_TYPES.PHYSICAL
 	],
 	"days_until_contained": 10,
-	"breach_chance": 0,
+	"breach_chance": 30,
 	# -----------------------------------
 	
 	# ------------------------------------------
@@ -567,9 +567,10 @@ func passes_metric_check(ref:int, use_location:Dictionary) -> bool:
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------
-func get_breach_event_chance(ref:int, use_location:Dictionary, base_percentage:int = 80) -> int:
+func get_breach_event_chance(ref:int, use_location:Dictionary) -> int:
 	var scp_data:Dictionary = SCP_UTIL.return_data(ref)	
 	var room_data:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	var breach_chance:int = scp_data.breach_chance
 	
 	var requirements:Array = scp_data.containment_requirements
 	var containment_properties:Array = room_data.containment_properties
@@ -578,10 +579,11 @@ func get_breach_event_chance(ref:int, use_location:Dictionary, base_percentage:i
 		if requirement in containment_properties:
 			requirement_count += 1
 	
-	var percentage:float = (requirement_count * 1.0) / (scp_data.containment_requirements.size() * 1.0)
-	var chance_rate:int = roundi(base_percentage * percentage)
-
-	return 100 - chance_rate
+	var percentage:float = (requirement_count * 1.0 / requirements.size() * 1.0) if requirements.size() > 0 else 0.5
+	var containment_rate:float = (breach_chance * 1.0) * percentage	
+	var success_rate:int = roundi(breach_chance - containment_rate)
+	
+	return success_rate + 10
 # ------------------------------------------------------------------------------
 
 
@@ -688,6 +690,10 @@ func get_containment_type_str(types_arr:Array) -> String:
 	return str
 # -----------------------------------------------------------
 
+# -----------------------------------------------------------
+func is_scp_in_containment(scp_details:Dictionary) -> bool:
+	return scp_details.ref in scp_data
+# -----------------------------------------------------------	
 
 # ---------------------------------------------	FOR EVENTS
 #enum OPTION {CURRENCY}

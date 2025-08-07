@@ -107,6 +107,7 @@ texture = SubResource("ViewportTexture_0nplc")
 layout_mode = 1
 
 [node name="ControllerOverlay" parent="." instance=ExtResource("4_kgjio")]
+visible = false
 layout_mode = 1
 show_directional = true
 

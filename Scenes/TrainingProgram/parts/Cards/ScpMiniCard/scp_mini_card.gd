@@ -3,10 +3,12 @@ extends MouseInteractions
 @onready var CardBody:Control = $SubViewport/CardBody
 @onready var Nametag:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/Name
 @onready var ScpImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-#@onready var ScpName:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpName
-#@onready var ScpEffect:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/ScpEffect
-@onready var InContainment:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/InContainment
-@onready var MaxLevel:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/MaxLevel
+@onready var NameLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer2/MarginContainer/NameLabel
+@onready var NicknameLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/PanelContainer/MarginContainer/Nickname
+
+@onready var StatusContainer:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/StatusContainer
+@onready var StatusLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/StatusContainer/CenterContainer/StatusLabel
+
 
 @export var flip:bool = false : 
 	set(val):
@@ -63,7 +65,7 @@ func _ready() -> void:
 	for node in []:
 		node.hide()		
 	
-	on_focus()
+	#on_focus()
 	on_scp_ref_update()
 	on_is_highlighted_update()
 	on_scp_data_update()
@@ -108,7 +110,7 @@ func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 func update_content() -> void:	
 	if !is_node_ready():return
 
-	var panel_nodes:Array = [InContainment, MaxLevel]
+	var panel_nodes:Array = [StatusContainer]
 	for node in panel_nodes:
 		node.hide()
 		
@@ -118,60 +120,43 @@ func update_content() -> void:
 		
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	var level:int = 0 if scp_ref not in scp_data else scp_data[scp_ref].level
-	
 
 	ScpImage.img_src = scp_details.img_src
-	Nametag.content = str(scp_details.name)
+	NameLabel.text = scp_details.name
+	NicknameLabel.text = scp_details.nickname
 	
-	hint_title = "HINT"
+	hint_title = "ABSTRACT"
 	hint_icon = SVGS.TYPE.CONTAIN
-	hint_description = "???"
+	hint_description =  scp_details.abstract.call(scp_details)
 	
-	#if in_containment and check_in_containment:
-		#for node in panel_nodes:
-			#if node in [InContainment]:
-				#node.show() 
-			#else:
-				#node.hide()
-		#hint_icon = SVGS.TYPE.STOP
-		#hint_description = str(scp_details.abstract.call(scp_details), " (ALREADY IN CONTAINMENT)")
-		#return	
-	#
-	#if at_max_level and check_max_level:
-		#for node in panel_nodes:
-			#if node in [MaxLevel]:
-				#node.show() 
-			#else:
-				#node.hide()
-		#hint_icon = SVGS.TYPE.STOP
-		#hint_description = str(scp_details.abstract.call(scp_details), " (MAX LEVEL)")
-		#return
+	StatusContainer.show() if in_containment else StatusContainer.hide()
+	StatusLabel.text = "ALREADY CONTAINED" if in_containment else ""
 
 # --------------------------------------		
 
-# --------------------------------------	
-func is_clickable() -> bool:
-	if scp_ref == -1 or (at_max_level and check_max_level) or (in_containment and check_in_containment):
-		return false
-	return true 
-# --------------------------------------	
-
-# --------------------------------------	
-func on_focus(state:bool = false) -> void:
-	if !is_node_ready():return
-		
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-		onHover.call()
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-# --------------------------------------	
-
-# --------------------------------------	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		if !is_clickable:return
-		onClick.call()
-	else:
-		onDismiss.call()
-# --------------------------------------		
+## --------------------------------------	
+#func is_clickable() -> bool:
+	#if scp_ref == -1 or (at_max_level and check_max_level) or (in_containment and check_in_containment):
+		#return false
+	#return true 
+## --------------------------------------	
+#
+## --------------------------------------	
+#func on_focus(state:bool = false) -> void:
+	#if !is_node_ready():return
+		#
+	#if state:
+		#GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+		#onHover.call()
+	#else:
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
+## --------------------------------------	
+#
+## --------------------------------------	
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if on_hover:
+		#if !is_clickable:return
+		#onClick.call()
+	#else:
+		#onDismiss.call()
+## --------------------------------------		

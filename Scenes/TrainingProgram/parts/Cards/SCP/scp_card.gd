@@ -1,13 +1,29 @@
 extends PanelContainer
 
+@onready var TextureRectImg:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
+@onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
+@onready var BreachLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer/MarginContainer/HBoxContainer/BreachLabel
+
+@onready var DescriptionContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer
+@onready var DescriptionPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/DescriptionPanel
+
+@onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
+@onready var EffectPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
+
+@onready var TypeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer
+@onready var TypePanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer/TypePanel
+
 @export var ref:int = -1: 
 	set(val):
 		ref = val
 		on_ref_update()
 
-var scp_data:Dictionary = {}
+var use_location:Dictionary : 
+	set(val):
+		use_location = val
+		on_use_location_update()
+		
 var index:int = -1
-var use_location:Dictionary = {}
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -18,67 +34,33 @@ func _exit_tree() -> void:
 	
 func _ready() -> void:
 	on_ref_update()
-	on_reveal_update()
-	on_is_active_update()
-	on_is_selected_update()
-	on_is_deselected_update()
-	on_show_assigned_update()
-	on_scp_data_update()
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
-	scp_data = new_val
-	on_ref_update()
-
-func on_flip_update() -> void:
-	if !is_node_ready():return
-
-func on_is_active_update() -> void:
-	if !is_node_ready():return
-
-func on_show_assigned_researcher_update() -> void:
-	if !is_node_ready():return
-
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-
-func on_show_assigned_update() -> void:
-	if !is_node_ready():return
-
-func on_is_deselected_update() -> void:
-	if !is_node_ready():return
-
-func on_reveal_update() -> void:
-	if !is_node_ready():return
-
+	on_use_location_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_ref_update() -> void:
-	if !is_node_ready():return	
-	#print(scp_data)
-		#
-	#var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-	#var currency_list:Array = []
-	#var has_spec_bonus:bool = false
-	#var has_trait_bonus:bool = false
-	#var morale_val:int = 0	
-	#var research_level:int = 0 if ref not in scp_data else scp_data[ref].level
-	#var is_contained:bool = false if ref not in scp_data else scp_data[ref].is_contained
-	#
-	#var hide_currency:bool = true
-	#for item in currency_list:
-		#var amount:int = int(item.title)
-		#if amount != 0:
-			#hide_currency = false
-			#break
-			#
-	#var hide_metrics:bool = true
-	#for key in scp_details.metrics:
-		#var amount:int = scp_details.metrics[key]
-		#if amount != 0:
-			#hide_metrics = false
-			#break	
+	U.debounce(str(self, "_update_card"), update_card)
 
+func on_use_location_update() -> void:
+	U.debounce(str(self, "_update_card"), update_card)
+
+func update_card() -> void:
+	if !is_node_ready() or use_location.is_empty() or ref == -1:
+		hide()
+		return
+	
+	show()
+	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+	NameTag.text = "%s\n(%s)" % [scp_details.name, scp_details.nickname]
+	TextureRectImg.texture = CACHE.fetch_image(scp_details.img_src) 
+	BreachLabel.text = str( "BREACH CHANCE ", SCP_UTIL.get_breach_event_chance(ref, use_location), "%" )
+	
+	DescriptionPanel.content = scp_details.abstract.call(scp_details)
+	EffectPanel.content = scp_details.effect.description if scp_details.effect.has("description") else ""
+	EffectContainer.show() if scp_details.effect.has("description") else EffectContainer.hide()
+	
+	TypePanel.content = SCP_UTIL.get_containment_type_str(scp_details.containment_requirements)
+	TypeContainer.show() if !scp_details.containment_requirements.is_empty() else TypeContainer.hide()
+	
+	
 # ------------------------------------------------------------------------------

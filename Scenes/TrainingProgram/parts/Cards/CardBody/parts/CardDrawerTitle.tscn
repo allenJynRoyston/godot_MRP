@@ -43,9 +43,11 @@ visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = " LABEL"
 label_settings = ExtResource("1_1np6w")
+autowrap_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
 layout_mode = 2

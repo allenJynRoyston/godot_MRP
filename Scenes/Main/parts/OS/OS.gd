@@ -355,10 +355,9 @@ var app_list:Array[Dictionary] = [
 								BtnControls.reveal(true)
 								BtnControls.item_index = 0
 								if os_setting.play_music_on_boot:
+									print("play")
 									OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
-								
-								
-								pass,
+								,
 						},						
 					],	
 					[

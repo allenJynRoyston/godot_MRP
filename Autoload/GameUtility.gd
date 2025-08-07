@@ -746,7 +746,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	SUBSCRIBE.scp_data = scp_data	
 
 	# update music
-	var previous_track:int = SUBSCRIBE.music_data.selected
+	# var previous_track:int = SUBSCRIBE.music_data.selected
 	#SUBSCRIBE.music_data = {
 		#"selected": OS_AUDIO.TRACK.SCP_INITIAL_CONTAINMENT,
 	#}

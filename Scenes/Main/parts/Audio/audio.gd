@@ -46,6 +46,8 @@ func _ready() -> void:
 		}
 	}	
 	
+	AudioStreamPlayerMaster.volume_db = audio_stream_dict[AudioStreamPlayerMaster].max_db
+	AudioStreamPlayerReverb.volume_db = audio_stream_dict[AudioStreamPlayerReverb].max_db
 # --------------------------------------	
 
 # --------------------------------------	
@@ -103,6 +105,7 @@ func play_track(fade_out_duration:float, fade_in_duration:float, channel:OS_AUDI
 
 # --------------------------------------	
 func stop() -> void:
+	previous_track = -1
 	if current_audio_stream_player.playing:
 		current_audio_stream_player.stop()
 # --------------------------------------		

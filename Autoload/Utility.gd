@@ -343,7 +343,7 @@ func location_lookup(val: int, dir: DIR, use_angle_table:bool = false) -> int:
 		7:
 			match dir:
 				DIR.UP: return 5 if !use_angle_table else 2
-				DIR.DOWN: return 8 if !use_angle_table else -1
+				DIR.DOWN: return 8 if !use_angle_table else 8
 				DIR.LEFT: return 4 if !use_angle_table else 6 
 				DIR.RIGHT: return -1 if !use_angle_table else 5
 		8:

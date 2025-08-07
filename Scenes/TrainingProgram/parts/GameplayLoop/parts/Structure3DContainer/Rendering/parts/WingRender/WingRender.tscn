@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=32 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gd" id="1_nn2y2"]
 [ext_resource type="Shader" uid="uid://b5dg1k76unpwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/WingRender.gdshader" id="2_8vjbp"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="9_8vjbp"]
 [ext_resource type="Script" uid="uid://3ojuguh0qit6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/fog_volume.gd" id="9_ie5r3"]
 [ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="9_jx7vp"]
+[ext_resource type="Script" uid="uid://b4h1wa14k1pta" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/miasma_fog.gd" id="13_yf1e1"]
 
 [sub_resource type="Environment" id="Environment_g7dei"]
 background_mode = 1
@@ -64,17 +65,31 @@ texture_repeat = false
 proximity_fade_distance = 0.01
 distance_fade_max_distance = 0.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_jx7vp"]
-size = Vector2(25, 25)
+[sub_resource type="ArrayMesh" id="ArrayMesh_yf1e1"]
+_surfaces = [{
+"aabb": AABB(-12.5, -0.25, -12.5, 25, 0.5, 25),
+"attribute_data": PackedByteArray("q6oqPwAAgD94d3c/MzNzPwAAgD8AAIA/q6qqPgAAAD+8u7s+zcwMP6uqqj4AAIA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/q6oqPwAAAD+8u7s+zcwMP6uqqj4AAAA/q6qqPgAAgD+8u7s+zcwMP7y7uz4zM3M/vLu7PjMzcz8iIiI/MzNzP6uqqj4AAIA/q6oqPwAAAD+rqio/AAAAAAAAgD8AAAAAAACAPwAAAD94d3c/MzNzP3h3dz/NzAw/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/eHd3P83MDD80MzM/zcwMPwAAgD8AAAA/q6qqPgAAAD+rqio/AAAAAKuqKj8AAAA/AACAPwAAgD94d3c/MzNzPwAAgD8AAAA/q6oqPwAAgD80MzM/zcwMPzQzMz8zM3M/IiIiP83MDD+8u7s+zcwMP6uqKj8AAAA/q6oqPwAAAD8iIiI/MzNzPyIiIj/NzAw/AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/NDMzPzMzcz94d3c/MzNzP6uqKj8AAIA/q6qqPgAAgD8iIiI/MzNzP6uqKj8AAIA/AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6oqPwAAgD8iIiI/MzNzP6uqKj8AAAA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6oqPwAAAD80MzM/zcwMP6uqKj8AAIA/AACAPwAAAD80MzM/zcwMP6uqKj8AAAA/AAAAAAAAgD+rqqo+AAAAP6uqqj4AAIA/AABAPwAAgD8AAIA+AAAAAAAAQD8AAAAAAAAAAAAAgD4AAIA/AACAPgAAAAAAAEA/AACAPgAAAAAAAEA/AACAPwAAgD4AAIA/AACAPgAAAAAAAEA/AAAAAAAAQD8AAIA/AACAPwAAQD8AAAAAAABAPwAAgD8AAIA+AACAPwAAQD8AAAAAAABAPwAAgD8AAIA+AAAAAAAAgD4AAIA/AACAPgAAAAAAAEA/AABAPwAAgD8AAIA+AACAPwAAgD4AAAAA"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 96,
+"vertex_data": PackedByteArray("AABIwQAAgL4AAEjBAAAgQQAAgL4AACDBAABIQQAAgL4AAEjBAABIQQAAgD4AAEhBAAAgQQAAgD4AACBBAABIQQAAgD4AAEjBAABIQQAAgD4AAEhBAABIQQAAgD4AAEjBAABIQQAAgL4AAEhBAABIwQAAgD4AAEhBAAAgQQAAgD4AACBBAABIQQAAgD4AAEhBAABIQQAAgD4AAEjBAAAgQQAAgD4AACBBAAAgQQAAgD4AACDBAAAgQQAAgD4AACDBAAAgwQAAgD4AACDBAABIQQAAgD4AAEjBAABIQQAAgL4AAEjBAABIQQAAgD4AAEjBAABIwQAAgD4AAEjBAABIQQAAgL4AAEhBAAAgQQAAgL4AACDBAAAgQQAAgL4AACBBAABIQQAAgD4AAEhBAABIQQAAgL4AAEhBAABIwQAAgL4AAEhBAAAgQQAAgL4AACBBAAAgwQAAgL4AACBBAABIQQAAgL4AAEhBAABIQQAAgL4AAEhBAABIQQAAgD4AAEjBAABIQQAAgL4AAEjBAABIQQAAgL4AAEjBAAAgQQAAgL4AACDBAABIQQAAgL4AAEhBAABIwQAAgL4AAEjBAAAgwQAAgL4AACBBAAAgwQAAgL4AACDBAAAgwQAAgD4AACBBAAAgQQAAgD4AACBBAABIwQAAgD4AAEhBAABIwQAAgD4AAEhBAAAgwQAAgD4AACDBAAAgwQAAgD4AACBBAABIwQAAgD4AAEhBAABIQQAAgD4AAEhBAABIwQAAgL4AAEhBAAAgwQAAgL4AACDBAAAgQQAAgL4AACDBAABIwQAAgL4AAEjBAABIQQAAgD4AAEjBAAAgwQAAgD4AACDBAABIwQAAgD4AAEjBAABIwQAAgD4AAEjBAABIwQAAgL4AAEjBAABIQQAAgL4AAEjBAABIwQAAgD4AAEjBAAAgwQAAgD4AACDBAABIwQAAgD4AAEhBAABIwQAAgD4AAEjBAABIwQAAgD4AAEhBAABIwQAAgL4AAEjBAABIwQAAgL4AAEhBAAAgwQAAgL4AACBBAABIwQAAgL4AAEjBAABIQQAAgL4AAEhBAAAgwQAAgL4AACBBAABIwQAAgL4AAEhBAABIwQAAgL4AAEjBAABIwQAAgD4AAEhBAABIwQAAgL4AAEhBAAAgwQAAgL4AACBBAAAgwQAAgD4AACDBAAAgwQAAgL4AACDBAAAgQQAAgD4AACBBAAAgwQAAgD4AACBBAAAgQQAAgL4AACBBAAAgQQAAgD4AACBBAAAgQQAAgL4AACDBAAAgQQAAgD4AACDBAAAgQQAAgD4AACBBAAAgQQAAgL4AACBBAAAgQQAAgL4AACDBAAAgwQAAgL4AACBBAAAgQQAAgL4AACBBAAAgwQAAgD4AACBBAAAgwQAAgD4AACDBAAAgQQAAgD4AACDBAAAgwQAAgL4AACDBAAAgQQAAgL4AACDBAAAgwQAAgL4AACDBAAAgQQAAgD4AACDBAAAgwQAAgL4AACBBAAAgwQAAgD4AACBBAAAgwQAAgD4AACDB/38AAP///7//fwAA/v//v/9/AAD+//+//3///wAA/7//f///AAD/v/9///8AAP+/////f/////////9//////////3///////3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//////wAA/7//////AAD/v/////8AAP+//38AAP///7//fwAA/v//v/9/AAD///+//3//f////7//f/9/////v/9//3////+//38AAP///7//fwAA/v//v/9/AAD///+/////f/////////9//////////3///////38AAP7//7//fwAA/v//v/9/AAD///+//38AAP///7//fwAA/v//v/9/AAD///+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3//f////7//f/9/////v/9//3////+//38AAP///7//fwAA/v//v/9/AAD///+//3///wAA/7//f///AAD/v/9///8AAP+//////wAA/7//////AAD/v/////8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/AAD/f/9//78AAP9//3//vwAA/3//f/+//38AAP7//7//fwAA/v//v/9/AAD///+//38AAP///7//fwAA/v//v/9/AAD+//+/AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/////wAA/7//////AAD/v/////8AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+/////f/9/AID///9//38AgP///3//fwCA")
+}]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsecj"]
+transparency = 1
 no_depth_test = true
+albedo_color = Color(0.89441, 0.318371, 1, 0.4)
+metallic = 0.44
+roughness = 0.73
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yf1e1"]
 render_priority = 0
 next_pass = SubResource("StandardMaterial3D_wsecj")
 shader = ExtResource("2_8vjbp")
-shader_parameter/behind_color = Color(0.498744, 0.427363, 1, 0.4)
+shader_parameter/base_color = Color(2.31028e-06, 0.961037, 0.29168, 1)
+shader_parameter/speed = 10.0
+shader_parameter/thickness = 0.1
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sqqcm"]
 particle_flag_rotate_y = true
@@ -109,15 +124,6 @@ viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sqqcm"]
 
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jx7vp"]
-
-[sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
-density = 0.646
-albedo = Color(0, 0, 0, 1)
-emission = Color(1, 1, 1, 1)
-edge_fade = 3.42967
-density_texture = SubResource("NoiseTexture3D_jx7vp")
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_nn2y2"]
 
 [sub_resource type="NoiseTexture3D" id="NoiseTexture3D_wsecj"]
@@ -126,10 +132,19 @@ height = 124
 noise = SubResource("FastNoiseLite_nn2y2")
 
 [sub_resource type="FogMaterial" id="FogMaterial_g7dei"]
-density = 0.05
+density = 0.3
 height_falloff = 0.674132
 edge_fade = 0.627664
 density_texture = SubResource("NoiseTexture3D_wsecj")
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jx7vp"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
+density = 0.646
+albedo = Color(0, 0, 0, 1)
+emission = Color(1, 1, 1, 1)
+edge_fade = 3.42967
+density_texture = SubResource("NoiseTexture3D_jx7vp")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_su1dq"]
 lightmap_size_hint = Vector2i(5458, 5470)
@@ -171,10 +186,8 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_nn2y2")
 
 [node name="MeshSelector" type="MeshInstance3D" parent="MeshRender"]
-transform = Transform3D(1, 1.49012e-08, 2.98023e-08, 0, 0.999999, 0, 2.98023e-08, 0, 1, 1.00062, -12.6636, -1.00061)
-visible = false
-mesh = SubResource("PlaneMesh_jx7vp")
-skeleton = NodePath("../..")
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -7.45058e-09, 0.999999, 7.45058e-09, 2.98023e-08, 0, 1, 0.270475, -12.8197, -0.407528)
+mesh = SubResource("ArrayMesh_yf1e1")
 surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
 
 [node name="Laser" type="SpotLight3D" parent="MeshRender"]
@@ -515,19 +528,20 @@ spin_speed = 0.05
 transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 43.9351, 13.4741, 7.1422)
 spin_speed = 0.05
 
-[node name="Miasma" type="Node3D" parent="MeshRender"]
+[node name="Fog" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
 
-[node name="FogVolume" type="FogVolume" parent="MeshRender/Miasma"]
-transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 0.438647, -9.93109, -0.970599)
-size = Vector3(500, 20, 500)
-material = SubResource("FogMaterial_8vjbp")
-
-[node name="FogVolume" type="FogVolume" parent="MeshRender"]
-transform = Transform3D(-0.640013, 0.000834743, -0.759377, -0.000579489, 0.999999, 0.00158764, 0.759402, 0.0014562, -0.639994, 5.54795, 4.94192, -43.7669)
+[node name="MoodFog" type="FogVolume" parent="MeshRender/Fog"]
+transform = Transform3D(-0.640013, 0.000834741, -0.759377, -0.000579491, 0.999999, 0.00158764, 0.759402, 0.00145619, -0.639994, 5.53789, -7.11326, -43.7845)
 size = Vector3(300, 50, 300)
 material = SubResource("FogMaterial_g7dei")
 script = ExtResource("9_ie5r3")
+
+[node name="MiasmaFog" type="FogVolume" parent="MeshRender/Fog"]
+transform = Transform3D(-0.278724, -0.175642, 0.944173, -0.0251803, 0.984132, 0.175642, -0.960041, 0.0251813, -0.278724, 0.438647, -9.93109, -0.970599)
+size = Vector3(500, 20, 500)
+material = SubResource("FogMaterial_8vjbp")
+script = ExtResource("13_yf1e1")
 
 [node name="OriginalMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, -42.7558, -150)

@@ -609,6 +609,7 @@ is_flashing = true
 is_disabled = false
 
 [node name="NameControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="FloorPreviewControl" type="Control" parent="."]

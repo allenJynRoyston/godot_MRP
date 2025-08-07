@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q14ayb5jrajl"
-path="res://.godot/imported/wondertainment_logo.png-921683acc5be677c85966e9c2d9ac0b0.ctex"
+uid="uid://daq44g31rg7ek"
+path="res://.godot/imported/wondertainment_logo.png-3b5206c1a2c6ceb0171d91f7bb54603a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Media/images/wondertainment_logo.png"
-dest_files=["res://.godot/imported/wondertainment_logo.png-921683acc5be677c85966e9c2d9ac0b0.ctex"]
+source_file="res://Media/images/logos/wondertainment_logo.png"
+dest_files=["res://.godot/imported/wondertainment_logo.png-3b5206c1a2c6ceb0171d91f7bb54603a.ctex"]
 
 [params]
 

@@ -38,7 +38,6 @@ expand_mode = 2
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 text = "Loading, please wait..."
 label_settings = ExtResource("3_ya276")
@@ -52,3 +51,7 @@ theme_override_colors/default_color = Color(0.431373, 0.803922, 0.329412, 1)
 theme_override_fonts/normal_font = ExtResource("4_sifuj")
 bbcode_enabled = true
 fit_content = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 1)

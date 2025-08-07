@@ -1,18 +1,18 @@
 extends GameContainer
 
 @onready var ColorRectBG:ColorRect = $ColorRectBG
-
 @onready var GridSelect:Control = $GridSelect
-@onready var DetailPanel:Control = $DetailPanel
 @onready var TransitionScreen:Control = $TransistionScreen
 
+# summary
 @onready var SummaryPanel:Control = $SummaryControl/PanelContainer
 @onready var SummaryMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
-@onready var SummaryCard:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/SummaryCard
-@onready var SummaryImage:TextureRect = $SummaryControl/PanelContainer/MarginContainer/SummaryImage
+@onready var SummaryCard:Control = $SummaryControl/PanelContainer/MarginContainer/SummaryCard
 
-@onready var CostPanel:Control = $SummaryControl/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/CostPanel
+# cost
+@onready var CostPanel:Control = $ResearcherPanel/MarginContainer/CostPanel
 
+# minicards
 const ShopMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn")
 
 var made_changes:bool = false
@@ -68,29 +68,25 @@ func setup_gridselect() -> void:
 	
 	GridSelect.onModeTab = func() -> void:
 		reveal_node(SummaryPanel, false)
-		DetailPanel.reveal(false)
 	
 	GridSelect.onModeContent = func() -> void:
 		reveal_node(SummaryPanel, true)
-		DetailPanel.reveal(true)
 	
-	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
-		var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(data.ref) )
-		var show_card:bool = node.show_card
-		
-		DetailPanel.reveal(show_card)
-		DetailPanel.room_ref = data.ref if show_card else -1
-		CostPanel.amount =resources_data[RESOURCE.CURRENCY.SCIENCE].amount
-		CostPanel.is_negative = !can_afford
-		SummaryImage.texture = CACHE.fetch_image(data.details.img_src)
-		
-		GridSelect.BtnControls.disable_active_btn = !can_afford or !node.is_clickable
-		
-		if data.details.requires_unlock:
-			if data.ref in shop_unlock_purchases:
-				GridSelect.BtnControls.disable_active_btn = true
-		else:
-			GridSelect.BtnControls.disable_active_btn = true
+	#GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
+		#var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(data.ref) )
+		#var show_card:bool = node.show_card
+		#
+		#print(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
+		#
+		#CostPanel.amount = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+		#CostPanel.is_negative = !can_afford		
+		#GridSelect.BtnControls.disable_active_btn = !can_afford or !node.is_clickable
+		#
+		#if data.details.requires_unlock:
+			#if data.ref in shop_unlock_purchases:
+				#GridSelect.BtnControls.disable_active_btn = true
+		#else:
+			#GridSelect.BtnControls.disable_active_btn = true
 			
 	
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
@@ -106,7 +102,7 @@ func setup_gridselect() -> void:
 		node.onHover = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
 			GridSelect.grid_index = index
-			SummaryCard.room_ref = data.ref
+			SummaryCard.preview_mode_ref = data.ref
 			
 		node.onClick = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
@@ -175,7 +171,7 @@ func unlock_room(ref:int) -> void:
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
 	if !is_node_ready():return
-	#CostPanel.title = str(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
+	CostPanel.amount = str(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------			

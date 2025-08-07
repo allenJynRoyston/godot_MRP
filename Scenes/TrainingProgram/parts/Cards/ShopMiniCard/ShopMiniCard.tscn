@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://jacix3bun03x"]
+[gd_scene load_steps=16 format=3 uid="uid://jacix3bun03x"]
 
 [ext_resource type="Script" uid="uid://cy177bercus4u" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
 [ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_6v8ap"]
 [ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_k052h"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="3_sv0aq"]
 [ext_resource type="PackedScene" uid="uid://dmxs2kvip2i80" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardStatus.tscn" id="4_ctiee"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_ctiee"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="6_k052h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i4yqh"]
 
@@ -26,13 +27,24 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sv0aq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k052h"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_bx5nk"]
+font = ExtResource("5_ctiee")
+font_size = 14
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6v8ap"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5260f"]
 bg_color = Color(0.131379, 0.131379, 0.131379, 1)
@@ -110,25 +122,73 @@ is_left_side = true
 visible = false
 layout_mode = 2
 title = "RESEARCHED"
-v_offset = 40
+use_color = Color(1, 0, 0, 1)
+v_offset = 60
 
 [node name="LevelRequired" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("4_ctiee")]
+visible = false
 layout_mode = 2
 title = "LEVEL X REQUIRED"
 icon = 48
-v_offset = 40
+use_color = Color(1, 0, 0, 1)
+v_offset = 60
 
-[node name="CardDrawerTitle" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("3_sv0aq")]
-z_index = 2
-custom_minimum_size = Vector2(0, 0)
+[node name="NamePanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+z_index = 1
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_k052h")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameTag" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP NAME"
+label_settings = SubResource("LabelSettings_bx5nk")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CostPanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+z_index = 1
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_sv0aq")
-is_small = true
-content = "Roomname"
-center_text = true
-title = ""
-border_color = Color(0.931198, 0, 0.462987, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_6v8ap")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="SVGIcon" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("6_k052h")]
+layout_mode = 2
+icon = 44
+
+[node name="CostLabel" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "5"
+label_settings = SubResource("LabelSettings_bx5nk")
+autowrap_mode = 3
 
 [node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Back" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_5260f")

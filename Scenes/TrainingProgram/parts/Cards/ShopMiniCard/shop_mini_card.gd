@@ -1,9 +1,9 @@
 extends MouseInteractions
 
 @onready var CardBody:Control = $SubViewport/CardBody
-@onready var CardTitle:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CardDrawerTitle
-@onready var CardResource:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerResource
 @onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
+@onready var NameTagLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer/HBoxContainer/NameTag
+@onready var CostLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer/CostLabel
 
 @onready var AlreadyResearched:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/AlreadyResearched
 @onready var LevelRequired:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/LevelRequired
@@ -105,8 +105,9 @@ func update_content() -> void:
 	for node in panel_nodes:
 		node.hide()
 	
-	CardTitle.content = room_details.name
+	NameTagLabel.text = room_details.name
 	CardDrawerImage.img_src = room_details.img_src
+	CostLabel.text = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
 	is_clickable = true
 	show_card = true
 	
@@ -133,7 +134,7 @@ func update_content() -> void:
 			else:
 				node.hide()
 
-		CardTitle.content = '???'
+		NameTagLabel.text = '???'
 		CardDrawerImage.img_src = ""
 		show_card = false
 

@@ -269,7 +269,8 @@ func add_to_unlocked_list(ref:int) -> void:
 func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-	await WingRenderNode.start_construction(location_copy)	
+	WingRenderNode.start_construction(location_copy)	
+	await U.tick()
 	
 	purchased_facility_arr.push_back({
 		"ref": ref,
@@ -293,7 +294,9 @@ func reset_room(use_location:Dictionary) -> void:
 func finish_construction(use_location:Dictionary) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)	
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-	await WingRenderNode.complete_construction(location_copy)
+	WingRenderNode.complete_construction(location_copy)
+	
+	await U.tick()
 	
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
 		if x.location == location_copy:

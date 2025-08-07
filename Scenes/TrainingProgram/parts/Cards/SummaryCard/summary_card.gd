@@ -29,10 +29,14 @@ extends PanelContainer
 
 # effect
 @onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
-@onready var EffectPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
+@onready var EffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectLabel
 
 # Description 
-@onready var DescriptionPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer/DescriptionPanel
+@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer/DescriptionLabel
+
+# has programs
+@onready var HasProgramsContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer
+@onready var HasProgramLabel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2/MarginContainer/HasProgramLabel
 
 # capacity
 @onready var CapacityContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/CapacityContainer
@@ -40,13 +44,13 @@ extends PanelContainer
 
 # containment type
 @onready var ContainmentTypeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ContainmentTypeContainer
-@onready var ContainmentTypePanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ContainmentTypeContainer/PanelContainer2/MarginContainer/ContainmentTypePanel
+@onready var ContainmentTypeLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ContainmentTypeContainer/PanelContainer2/MarginContainer/ContainmentTypeLabel
 
 # scpcontainer
 @onready var ScpContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer
-@onready var ScpPanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpTitlePanel
-@onready var ScpImage:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpImage
-@onready var ScpEffect:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpEffect
+@onready var ScpImage:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/ScpImage
+@onready var ScpTitleLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpTitleLabel
+@onready var ScpEffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpEffectLabel
 
 
 # modules
@@ -100,7 +104,7 @@ func _ready() -> void:
 	on_modules_only_update()
 	on_preview_mode_update()
 	on_preview_mode_ref_update()
-	for node in [EffectPanel, VibePanel, EconomyPanel, CapacityPanel]:
+	for node in [VibePanel, EconomyPanel, CapacityPanel]:
 		node.hollow = true
 # ------------------------------------------------------------------------------
 
@@ -206,6 +210,7 @@ func on_update() -> void:
 	for node in node_list:
 		node.hide()
 	
+	
 	# show
 	show()
 	
@@ -218,7 +223,7 @@ func on_update() -> void:
 		ContainmentComponent.room_details = room_details.details
 				
 		# passives
-		if ("passive_abilities" not in room_details.details) or room_details.details.passive_abilities.call().is_empty():
+		if room_details.details.passive_abilities.call().is_empty():
 			ModuleContainer.hide()
 		else:
 			ModuleContainer.show()
@@ -226,7 +231,7 @@ func on_update() -> void:
 			ModuleComponent.room_details = room_details.details
 		
 		# assign programs
-		if ("abilities" not in room_details.details) or room_details.details.abilities.call().is_empty():
+		if room_details.details.abilities.call().is_empty():
 			ProgramContainer.hide()
 		else:
 			ProgramContainer.show()
@@ -254,9 +259,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	
 	# assign details		
 	InfoContainer.show()
-	NameTag.text = room_details.details.name
+	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
 	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]
-	DescriptionPanel.content = room_details.details.description
+	DescriptionLabel.text = room_details.details.description
 	EnergyTag.text = str(room_details.details.required_energy)
 	ConstructionCostTag.text = str(room_details.details.costs.purchase)
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
@@ -298,22 +303,32 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	CapacityPanel.personnel_capacity = personnel_capacity
 	CapacityContainer.show() if show_capacity else CapacityContainer.hide()
 	
+	# program preview
+	var program_list_as_string:String = ""
+	var program_list: Array = room_details.details.abilities.call()
+	program_list_as_string = "\n".join(program_list.map(func(i): return i.name))
+	HasProgramLabel.text = program_list_as_string
+	HasProgramsContainer.hide() if room_details.details.abilities.call().is_empty() else HasProgramsContainer.show()
+		
+	
 	# effect
-	EffectPanel.content = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
+	EffectLabel.text = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
 	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()
 
 	# type 
-	ContainmentTypePanel.content = SCP_UTIL.get_containment_type_str(room_details.details.containment_properties) if !room_details.details.is_empty() else ""
+	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.details.containment_properties) if !room_details.details.is_empty() else ""
 	ContainmentTypeContainer.show() if !room_details.details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 	
 	# scp
-	ScpPanel.content = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
+	#ScpTitleLabel.text = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
 	ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)	
-	ScpEffect.content = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
+	ScpEffectLabel.text = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
 
 	ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
-	ScpEffect.hide() if scp_details.is_empty() else ScpEffect.show()
-	ScpContainer.show() if can_contain else ScpContainer.hide()
+	ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
+	ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
+	
+	
 	
 	# under construction
 	if is_under_construction:

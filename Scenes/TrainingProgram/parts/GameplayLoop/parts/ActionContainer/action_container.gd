@@ -98,7 +98,6 @@ var current_mode:MODE = MODE.NONE :
 		on_current_mode_update()
 
 var selected_room:int = -1
-var available_room_index:int = 0
 var list_of_available_rooms:Array = []
 
 var prev_draw_state:Dictionary	= {}
@@ -342,7 +341,7 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 				
 				# update
 				if confirm:
-					ROOM_UTIL.add_room(x.details.ref)
+					await ROOM_UTIL.add_room(x.details.ref)
 					if !x.details.event_trigger.is_empty():
 						var event_data:Dictionary = EVENT_UTIL.return_data(x.details.event_trigger.ref)
 						
@@ -1214,6 +1213,12 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 # --------------------------------------------------------------------------------------------------
 	
 # --------------------------------------------------------------------------------------------------
+func before_active_selection() -> void:
+	await SummaryControls.reveal(false)
+
+func after_active_selection() -> void:
+	SummaryControls.reveal(true)
+
 func before_scp_selection() -> void:
 	await SummaryControls.reveal(false)
 
@@ -1338,7 +1343,7 @@ func check_btn_states() -> void:
 			CommandControls.onAction = func() -> void:
 				await CommandControls.reveal(false)
 				if is_activated:
-					current_mode = MODE.SUMMARY_CARD						
+					current_mode = MODE.SUMMARY_CARD
 				else:
 					print("manually activate...")
 					#var confirm:bool = await GAME_UTIL.activate_room()
@@ -1517,7 +1522,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				InfoControls.reveal(true)
 			# --------------
 			MODE.SUMMARY_CARD:
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
 				SummaryControls.reveal(true)
 			# --------------
@@ -1541,12 +1546,13 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
 				list_of_available_rooms.sort()
-				selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]			
-				available_room_index = 0
+				selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]
+				if selected_room != -1:
+					SUBSCRIBE.current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": selected_room}
 				WingRenderNode.highlight_rooms = [selected_room]								
 			# -----------	
 			MODE.PROGRAMS:
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	

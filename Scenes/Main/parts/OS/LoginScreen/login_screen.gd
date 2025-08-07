@@ -2,6 +2,7 @@ extends PanelContainer
 
 @onready var LoginLabel:Label = $MarginContainer/VBoxContainer/Label
 @onready var LoginRTL:RichTextLabel = $MarginContainer/VBoxContainer/RichTextLabel
+@onready var Overlay:ColorRect = $ColorRect
 
 const login_arr:Array[String] = [
   "C:\\BOOT> Orange PC-97.exe",
@@ -13,15 +14,16 @@ const login_arr:Array[String] = [
   ".... READY",
 ];
 
-
 signal is_complete
 
-func start() -> void:
-	show()	
-	await U.set_timeout(0.5)
-	
-	OS_AUDIO.fade_out(OS_AUDIO.CHANNEL.REVERB, 1.0, true)
+func _ready() -> void:
+	Overlay.color = Color(1, 1, 1, 1)
 
+func start() -> void:
+	OS_AUDIO.fade_out(OS_AUDIO.CHANNEL.REVERB, 1.0, true)
+		
+	await U.tween_node_property(Overlay, "color:a", 0, 1.0)
+	
 	for i in login_arr.size():
 		var str:String = login_arr[i]
 		var line:String = ""
@@ -36,5 +38,7 @@ func start() -> void:
 			await U.set_timeout(1.0)
 		else:
 			await U.set_timeout(0.2)  # Short pause between lines
+
+	await U.tween_node_property(Overlay, "color", Color(0, 0, 0, 1), 1.0)
 
 	queue_free()
