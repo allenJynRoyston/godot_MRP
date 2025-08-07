@@ -46,8 +46,8 @@ func end(on_back:bool = false) -> void:
 		n.is_selected = false
 
 	U.tween_node_property(ColorBG, 'color:a', 0)
-	U.tween_node_property(OptionPanel, 'position:y', OptionPanel.position.y + 10, 0.4, 0, Tween.TRANS_CIRC, Tween.EASE_IN)
-	U.tween_node_property(OptionPanel, 'modulate:a', 0, 0.6)
+	U.tween_node_property(OptionPanel, 'position:y', OptionPanel.position.y + 10, 0.3, 0, Tween.TRANS_SINE, Tween.EASE_IN)
+	U.tween_node_property(OptionPanel, 'modulate:a', 0, 0.3)
 	await BtnControls.reveal(false)
 
 	hide()
@@ -120,7 +120,7 @@ func setup(btn_list:Array, option_list:Array, new_position:Vector2 = Vector2()) 
 	# fade in
 	U.tween_node_property(ColorBG, 'color:a', 0.4)		
 	U.tween_node_property(OptionPanel, 'modulate:a', 1)
-	await U.tween_node_property(OptionPanel, 'position:y', new_position.y, 0.4)
+	await U.tween_node_property(OptionPanel, 'position:y', new_position.y, 0.3, 0, Tween.TRANS_SINE)
 
 	# reveal buttons
 	BtnControls.reveal(true)

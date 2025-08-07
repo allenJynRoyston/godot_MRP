@@ -332,13 +332,29 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 				# purchase and show tally
 				var room_details:Dictionary = ROOM_UTIL.return_data(x.details.ref)
 				
+				# skip or use build confirm
+				var has_build_confirm:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].gameplay_settings.enable_build_confirm
+				
+				# set default as true
+				var confirm:bool = true
+				
+				# calculate costs
 				var costs:Array = [{
 					"amount": -(room_details.costs.purchase), 
 					"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
 				}] if room_details.costs.purchase > 0 else []
 				
-				var confirm:bool = await GAME_UTIL.create_modal("Construct %s here?" % room_details.name, "This room CANNOT be destroyed once placed.  Are you sure you want to continue?" if !room_details.can_destroy else "Continue?" , room_details.img_src, costs)
+				# use build confirm
+				if has_build_confirm:
+					confirm = await GAME_UTIL.create_modal("Construct %s here?" % room_details.name, "This room CANNOT be destroyed once placed.  Are you sure you want to continue?" if !room_details.can_destroy else "Continue?" , room_details.img_src, costs)					
 				
+				# or skip
+				else:
+					for item in costs:
+						var amount:int = item.amount
+						RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
+					
+					
 				# update
 				if confirm:
 					await ROOM_UTIL.add_room(x.details.ref)
@@ -547,8 +563,7 @@ func show_build_options() -> void:
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
 		SummaryCard.preview_mode_ref = -1
-		SummaryCard.preview_mode = false
-		
+		SummaryCard.preview_mode = false		
 		await reveal_summarycard(false)
 		active_menu_is_open = false
 		show_build_complete.emit()

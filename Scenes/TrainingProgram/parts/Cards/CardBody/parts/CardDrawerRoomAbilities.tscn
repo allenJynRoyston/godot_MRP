@@ -21,6 +21,7 @@ theme_override_constants/margin_right = 0
 
 [node name="List" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 alignment = 2
 
 [node name="SummaryBtn" parent="MarginContainer/List" instance=ExtResource("2_ildx4")]

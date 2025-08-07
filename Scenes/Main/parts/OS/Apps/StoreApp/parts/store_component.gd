@@ -59,7 +59,7 @@ func _ready() -> void:
 	
 	BtnControls.onAction = func() -> void:
 		if SelectedNode == null:return
-		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting		
+		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings		
 		var index:int = SelectedNode.index
 		var item:Dictionary = store_data[tab_index].list[index]
 		var is_unlocked:bool = item.is_unlocked.call(os_settings)
@@ -129,7 +129,7 @@ func on_store_data_update() -> void:
 func on_purchased_update() -> void:
 	if !is_node_ready() or store_list.is_empty():return
 	var starting_data:Dictionary = OS_STORE.calc_starting_data()
-	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
 	var currency:Dictionary = os_settings.currency
  
 	# SET active state

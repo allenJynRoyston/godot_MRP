@@ -40,8 +40,9 @@ enum APPS {
 
 # -----------------------------------
 #region SAVABLE DATA
-var os_setting:Dictionary = {}
-var graphics:Dictionary = {}
+var os_settings:Dictionary = {}
+var graphics_settings:Dictionary = {}
+var gameplay_settings:Dictionary = {}
 var apps_installing:Array = []
 var has_started:bool = false
 
@@ -63,11 +64,11 @@ func update_media_options(_options:Dictionary) -> void:
 func update_graphics_options(_options:Dictionary) -> void:
 	for key in _options:
 		var val:bool = _options[key]
-		if graphics.has(key):
-			graphics[key] = val
+		if graphics_settings.has(key):
+			graphics_settings[key] = val
 			
-		if graphics.shaders.has(key):
-			graphics.shaders[key] = val			
+		if graphics_settings.shaders.has(key):
+			graphics_settings.shaders[key] = val			
 
 	check_graphics_settings()
 	save_state()
@@ -75,12 +76,21 @@ func update_graphics_options(_options:Dictionary) -> void:
 func update_settings_options(_options:Dictionary) -> void:
 	for key in _options:
 		var val:bool = _options[key]
-		if os_setting.has(key):		
-			os_setting[key] = val
+		if os_settings.has(key):		
+			os_settings[key] = val
 
 	# update settings	
 	save_state()
 
+func update_gameplay_optinos(_options:Dictionary) -> void:
+	for key in _options:
+		var val:bool = _options[key]
+		if gameplay_settings.has(key):		
+			gameplay_settings[key] = val
+
+	# update settings	
+	save_state()
+	
 var app_list:Array[Dictionary] = [
 	# ----------
 	#{
@@ -116,8 +126,14 @@ var app_list:Array[Dictionary] = [
 						"title": "ENABLE TUTORIAL", 
 						"key": "is_tutorial",
 						"value": true,
-						"hint_description": "Enable/Disable tutorial mode."
-					}
+						"hint_description": "Toggle tutorial mode."
+					},
+					{
+						"title": "BUILD CONFIRM CHECK", 
+						"key": "enable_build_confirm",
+						"value": gameplay_settings.enable_build_confirm,
+						"hint_description": "Toggle build confirm modals."
+					},					
 				]
 				
 				if data.ref not in running_apps_list.map(func(i): return i.ref):
@@ -175,16 +191,28 @@ var app_list:Array[Dictionary] = [
 			return true,
 		"events": {
 			"open": func(data:Dictionary) -> void:
-				open_app(data),
+				var options:Array = []
+				open_options(
+					# ------- BTNS
+					[
+						{
+							"title": "LAUNCH...",
+							"onClick": func(_options:Dictionary) -> void:
+								open_app(data, _options),
+						}
+					],
+					# ------- OPTIONS
+					options
+				),
 			"close": func() -> void:
 				close_app(APPS.EMAIL),
 			"install": func(data:Dictionary) -> void:
 				Installer.add_item(data.installer_data),
 			"fetch_read_emails": func() -> Array:
-				return os_setting.read_emails,
+				return os_settings.read_emails,
 			"mark": func(index:int) -> void:
-				if index not in os_setting.read_emails:
-					os_setting.read_emails.push_back(index)
+				if index not in os_settings.read_emails:
+					os_settings.read_emails.push_back(index)
 				save_state(0.2),
 		},
 	},
@@ -202,7 +230,7 @@ var app_list:Array[Dictionary] = [
 			return true,
 		"events": {
 			"fetch_tracks_unlocked": func() -> Array:
-				return os_setting.tracks_unlocked,			
+				return os_settings.tracks_unlocked,			
 			"open": func(data:Dictionary) -> void:
 				var options:Array = 	[]
 				
@@ -306,14 +334,14 @@ var app_list:Array[Dictionary] = [
 						options
 					),
 			"fetch_purchases": func() -> Array:
-				return os_setting.store_purchases,
+				return os_settings.store_purchases,
 			"make_purchase": func(uid:String, cost:int) -> void:
-				if uid not in os_setting.store_purchases:
-					os_setting.store_purchases.push_back(uid)					
-					os_setting.currency.amount -= cost
+				if uid not in os_settings.store_purchases:
+					os_settings.store_purchases.push_back(uid)					
+					os_settings.currency.amount -= cost
 				else:
-					os_setting.store_purchases.erase(uid)
-					os_setting.currency.amount += cost
+					os_settings.store_purchases.erase(uid)
+					os_settings.currency.amount += cost
 				save_state(0.2),
 		},
 	},
@@ -354,8 +382,7 @@ var app_list:Array[Dictionary] = [
 								await LoginNode.start()	
 								BtnControls.reveal(true)
 								BtnControls.item_index = 0
-								if os_setting.play_music_on_boot:
-									print("play")
+								if os_settings.play_music_on_boot:
 									OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 								,
 						},						
@@ -364,25 +391,25 @@ var app_list:Array[Dictionary] = [
 						{
 							"title": "FULLSCREAM", 
 							"key": "fullscreen",
-							"value": graphics.fullscreen,
-							"hint_description": "Enable/Disable fullscreen mode."
+							"value": graphics_settings.fullscreen,
+							"hint_description": "Toggle fullscreen mode."
 						},
 						{
 							"title": "CRT REALITY FILTER", 
 							"key": "crt_effect",
-							"value": graphics.shaders.crt_effect,
-							"hint_description": "Enable/Disable crt effect."
+							"value": graphics_settings.shaders.crt_effect,
+							"hint_description": "Toggle crt effect."
 						},
 						{
 							"title": "ENABLE THE FUNK", 
 							"key": "audio_visulizer_in_background",
-							"value": os_setting.audio_visulizer_in_background,
-							"hint_description": "Enable/Disable the FUNK."
+							"value": os_settings.audio_visulizer_in_background,
+							"hint_description": "Toggle the FUNK."
 						},
 						{
 							"title": "FUNK ON BOOT", 
 							"key": "play_music_on_boot",
-							"value": os_setting.play_music_on_boot,
+							"value": os_settings.play_music_on_boot,
 							"hint_description": "Play music when OS is loaded."
 						}												
 					]
@@ -496,7 +523,7 @@ func start() -> void:
 	
 	await reveal_logo(true, 0.5)
 	
-	if os_setting.play_music_on_boot:
+	if os_settings.play_music_on_boot:
 		OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
 	
 
@@ -574,7 +601,7 @@ func install_app_complete(ref:APPS) -> void:
 # -----------------------------------
 #region SAVE/LOAD
 func check_graphics_settings() -> void:
-	if graphics.shaders.crt_effect:
+	if graphics_settings.shaders.crt_effect:
 		GBL.find_node(REFS.MAIN).apply_shader_effects(false) 
 	else:
 		GBL.find_node(REFS.MAIN).no_shader_effects(false)	
@@ -583,17 +610,18 @@ func check_graphics_settings() -> void:
 	TransitionScreen.start(0.3, true)
 
 func save_state(duration:float = 0.2) -> void:
-	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_setting
-	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics = graphics
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting = os_settings
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphic_settings = graphics_settings
+	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].gameplay_settings = gameplay_settings
 	GBL.update_and_save_user_profile()
 	
 	await simulate_wait(duration)
 
 func load_state() -> void:
-	os_setting = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
-	graphics = 	GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics
-
-
+	os_settings = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
+	graphics_settings = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphic_settings
+	gameplay_settings = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].gameplay_settings
+	
 #endregion		
 # -----------------------------------
 
@@ -744,15 +772,8 @@ func render_desktop_icons() -> void:
 			var new_node:Control = AppItemPreload.instantiate()	
 			DesktopGrid.add_child(new_node)
 			desktop_itemlist.push_back(new_node)
-			new_node.data = app.details
-			
-			new_node.onFocus = func(node:Control) -> void:
-				for child in DesktopGrid.get_children():
-					child.is_selected = child == node
-					if child == node:
-						selected_app = app
-						selected_app_item = new_node
-						
+			new_node.data = app
+
 	# sets 
 	await U.tick()
 	BtnControls.offset = Vector2(5, 5)
@@ -818,6 +839,13 @@ func assign_default_btn_events() -> void:
 	BtnControls.directional_pref = "LR"
 	BtnControls.itemlist = desktop_itemlist
 	BtnControls.item_index = previous_desktop_index	
+	
+	BtnControls.onUpdate = func(_node:Control) -> void:
+		for child in DesktopGrid.get_children():
+			child.is_selected = child == _node
+			if child == _node:				
+				selected_app = _node.data
+				selected_app_item = _node		
 
 	BtnControls.onAction = func() -> void:
 		if selected_app.is_empty():return

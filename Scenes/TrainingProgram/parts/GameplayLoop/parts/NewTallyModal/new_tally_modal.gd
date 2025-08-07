@@ -93,7 +93,6 @@ func end() -> void:
 	
 	await U.tween_node_property(self, "modulate:a", 0)
 
-	
 	# update amount
 	for ref in differential:
 		var amount:int = differential[ref]

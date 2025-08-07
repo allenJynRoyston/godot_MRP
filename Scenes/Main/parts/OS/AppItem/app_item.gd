@@ -1,10 +1,9 @@
-@tool
-extends MouseInteractions
+extends PanelContainer
 
 @onready var RootPanel:Control = $"."
-@onready var IconButton:Control = $MarginContainer2/VBoxContainer/IconBtn
-@onready var RunningButton:Control = $Control2/RunningBtn
-@onready var AppLabel:Label = $MarginContainer2/VBoxContainer/Label
+@onready var IconButton:Control = $VBoxContainer/MarginContainer/VBoxContainer/IconBtn
+@onready var RunningButton:Control = $RunningControl/SVGIcon
+@onready var AppLabel:Label = $VBoxContainer/MarginContainer/VBoxContainer/Label
 
 @export var title:String = "Application" : 
 	set(val):
@@ -39,14 +38,10 @@ var is_running:bool = false :
 		is_running = val
 		on_is_runnning_update()
 
-var onFocus:Callable = func(node:Control) -> void:pass
-var onBlur:Callable = func(node:Control) -> void:pass
-
 var flat_stylebox_copy:StyleBoxFlat
 
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	super._ready()
 	hide()
 	flat_stylebox_copy = RootPanel.get('theme_override_styles/panel').duplicate()	
 	after_ready.call_deferred()
@@ -55,15 +50,13 @@ func _ready() -> void:
 
 func after_ready():
 	init_pos = position
-	
-	on_focus(false)
 	on_title_update()
 	on_icon_update()
 	on_data_update()
 	on_position_update()	
 	on_is_runnning_update()
-	
-	
+	on_is_selected_update()
+
 	await U.set_timeout(0.5)
 	show()	
 # ------------------------------------------------------------------------------
@@ -71,9 +64,9 @@ func after_ready():
 # ------------------------------------------------------------------------------
 func on_data_update() -> void:
 	if !is_node_ready() or data.is_empty():return
-	title = data.title
-	icon = data.icon
-	hint_description = "Run application: %s" % data.title
+	title = data.details.title
+	icon = data.details.icon
+	#hint_description = "Run application: %s" % data.title
 	
 		
 func on_title_update() -> void:
@@ -98,24 +91,24 @@ func on_is_runnning_update() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func on_focus(state:bool = is_focused) -> void:
-	onFocus.call(self) if state else onBlur.call(self)
-	
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
-	
+#func on_focus(state:bool = is_focused) -> void:
+	#onFocus.call(self) if state else onBlur.call(self)
+	#
+	#if state:
+		#GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
+	#else:
+		#GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)	
+	#
 
 func on_is_selected_update() -> void:
 	if !is_node_ready(): return
 	var alpha:float = 1 if is_selected else 0.8
-	var txt_color:Color = Color(1, 1, 1, alpha) if is_selected else Color(1.0, 0.75, 0.2, alpha)
-	var bg_color:Color = Color(1, 1, 1, alpha) if is_selected else flat_stylebox_copy.bg_color
+	var txt_color:Color = COLORS.primary_black if is_selected else COLORS.primary_color
+	var bg_color:Color = COLORS.primary_color if is_selected else COLORS.primary_black
 	
 	# update icon
 	IconButton.static_color = txt_color
-	RunningButton.static_color = txt_color
+	RunningButton.icon_color = txt_color
 	
 	# update label
 	var label_setting:LabelSettings = AppLabel.label_settings.duplicate()
@@ -123,7 +116,7 @@ func on_is_selected_update() -> void:
 	AppLabel.label_settings = label_setting
 	
 	# update panel
-	flat_stylebox_copy.border_color = bg_color
+	flat_stylebox_copy.bg_color = bg_color
 	RootPanel.set('theme_override_styles/panel', flat_stylebox_copy)
 
 #func on_mouse_dbl_click(node:Control, btn:int, on_hover:bool) -> void:

@@ -7,7 +7,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xncx"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbhxw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xncx"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -23,7 +23,7 @@ corner_radius_bottom_left = 3
 color = Color(1, 0.74902, 0.2, 1)
 thickness = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmhwb"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2ypb"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -35,7 +35,7 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwxh6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbhxw"]
 bg_color = Color(0, 0, 0, 0.8)
 border_width_left = 2
 border_width_top = 2
@@ -89,7 +89,7 @@ theme_override_constants/separation = 5
 
 [node name="StartBtn" parent="Control/PanelContainer/MarginContainer/VBoxContainer/BtnList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1xncx")
 title = "RUN"
 
 [node name="HSeparator" type="HSeparator" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
@@ -105,12 +105,12 @@ theme_override_constants/separation = 5
 
 [node name="OptionItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rmhwb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_h2ypb")
 title = "Option A"
 
 [node name="OptionItem2" parent="Control/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/OptionList" instance=ExtResource("2_1xncx")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nwxh6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jbhxw")
 title = "Option B"
 
 [node name="BtnControls" parent="." instance=ExtResource("4_h2ypb")]

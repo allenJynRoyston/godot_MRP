@@ -195,7 +195,7 @@ var colorrect_defaults:Dictionary = {
 
 # SAVE FILE STRUCTURE/DEFAULTS
 var default_save_profiles:Dictionary = {
-	"os_setting": {
+	"os_settings": {
 		"read_emails": [],
 		"tracks_unlocked": [],
 		"apps_installed": [],
@@ -206,7 +206,7 @@ var default_save_profiles:Dictionary = {
 			"amount": 10
 		}
 	},
-	"graphics": {
+	"graphic_settings": {
 		"fullscreen": false,
 		"shaders":{
 			"crt_effect": true,
@@ -215,6 +215,9 @@ var default_save_profiles:Dictionary = {
 			"monitor_overlay": true
 		}	
 	},	
+	"gameplay_settings": {
+		"enable_build_confirm": false
+	},
 	"snapshots": {
 		"after_setup": {},
 		"restore_checkpoint": {},
@@ -517,7 +520,7 @@ func on_fullscreen_update(use_resolution:Vector2i) -> void:
 
 # -----------------------------------	
 func switch_to_node(use_texture:TextureRect) -> void:
-	var use_crt_effect:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphics.shaders.crt_effect
+	var use_crt_effect:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].graphic_settings.shaders.crt_effect
 
 	for node in [CellTextureRect, OsTextureRect, ArticleTextureRect]:
 		if node == use_texture:

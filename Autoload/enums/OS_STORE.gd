@@ -3,7 +3,7 @@ extends Node
 # ------------------------------------------------------------------------------
 func calc_starting_data() -> Dictionary:
 	var store_data:Array = OS_STORE.data
-	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting	
+	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings	
 	var starting_data_copy:Dictionary = starting_data.duplicate(true)
 	
 	# add any purchases to the starting data

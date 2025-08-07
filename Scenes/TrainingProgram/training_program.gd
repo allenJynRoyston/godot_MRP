@@ -95,7 +95,7 @@ func start_game(filedata:Dictionary) -> void:
 		
 	GameplayLoopNode = GameplayLoopPreload.instantiate()
 	
-	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+	var os_setting:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
 	var starting_data:Dictionary = OS_STORE.calc_starting_data()
 		
 	# set parameters

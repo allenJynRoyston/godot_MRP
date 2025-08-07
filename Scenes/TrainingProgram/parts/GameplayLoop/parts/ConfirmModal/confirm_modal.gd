@@ -113,8 +113,6 @@ func start() -> void:
 # --------------------------------------------------------------------------------------------------		
 func end(made_changes:bool) -> void:
 	await BtnControls.reveal(false)
-	
-	#await U.tween_node_property(ColorRectBG, "modulate", Color(1, 1, 1, 0))
 
 	var duplicate_material:Material = TextureRectUI.material.duplicate(true)
 	TextureRectUI.material = duplicate_material
@@ -126,16 +124,10 @@ func end(made_changes:bool) -> void:
 	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
 
-	if made_changes:
-		var tally_dict:Dictionary = {}
-		var amount_count:int = 0
-		for item in activation_requirements:
-			tally_dict[item.resource.ref] = item.amount
-			amount_count += item.amount
-		
-		if !tally_dict.is_empty() and amount_count != 0:
-			await GAME_UTIL.open_tally( tally_dict )			
-			
+	for item in activation_requirements:
+		var amount:int = item.amount
+		RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
+
 	user_response.emit(made_changes)
 	queue_free()
 # --------------------------------------------------------------------------------------------------		

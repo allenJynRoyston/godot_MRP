@@ -25,7 +25,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
 func _ready() -> void:
-	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
 	
 	for HBoxNode in RoomVisualizer.get_children():
 		for child in HBoxNode.get_children():

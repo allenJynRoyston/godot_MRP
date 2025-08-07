@@ -14,7 +14,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	await U.tick()
 	MusicShaderTexture.material = shader_material
-	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting	
+	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings	
 	show() if os_settings.audio_visulizer_in_background else hide()	
 
 

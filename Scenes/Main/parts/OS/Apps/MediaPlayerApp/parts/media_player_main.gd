@@ -45,7 +45,7 @@ func _ready() -> void:
 	BtnControls.onAction = func() -> void:
 		if SelectedNode == null:return
 		var item:Dictionary = track_data[tab_index].list[ SelectedNode.index ]
-		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting
+		var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
 		var track_ref:int = item.details.ref
 		var is_unlocked:bool = item.is_unlocked.call(os_settings)
 		
@@ -88,7 +88,7 @@ func unpause() -> void:
 # ------------------------------------------------------------------------------
 func on_music_track_list_update() -> void:
 	if !is_node_ready():return
-	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_setting	
+	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings	
 	
 	for item in TrackList.get_children():
 		item.queue_free()
