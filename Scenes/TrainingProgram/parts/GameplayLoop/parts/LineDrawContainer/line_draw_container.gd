@@ -273,14 +273,14 @@ func _draw() -> void:
 # --------------------------------------------------------------------------------------------------	
 const MAX_DRAW:int = 500
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if !render_lines:return
 	# updates draw count every 300 ms so it builds it out in chunks
 	if draw_count < MAX_DRAW:
 		draw_count += draw_inc
 		draw_inc += 1
 
-func on_process_update(delta: float) -> void:	
+func on_process_update(_delta: float, _time_passed:float) -> void:	
 	if !render:return
 	queue_redraw() 
 # --------------------------------------------------------------------------------------------------	

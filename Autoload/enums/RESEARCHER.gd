@@ -2,7 +2,7 @@
 extends Node
 
 enum SPECIALIZATION { 
-	ANY,
+	#ANY,
 	ADMIN,
 	RESEARCHER,
 	DCLASS,

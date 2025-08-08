@@ -116,8 +116,7 @@ func update_node() -> void:
 	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location) 
 	var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(use_location)
 	var use_list:Array = List.get_children()
-	
-	
+
 	for index in NodeList.size():
 		var SummaryBtnNode:Control = NodeList[index]
 
@@ -131,18 +130,11 @@ func update_node() -> void:
 					var on_cooldown:bool = false
 					var at_level_threshold:bool = abl_lvl >= ability.lvl_required
 					var cooldown_val:int = 0
-					
 
 					if ability_uid in base_states.room[designation].ability_on_cooldown:
 						cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]		
 						on_cooldown = base_states.room[designation].ability_on_cooldown[ability_uid] > 0
 
-					SummaryBtnNode.ref_data = {
-						"type": 'active_ability', 
-						"data": ability,
-						"is_disabled": !is_activated or !at_level_threshold
-					}
-					
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.CONVERSATION
 					if !at_level_threshold:
@@ -165,6 +157,14 @@ func update_node() -> void:
 							return
 					
 						GAME_UTIL.use_active_ability(ability, room_details.room_ref, index, use_location)
+						
+
+					SummaryBtnNode.ref_data = {
+						"type": 'active_ability', 
+						"data": ability,
+						"is_disabled": SummaryBtnNode.is_disabled
+					}
+											
 							
 			ABILITY_TYPE.PASSIVE:
 				var abilities:Array = room_details.passive_abilities.call()	
@@ -175,6 +175,7 @@ func update_node() -> void:
 					var ability_uid:String = str(room_details.ref, index)	
 					var is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false	
 					var at_level_threshold:bool = ability.lvl_required <= abl_lvl
+					var at_mtf_limit:bool = false
 					
 					# check if scp is required for passive to be used
 					if "scp_required" in ability and ability.scp_required:
@@ -192,22 +193,29 @@ func update_node() -> void:
 						var energy_left:int = energy.available - energy.used
 						not_enough_energy = energy_left < ability.energy_cost
 					
-					SummaryBtnNode.ref_data = {
-						"type": 'passive_ability', 
-						"data": ability,
-						"is_disabled": !is_activated or !at_level_threshold
-					}				
-					
 					SummaryBtnNode.hint_title = "HINT"
 					SummaryBtnNode.hint_icon =  SVGS.TYPE.ENERGY
 					if !at_level_threshold:
 						SummaryBtnNode.hint_description = "Requires upgrade to use."
 					else:
 						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "Not enough energy."
+						
+					if at_mtf_limit:
+						SummaryBtnNode.hint_description = "At MTF team capacity." 
+					
+					# set disable state
+					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy or !at_level_threshold 
+					
+					# special check for mtf at full capacity
+					if "mtf_ref" in ability:
+						var mtf_list:Array = room_config.floor[use_location.floor].ring[use_location.ring].mtf
+						SummaryBtnNode.is_disabled = (mtf_list.size() >= 3 and !is_active) or (!is_activated or not_enough_energy or !at_level_threshold)
+						if SummaryBtnNode.is_disabled:
+							SummaryBtnNode.hint_description = "At MTF team capacity." if (mtf_list.size() >= 3 and !is_active) else SummaryBtnNode.hint_description
 
-					SummaryBtnNode.is_disabled = !is_activated or not_enough_energy or !at_level_threshold
+					
 					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.description
-					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed else SVGS.TYPE.DELETE
+					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed or at_mtf_limit else SVGS.TYPE.DELETE
 					
 					SummaryBtnNode.show_checked_panel = true
 					SummaryBtnNode.is_checked = is_active
@@ -220,8 +228,14 @@ func update_node() -> void:
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
 						GAME_UTIL.toggle_passive_ability(room_details.ref, index, use_location)
-						#if ActionContainerNode.is_visible_in_tree():
-							#ActionContainerNode.after_use_passive_ability.call()
+
+					SummaryBtnNode.ref_data = {
+						"type": 'passive_ability', 
+						"data": ability,
+						"is_disabled": SummaryBtnNode.is_disabled
+					}				
+					
+
 					
 		if redraw:
 			List.add_child(SummaryBtnNode)

@@ -1,0 +1,72 @@
+[gd_scene load_steps=8 format=3 uid="uid://b6dbdx2kec730"]
+
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="1_jmqq2"]
+[ext_resource type="Script" uid="uid://bqn1ud5bay6v5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/MtfComponent/mtf_component.gd" id="1_lrnuf"]
+[ext_resource type="PackedScene" uid="uid://ctbrttyqovr35" path="res://UI/MTFItem/MTFItem.tscn" id="2_jmqq2"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_qd8rh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jmqq2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lrnuf"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0fm8"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="MTFComponent" type="PanelContainer"]
+custom_minimum_size = Vector2(210, 83)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jmqq2")
+script = ExtResource("1_lrnuf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lrnuf")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "MTF"
+label_settings = ExtResource("1_jmqq2")
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_o0fm8")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="NoneLabel" type="Label" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+text = "NONE AVAILABLE"
+label_settings = ExtResource("3_qd8rh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="MTFItem" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("2_jmqq2")]
+layout_mode = 2

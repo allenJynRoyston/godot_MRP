@@ -90,11 +90,11 @@ func return_unavailable_rooms(item_data:Dictionary) -> Array:
 func return_resource_list(details:Dictionary, dict_property:String) -> Array:
 	var list:Array = []
 	if dict_property in details and "resources" in details[dict_property] :
-		if "personnel" in details[dict_property].resources:
-			var amount_dict:Dictionary = details[dict_property].resources.personnel.call()
-			for key in amount_dict:	
-				var amount:int = amount_dict[key]
-				list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
+		#if "personnel" in details[dict_property].resources:
+			#var amount_dict:Dictionary = details[dict_property].resources.personnel.call()
+			#for key in amount_dict:	
+				#var amount:int = amount_dict[key]
+				#list.push_back({"type": "amount", "amount": amount, "resource": RESOURCE_UTIL.return_currency(key)})
 						
 		if "amount" in details[dict_property].resources:
 			var amount_dict:Dictionary = details[dict_property].resources.amount.call()

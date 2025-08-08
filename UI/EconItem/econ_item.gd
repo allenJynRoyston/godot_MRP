@@ -1,3 +1,4 @@
+@tool
 extends PanelContainer
 
 @onready var RootPanel:PanelContainer = $"."
@@ -5,6 +6,7 @@ extends PanelContainer
 @onready var Vertical:VBoxContainer = $VBoxContainer
 @onready var VSvgIcon:Control = $VBoxContainer/SVGIcon
 @onready var VAmountLabel:Label = $VBoxContainer/PanelContainer/AmountLabel
+@onready var VBonusAmountLabel:Label = $VBoxContainer/PanelContainer/Control/BonusAmountLabel
 @onready var VBurnLabel:Label = $VBoxContainer/PanelContainer/BurnLabel
 
 @onready var Horizontal:HBoxContainer = $HBoxContainer
@@ -95,8 +97,15 @@ func on_burn_val_amount() -> void:
 	
 func on_bonus_amount_update() -> void:
 	if !is_node_ready():return
-	HBonusAmountLabel.text = "%s%s" % ["+" if bonus_amount > 0 else "-", bonus_amount]	
+	HBonusAmountLabel.text = "%s%s" % ["+" if bonus_amount > 0 else "", bonus_amount]	
+	VBonusAmountLabel.text = "%s%s" % ["+" if bonus_amount > 0 else "", bonus_amount]	
 	HBonusAmountLabel.hide() if bonus_amount == 0 else HBonusAmountLabel.show()
+	VBonusAmountLabel.hide() if bonus_amount == 0 else VBonusAmountLabel.show()
+	
+	var bonus_amount_label_settings_copy:LabelSettings = VBonusAmountLabel.label_settings.duplicate()
+	bonus_amount_label_settings_copy.font_color = negative_color if bonus_amount < 0 else Color.WHITE
+	VBonusAmountLabel.label_settings = bonus_amount_label_settings_copy
+	
 
 func on_invert_colors_update() -> void:
 	if !is_node_ready():return

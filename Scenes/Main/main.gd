@@ -730,7 +730,6 @@ func on_shader_profile_update() -> void:
 func on_control_input_update(input_data:Dictionary) -> void:	
 	if !is_node_ready():return
 	var key:String = input_data.key	
-	GBL
 	match key:
 		"N":
 			if has_note:
@@ -741,7 +740,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 # -----------------------------------				
 
 # -----------------------------------	
-func on_process_update(delta: float) -> void:
+func on_process_update(_delta: float, _time_passed:float) -> void:
 	var mouse_pos:Vector2 = get_global_mouse_position()
 	GBL.mouse_pos = mouse_pos
 	MousePointer.position = mouse_pos - Vector2(4, 0)

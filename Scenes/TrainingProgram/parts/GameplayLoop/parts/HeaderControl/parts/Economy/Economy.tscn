@@ -1,78 +1,78 @@
-[gd_scene load_steps=6 format=3 uid="uid://gh5hfdolakbr"]
+[gd_scene load_steps=7 format=3 uid="uid://gh5hfdolakbr"]
 
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_f5oam"]
 [ext_resource type="Script" uid="uid://drrunvytkkmb4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/economy.gd" id="2_frhgw"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_4d3ey"]
 [ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="4_6i1j1"]
-[ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="5_m8brh"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_frhgw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4d3ey"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6i1j1"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Economy" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 60)
 theme_override_styles/panel = ExtResource("1_f5oam")
 script = ExtResource("2_frhgw")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4d3ey")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -10
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = -1
+text = "economy"
+label_settings = ExtResource("6_frhgw")
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-label_settings = ExtResource("3_4d3ey")
-horizontal_alignment = 1
-vertical_alignment = 1
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_6i1j1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Money" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
+[node name="Money" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 31
 burn_val = "00"
 
-[node name="Research" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
+[node name="Research" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 44
 burn_val = "00"
 
-[node name="Material" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
+[node name="Material" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 40
 burn_val = "00"
 
-[node name="Core" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
+[node name="Core" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 icon = 39
 burn_val = "00"
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -3
-theme_override_constants/margin_bottom = -30
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="IncomeMoney" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-layout_mode = 2
-
-[node name="IncomeResearch" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-layout_mode = 2
-
-[node name="IncomeMaterial" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-layout_mode = 2
-
-[node name="IncomeCore" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_m8brh")]
-layout_mode = 2

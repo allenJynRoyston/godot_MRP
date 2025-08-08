@@ -124,12 +124,15 @@ func start(use_node:PackedScene, start_on_tab:int, init_func:Callable, view_only
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3)
 	current_mode = MODE.TAB_SELECT
 	
-	var spec_details:Dictionary = RESEARCHER_UTIL.return_specialization_data(start_on_tab)
-	for index in tabs.size():
-		var tab:Dictionary = tabs[index]
-		if tab.title == spec_details.name:
-			tab_index = index
-			break
+	if start_on_tab == -1:
+		tab_index = 0
+	else:
+		var spec_details:Dictionary = RESEARCHER_UTIL.return_specialization_data(start_on_tab)
+		for index in tabs.size():
+			var tab:Dictionary = tabs[index]
+			if tab.title == spec_details.name:
+				tab_index = index
+				break
 	
 	on_tab_index_update()
 	

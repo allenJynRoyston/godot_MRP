@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://d340vfla2o4r8"]
+
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="1_4ncvm"]
+[ext_resource type="Script" uid="uid://dbh00m5cg38bm" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/EnergyComponent/energy_component.gd" id="1_ejyru"]
+[ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="2_8euxf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jmqq2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ncvm"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8euxf"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="EnergyComponent" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jmqq2")
+script = ExtResource("1_ejyru")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4ncvm")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "POWER"
+label_settings = ExtResource("1_4ncvm")
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_8euxf")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Energy" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("2_8euxf")]
+layout_mode = 2
+icon = 32
+amount = 1
+max_amount = 10
+icon_size = Vector2(20, 20)

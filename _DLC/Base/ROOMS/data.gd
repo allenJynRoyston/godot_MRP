@@ -15,7 +15,7 @@ var DEBUG_ROOM:Dictionary = {
 	"can_contain": false,
 	"can_assign_researchers": true,
 	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.ANY
+		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],
 	# ------------------------------------------
 
@@ -268,10 +268,7 @@ var OPERATIONS_SUPPORT:Dictionary = {
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_SECURITY),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS),
-			ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
+
 		],	
 	# ------------------------------------------	
 }
@@ -578,9 +575,12 @@ var MTF_BARRICKS:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"abilities": func() -> Array: 
+	"passive_abilities": func() -> Array: 
 		return [
-			ABL.get_ability(ABL.REF.TRAIN_MTF),
+			ABL_P.get_ability(ABL_P.REF.MTF_A),
+			ABL_P.get_ability(ABL_P.REF.MTF_B),			
+			ABL_P.get_ability(ABL_P.REF.MTF_C),			
+			ABL_P.get_ability(ABL_P.REF.MTF_D),			
 		],		
 	# ------------------------------------------
 }

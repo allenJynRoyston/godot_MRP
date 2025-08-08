@@ -129,17 +129,17 @@ func update_node(shift_val:int = 10) -> void:
 	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 	
 	# hide/show personnel icons
-	for key in room_config_data.personnel:
-		var val:bool = 	room_config_data.personnel[key]
-		match key:
-			RESOURCE.PERSONNEL.TECHNICIANS:
-				TechnicianIcon.hide() if !val else TechnicianIcon.show()
-			RESOURCE.PERSONNEL.STAFF:
-				StaffIcon.hide() if !val else StaffIcon.show()
-			RESOURCE.PERSONNEL.SECURITY:
-				SecurityIcon.hide() if !val else SecurityIcon.show()
-			RESOURCE.PERSONNEL.DCLASS:
-				DClassIcon.hide() if !val else DClassIcon.show()
+	#for key in room_config_data.personnel:
+		#var val:bool = 	room_config_data.personnel[key]
+		#match key:
+			#RESOURCE.PERSONNEL.TECHNICIANS:
+				#TechnicianIcon.hide() if !val else TechnicianIcon.show()
+			#RESOURCE.PERSONNEL.STAFF:
+				#StaffIcon.hide() if !val else StaffIcon.show()
+			#RESOURCE.PERSONNEL.SECURITY:
+				#SecurityIcon.hide() if !val else SecurityIcon.show()
+			#RESOURCE.PERSONNEL.DCLASS:
+				#DClassIcon.hide() if !val else DClassIcon.show()
 
 	# hide/show currency icons
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
@@ -181,7 +181,7 @@ func update_node(shift_val:int = 10) -> void:
 # --------------------------------------------
 
 # --------------------------------------------
-func on_process_update(delta:float) -> void:
+func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
 	self.global_position = tag_pos - Vector2(self.size.x/2 - 20, -50)

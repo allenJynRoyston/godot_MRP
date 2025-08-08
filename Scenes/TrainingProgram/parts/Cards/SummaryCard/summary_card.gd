@@ -5,7 +5,7 @@ extends PanelContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 @onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
-@onready var EnergyTag:Label = $MarginContainer/VBoxContainer/ModuleContainer/ModuleComponent/MarginContainer/List/SummaryBtn/MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
+@onready var EnergyCostLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
 
 # cost
@@ -140,6 +140,7 @@ func on_update() -> void:
 	if preview_mode and preview_mode_ref != -1:
 		ConstructionCostPanel.show()
 		LvlTag.hide()
+		
 		# hide all nodes
 		for node in node_list:
 			node.hide()
@@ -161,8 +162,7 @@ func on_update() -> void:
 		for ref in room_details.currencies:
 			var amount:int = room_details.currencies[ref]
 			currency_list[ref].amount += amount
-		
-					
+
 		# get baseline for metrics
 		var metrics:Dictionary = {}
 		for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
@@ -216,15 +216,17 @@ func on_update() -> void:
 	
 	if modules_only:
 		InfoContainer.hide()
+		ModuleComponent.room_details = {}
 		
 		# show containment
 		ContainmentContainer.show() if room_details.details.can_contain else ContainmentContainer.hide()
 		ContainmentComponent.use_location = use_location				
 		ContainmentComponent.room_details = room_details.details
-				
+		
 		# passives
 		if room_details.details.passive_abilities.call().is_empty():
 			ModuleContainer.hide()
+			ModuleComponent.room_details = {}
 		else:
 			ModuleContainer.show()
 			ModuleComponent.use_location = use_location		
@@ -233,6 +235,7 @@ func on_update() -> void:
 		# assign programs
 		if room_details.details.abilities.call().is_empty():
 			ProgramContainer.hide()
+			ProgramComponent.room_details = {}
 		else:
 			ProgramContainer.show()
 			ProgramComponent.use_location = use_location			
@@ -256,16 +259,16 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	var can_contain:bool = room_details.details.can_contain		
 	var personnel_capacity:Dictionary = room_details.details.personnel_capacity	
 	var required_staffing:Array = room_details.details.required_staffing
-	
-	# assign details		
+
+	# assign details		t
 	InfoContainer.show()
 	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
 	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]
 	DescriptionLabel.text = room_details.details.description
-	EnergyTag.text = str(room_details.details.required_energy)
+	EnergyCostLabel.text = str(room_details.details.required_energy)
 	ConstructionCostTag.text = str(room_details.details.costs.purchase)
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
-	
+
 	# staffing
 	var show_required_staffing:bool = required_staffing.size() > 0 
 	RequiredStaffPanel.required_staffing = required_staffing
@@ -309,8 +312,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	program_list_as_string = "\n".join(program_list.map(func(i): return i.name))
 	HasProgramLabel.text = program_list_as_string
 	HasProgramsContainer.hide() if room_details.details.abilities.call().is_empty() else HasProgramsContainer.show()
-		
-	
+
 	# effect
 	EffectLabel.text = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
 	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()
@@ -327,8 +329,6 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
 	ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
 	ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
-	
-	
 	
 	# under construction
 	if is_under_construction:

@@ -9,7 +9,6 @@ extends PanelContainer
 		percentage_complete = val
 		on_percentage_complete_update()
 
-var time_elapsed:float = 0
 var has_completed:bool = false
 var start:bool = false
 var ref:int
@@ -48,11 +47,11 @@ func on_complete() -> void:
 
 
 # ------------------------------------------------
-func on_process_update(delta: float) -> void:
+func on_process_update(delta: float, _time_passed:float) -> void:
 	if start:
-		time_elapsed += delta 
+		_time_passed += delta 
 		if percentage_complete < 1.0:
-			percentage_complete = time_elapsed / (duration * 1.0)
+			percentage_complete = _time_passed / (duration * 1.0)
 		else:
 			if !has_completed:
 				has_completed = true

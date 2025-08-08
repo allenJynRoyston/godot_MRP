@@ -8,7 +8,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_as5qf"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_yg6du"]
+[sub_resource type="LabelSettings" id="LabelSettings_2lhwi"]
 font = ExtResource("3_2lhwi")
 font_color = Color(0.05, 0.05, 0.05, 1)
 outline_size = 2
@@ -43,6 +43,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_as5qf")
 [node name="NameLabel" type="Label" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 text = "alpha"
-label_settings = SubResource("LabelSettings_yg6du")
+label_settings = SubResource("LabelSettings_2lhwi")
 horizontal_alignment = 2
 vertical_alignment = 1

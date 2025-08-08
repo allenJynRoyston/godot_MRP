@@ -23,19 +23,18 @@ func _ready() -> void:
 
 func activate() -> void:
 	modulate = Color(1, 1, 1, 1)	
+	update.call_deferred()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
 func on_camera_settings_update(new_val:Dictionary) -> void:
 	camera_settings = new_val
-	if !is_node_ready():return
 	U.debounce(str(self, "_update"), update)
 # --------------------------------------------------------------------------------------------------	
 
 # -----------------------------------------------
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()
-	if !is_node_ready():return
 	U.debounce(str(self, "_update"), update)
 # -----------------------------------------------	
 
@@ -53,8 +52,7 @@ func get_hint_buttons() -> Array:
 # -----------------------------------------------	
 func update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
-	
-	## update everything else
+
 	match camera_settings.type:
 		CAMERA.TYPE.FLOOR_SELECT:
 			HeaderWingRight.reveal(false)
@@ -64,9 +62,6 @@ func update() -> void:
 			HeaderFloorRight.reveal(false)
 			for node in [Location, Visualizer, HeaderLeft, HeaderWingRight, BuffsAndDebuffs]:
 				node.reveal(is_showing)	
-		CAMERA.TYPE.ROOM_SELECT:
-			HeaderFloorRight.reveal(false)
-			for node in [Location, Visualizer, HeaderLeft, HeaderWingRight, BuffsAndDebuffs]:
-				node.reveal(is_showing)	
+	
 
 # -----------------------------------------------	

@@ -79,7 +79,7 @@ func update_mesh() -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
-func on_process_update(delta:float) -> void:
+func on_process_update(_delta:float, _time_passed:float) -> void:
 	if !is_node_ready():return
 	
 	FloorInstanceContainer.rotate_y(0.005)

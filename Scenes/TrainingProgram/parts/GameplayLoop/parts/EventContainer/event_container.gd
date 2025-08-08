@@ -7,11 +7,11 @@ extends GameContainer
 @onready var ResourceFloatingPanel:Control = $ResourceRequiredFloatingPanel
 @onready var ConsequenceFloatingPanel:Control = $ConsequenceFloatingPanel
 @onready var SuccessRoll:Control = $SuccessRoll
-@onready var RoomDetails:Control = $RoomDetails
+#@onready var RoomDetails:Control = $RoomDetails
 
-@onready var ResearcherPanel:PanelContainer = $ResearcherControl/PanelContainer
-@onready var ResearcherMargin:MarginContainer = $ResearcherControl/PanelContainer/MarginContainer
-@onready var ResearcherCard:Control = $ResearcherControl/PanelContainer/MarginContainer/ResearcherCard
+#@onready var ResearcherPanel:PanelContainer = $ResearcherControl/PanelContainer
+#@onready var ResearcherMargin:MarginContainer = $ResearcherControl/PanelContainer/MarginContainer
+#@onready var ResearcherCard:Control = $ResearcherControl/PanelContainer/MarginContainer/ResearcherCard
 
 @onready var ImagePanel:PanelContainer = $ImageControl/PanelContainer
 @onready var ImageMargin:MarginContainer = $ImageControl/PanelContainer/MarginContainer
@@ -85,7 +85,7 @@ func _ready() -> void:
 	reset()
 	reset_content_nodes()
 	
-	RoomDetails.reveal(false)
+	# RoomDetails.reveal(false)
 	
 	BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
 	use_force_results = DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
@@ -105,8 +105,8 @@ func _ready() -> void:
 				option_selected_index = index
 				
 				# apply special cases
-				node.apply_dyslexia = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.DYSLEXIC if "selected_staff" in current_instruction else false 
-				node.allow_for_hint = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.ANALYTICAL if "selected_staff" in current_instruction else false 
+				node.apply_dyslexia = false # current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.DYSLEXIC if "selected_staff" in current_instruction else false 
+				node.allow_for_hint = false # current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.ANALYTICAL if "selected_staff" in current_instruction else false 
 				
 				# update and move floating resource 
 				var has_cost:bool = "render_if" in node.data and "cost" in node.data.render_if
@@ -115,8 +115,8 @@ func _ready() -> void:
 				ResourceFloatingPanel.goto(node.global_position + node.size + Vector2(0, -node.size.y/2))
 				
 				# show negative consequence odds IF 
-				var is_pessimisstic:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PESSIMIST if "selected_staff" in current_instruction else false 
-				var is_optimistic:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.OPTIMIST if "selected_staff" in current_instruction else false 
+				var is_pessimisstic:bool = false #  current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PESSIMIST if "selected_staff" in current_instruction else false 
+				var is_optimistic:bool = false # current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.OPTIMIST if "selected_staff" in current_instruction else false 
 				var show_consequences:bool = is_pessimisstic or is_optimistic
 				var type:String = "NEGATIVE" if is_pessimisstic else "POSITIVE" if is_optimistic else ""
 				
@@ -125,11 +125,11 @@ func _ready() -> void:
 				ConsequenceFloatingPanel.goto(node.global_position + Vector2(0, node.size.y) + Vector2(0, -node.size.y/2))
 				
 
-				if node.data.has("room_ref"):
-					RoomDetails.reveal(true)
-					RoomDetails.room_ref = node.data.room_ref
-				else:
-					RoomDetails.reveal(false)
+				#if node.data.has("room_ref"):
+					#RoomDetails.reveal(true)
+					#RoomDetails.room_ref = node.data.room_ref
+				#else:
+					#RoomDetails.reveal(false)
 
 # --------------------------------------------------------------------------------------------------		
 
@@ -144,13 +144,13 @@ func activate() -> void:
 		"hide": -ContentMargin.size.y
 	}
 	
-	control_pos[ResearcherPanel] = {
-		"show": 0,
-		"hide": -ResearcherMargin.size.x
-	}
+	#control_pos[ResearcherPanel] = {
+		#"show": 0,
+		#"hide": -ResearcherMargin.size.x
+	#}
 
 	ContentPanel.position.y = control_pos[ContentPanel].hide	
-	ResearcherPanel.position.x = control_pos[ResearcherPanel].hide
+	# ResearcherPanel.position.x = control_pos[ResearcherPanel].hide
 # --------------------------------------------------------------------------------------------------	
 
 
@@ -208,7 +208,7 @@ func start(new_event_data:Array) -> void:
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
 	BtnControls.reveal(false)	
-	RoomDetails.reveal(false)	
+	# RoomDetails.reveal(false)	
 	
 	reveal_researcher(false)
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
@@ -222,11 +222,12 @@ func end() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_researcher(state:bool, duration:float = 0.7) -> void:
-	if !state:
-		ResearcherCard.reveal = false	
-	await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].show if state else control_pos[ResearcherPanel].hide, duration)
-	if state:
-		ResearcherCard.reveal = true
+	pass
+	#if !state:
+		#ResearcherCard.reveal = false	
+	#await U.tween_node_property(ResearcherPanel, "position:x", control_pos[ResearcherPanel].show if state else control_pos[ResearcherPanel].hide, duration)
+	#if state:
+		#ResearcherCard.reveal = true
 
 func reveal_outputtexture(state:bool, duration:float) -> void:
 	var material_duplication:Material = ImageOutputTextureRect.material.duplicate()
@@ -317,74 +318,74 @@ func on_current_text_update() -> void:
 
 	await tween_text_reveal(current_text.length() * 0.01)
 
-	# watch for certain strings to apply effects
-	if ResearcherCard.uid != null:
-		var staff_detail:Dictionary = RESEARCHER_UTIL.return_data_with_uid(ResearcherCard.uid)
-		var delay:float = 1.0
-		
-		if !staff_detail.is_empty():
-			# -------------------------------------------------	DAMAGE HP/SANITY
-			# take 1 damage
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HURT)]):
-				await ResearcherCard.shake(3)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.take_damage(staff_detail.uid, 1)
-			
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HURT)]):
-				await ResearcherCard.shake(3)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 1)
-				
-			# -------------------------------------------------	RESTORE HP/SANITY
-			# take 1 damage
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HEAL)]):
-				await ResearcherCard.shake(3)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.restore_health(staff_detail.uid, 1)
-			
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HEAL)]):
-				await ResearcherCard.shake(3)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 1)
-
-			## -------------------------------------------------	CHANGE STATUS TO KILLED/INSANE
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				
-				RESEARCHER_UTIL.change_status_to_kia(staff_detail.uid)
-				ResearcherCard.reveal = false
-				ResearcherCard.is_deselected = true
-				
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				
-				RESEARCHER_UTIL.change_status_to_insane(staff_detail.uid)
-				ResearcherCard.reveal = false
-				ResearcherCard.is_deselected = true
+	## watch for certain strings to apply effects
+	#if ResearcherCard.uid != null:
+		#var staff_detail:Dictionary = RESEARCHER_UTIL.return_data_with_uid(ResearcherCard.uid)
+		#var delay:float = 1.0
+		#
+		#if !staff_detail.is_empty():
+			## -------------------------------------------------	DAMAGE HP/SANITY
+			## take 1 damage
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HURT)]):
+				#await ResearcherCard.shake(3)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.take_damage(staff_detail.uid, 1)
 			#
-			## -------------------------------------------------	CHANGES TO MOOD
-			# mood changed to
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_STABLE)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.STABLE)
-				
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
-				
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_DEPRESSED)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.DEPRESSED)	
-			
-			if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
-				await ResearcherCard.shake(5)
-				await U.set_timeout(delay)
-				RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HURT)]):
+				#await ResearcherCard.shake(3)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.damage_sanity(staff_detail.uid, 1)
+				#
+			## -------------------------------------------------	RESTORE HP/SANITY
+			## take 1 damage
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.HP_HEAL)]):
+				#await ResearcherCard.shake(3)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.restore_health(staff_detail.uid, 1)
+			#
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.SP_HEAL)]):
+				#await ResearcherCard.shake(3)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.restore_sanity(staff_detail.uid, 1)
+#
+			### -------------------------------------------------	CHANGE STATUS TO KILLED/INSANE
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#
+				#RESEARCHER_UTIL.change_status_to_kia(staff_detail.uid)
+				#ResearcherCard.reveal = false
+				#ResearcherCard.is_deselected = true
+				#
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#
+				#RESEARCHER_UTIL.change_status_to_insane(staff_detail.uid)
+				#ResearcherCard.reveal = false
+				#ResearcherCard.is_deselected = true
+			##
+			### -------------------------------------------------	CHANGES TO MOOD
+			## mood changed to
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_STABLE)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.STABLE)
+				#
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
+				#
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_DEPRESSED)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.DEPRESSED)	
+			#
+			#if current_text == str(staff_detail.name, " %s" % [EVT.get_consequence_str(EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED)]):
+				#await ResearcherCard.shake(5)
+				#await U.set_timeout(delay)
+				#RESEARCHER_UTIL.change_mood(staff_detail.uid, RESEARCHER.MOODS.FRIGHTENED)
 
 
 	update_next_btn(true)	
@@ -413,24 +414,22 @@ func on_current_instruction_update() -> void:
 			ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 			reveal_outputtexture(true, 0.3)
 		
-	if "scp_ref" in current_instruction:
-		RoomDetails.scp_ref = current_instruction.scp_ref
-		RoomDetails.show_scp_card = true
-		RoomDetails.show_room_card = false
-		RoomDetails.show_researcher_card = false
-		RoomDetails.ScpCard.flip = true
-		RoomDetails.disable_inputs = true
-		await U.set_timeout(0.3)
-		RoomDetails.reveal(true)
+	#if "scp_ref" in current_instruction:
+		#RoomDetails.scp_ref = current_instruction.scp_ref
+		#RoomDetails.show_scp_card = true
+		#RoomDetails.show_room_card = false
+		#RoomDetails.show_researcher_card = false
+		#await U.set_timeout(0.3)
+		#RoomDetails.reveal(true)
+		#
 		
 		
-		
-	if "selected_staff" in current_instruction:
-		if ResearcherCard.uid != current_instruction.selected_staff.uid:
-			ResearcherCard.uid = current_instruction.selected_staff.uid
-			reveal_researcher(true)
-			await U.set_timeout(1.5)
-			ResearcherCard.flip = true
+	#if "selected_staff" in current_instruction:
+		#if ResearcherCard.uid != current_instruction.selected_staff.uid:
+			#ResearcherCard.uid = current_instruction.selected_staff.uid
+			#reveal_researcher(true)
+			#await U.set_timeout(1.5)
+			#ResearcherCard.flip = true
 
 	if "set_return_val" in current_instruction:
 		event_output = current_instruction.set_return_val.call()	
@@ -442,8 +441,8 @@ func on_current_instruction_update() -> void:
 		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
 		await SuccessRoll.use(current_instruction.is_success if !use_force_results else force_is_success, 1.5)
 		await BtnControls.reveal(true)
-		if ResearcherCard.uid != null:
-			reveal_researcher(true)
+		#if ResearcherCard.uid != null:
+			#reveal_researcher(true)
 	# -----------------------------------
 
 	# -----------------------------------
@@ -480,7 +479,7 @@ func on_current_instruction_update() -> void:
 			child.queue_free()			
 		
 		var options:Array = current_instruction.options
-		var is_paranoid:bool = current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PARANOID if "selected_staff" in current_instruction else false 
+		var is_paranoid:bool = false #current_instruction.selected_staff.trait.ref == RESEARCHER.TRAITS.PARANOID if "selected_staff" in current_instruction else false 
 
 		if is_paranoid:
 			options.shuffle()
@@ -543,7 +542,7 @@ func on_current_instruction_update() -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func on_option_select(option:Dictionary) -> void:	
-	RoomDetails.reveal(false)	
+	# RoomDetails.reveal(false)	
 	await BtnControls.reveal(false)
 	
 	update_next_btn(false)	

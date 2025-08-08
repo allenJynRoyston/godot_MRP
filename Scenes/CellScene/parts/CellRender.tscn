@@ -244,6 +244,7 @@ transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.568989, -0.38
 [node name="Lighting" type="Node3D" parent="."]
 
 [node name="AmbientLighting" type="Node3D" parent="Lighting"]
+visible = false
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Lighting/AmbientLighting"]
 transform = Transform3D(-0.693684, 0.199178, -0.692192, -0.26947, 0.819453, 0.505848, 0.667973, 0.537424, -0.514769, -2.4538, 1.41851, -3.69232)
@@ -293,7 +294,6 @@ omni_range = 0.0
 include_dust_particles = false
 
 [node name="InterogationLighting" type="Node3D" parent="Lighting"]
-visible = false
 
 [node name="CustomSpotlight3" parent="Lighting/InterogationLighting" instance=ExtResource("3_65whp")]
 transform = Transform3D(0.980271, -0.197657, 0, 0.19698, 0.976913, 0.0827038, -0.016347, -0.0810722, 0.996574, -1.21871, 1.45482, 0.573168)
@@ -305,6 +305,7 @@ spot_energy = 1.0
 include_dust_particles = false
 
 [node name="LowLevelLighting" type="Node3D" parent="Lighting"]
+visible = false
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Lighting/LowLevelLighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7803, -0.0650684)

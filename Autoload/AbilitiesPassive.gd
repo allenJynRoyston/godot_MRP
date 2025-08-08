@@ -7,12 +7,7 @@ enum REF {
 	
 	UPGRADE_ABL_LVL,
 	ADDITIONAL_STORE_UNLOCKS,
-	
-	SUPPLY_SECURITY,
-	SUPPLY_STAFF,
-	SUPPLY_TECHNICIANS,
-	SUPPLY_DCLASS,
-	
+
 	FIREARM_TRAINING,
 	HEAVY_WEAPONS_TRAINING,
 	
@@ -22,6 +17,14 @@ enum REF {
 	GENERATE_MONEY_FROM_SCP,
 	
 	MEMETIC_SHILEDING,
+	
+	# ------------------- GENERATE
+	MTF_A,
+	MTF_B,
+	MTF_C,
+	MTF_D,
+	MTF_E,
+	MTF_F,
 	
 	# ------------------- GENERATE
 	GENERATE_MONEY_LVL_1,
@@ -77,39 +80,6 @@ var SUPPLY_SECURITY:Dictionary = {
 	"energy_cost": 1,
 	"personnel": [
 		RESOURCE.PERSONNEL.SECURITY
-	]
-}
-
-# ---------------------------------
-var SUPPLY_STAFF:Dictionary = {
-	"name": "EMPLOY STAFF",
-	"description": "Makes STAFF personnel available for the entire wing.",
-	"lvl_required": 0,
-	"energy_cost": 1,
-	"personnel": [
-		RESOURCE.PERSONNEL.STAFF
-	]
-}
-
-# ---------------------------------
-var SUPPLY_TECHNICIANS:Dictionary = {
-	"name": "EMPLOY TECHNICIANS",
-	"description": "Makes TECHNICIANS personnel available for the entire wing.",
-	"lvl_required": 0,
-	"energy_cost": 1,
-	"personnel": [
-		RESOURCE.PERSONNEL.TECHNICIANS
-	]
-}
-
-# ---------------------------------
-var SUPPLY_DCLASS:Dictionary = {
-	"name": "CONSCRIPT DCLASS",
-	"description": "Makes DCLASS personnel available for the testing for the entire wing.",
-	"lvl_required": 0,
-	"energy_cost": 1,
-	"personnel": [
-		RESOURCE.PERSONNEL.DCLASS
 	]
 }
 
@@ -182,6 +152,56 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 }
 # ---------------------------------
 
+# -------------------------------------------------------------------------------------------------- MTF
+var MTF_A:Dictionary = {
+	"name": "MTF ALPHA",
+	"description": "MTF ALPHA.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.ALPHA
+}
+
+var MTF_B:Dictionary = {
+	"name": "MTF BRAVO",
+	"description": "MTF BRAVO.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.BRAVO
+}
+
+var MTF_C:Dictionary = {
+	"name": "MTF CHARLIE",
+	"description": "MTF CHARLIE.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.CHARLIE
+}
+
+var MTF_D:Dictionary = {
+	"name": "MTF DELTA",
+	"description": "MTF DELTA.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.DELTA
+}
+
+var MTF_E:Dictionary = {
+	"name": "MTF ECHO",
+	"description": "MTF ECHO.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.ECHO
+}
+
+var MTF_F:Dictionary = {
+	"name": "MTF FOXTROT",
+	"description": "MTF FOXTROT.",
+	"lvl_required": 0,
+	"energy_cost": 1,
+	"mtf_ref": MTF.TEAM.FOXTROT
+}
+
+
 # -------------------------------------------------------------------------------------------------- GENERATE RESOURCES
 var GENERATE_MONEY_LVL_1:Dictionary = {
 	"name": "GENERATE MONEY",
@@ -239,17 +259,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = UPGRADE_ABL_LVL
 		REF.ADDITIONAL_STORE_UNLOCKS:
 			ability = ADDITIONAL_STORE_UNLOCKS
-			
-		# ------------------	
-		REF.SUPPLY_SECURITY:
-			ability = SUPPLY_SECURITY
-		REF.SUPPLY_STAFF:
-			ability = SUPPLY_STAFF
-		REF.SUPPLY_TECHNICIANS:
-			ability = SUPPLY_TECHNICIANS
-		REF.SUPPLY_DCLASS:
-			ability = SUPPLY_DCLASS
-			
+
 		# ------------------
 		REF.FIREARM_TRAINING:
 			ability = FIREARM_TRAINING
@@ -267,6 +277,21 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 			ability = GENERATE_RESEARCH_FROM_SCP
 		REF.GENERATE_MONEY_FROM_SCP:
 			ability = GENERATE_MONEY_FROM_SCP
+			
+
+		# ------------------ MTF
+		REF.MTF_A:
+			ability = MTF_A
+		REF.MTF_B:
+			ability = MTF_B
+		REF.MTF_C:
+			ability = MTF_C
+		REF.MTF_D:
+			ability = MTF_D		
+		REF.MTF_E:
+			ability = MTF_E	
+		REF.MTF_F:
+			ability = MTF_F	
 			
 		# ------------------ GENERATE
 		REF.GENERATE_MONEY_LVL_1:

@@ -5,10 +5,9 @@ extends PanelContainer
 @onready var SvgIcon:Control = $VBoxContainer/SVGIcon
 @onready var NameLabel:Label = $VBoxContainer/PanelContainer/NameLabel
 
-@onready var primary_color:Color = COLORS.primary_black  
-@onready var negative_color:Color = COLORS.disabled_color  
+@export var primary_color:Color = COLORS.primary_black  
+@export var negative_color:Color = COLORS.disabled_color  
 		
-
 @export var icon:SVGS.TYPE = SVGS.TYPE.DOT : 
 	set(val):
 		icon = val
@@ -32,9 +31,9 @@ extends PanelContainer
 
 # --------------------------------------
 func _ready() -> void:
-	on_is_negative_update()
 	on_icon_size_update()
 	on_icon_update()
+	update()
 
 func on_icon_update() -> void:
 	if !is_node_ready():return

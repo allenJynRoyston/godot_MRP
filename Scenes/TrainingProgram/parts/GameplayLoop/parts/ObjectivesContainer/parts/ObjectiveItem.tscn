@@ -24,6 +24,7 @@ shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="ObjectiveItem" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.7)
+z_index = 1
 custom_minimum_size = Vector2(100, 50)
 offset_right = 253.0
 offset_bottom = 50.0

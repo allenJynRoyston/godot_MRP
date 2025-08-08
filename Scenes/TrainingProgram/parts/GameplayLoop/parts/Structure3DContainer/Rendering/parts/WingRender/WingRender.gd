@@ -125,10 +125,10 @@ func index_to_room_lookup(val:int) -> int:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
-	var index:int = current_location.room
 	var actual:int = index_to_room_lookup(current_location.room)
 	var marker:Marker3D = MarkersContainer.get_child(actual)
 	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)	
@@ -170,7 +170,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 		
 		for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 			room_change_viewpoint(i, use_location, val)		
-		
+
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
@@ -232,107 +232,115 @@ func update_vars() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------
+var previous_floor:int = -1
+var previous_ring:int = -1
+var previous_room:int = -1
 func update_room_lighting() -> void:
 	if room_config.is_empty() or use_location.is_empty() or previous_camera_view == CAMERA.VIEWPOINT.OVERHEAD:return
-	var lights:Array = [BaseLights, BillboardLights, EmergencyLights, CautionLights]
-	var default_world_light_color:Color = Color(0.949, 0.947, 0.993)
-	var overheated_color:Color = Color.RED
-	var miasma_light_color:Color = Color.MEDIUM_PURPLE
-	var lockdown_light_color:Color = Color.ORANGE_RED	
-	var caution_light_color:Color = Color.MEDIUM_VIOLET_RED
-	var warning_light_color:Color = Color.ORANGE
-	var altered:bool = false
-	
-	MiasmaFog.hide()
-	MoodFog.hide()
-	
-	
-	EmergencyFlareLight.light_energy = 0
-	for light in lights:
-		light.hide()
+	if previous_floor != current_location.floor or previous_ring != current_location.ring or previous_room != current_location.room:
+		previous_floor = current_location.floor
+		previous_ring = current_location.ring
+		previous_room = current_location.room
+			
+		var lights:Array = [BaseLights, BillboardLights, EmergencyLights, CautionLights]
+		var default_world_light_color:Color = Color(0.949, 0.947, 0.993)
+		var overheated_color:Color = Color.RED
+		var miasma_light_color:Color = Color.MEDIUM_PURPLE
+		var lockdown_light_color:Color = Color.ORANGE_RED	
+		var caution_light_color:Color = Color.MEDIUM_VIOLET_RED
+		var warning_light_color:Color = Color.ORANGE
+		var altered:bool = false
 		
-	# NUKE TRIGGERED
-	if nuke_is_triggered and !altered:		
-		WorldLight.light_color = lockdown_light_color
-		WorldLight.light_energy = 0.5
-		EmergencyLights.show()
-		CautionLights.show()
-		altered = true
-	
-	# has not ventilated
-	if !is_ventilated and !altered:
-		MiasmaFog.material.emission = Color(0.725, 0.042, 0.543) if is_overheated else Color(0.561, 0.239, 0.736)
-		WorldLight.light_color = miasma_light_color
-		WorldLight.light_energy = 0.5
-		BillboardLights.show()		
-		MiasmaFog.show()
-		altered = true
-	
-	# is overheated
-	if is_overheated and !altered:
-		WorldLight.light_color = overheated_color
-		WorldLight.light_energy = 1.2
-		BillboardLights.show()		
-		altered = true
+		MiasmaFog.hide()
+		MoodFog.hide()
 		
-	# no power	
-	if !is_powered and !altered:
-		WorldLight.light_color = default_world_light_color
-		WorldLight.light_energy = 0.15
-		BillboardLights.show()
-		MoodFog.show()
-		altered = true
 
-	if in_lockdown and !altered:
-		WorldLight.light_color = lockdown_light_color
-		WorldLight.light_energy = 1.2
-		BillboardLights.show()
-		altered = true
+		EmergencyFlareLight.light_energy = 0
+		for light in lights:
+			light.hide()
+			
+		# NUKE TRIGGERED
+		if nuke_is_triggered and !altered:		
+			WorldLight.light_color = lockdown_light_color
+			WorldLight.light_energy = 0.5
+			EmergencyLights.show()
+			CautionLights.show()
+			altered = true
+		
+		# has not ventilated
+		if !is_ventilated and !altered:
+			MiasmaFog.material.emission = Color(0.725, 0.042, 0.543) if is_overheated else Color(0.561, 0.239, 0.736)
+			WorldLight.light_color = miasma_light_color
+			WorldLight.light_energy = 0.5
+			BillboardLights.show()		
+			MiasmaFog.show()
+			altered = true
+		
+		# is overheated
+		if is_overheated and !altered:
+			WorldLight.light_color = overheated_color
+			WorldLight.light_energy = 1.2
+			BillboardLights.show()		
+			altered = true
+			
+		# no power	
+		if !is_powered and !altered:
+			WorldLight.light_color = default_world_light_color
+			WorldLight.light_energy = 0.15
+			BillboardLights.show()
+			MoodFog.show()
+			altered = true
 
-	# reset lights after emergency
-	if previous_emergency_mode != emergency_mode:		
-		WorldLight.light_color = default_world_light_color			
-		WorldLight.light_energy = 0.0
-		await U.set_timeout(0.5)		
-		previous_emergency_mode = emergency_mode		
-	
-	if !altered:
-		match emergency_mode:
-			ROOM.EMERGENCY_MODES.DANGER:
-				WorldLight.light_color = lockdown_light_color
-				WorldLight.light_energy = 1.2
-				BillboardLights.hide()
-				EmergencyLights.show()
-				CautionLights.show()	
-						
-			ROOM.EMERGENCY_MODES.WARNING:
-				WorldLight.light_color = warning_light_color
-				WorldLight.light_energy = 1.2	
-				BaseLights.hide()
-				BillboardLights.show()
-				CautionLights.show()	
-				
-			ROOM.EMERGENCY_MODES.CAUTION:
-				WorldLight.light_color = caution_light_color
-				WorldLight.light_energy = 1.8	
-				BaseLights.hide()
-				BillboardLights.show()
-				CautionLights.show()
+		if in_lockdown and !altered:
+			WorldLight.light_color = lockdown_light_color
+			WorldLight.light_energy = 1.2
+			BillboardLights.show()
+			altered = true
 
-			ROOM.EMERGENCY_MODES.NORMAL:
-				WorldLight.light_color = default_world_light_color			
-				WorldLight.light_energy = 1.2
-				BaseLights.show()
-				BillboardLights.show()
-				CautionLights.hide()
+		# reset lights after emergency
+		if previous_emergency_mode != emergency_mode:		
+			WorldLight.light_color = default_world_light_color			
+			WorldLight.light_energy = 0.0
+			await U.set_timeout(0.5)		
+			previous_emergency_mode = emergency_mode		
+		
+		if !altered:
+			match emergency_mode:
+				ROOM.EMERGENCY_MODES.DANGER:
+					WorldLight.light_color = lockdown_light_color
+					WorldLight.light_energy = 1.2
+					BillboardLights.hide()
+					EmergencyLights.show()
+					CautionLights.show()	
+							
+				ROOM.EMERGENCY_MODES.WARNING:
+					WorldLight.light_color = warning_light_color
+					WorldLight.light_energy = 1.2	
+					BaseLights.hide()
+					BillboardLights.show()
+					CautionLights.show()	
+					
+				ROOM.EMERGENCY_MODES.CAUTION:
+					WorldLight.light_color = caution_light_color
+					WorldLight.light_energy = 1.8	
+					BaseLights.hide()
+					BillboardLights.show()
+					CautionLights.show()
 
-	# set previous state so can turn on/off 
-	previous_billboard_state = BillboardLights.is_visible_in_tree()	
-	previous_baselights_state = BaseLights.is_visible_in_tree()
-	previous_emergency_state = EmergencyLights.is_visible_in_tree()
-	
-	# set light energy constant
-	light_energy_val = WorldLight.light_energy
+				ROOM.EMERGENCY_MODES.NORMAL:
+					WorldLight.light_color = default_world_light_color			
+					WorldLight.light_energy = 1.2
+					BaseLights.show()
+					BillboardLights.show()
+					CautionLights.hide()
+
+		# set previous state so can turn on/off 
+		previous_billboard_state = BillboardLights.is_visible_in_tree()	
+		previous_baselights_state = BaseLights.is_visible_in_tree()
+		previous_emergency_state = EmergencyLights.is_visible_in_tree()
+		
+		# set light energy constant
+		light_energy_val = WorldLight.light_energy
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -399,10 +407,7 @@ func on_highlight_rooms_update() -> void:
 	for index in RoomContainer.get_child_count():
 		var actual:int = index_to_room_lookup(index)
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
-		if actual in actual_list:
-			print(actual)
 		RoomNode.is_selected = actual in actual_list
-			
 # --------------------------------------------------------		
 
 # --------------------------------------------------------

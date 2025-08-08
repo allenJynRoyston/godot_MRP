@@ -83,7 +83,7 @@ func on_capacity_only_update() -> void:
 # --------------------------------------
 func update() -> void:
 	if !is_node_ready():return	
-	var font_color:Color = COLORS.disabled_color if value < 0 else (COLORS.primary_black if !invert_color else Color.WHITE)
+	var font_color:Color = COLORS.disabled_color if value <= 0 else (COLORS.primary_black if !invert_color else Color.WHITE)
 	var outline_color:Color =  Color(font_color.r, font_color.g, font_color.b, 0.2)	
 	var title_label_settings_copy:LabelSettings = TitleLabel.label_settings.duplicate()
 	var value_label_setting_copy:LabelSettings = ValueLabel.label_settings.duplicate()

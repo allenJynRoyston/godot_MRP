@@ -253,22 +253,22 @@ func get_room_summary(use_location:Dictionary = current_location) -> Dictionary:
 	var currencies_diff:Dictionary = room_config.currencies
 	var metrics_diff:Dictionary = room_config.metrics
 	var energy_diff:int = room_config.energy_used
-	var personnel_diff:Dictionary = {
-		RESOURCE.PERSONNEL.STAFF: 0,
-		RESOURCE.PERSONNEL.TECHNICIANS: 0,
-		RESOURCE.PERSONNEL.SECURITY: 0,
-		RESOURCE.PERSONNEL.DCLASS: 0
-	}
-	
-	for key in room_config.personnel:
-		if room_config.personnel[key]:
-			personnel_diff[key] = 1
+	#var personnel_diff:Dictionary = {
+		#RESOURCE.PERSONNEL.STAFF: 0,
+		#RESOURCE.PERSONNEL.TECHNICIANS: 0,
+		#RESOURCE.PERSONNEL.SECURITY: 0,
+		#RESOURCE.PERSONNEL.DCLASS: 0
+	#}
+	#
+	#for key in room_config.personnel:
+		#if room_config.personnel[key]:
+			#personnel_diff[key] = 1
 		
 	return {
 		"currency_diff": currencies_diff,
 		"metric_diff": metrics_diff,
 		"energy_diff": energy_diff,
-		"personnel_diff": personnel_diff
+		#"personnel_diff": personnel_diff
 	}
 # ------------------------------------------------------------------------------
 
@@ -414,11 +414,7 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 	if ring_config.energy.used >= ring_config.energy.available and toggle_val:return
 
 	base_states.room[designation].passives_enabled[ability_uid] = toggle_val	
-	#print("A: ", base_states.room["004"].passives_enabled)
-	
 	SUBSCRIBE.base_states = base_states
-	#print("B: ", base_states.room["004"].passives_enabled)
-	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -692,13 +688,23 @@ func add_debuff_to_floor_and_rings_rooms(debuff_ref:int, duration:int, floor:int
 # --------------------------------------------------------------------------------------------------
 
 # ---------------------
-func eval_scp() -> bool:
+func select_scp() -> int:
 	var ScpGridNode:Control = ScpGridPreload.instantiate()
 	GameplayNode.add_child(ScpGridNode)
 	ScpGridNode.z_index = z_index_lvl
 	
 	await ScpGridNode.activate()
 	ScpGridNode.research()
+	var scp_ref:int = await ScpGridNode.user_response	
+	return scp_ref
+
+func eval_scp() -> bool:
+	var ScpGridNode:Control = ScpGridPreload.instantiate()
+	GameplayNode.add_child(ScpGridNode)
+	ScpGridNode.z_index = z_index_lvl
+	
+	await ScpGridNode.activate()
+	ScpGridNode.start()
 	var scp_ref:int = await ScpGridNode.user_response
 	
 	if scp_ref == -1:
@@ -716,17 +722,6 @@ func eval_scp() -> bool:
 	
 	return true
 # ---------------------
-
-# --------------------------------------------------------------------------------------------------	
-func select_scp_to_contain() -> int:
-	var ScpGridNode:Control = ScpGridPreload.instantiate()
-	GameplayNode.add_child(ScpGridNode)
-	ScpGridNode.z_index = z_index_lvl
-	
-	await ScpGridNode.activate()
-	ScpGridNode.contain()
-	return await ScpGridNode.user_response
-# --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
 func trigger_initial_containment_event(scp_ref:int) -> void:

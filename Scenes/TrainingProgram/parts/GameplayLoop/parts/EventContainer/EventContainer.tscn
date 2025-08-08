@@ -265,6 +265,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="ResearcherControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="ResearcherControl"]
@@ -293,11 +294,11 @@ card_border_color = Color(0, 0, 0, 1)
 reveal = false
 
 [node name="RoomDetails" parent="." instance=ExtResource("12_byy7q")]
+visible = false
 layout_mode = 2
 show_researcher_card = false
 show_scp_card = false
 disable_inputs = true
-disable_location = true
 preview_mode = true
 
 [node name="ResourceRequiredFloatingPanel" parent="." instance=ExtResource("11_fi0y4")]

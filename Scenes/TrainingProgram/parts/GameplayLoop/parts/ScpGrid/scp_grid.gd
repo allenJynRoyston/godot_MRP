@@ -106,8 +106,6 @@ func research() -> void:
 	setup()
 
 func reveal_card(state:bool) -> void:
-	print(control_pos[CardPanel].show if state else control_pos[CardPanel].hide)
-	
 	await U.tween_node_property(CardPanel, "position:x", control_pos[CardPanel].show if state else control_pos[CardPanel].hide)
 
 func setup() -> void:

@@ -63,8 +63,6 @@ extends MouseInteractions
 		second_val = val
 		on_second_val_update()
 
-
-		
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
 
@@ -81,7 +79,7 @@ func _ready() -> void:
 	on_is_faded_updated()
 	on_use_second_val_update()
 	on_second_val_update()
-	on_no_bg_update.call_deferred()
+	on_no_bg_update()
 
 func on_use_second_val_update() -> void:
 	if !is_node_ready():return
@@ -125,11 +123,11 @@ func on_display_at_bottom_update() -> void:
 
 func on_is_negative_update() -> void:
 	if !is_node_ready():return
-	U.debounce( str(self, "_update_all"), update_all)
+	update_all()
 
 func on_is_faded_updated() -> void:
 	if !is_node_ready():return	
-	U.debounce( str(self, "_update_all"), update_all)
+	update_all()
 
 	
 func update_all() -> void:

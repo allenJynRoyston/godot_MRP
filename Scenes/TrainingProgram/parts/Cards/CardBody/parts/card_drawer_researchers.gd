@@ -96,9 +96,6 @@ func update_node() -> void:
 				var matches_location:bool = assigned_room == use_location
 				var is_specialist_match:bool = specialization_ref == required_slot.ref
 
-				if required_slot.ref == RESEARCHER.SPECIALIZATION.ANY:
-					return (is_assigned_to_room and matches_location) and (slot == index)
-				
 				return  (is_assigned_to_room and matches_location) and (slot == index) and is_specialist_match
 			)
 			

@@ -46,7 +46,6 @@ corner_radius_top_right = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_5g6vn"]
 font = ExtResource("8_budmt")
-font_size = 20
 font_color = Color(0.162066, 0.162066, 0.162066, 1)
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
@@ -251,7 +250,7 @@ layout_mode = 2
 icon = 32
 icon_color = Color(0, 0, 0, 1)
 
-[node name="EnergyCost" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer"]
+[node name="EnergyCostLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "2"
 label_settings = SubResource("LabelSettings_5g6vn")

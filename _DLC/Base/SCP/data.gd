@@ -29,14 +29,14 @@ var SCP99:Dictionary = {
 		EVT.TYPE.SCP_ON_CONTAINMENT: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
-						"%s has been assigned to oversee initial containment of %s." % [_staff_details.name, _scp_details.name],
+						"SCP containment story...",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -143,13 +143,13 @@ var SCP99:Dictionary = {
 			# -----------------------------------------------------------------------
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					#var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
-						"%s is undergoing a breach event!" % _staff_details.name,
+						"%s is undergoing a breach event!" % _scp_details.name,
 					],
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -157,7 +157,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -171,7 +171,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -185,7 +185,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION ",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -221,13 +221,13 @@ var SCP99:Dictionary = {
 			# -----------------------------------------------------------------------
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
-						"%s is undergoing a containment event!" % _staff_details.name,
+						"%s is undergoing a containment event!" % _scp_details.name,
 					],
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -235,7 +235,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -249,7 +249,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -263,7 +263,7 @@ var SCP99:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION ",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -331,20 +331,19 @@ var SCP0:Dictionary = {
 		EVT.TYPE.SCP_ON_CONTAINMENT: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"%s has been affixed inside a sealed observation chamber." % _scp_details.name,
 						"The moment it made contact with the containment wall, it activated.",
 						"A mirrored version of the chamber appeared instantly beyond the frame.",
-						"A faint pull of air can be felt around the frame's edges, like shallow breathing.",
-						"%s is about to leave when noticing their reflection, staring back at them, slightly out of sync." % _staff_details.name,
+						"A faint pull of air can be felt around the frame's edges, like shallow breathing.",						
 						"Curiousity draws them in closer and they start walking towards the mirror, as if drawn to it.",
 						"What should you do?",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -352,20 +351,17 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "Activate the intercom, tell them to leave immediately.",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
 										"The voice over the intercom is calm but firm: 'Step away from the frame. Now.'",
 										"The staff member blinks, breathes, and backs away slowly before successfully exiting the chamber.",
-										"%s later reported feeling like they could hear their reflections thoughts."  % _staff_details.name,
 										"And those thoughts were... unnerving.  Unnatural."
 									] if is_success else [
 										"The intercom crackles as you give the order but the staffer doesn't move.",
 										"They stare entranced at their own reflection, seemingly paralyzed for a moment before walking towards their reflection.",
-										"By the time security arrives, %s is already at the mirrors edge." % _staff_details.name,
-										"Their reflection grabs them, and drags them  past the threshold. %s is gone before anybody can do a thing." % _staff_details.name,
 									],
 									"consequence": [
 										EVT.CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED
@@ -376,20 +372,17 @@ var SCP0:Dictionary = {
 						},
 						# -----------------------------------------
 						{
-							"title": "Send in a security team to extract %s." % _staff_details.name,
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"title": "Send in a security team to extract",
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
 										"The extraction team enters with tethers secured and visors down.",
-										"%s is pulled back without resistance, though they mutter incoherently about 'switching sides.'" % _staff_details.name,
 										"No anomalies detected on exit—mirrored version remains still."
 									] if is_success else [
-										"The team breaches the chamber, startling %s from their trance." % _staff_details.name,
 										"In the mirror, the reflected security team suddenly raises their weapons.",
 										"Gunfire erupts from the mirrored side, shattering the observation glass.",
-										"%s is killed instantly, before the real team can react." % _staff_details.name,
 										"Shards of broken glass convulse, drawing back toward the frame and sealing seamlessly.",
 										"The security team retrieves the body in silence and exits the chamber."
 									],
@@ -403,20 +396,17 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "Activate the emergency blackout procedure.",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
 										"Emergency lights cut out, and the chamber is plunged into darkness.",
 										"Infrared confirms the reflection vanishes when unobserved.",
-										"%s is safely extracted under cover of the blackout." % _staff_details.name
 									] if is_success else [
 										"The lights flicker—then fail to respond.",
 										"In the mirrored room, backup lights ignite first, illuminating movement.",
-										"A distorted version of %s steps forward from the frame." % _staff_details.name,
 										"Contact with the chamber is lost for 17 seconds.",
-										"When lights return, %s is gone.  Their reflection remains, watching." % _staff_details.name
 									],
 									"consequence": [
 										
@@ -433,12 +423,9 @@ var SCP0:Dictionary = {
 								return {
 									"story": [
 										"You issue no orders. The chamber remains unnervingly still.",
-										"%s stands frozen for a full minute—eyes locked on their reflection." % _staff_details.name,
 										"Then, as if released, they stumble backward and flee the room.",
-										"%s reported feeling as if the mirror was saying something to him, but can't recall the details." % _staff_details.name,
 									] if is_success else [
 										"No action is taken. The chamber is silent, save for the hum of equipment.",
-										"%s tilts their head then steps forward, as if entranced." % _staff_details.name,
 										"They vanish into the frame without resistance. The aperture ripples once, then stills."
 									],
 
@@ -455,7 +442,7 @@ var SCP0:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"The mirror’s surface shimmers faintly, reflecting shadows that don’t belong to this world."
@@ -468,7 +455,7 @@ var SCP0:Dictionary = {
 		EVT.TYPE.SCP_BREACH_EVENT_1: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"Cameras monitoring %s detect unusual activity within the containment cell." % _scp_details.name,
@@ -479,31 +466,25 @@ var SCP0:Dictionary = {
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
 					return [
 						# -----------------------------------------
 						{
-							"title": "Have %s enter the chamber and speak to the reflections." % _staff_details.name,
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"title": "Have -- enter the chamber and speak to the reflections.",
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE,  _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
-										"%s bravely enters into the chamber, finding that their reflection pushes back the shadowy mass just slightly." % _staff_details.name,
 										"Their reflection just stares.",
-										"Several tense moments pass and %s is unsure of what to do." % _staff_details.name,
 										"Silence begins to feed into their panic, and panic begins to manifest.",
-										"%s starts to slowly inch back towards the exit as the shadowy mass begins to receed." % _staff_details.name,
 										"The mirror beings to repair itself as things slowly return to normal.",
-										"%s breathes a sigh of relief as they leave the chamber.  Rattled, but at least in one piece." % _staff_details.name,
 									] if is_success else [
 										"%s enters the chamber and is instantly fixated on their reflection.",
 										"%s beings walking towards the mirror, mumbling something that the camera can't quite pick up.",
-										"The black mass is too much for the mirror to take, shattering violently as %s approaches!" % _staff_details.name,
-										"%s is severely lacerated by the broken mirror shards before being consumed by the shadows spreading into the room!" % _staff_details.name,
 									],
 									"consequence": [
 										
@@ -515,19 +496,17 @@ var SCP0:Dictionary = {
 						},
 						# -----------------------------------------
 						{
-							"title": "Have %s activate the emergency failsafe." % _staff_details.name,
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"title": "Option",
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
-										"%s activates the failsafe from the outside of the chamber." % _staff_details.name,
 										"The containment chamber’s automated locks engage with a heavy metallic thud.",
 										"Reinforced shutters slide into place, blocking all exits and isolating the mirror.",
 										"The shadowy figures press against the barrier but fail to breach it.",
 										"The room stabilizes as safety protocols hold strong."
 									] if is_success else [
-										"%s activates the failsafe from the outside of the chamber." % _staff_details.name,
 										"But for whatever reason, the lockdown system flickers, then fails to activate.",
 										"The chamber doors remain unlocked as shadows seep through the edges.",
 										"An ominous silence fills the room before the glass bursts from the frame; the alarms erupt loudly.",
@@ -545,17 +524,15 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "Cut the power and kill the lights.",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
-										"%s cuts the power from the breaker outside the chamber, plunging the room into darkness." % _staff_details.name,
 										"The shadows recoil, their forms dissolving into the black void.",
 										"Emergency backup lights flicker on, revealing an eerie stillness.",
 										"The breach is temporarily halted as the mirror’s influence wanes."
 									] if is_success else [
-										"%s cuts the power at the breaker outside the chamber, plunging the room into darkness." % _staff_details.name,
 										"The sudden blackout silences the alarms and dims emergency lights to a faint glow.",
 										"In the shadows, the humanoid figures shift and pulse, their forms bleeding past the mirror’s threshold.",
 										"Cutting the power might have made this problem worse."
@@ -578,13 +555,11 @@ var SCP0:Dictionary = {
 									"story": [
 										"You hesitate, doing nothing as the mirror distorts further.",
 										"The shadowy figures press harder against the cracked surface, darkening the reflection.",
-										"%s watches in silence, frozen by uncertainty and fear." % _staff_details.name,
 										"The room grows colder; the breach looms ever closer, unchecked."
 									] if is_success else [
 										"The mirror shatters suddenly, shards scattering across the floor.",
 										"Shadowy figures surge through the broken glass, flooding the chamber.",
 										"%s attempts rushes to manually seal the door, but is grabbed and dragged into the chamber.",
-										"%s screams as the darkness envelops them, disappearing without a trace." % _staff_details.name,
 										"The breach spreads uncontrollably, leaving chaos in its wake."
 									],
 									"consequence": [
@@ -600,14 +575,14 @@ var SCP0:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"It doesn't take long until the entire chamber is completely filled by a shadowy mass.",
 						"They now run the risk of overflowing outside the chamber."
 					],
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -619,14 +594,11 @@ var SCP0:Dictionary = {
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
-										"%s radios for help.  Security forces mobiles quickly reinforcing the chamber's only exit with heavy plating and magnetic locks." % _staff_details.name, 
 										"Shadowy figures slam against the door from within the chamber but the structure holds.",
 										"After a tense couple of hours, the slamming subsides and the mass appears to evaporate."
 									] if is_success else [
-										"%s radios for help.  Security forces mobiles quickly reinforcing the chamber's only exit with heavy plating and magnetic locks." % _staff_details.name, 
 										"Shadowy figures slam against the door from within the chamber but the structure holds, but the containment cell is heavily damaged.",
 										"After a tense couple of hours, the slamming subsides and the mass appears to evaporate.",
-										"%s can still hear the voices from the room still calling out to them." % _staff_details.name
 									],
 									"consequence": [
 
@@ -642,7 +614,6 @@ var SCP0:Dictionary = {
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
 									"story": [
-										"%s radios for help!" % _staff_details.name,
 										"A specialized MTF squad arrives, equipped with high-lumen strobes and ultraviolet emitters.",
 										"They move with practiced coordination, flooding the chamber with searing pulses of light.",
 										"The shadowy figures recoil violently, phasing in and out as the beams strike them.",
@@ -650,7 +621,6 @@ var SCP0:Dictionary = {
 										"The reflection convulses, then steadies. The figures vanish back into the depths.",
 										"The room is secured. The mirror is dormant. For now."
 									] if is_success else [
-										"%s radios for backup as the chamber fills with darkness." % _staff_details.name,
 										"The MTF squad enters, deploying high-intensity strobes and ultraviolet gear to disrupt the shadow mass.",
 										"The light slows the figures—causing them to flicker violently—but the entities retaliate with ferocity.",
 										"One by one, operatives are overwhelmed, their bodies swallowed by shifting black tendrils.",
@@ -674,14 +644,14 @@ var SCP0:Dictionary = {
 		EVT.TYPE.SCP_CONTAINED_EVENT: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"CONTAINED EVENT STORY",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -689,7 +659,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -708,7 +678,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -727,7 +697,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -767,7 +737,7 @@ var SCP0:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"END EVENT",
@@ -793,7 +763,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE, {}, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.MORALE,_vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -812,7 +782,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, {}, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -831,7 +801,7 @@ var SCP0:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, {}, _vibes),
+							"render_if": SCP_UTIL.get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": SCP_UTIL.get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {

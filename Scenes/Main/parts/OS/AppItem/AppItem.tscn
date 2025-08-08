@@ -48,7 +48,7 @@ custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
-icon = 3
+icon = 22
 is_hoverable = false
 
 [node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]

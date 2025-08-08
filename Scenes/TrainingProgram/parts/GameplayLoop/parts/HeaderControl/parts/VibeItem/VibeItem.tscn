@@ -1,14 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqrsajf65ravg"]
+[gd_scene load_steps=7 format=3 uid="uid://bqrsajf65ravg"]
 
 [ext_resource type="Script" uid="uid://d2lwr0dms23ca" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/vibe_item.gd" id="1_7egax"]
-[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="2_24nkd"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_pxje0"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_pxje0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_pxje0"]
+[sub_resource type="LabelSettings" id="LabelSettings_24nkd"]
+font = ExtResource("2_pxje0")
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_cyg4w"]
 font = ExtResource("3_pxje0")
-font_color = Color(0.05, 0.05, 0.05, 1)
+outline_color = Color(1, 1, 1, 0.2)
 
 [node name="PanelContainer" type="PanelContainer"]
 offset_right = 40.0
@@ -33,11 +40,11 @@ alignment = 1
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "MORALE"
-label_settings = ExtResource("2_24nkd")
+label_settings = SubResource("LabelSettings_24nkd")
 horizontal_alignment = 1
 
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_pxje0")
+label_settings = SubResource("LabelSettings_cyg4w")
 horizontal_alignment = 1

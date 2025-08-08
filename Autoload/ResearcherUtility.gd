@@ -1,10 +1,10 @@
 extends SubscribeWrapper
 
 var specialization_data:Dictionary = { 
-	RESEARCHER.SPECIALIZATION.ANY: {
-		"shortname": "ANY",
-		"name": "ANY",
-	},	
+	#RESEARCHER.SPECIALIZATION.ANY: {
+		#"shortname": "ANY",
+		#"name": "ANY",
+	#},	
 	RESEARCHER.SPECIALIZATION.RESEARCHER: {
 		"shortname": "RS",
 		"name": "RESEARCHER"
@@ -85,9 +85,9 @@ var mood_data:Dictionary = {
 
 
 # ------------------------------------------------------------------------------
-func generate_new_researcher_hires(number:int, specializations:RESEARCHER.SPECIALIZATION) -> Array:
+func generate_new_researcher_hires(amount:int, specializations:RESEARCHER.SPECIALIZATION) -> Array:
 	var researchers:Array = []
-	for n in range(1, number + 1):
+	for n in range(0, amount):
 		researchers.push_back(generate_researcher(specializations))
 	return researchers
 # ------------------------------------------------------------------------------
@@ -104,13 +104,12 @@ func return_data_with_uid(uid:String) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func generate_researcher(assign_spec:int = 1) -> Array:
+func generate_researcher(specialization:RESEARCHER.SPECIALIZATION) -> Array:
 	var uid:String = U.generate_uid()
 	var lname:int =  U.generate_rand(0, 100)
 	
 	# TODO: add this in later
 	# var img_src:String = "res://Media/images/example_doctor.jpg"		
-	var specialization:int = U.min_max(assign_spec, 1, RESEARCHER.SPECIALIZATION.size() - 1) 
 	var max_health:int = 3 if specialization == RESEARCHER.SPECIALIZATION.SECURITY else 2
 	var max_sanity:int = 3 if specialization == RESEARCHER.SPECIALIZATION.RESEARCHER else 2
 	
@@ -121,16 +120,16 @@ func generate_researcher(assign_spec:int = 1) -> Array:
 	return [ 
 		uid, 																	 	# 0 UID
 		lname, 																		# 1 LASTNAME
-		traits, 																		# 2 TRAITS
-		specialization, 																# 3 SPECS
+		traits, 																	# 2 TRAITS
+		specialization, 															# 3 SPECS
 		mood, 																		# 4 MOOD
 		status,																		# 5 STATUS
-		{'current': max_health, "max": max_health}, 									# 6 HEALTH
-		{'current': max_sanity, 'max': max_sanity}, 									# 7	SANITY
+		{'current': max_health, "max": max_health}, 								# 6 HEALTH
+		{'current': max_sanity, 'max': max_sanity}, 								# 7	SANITY
 		0, 																			# 8 EXP
 		1, 																			# 9 LVL
 		{"clone_iteration": 0, "original_uid": null}, 								# 10 CLONE TRACKER
-		{"assigned_to_room": {}, "slot": 0},											# 11 ASSIGNED TO ROOM
+		{"assigned_to_room": {}, "slot": 0},										# 11 ASSIGNED TO ROOM
 		
 	]
 # ------------------------------------------------------------------------------
@@ -328,15 +327,6 @@ func return_trait_data(ref:RESEARCHER.TRAITS) -> Dictionary:
 
 # ------------------------------------------------------------------------------
 func return_specialization_data(ref:RESEARCHER.SPECIALIZATION) -> Dictionary:
-	if ref == -1:
-		return {
-			"ref": -1,
-			"shortname": "ANY",
-			"name": "ANY",
-			"title": "ANY"
-		}
-	
-	
 	specialization_data[ref].ref = ref
 	return specialization_data[ref]
 # ------------------------------------------------------------------------------
@@ -634,7 +624,7 @@ func get_list_of_available(filter_for_specs: Array = []) -> Array:
 		var researcher_data: Dictionary = get_user_object(x)
 		var is_unassigned = researcher_data.props.assigned_to_room.is_empty()
 		var specialization_ref = researcher_data.specialization.ref
-		var accepts_any = RESEARCHER.SPECIALIZATION.ANY in filter_for_specs
+		var accepts_any = false #RESEARCHER.SPECIALIZATION.ANY in filter_for_specs
 		var matches_spec = specialization_ref in filter_for_specs
 		var is_unavailable = researcher_data.status == RESEARCHER.STATUS.KIA or researcher_data.status == RESEARCHER.STATUS.INSANE
 		
@@ -649,10 +639,9 @@ func get_list_of_available(filter_for_specs: Array = []) -> Array:
 func get_list_of_specializations() -> Array:
 	var list:Array = []
 	for ref in specialization_data:
-		if ref != RESEARCHER.SPECIALIZATION.ANY:
-			var spec:Dictionary = specialization_data[ref]
-			spec.ref = ref
-			list.push_back(spec)
+		var spec:Dictionary = specialization_data[ref]
+		spec.ref = ref
+		list.push_back(spec)
 	return list
 # ------------------------------------------------------------------------------		
 	

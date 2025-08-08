@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=3 uid="uid://bcvwn4g1srs6n"]
+
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="1_0npsv"]
+[ext_resource type="Script" uid="uid://mam7a7yqqi0j" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/WarningComponent/warning_component.gd" id="1_aycvk"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_aycvk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kkaol"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3qj4o"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_aycvk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kkaol")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "DANGER"
+label_settings = ExtResource("1_0npsv")
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3qj4o")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="SVGIcon" parent="VBoxContainer/Content/MarginContainer" instance=ExtResource("2_aycvk")]
+modulate = Color(1, 1, 1, 0.27451)
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+icon = 20
+icon_color = Color(0.05, 0.05, 0.05, 0.243137)
+icon_size = Vector2(30, 30)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2

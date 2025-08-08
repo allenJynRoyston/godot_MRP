@@ -126,17 +126,17 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 		var onSelected = func(val) -> void:
 			option_selected.val = val
 		
-		var room_details:Dictionary = props.room_details
+		# var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
 		var scp_entry:Dictionary = props.scp_entry
-		var researchers:Array = props.researchers
+		# var researchers:Array = props.researchers
 		
 		var event_data:Array = scp_details.event[event_ref]
-		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		# var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
 		# add additional props and send to event
-		props.selected_staff = selected_staff
+		# props.selected_staff = selected_staff
 		props.vibes = vibes
 
 		# build seequence		
@@ -163,7 +163,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 						"title": scp_details.name,
 						"subtitle": scp_details.nickname,
 						"img_src": scp_details.img_src,
-						"selected_staff": selected_staff,
+						# "selected_staff": selected_staff,
 						"scp_ref": scp_details.ref,
 						"text": story_text,
 						"options": options
@@ -172,7 +172,7 @@ var SCP_ON_CONTAINMENT:Dictionary = {
 			
 			if !options.is_empty():
 				sequence.push_back( 
-					func() -> Dictionary:return create_sequence(option_selected, selected_staff) 
+					func() -> Dictionary:return create_sequence(option_selected) 
 				)
 
 		return sequence
@@ -189,18 +189,18 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 		var onSelected = func(val) -> void:
 			option_selected.val = val
 		
-		var room_details:Dictionary = props.room_details
+		# var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
 		var scp_entry:Dictionary = props.scp_entry
 		var researchers:Array = props.researchers
 		var breach_count:int = scp_entry.breach_count
 				
 		var event_data:Array = scp_details.event[event_ref]
-		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		# var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
 		# add additional props and send to event
-		props.selected_staff = selected_staff
+		# props.selected_staff = selected_staff
 		props.vibes = vibes
 		props.breach_count = breach_count
 		
@@ -228,14 +228,14 @@ var SCP_BREACH_EVENT_1:Dictionary = {
 						"title": scp_details.name,
 						"subtitle": scp_details.nickname,
 						"img_src": scp_details.img_src,
-						"selected_staff": selected_staff,
+						# "selected_staff": selected_staff,
 						"text": story_text,
 						"options": options
 					}
 			)
 			
 			if !options.is_empty():
-				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected, selected_staff) )
+				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected) )
 
 		return sequence
 }
@@ -251,18 +251,18 @@ var SCP_CONTAINED_EVENT:Dictionary = {
 		var onSelected = func(val) -> void:
 			option_selected.val = val
 		
-		var room_details:Dictionary = props.room_details
+		# var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
 		var scp_entry:Dictionary = props.scp_entry
 		var researchers:Array = props.researchers
 		var breach_count:int = scp_entry.breach_count
 				
 		var event_data:Array = scp_details.event[event_ref]
-		var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
+		# var selected_staff:Dictionary = {} if researchers.size() == 0 else researchers[U.generate_rand(0, researchers.size() - 1)]
 		var vibes:Dictionary = GAME_UTIL.get_vibes_summary(scp_entry.location)	
 
 		# add additional props and send to event
-		props.selected_staff = selected_staff
+		# props.selected_staff = selected_staff
 		props.vibes = vibes
 		props.breach_count = breach_count
 		
@@ -290,14 +290,14 @@ var SCP_CONTAINED_EVENT:Dictionary = {
 						"title": scp_details.name,
 						"subtitle": scp_details.nickname,
 						"img_src": scp_details.img_src,
-						"selected_staff": selected_staff,
+						# "selected_staff": selected_staff,
 						"text": story_text,
 						"options": options
 					}
 			)
 			
 			if !options.is_empty():
-				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected, selected_staff) )
+				sequence.push_back( func() -> Dictionary: return create_sequence(option_selected) )
 
 		return sequence
 }
@@ -313,7 +313,7 @@ var SCP_NO_STAFF_EVENT:Dictionary = {
 		var onSelected = func(val) -> void:
 			option_selected.val = val
 		
-		var room_details:Dictionary = props.room_details
+		# var room_details:Dictionary = props.room_details
 		var scp_details:Dictionary = props.scp_details
 		var scp_entry:Dictionary = props.scp_entry
 		
@@ -354,7 +354,7 @@ var SCP_NO_STAFF_EVENT:Dictionary = {
 			
 			if !options.is_empty():
 				sequence.push_back( 
-					func() -> Dictionary:return create_sequence(option_selected, {}) 
+					func() -> Dictionary:return create_sequence(option_selected) 
 				)
 
 		return sequence
@@ -940,7 +940,7 @@ var reference_data:Dictionary = {
 
 
 # ------------------------------------------------------------------------
-func create_sequence(option_selected:Dictionary, selected_staff:Dictionary) -> Dictionary:
+func create_sequence(option_selected:Dictionary) -> Dictionary:
 	var random_int:int = U.generate_rand(0, 100)
 	var end:bool = false
 	var use_success_roll:bool = option_selected.val.option.has("success_rate")
@@ -957,35 +957,35 @@ func create_sequence(option_selected:Dictionary, selected_staff:Dictionary) -> D
 		if "effect" in option_selected.val.option:
 			var effect:Dictionary = option_selected.val.option.effect	.call(is_success)
 			
-			if "consequence" in effect:			
-				for consequence in effect.consequence:
-					result_text = effect.story
-					
-					match consequence:
-						# -----------------
-						EVT.CONSEQUENCE.END:
-							end = true
-						# -----------------	
-						EVT.CONSEQUENCE.HP_HURT:
-							if !selected_staff.is_empty():
-								var health_remaining:int = selected_staff.health.current - 1
-								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-								if health_remaining <= 0:
-									result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA) ] )
-							else:
-								result_text.push_back(("But no one was around..."))
-						EVT.CONSEQUENCE.SP_HURT:
-							if !selected_staff.is_empty():
-								var sanity_remaining:int = selected_staff.sanity.current - 1
-								result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-								if sanity_remaining <= 0:
-									result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE) ] )
-							else:
-								result_text.push_back(("But no one was around..."))
-						# -----------------	
-						_:
-							if !selected_staff.is_empty():
-								result_text.push_back("%s %s" % [selected_staff.name, EVT.CONSEQUENCE_STR[consequence]])
+			#if "consequence" in effect:			
+				#for consequence in effect.consequence:
+					#result_text = effect.story
+					#
+					#match consequence:
+						## -----------------
+						#EVT.CONSEQUENCE.END:
+							#end = true
+						## -----------------	
+						#EVT.CONSEQUENCE.HP_HURT:
+							#if !selected_staff.is_empty():
+								#var health_remaining:int = selected_staff.health.current - 1
+								#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
+								#if health_remaining <= 0:
+									#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA) ] )
+							#else:
+								#result_text.push_back(("But no one was around..."))
+						#EVT.CONSEQUENCE.SP_HURT:
+							#if !selected_staff.is_empty():
+								#var sanity_remaining:int = selected_staff.sanity.current - 1
+								#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
+								#if sanity_remaining <= 0:
+									#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE) ] )
+							#else:
+								#result_text.push_back(("But no one was around..."))
+						## -----------------	
+						#_:
+							#if !selected_staff.is_empty():
+								#result_text.push_back("%s %s" % [selected_staff.name, EVT.CONSEQUENCE_STR[consequence]])
 
 	return {
 		"end": end,

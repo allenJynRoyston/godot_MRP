@@ -113,7 +113,7 @@ func start(use_fast_animation:bool = false) -> void:
 	await U.tween_node_property(self, "modulate:a", 1, 1.0)	
 	
 	if play_introduction:
-		await normal_boot_sequence()
+		await play_introduction_sequence()
 	else:
 		await normal_boot_sequence()
 		

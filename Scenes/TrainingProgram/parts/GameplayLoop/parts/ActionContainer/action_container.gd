@@ -755,11 +755,6 @@ signal show_debug_complete
 func show_debug() -> void:
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	
-	var scp_ref:int
-	for ref in scp_data:
-		if scp_data[ref].location == current_location:
-			scp_ref = ref
-			
 	var options:Array = [
 		{
 			"title": "BASE STATES",
@@ -880,6 +875,33 @@ func show_debug() -> void:
 			"title": "EVENTS",
 			"items": [
 				{
+					"title": "HAPPY HOUR",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for HAPPY HOUR event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+							EVT.TYPE.HAPPY_HOUR, 
+								{
+									"onSelection": func(selection:Dictionary) -> void:
+										# add buff, debuff
+										print("todo: ADD BUFF OR DEBUFF depending on option")
+										print(selection),
+								}
+							)
+						])
+						ActiveMenuNode.unlock(),
+				},
+			]
+		},		
+		{
+			"title": "SCP EVENTS",
+			"items": [
+				{
 					"title": "INITIAL CONTAINMENT",
 					"icon": SVGS.TYPE.CONVERSATION,
 					"hint": {
@@ -889,7 +911,9 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.trigger_initial_containment_event(scp_ref)
+						var scp_ref:int = await GAME_UTIL.select_scp()
+						if scp_ref != -1:
+							await GAME_UTIL.trigger_initial_containment_event(0)
 						ActiveMenuNode.unlock(),
 				},
 				{
@@ -902,7 +926,9 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.trigger_breach_event(scp_ref)
+						var scp_ref:int = await GAME_UTIL.select_scp()
+						if scp_ref != -1:						
+							await GAME_UTIL.trigger_breach_event(scp_ref)
 						ActiveMenuNode.unlock(),
 				},
 				{
@@ -915,7 +941,9 @@ func show_debug() -> void:
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
-						await GAME_UTIL.trigger_containment_event(scp_ref)
+						var scp_ref:int = await GAME_UTIL.select_scp()
+						if scp_ref != -1:						
+							await GAME_UTIL.trigger_containment_event(scp_ref)
 						ActiveMenuNode.unlock(),
 				}				
 			]
@@ -1315,8 +1343,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.NONE
 		# -----------	
 		MODE.SUMMARY_CARD:
-			SummaryControls.itemlist = ModulesCard.get_ability_btns()
-			SummaryControls.item_index = 0
 			SummaryControls.directional_pref = "UD"
 			SummaryControls.offset = ModulesCard.global_position
 			
@@ -1334,7 +1360,6 @@ func check_btn_states() -> void:
 				SummaryControls.disable_active_btn = false
 				
 				SummaryControls.disable_active_btn = node.ref_data.is_disabled
-				
 				# ----------------------
 				match node.ref_data.type:
 					"scp":						
@@ -1343,15 +1368,20 @@ func check_btn_states() -> void:
 						
 					"active_ability":
 						SummaryControls.a_btn_title = "USE PROGRAM"
+						SummaryControls.disable_active_btn = node.ref_data.is_disabled
 					# ----------------------
 					"passive_ability":
-						SummaryControls.a_btn_title = "TOGGLE MODULE"
+						SummaryControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE MODULE" 
+						SummaryControls.disable_active_btn = node.ref_data.is_disabled
 					# ----------------------
 		# -----------	
-		MODE.COMMANDS:			
-			CommandControls.a_btn_title = "UTILIZE" if is_activated else "ACTIVATE"
-			CommandControls.hide_a_btn = is_room_empty or is_under_construction
+		MODE.COMMANDS:
+			var can_activate:bool = ROOM_UTIL.can_activate_check(room_extract.room.details.ref)	if !room_extract.room.is_empty() else false
 			
+			CommandControls.a_btn_title = "MISSING STAFF" if !is_room_empty and !can_activate else "UTILIZE" if is_activated else "ACTIVATE"
+			CommandControls.hide_a_btn = is_room_empty or is_under_construction
+			CommandControls.disable_active_btn = !is_room_empty and !can_activate
+
 			CommandControls.hide_c_btn = is_room_empty or !is_activated	or at_max_level
 			CommandControls.disable_c_btn = !is_activated
 			
@@ -1360,13 +1390,12 @@ func check_btn_states() -> void:
 				if is_activated:
 					current_mode = MODE.SUMMARY_CARD
 				else:
-					print("manually activate...")
-					#var confirm:bool = await GAME_UTIL.activate_room()
-					#if confirm:
-						#await U.tick()
-						#on_current_location_update()
-					#CommandControls.reveal(true)
-					
+					var confirm:bool = await GAME_UTIL.activate_room()
+					if confirm:
+						await U.tick()
+						on_current_location_update()
+					CommandControls.reveal(true)
+
 			CommandControls.onCBtn = func() -> void:
 				await CommandControls.reveal(false)
 				var confirm:bool = await GAME_UTIL.upgrade_facility()
@@ -1540,6 +1569,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
 				SummaryControls.reveal(true)
+
+				SummaryControls.itemlist = ModulesCard.get_ability_btns()
+				SummaryControls.item_index = 0
 			# --------------
 			MODE.BUILD:
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)

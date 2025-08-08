@@ -97,7 +97,7 @@ func update_stylebox() -> void:
 const FREQUENCY: float = 0.5   # Oscillation frequency in Hz
 var time_elapsed: float = 0.0  # Time tracker
 
-func on_process_update(delta: float) -> void:
+func on_process_update(delta: float, _time_passed:float) -> void:
 	if !is_node_ready(): return
 
 	#if is_active and value != 0:		

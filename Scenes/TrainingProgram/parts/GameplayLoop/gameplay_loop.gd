@@ -134,12 +134,6 @@ var initial_values:Dictionary = {
 					RESOURCE.CURRENCY.SCIENCE: 0,
 					RESOURCE.CURRENCY.CORE: 0,
 				},
-				"personnel": {
-					RESOURCE.PERSONNEL.TECHNICIANS: false,
-					RESOURCE.PERSONNEL.STAFF: false,
-					RESOURCE.PERSONNEL.SECURITY: false,
-					RESOURCE.PERSONNEL.DCLASS: false	
-				},
 				"staff_capacity": {
 					RESEARCHER.SPECIALIZATION.ADMIN: 0,
 					RESEARCHER.SPECIALIZATION.RESEARCHER: 0,
@@ -561,12 +555,6 @@ func get_floor_default(array_size:int) -> Dictionary:
 			RESOURCE.METRICS.SAFETY: 0,
 			RESOURCE.METRICS.READINESS: 0
 		},
-		"personnel": {
-			RESOURCE.PERSONNEL.TECHNICIANS: false,
-			RESOURCE.PERSONNEL.STAFF: false,
-			RESOURCE.PERSONNEL.SECURITY: false,
-			RESOURCE.PERSONNEL.DCLASS: false	
-		},		
 		"currencies": {
 			RESOURCE.CURRENCY.MONEY: 0,
 			RESOURCE.CURRENCY.MATERIAL: 0,
@@ -602,18 +590,15 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.METRICS.SAFETY: 0,
 			RESOURCE.METRICS.READINESS: 0
 		},
-		"personnel": {
-			RESOURCE.PERSONNEL.TECHNICIANS: false,
-			RESOURCE.PERSONNEL.STAFF: false,
-			RESOURCE.PERSONNEL.SECURITY: false,
-			RESOURCE.PERSONNEL.DCLASS: false	
-		},
 		"currencies": {
 			RESOURCE.CURRENCY.MONEY: 0,
 			RESOURCE.CURRENCY.MATERIAL: 0,
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
+		"mtf": [
+
+		],
 		"buffs": [],
 		"debuffs": [],
 		# --------------
@@ -635,12 +620,6 @@ func get_room_defaults() -> Dictionary:
 			RESOURCE.METRICS.MORALE: 0,
 			RESOURCE.METRICS.SAFETY: 0,
 			RESOURCE.METRICS.READINESS: 0
-		},
-		"personnel": {
-			RESOURCE.PERSONNEL.TECHNICIANS: false,
-			RESOURCE.PERSONNEL.STAFF: false,
-			RESOURCE.PERSONNEL.SECURITY: false,
-			RESOURCE.PERSONNEL.DCLASS: false	
 		},
 		"currencies": {
 			RESOURCE.CURRENCY.MONEY: 0,
@@ -1331,9 +1310,11 @@ func update_room_config(force_setup:bool = false) -> void:
 	transfer_base_states_to_room_config(new_room_config)
 	## check if room is activated
 	room_activation_check(new_room_config)
+	
 	# ROOM, check for effects
 	room_check_for_effects(new_room_config)	
 	scp_check_for_effects(new_room_config)	
+	
 	# ROOM, setup and loop
 	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
 	
@@ -1362,7 +1343,6 @@ func update_room_config(force_setup:bool = false) -> void:
 		for key in floor_level.currencies:
 			var amount:int = floor_level.currencies[key]
 			resource_diff[key] += amount
-	
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
@@ -1426,9 +1406,6 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 					for key in data.metrics:
 						var amount:int = data.metrics[key]
 						base_level.metrics[key] += amount
-				if "personnel" in data:
-					for key in data.personnel:
-						base_level.personnel[key] = true
 				if "effect" in data:
 					data.effect.call(new_room_config)
 	# --------------------------------------------------------------
@@ -1475,9 +1452,6 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 									for key in data.metrics:
 										var amount:int = data.metrics[key]
 										floor_level.metrics[key] += amount
-								if "personnel" in data:
-									for key in data.personnel:
-										floor_level.personnel[key] = true
 								if "effect" in data:
 									data.effect.call(new_room_config)
 				# --------------------------------------------------------------
@@ -1504,10 +1478,7 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 								if "metrics" in data:
 									for key in data.metrics:
 										var amount:int = data.metrics[key]
-										ring_level.metrics[key] += amount
-								if "personnel" in data:
-									for key in data.personnel:
-										ring_level.personnel[key] = true
+										ring_level.metrics[key] += amount								
 				# --------------------------------------------------------------
 				
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
@@ -1522,10 +1493,7 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 								if "metrics" in data:
 									for key in data.metrics:
 										var amount:int = data.metrics[key]
-										room_level.metrics[key] += amount
-								if "personnel" in data:
-									for key in data.personnel:
-										room_level.personnel[key] = true
+										room_level.metrics[key] += amount								
 				# --------------------------------------------------------------				
 				
 func room_setup_passives_and_ability_level(new_room_config:Dictionary, new_gameplay_conditionals:Dictionary) -> void:
@@ -1550,6 +1518,8 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary, new_gamep
 					room_base_state.passives_enabled[ability_uid] = false
 				
 				if room_base_state.passives_enabled[ability_uid]:
+					if "mtf_ref" in ability:
+						ring_config_data.mtf.push_back(ability.mtf_ref)
 					if "base_effect" in ability:
 						ability.base_effect.call(new_room_config.base)
 					if "floor_effect" in ability:
@@ -1637,12 +1607,6 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 						# add to list of enabled passives
 						if ability.ref not in room_base_state.passives_enabled_list:
 							room_base_state.passives_enabled_list.push_back(ability.ref)
-
-						# check provides (like staff, dclass, security, etc)
-						if "personnel" in ability: 
-							for key in ability.personnel:
-								ring_config.personnel[key] = true
-								room_config.personnel[key] = true
 
 						# check for metrics
 						if "metrics" in ability: 

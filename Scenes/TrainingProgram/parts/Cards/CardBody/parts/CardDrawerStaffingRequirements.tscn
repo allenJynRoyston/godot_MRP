@@ -39,9 +39,8 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 0
 
-[node name="ListContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="ListContainer" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
 
 [node name="Staff" parent="MarginContainer/MarginContainer/ListContainer" instance=ExtResource("3_ym2li")]
 layout_mode = 2
@@ -49,4 +48,3 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ym2li")
 icon = 35
 no_bg = true
 title = "STF"
-is_faded = true

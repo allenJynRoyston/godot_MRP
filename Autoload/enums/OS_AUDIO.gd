@@ -13,17 +13,13 @@ enum TRACK {
 	# --------------------
 	OS_TRACK_ONE,
 	OS_TRACK_TWO,
+	OS_TRACK_THREE,
 	
 	# --------------------
 	GAME_MAIN_MENU,
 	GAME_TRACK_ONE, 
 	GAME_TRACK_TWO,
-	GAME_TRACK_THREE,
-	
-	# --------------------
-	SCP_INITIAL_CONTAINMENT, 
-	SCP_CONTAINMENT_BREACH,
-	SCP_FINAL_CONTAINMENT,
+
 }
 
 
@@ -77,7 +73,7 @@ var track_data:Array = [
 				"details": {
 					"name": "CONTINGENCY PLAN",
 					"author": "Dávid Halmi",
-					"ref": TRACK.GAME_MAIN_MENU
+					"ref": TRACK.OS_TRACK_THREE
 				},
 				"is_unlocked": func(data:Dictionary) -> bool:
 					return true,

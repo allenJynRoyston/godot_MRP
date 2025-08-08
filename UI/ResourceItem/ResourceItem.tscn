@@ -22,6 +22,7 @@ outline_color = Color(0.162066, 0.162066, 0.162066, 1)
 [node name="ResourceItem" type="PanelContainer"]
 offset_right = 50.0
 offset_bottom = 20.0
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_vdy84")
 script = ExtResource("1_vdy84")
@@ -69,6 +70,7 @@ allow_hint = false
 
 [node name="ItemLabel" type="Label" parent="MarginContainer/ResourceItem/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 1
 label_settings = SubResource("LabelSettings_uuy8x")
 vertical_alignment = 1

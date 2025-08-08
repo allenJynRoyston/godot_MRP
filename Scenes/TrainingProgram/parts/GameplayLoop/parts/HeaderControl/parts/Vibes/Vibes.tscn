@@ -1,10 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6ltnlpexqlq8"]
+[gd_scene load_steps=9 format=3 uid="uid://b6ltnlpexqlq8"]
 
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_xopp3"]
 [ext_resource type="Script" uid="uid://s27taeqpnbaa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/vibes.gd" id="2_5elrf"]
 [ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_jnnei"]
 [ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="4_r28sf"]
 [ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="5_iv4lo"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_5elrf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jnnei"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r28sf"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Vibes" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -13,6 +24,7 @@ script = ExtResource("2_5elrf")
 morale_tag_val = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = -10
@@ -81,3 +93,61 @@ layout_mode = 2
 
 [node name="ReadinessTag" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_iv4lo")]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jnnei")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "VIBES"
+label_settings = ExtResource("6_5elrf")
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_r28sf")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Morale" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+invert_color = true
+
+[node name="Safety" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+metric = 1
+title = "SAFETY"
+invert_color = true
+
+[node name="Readiness" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+metric = 2
+title = "READINESS"
+invert_color = true

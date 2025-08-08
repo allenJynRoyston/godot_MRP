@@ -113,8 +113,8 @@ func check_track_scroll() -> void:
 # --------------------------------------	
 
 # --------------------------------------		
-func on_process_update(delta: float) -> void:
-	super.on_process_update(delta)
+func on_process_update(delta: float, _time_passed:float) -> void:
+	super.on_process_update(delta, _time_passed)
 	
 	var current_audio_stream_player:AudioStreamPlayer = GBL.find_node(REFS.AUDIO).get_current_audio_stream_player()
 	spectrum = AudioServer.get_bus_effect_instance(0, 0)

@@ -309,12 +309,10 @@ func animate_wing() -> void:
 # ------------------------------------------------
 
 # ------------------------------------------------
-var time_accum: float = 0.0
-func on_process_update(delta: float) -> void:
+func on_process_update(delta: float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or nuke_is_triggered:return
-	var hue := fmod(time_accum * 0.01, 1.0)  # Adjust 0.1 to control speed
+	var hue := fmod(_time_passed * 0.01, 1.0)  # Adjust 0.1 to control speed
 	var color := Color.from_hsv(hue, 1.0, 1.0)
-	time_accum += delta  # Accumulate time in seconds	
 	material_rect_duplicate.set_shader_parameter("line_color", color)
 # ------------------------------------------------
 

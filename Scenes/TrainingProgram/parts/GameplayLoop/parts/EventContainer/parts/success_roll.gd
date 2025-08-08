@@ -38,7 +38,7 @@ func use(is_success:bool, duration:float = 4.0) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	
-func on_process_update(delta: float) -> void:
+func on_process_update(delta: float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree(): return
 
 	var normalized_rotation = fmod(RollIcon.rotation_degrees, 360.0)

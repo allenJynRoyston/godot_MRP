@@ -31,7 +31,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"requires_unlock": true,	
 	"own_limit": 99,
 	"unlock_level": 0,
-	"required_staffing": [RESEARCHER.SPECIALIZATION.ANY],	
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],
 	"required_energy": 1,
 	# ------------------------------------------
 
@@ -291,6 +291,29 @@ func reset_room(use_location:Dictionary) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func can_activate_check(ref:int) -> bool:
+	var room_data:Dictionary = ROOM_UTIL.return_data(ref)
+	
+	# get of required staff, 
+	var has_enough:bool = true
+	var tally:Dictionary = {}
+	for index in room_data.required_staffing.size():
+		var _ref:int = room_data.required_staffing[index]
+		if _ref not in tally:
+			tally[_ref] = 0
+		tally[_ref] += 1
+	
+	# ... now check and see if you have enough			
+	for key in tally:
+		# if required > the amount that you have...
+		if tally[key] > RESEARCHER_UTIL.get_spec_available_count(key):
+			has_enough = false
+			break	
+	
+	return has_enough
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
 func finish_construction(use_location:Dictionary) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)	
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
@@ -304,10 +327,13 @@ func finish_construction(use_location:Dictionary) -> void:
 			
 			# auto activate if possible
 			var room_data:Dictionary = ROOM_UTIL.return_data(x.ref)
-			for index in room_data.required_staffing.size():
-				var ref:int = room_data.required_staffing[index]
-				GAME_UTIL.auto_assign_staff(ref, index, location_copy)	
-				
+			
+			# auto assign if you have enough, otherwise
+			if can_activate_check(x.ref):
+				for index in room_data.required_staffing.size():
+					var ref:int = room_data.required_staffing[index]
+					GAME_UTIL.auto_assign_staff(ref, index, location_copy)	
+					
 		return x
 	)	
 # ------------------------------------------------------------------------------

@@ -249,8 +249,9 @@ func on_assigned_location_update() -> void:
 func update_room_data() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or assigned_location.is_empty():return
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(assigned_location)
-	var is_under_construction:bool = false if room_extract.room.is_empty() else room_extract.room.is_under_construction
-	var is_activated:bool = false if room_extract.room.is_empty() else room_extract.room.is_activated
+	var is_under_construction:bool = false if room_extract.room.is_empty() else room_extract.room.is_under_construction	
+	var is_empty:bool = room_extract.room.is_empty()
+	var is_activated:bool = false if is_empty else room_extract.room.is_activated
 	var skip_animation:bool = true # leave this set to true
 	var final_color:Color
 	
@@ -259,15 +260,15 @@ func update_room_data() -> void:
 		set_texture(RoomRenderUnderConstructionMaterial)
 		final_color = OriginalMaterial.albedo_color	
 		animate_under_construction(is_under_construction, skip_animation)
-
+	
 	# or if it's activated
-	if is_activated:
+	if !is_empty and !is_under_construction:
 		set_texture(RoomRenderBuiltMaterial)	
 		final_color = OriginalMaterial.albedo_color	 if is_activated else Color.RED
-		animate_built(is_activated, skip_animation)
+		animate_built(true, skip_animation)
 
 	# and then apply mesh and albedo
-	if is_under_construction or is_activated:
+	if is_under_construction or !is_empty:
 		# default color is current color
 		final_color.a = 1 if is_selected else 0.5
 		DuplicateMaterial.albedo_color = final_color

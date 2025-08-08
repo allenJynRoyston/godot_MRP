@@ -1,11 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://broscn7omc5hh"]
+[gd_scene load_steps=6 format=3 uid="uid://broscn7omc5hh"]
 
 [ext_resource type="Script" uid="uid://cwktbbruybx5" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderWingRight/headerWingRight.gd" id="1_gx82n"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_52rsm"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_tnm4k"]
-[ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="4_12da0"]
-[ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="5_kfb2l"]
-[ext_resource type="PackedScene" uid="uid://ctbrttyqovr35" path="res://UI/MTFItem/MTFItem.tscn" id="6_12da0"]
+[ext_resource type="PackedScene" uid="uid://b6dbdx2kec730" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/MtfComponent/MtfComponent.tscn" id="6_si7gp"]
+[ext_resource type="PackedScene" uid="uid://d340vfla2o4r8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/EnergyComponent/EnergyComponent.tscn" id="7_dseun"]
+[ext_resource type="PackedScene" uid="uid://bcvwn4g1srs6n" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/WarningComponent/WarningComponent.tscn" id="7_x2lu7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hfg5"]
 
@@ -50,130 +48,11 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="Energy" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right"]
-custom_minimum_size = Vector2(80, 60)
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_52rsm")
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "ENERGY"
-label_settings = ExtResource("3_tnm4k")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Energy" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_12da0")]
-layout_mode = 2
-icon = 32
-max_amount = 10
-burn_val = "000"
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_bottom = -27
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="EnergyTag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Energy/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_kfb2l")]
+[node name="WarningComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("7_x2lu7")]
 layout_mode = 2
 
-[node name="Personnel" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right"]
-custom_minimum_size = Vector2(100, 40)
+[node name="EnergyComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("7_dseun")]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_52rsm")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel"]
+[node name="MTFComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("6_si7gp")]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "MOBILE TASKS FORCES"
-label_settings = ExtResource("3_tnm4k")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = -5
-alignment = 1
-
-[node name="MTF1" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_12da0")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-icon = 36
-title = "ALPHA"
-is_negative = true
-icon_size = Vector2(25, 25)
-
-[node name="MTF2" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_12da0")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-icon = 36
-title = "BRAVO"
-is_negative = true
-icon_size = Vector2(25, 25)
-
-[node name="MTF3" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_12da0")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-icon = 36
-title = "DELTA"
-is_negative = true
-icon_size = Vector2(25, 25)
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = -5
-theme_override_constants/margin_bottom = -25
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="MTF1Tag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_kfb2l")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 2
-use_icon = true
-
-[node name="MTF2Tag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_kfb2l")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 2
-use_icon = true
-
-[node name="MTF3Tag" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right/Personnel/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_kfb2l")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-val = 2
-use_icon = true

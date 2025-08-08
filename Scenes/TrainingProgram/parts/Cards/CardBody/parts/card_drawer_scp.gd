@@ -72,7 +72,7 @@ func update_node() -> void:
 		onLock.call()
 		await ActionContainerNode.before_scp_selection()
 		
-		var scp_ref:int = await GAME_UTIL.select_scp_to_contain()
+		var scp_ref:int = await GAME_UTIL.select_scp()
 		
 		if scp_ref != -1:
 			await GAME_UTIL.trigger_initial_containment_event(scp_ref)

@@ -143,7 +143,7 @@ func registered_click(event:InputEventMouseButton) -> void:
 ## --------------------------------------		
 
 # --------------------------------------	
-func on_process_update(_delta:float) -> void:
+func on_process_update(_delta:float, _time_passed:float) -> void:
 	if Engine.is_editor_hint():
 		return 
 			

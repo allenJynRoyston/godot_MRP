@@ -343,14 +343,16 @@ func subscribe_to_process(node:Node) -> void:
 		
 func unsubscribe_to_process(node:Node) -> void:
 	process_nodes.erase(node)
-	
+
+var time_passed:float
 func _process(delta:float) -> void:
 	if Engine.is_editor_hint():return
+	time_passed += delta
 		
 	for node in process_nodes:
 		if node == null:
 			process_nodes.erase(node)
 			return
 		if "on_process_update" in node:
-			node.on_process_update.call(delta)
+			node.on_process_update.call(delta, time_passed)
 # ------------------------------------------------------------------------------

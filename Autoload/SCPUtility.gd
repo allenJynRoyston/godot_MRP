@@ -58,14 +58,14 @@ var SCP_TEMPLATE:Dictionary = {
 		EVT.TYPE.SCP_ON_CONTAINMENT: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"INITIAL CONTAINMENT",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -73,7 +73,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -92,7 +92,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -111,7 +111,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -151,7 +151,7 @@ var SCP_TEMPLATE:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"END EVENT",
@@ -164,14 +164,14 @@ var SCP_TEMPLATE:Dictionary = {
 		EVT.TYPE.SCP_BREACH_EVENT_1: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"EVENT BREACH",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -179,7 +179,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -198,7 +198,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -217,7 +217,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -257,7 +257,7 @@ var SCP_TEMPLATE:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"END EVENT",
@@ -270,14 +270,14 @@ var SCP_TEMPLATE:Dictionary = {
 		EVT.TYPE.SCP_CONTAINED_EVENT: [
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"CONTAINED EVENT STORY",
 					],
 
 				"choices": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					var _vibes:Dictionary = props.vibes
 
@@ -285,7 +285,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -304,7 +304,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -323,7 +323,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _staff_details, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -363,7 +363,7 @@ var SCP_TEMPLATE:Dictionary = {
 			},
 			{
 				"story": func(props:Dictionary) -> Array:
-					var _staff_details:Dictionary = props.selected_staff
+					# var _staff_details:Dictionary = props.selected_staff
 					var _scp_details:Dictionary = props.scp_details
 					return [
 						"END EVENT",
@@ -389,7 +389,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "MORALE OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, {}, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.MORALE, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.MORALE, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -408,7 +408,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "SAFETY OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, {}, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.SAFETY, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.SAFETY, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -427,7 +427,7 @@ var SCP_TEMPLATE:Dictionary = {
 						# -----------------------------------------
 						{
 							"title": "READINESS OPTION",
-							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, {}, _vibes),
+							"render_if": get_render_from_metrics(RESOURCE.METRICS.READINESS, _vibes),
 							"success_rate": get_success_rate(RESOURCE.METRICS.READINESS, _vibes, 30),
 							"effect": func(is_success:bool) -> Dictionary:
 								return {
@@ -573,7 +573,7 @@ func get_breach_event_chance(ref:int, use_location:Dictionary) -> int:
 	var breach_chance:int = scp_data.breach_chance
 	
 	var requirements:Array = scp_data.containment_requirements
-	var containment_properties:Array = room_data.containment_properties
+	var containment_properties:Array = room_data.containment_properties if room_data.has("containment_properties") else []
 	var requirement_count:int = 0
 	for requirement in requirements:
 		if requirement in containment_properties:
@@ -603,7 +603,7 @@ func get_breach_event_chance(ref:int, use_location:Dictionary) -> int:
 
 
 # -----------------------------------------------------------
-func get_render_from_metrics(ref:int, staff_details:Dictionary, vibes:Dictionary, threshold_amount:int = 0) -> Dictionary:
+func get_render_from_metrics(ref:int, vibes:Dictionary, threshold_amount:int = 0) -> Dictionary:
 	var available_amount:int = vibes[ref]
 	var is_threshold_met:bool = available_amount >= threshold_amount
 	var property:String
@@ -615,21 +615,21 @@ func get_render_from_metrics(ref:int, staff_details:Dictionary, vibes:Dictionary
 		RESOURCE.METRICS.MORALE:
 			property = "MORALE"
 			current_amount = vibes[RESOURCE.METRICS.MORALE]
-			if !staff_details.is_empty() and  staff_details.mood.ref == RESEARCHER.MOODS.DEPRESSED:
-				lockout = true
-				hint_description = "Unavailable due to current mood."
+			#if !staff_details.is_empty() and  staff_details.mood.ref == RESEARCHER.MOODS.DEPRESSED:
+				#lockout = true
+				#hint_description = "Unavailable due to current mood."
 		RESOURCE.METRICS.SAFETY:
 			property = "SAFETY"
 			current_amount = vibes[RESOURCE.METRICS.SAFETY]
-			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.FRIGHTENED:
-				lockout = true
-				hint_description = "Unavailable due to current mood."			
+			#if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.FRIGHTENED:
+				#lockout = true
+				#hint_description = "Unavailable due to current mood."			
 		RESOURCE.METRICS.READINESS:
 			property = "READINESS"
 			current_amount = vibes[RESOURCE.METRICS.READINESS]
-			if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.RELUCTANT:
-				lockout = true
-				hint_description = "Unavailable due to current mood."
+			#if !staff_details.is_empty() and staff_details.mood.ref == RESEARCHER.MOODS.RELUCTANT:
+				#lockout = true
+				#hint_description = "Unavailable due to current mood."
 	
 	return {
 		"lockout": lockout,
