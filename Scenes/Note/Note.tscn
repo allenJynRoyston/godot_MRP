@@ -1,0 +1,111 @@
+[gd_scene load_steps=12 format=3 uid="uid://dww60raoe5gef"]
+
+[ext_resource type="Script" uid="uid://bl35n2knhxeuu" path="res://Scenes/Note/note.gd" id="1_urdro"]
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="2_2m4no"]
+[ext_resource type="Shader" uid="uid://dmludjy5n4ygv" path="res://Shader/Sephia/sephia.gdshader" id="2_qsuu7"]
+[ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="2_sau7f"]
+[ext_resource type="Shader" uid="uid://dphqo82sgebco" path="res://CanvasShader/PixelArt/pixelArtGradiant.gdshader" id="3_qsuu7"]
+[ext_resource type="FontFile" uid="uid://cl0rds8hm0r81" path="res://Fonts/m5x7.ttf" id="3_sau7f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sau7f"]
+bg_color = Color(0.0728426, 0.0728426, 0.0728426, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_inb6f"]
+shader = ExtResource("2_qsuu7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b8pka"]
+shader = ExtResource("3_qsuu7")
+shader_parameter/EnableShader = true
+shader_parameter/LinearGradient = false
+shader_parameter/ClampDist = true
+shader_parameter/DistOffset = -0.1
+shader_parameter/DistAdd = -0.13
+shader_parameter/GridScale = 1
+shader_parameter/ModulateColor = Color(0, 0, 0, 1)
+shader_parameter/GradientOpacity = 0.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sau7f"]
+viewport_path = NodePath("MarginContainer/SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_qsuu7"]
+font = ExtResource("3_sau7f")
+font_size = 32
+font_color = Color(0, 1, 0.55, 1)
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)
+
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_sau7f")
+script = ExtResource("1_urdro")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer"]
+size = Vector2i(1920, 1080)
+
+[node name="SnapshotTextureRect" type="TextureRect" parent="MarginContainer/SubViewport"]
+material = SubResource("ShaderMaterial_inb6f")
+offset_right = 1920.0
+offset_bottom = 1080.0
+stretch_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+material = SubResource("ShaderMaterial_b8pka")
+layout_mode = 2
+texture = SubResource("ViewportTexture_sau7f")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -304.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/TextureRect/MarginContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/TextureRect/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = ExtResource("2_2m4no")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/TextureRect/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="NoteLabel" type="Label" parent="MarginContainer/TextureRect/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = ">>:"
+label_settings = SubResource("LabelSettings_qsuu7")
+
+[node name="BtnControls" parent="." instance=ExtResource("2_sau7f")]
+visible = false
+layout_mode = 2
+include_blackbar = true

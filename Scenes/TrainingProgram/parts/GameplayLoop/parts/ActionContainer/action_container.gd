@@ -53,9 +53,9 @@ extends GameContainer
 
 # GOTO PANEL
 @onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-@onready var GotoFloorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoFloorBtn
-@onready var GotoWingBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoWingBtn
-@onready var GotoGeneratorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
+@onready var ToggleLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ToggleLevelBtn
+#@onready var GotoWingBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoWingBtn
+#@onready var GotoGeneratorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
 
 # WING ACTION PANELS
@@ -227,23 +227,13 @@ func start() -> void:
 	# -------------------------------------
 
 	# -------------------------------------
-	GotoFloorBtn.onClick = func() -> void:
-		if camera_settings.type == CAMERA.TYPE.FLOOR_SELECT:return
-		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
+	ToggleLevelBtn.onClick = func() -> void:
+		
+		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
+		ToggleLevelBtn.title = "ZOOM OUT" if camera_settings.type else "ZOOM IN"
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)		
 	
-	GotoWingBtn.onClick = func() -> void:
-		if camera_settings.type == CAMERA.TYPE.WING_SELECT:return
-		camera_settings.type = CAMERA.TYPE.WING_SELECT
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)
-
-	GotoGeneratorBtn.onClick = func() -> void:
-		if camera_settings.type == CAMERA.TYPE.GENERATOR:return
-		camera_settings.type = CAMERA.TYPE.GENERATOR
-		SUBSCRIBE.camera_settings = camera_settings	
-		TransistionScreen.start(0.3, true)
 		
 	WingDesignBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -1222,6 +1212,9 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
 	
+	#GotoWingBtn.is_disabled = !has_one_floor_activated
+	#GotoGeneratorBtn.is_disabled = !has_generator_prerequisite	
+	
 	match camera_settings.type:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
@@ -1229,6 +1222,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			WingActions.hide()
 			FacilityActions.show()
 			GeneratorActions.hide()
+		
 
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
@@ -1236,7 +1230,7 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			WingActions.show()
 			FacilityActions.hide()
 			GeneratorActions.hide()
-			
+
 		# ----------------------
 		CAMERA.TYPE.GENERATOR:
 			NameControl.hide()
@@ -1303,8 +1297,6 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			GotoWingBtn.is_disabled = !has_one_floor_activated
-			GotoGeneratorBtn.is_disabled = !has_generator_prerequisite
 			WingDesignBtn.is_disabled = !is_powered or !is_ventilated or is_overheated
 			WingDesignBtn.title = "DESIGN" if (is_powered and is_ventilated and !is_overheated) else "UNAVAILABLE"
 			WingProgramBtn.hide() if GAME_UTIL.get_list_of_programs(current_location, true).is_empty() else WingProgramBtn.show()

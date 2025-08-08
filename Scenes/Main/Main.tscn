@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://jjndhgp0ekhh"]
+[gd_scene load_steps=45 format=3 uid="uid://jjndhgp0ekhh"]
 
 [ext_resource type="Script" uid="uid://dpv0iovlwv46y" path="res://Scenes/Main/main.gd" id="1_cv8e0"]
 [ext_resource type="PackedScene" uid="uid://ddkvohnxbwq22" path="res://Scenes/CellScene/CellScene.tscn" id="4_18xdc"]
@@ -16,6 +16,8 @@
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="12_epx8f"]
 [ext_resource type="PackedScene" uid="uid://blq88bwlfy7io" path="res://Scenes/Main/parts/Audio/Audio.tscn" id="12_wgovn"]
 [ext_resource type="Material" uid="uid://d0hjgsth46phv" path="res://Shader/Border/Border.tres" id="13_oa1gp"]
+[ext_resource type="PackedScene" uid="uid://dww60raoe5gef" path="res://Scenes/Note/Note.tscn" id="14_epx8f"]
+[ext_resource type="FontFile" uid="uid://cl0rds8hm0r81" path="res://Fonts/m5x7.ttf" id="17_hcu3t"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nn4ar"]
 
@@ -175,9 +177,13 @@ viewport_path = NodePath("FinalComposition")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18xdc"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epx8f"]
+bg_color = Color(0, 0, 0, 0.686275)
+corner_radius_top_right = 25
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qdkat"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 2
+bg_color = Color(0, 0, 0, 0.627451)
+border_width_left = 1
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
@@ -189,6 +195,19 @@ outline_size = 2
 outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qdkat"]
+font = ExtResource("17_hcu3t")
+font_size = 32
+font_color = Color(0, 1, 0.666667, 1)
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hcu3t"]
+bg_color = Color(0, 0, 0, 0.686275)
+corner_radius_top_left = 25
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_qdkat"]
 viewport_path = NodePath("NoteOverlay")
@@ -204,7 +223,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
-is_production_build = true
 reset_userprofile_save = true
 audio_mute = true
 skip_splash = true
@@ -477,8 +495,9 @@ texture = SubResource("ViewportTexture_hcu3t")
 expand_mode = 1
 stretch_mode = 2
 
+[node name="Note" parent="NoteOverlay" instance=ExtResource("14_epx8f")]
+
 [node name="Notes" type="PanelContainer" parent="NoteOverlay"]
-visible = false
 modulate = Color(3.1285e-06, 0.646691, 0.206366, 1)
 anchors_preset = 15
 anchor_right = 1.0
@@ -487,28 +506,35 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_18xdc")
 
-[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes"]
+[node name="LeftBtn" type="PanelContainer" parent="NoteOverlay/Notes"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_epx8f")
 
-[node name="NoteBtn" type="PanelContainer" parent="NoteOverlay/Notes/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/LeftBtn"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="NoteBtn" type="PanelContainer" parent="NoteOverlay/Notes/LeftBtn/MarginContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_qdkat")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/MarginContainer/NoteBtn"]
+[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn"]
 layout_mode = 2
 alignment = 1
 
-[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer/ColorRect"]
+[node name="Label" type="Label" parent="NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn/HBoxContainer/ColorRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -520,32 +546,51 @@ label_settings = SubResource("LabelSettings_udh0u")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/NoteBtn/HBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn/HBoxContainer/MarginContainer"]
 layout_mode = 2
 text = "READ NOTE"
 label_settings = ExtResource("12_epx8f")
 
-[node name="MessageBtn" type="PanelContainer" parent="NoteOverlay/Notes/MarginContainer"]
+[node name="Label" type="Label" parent="NoteOverlay/Notes/LeftBtn/MarginContainer"]
+layout_mode = 2
+text = ">>: user can type in commands!"
+label_settings = SubResource("LabelSettings_qdkat")
+
+[node name="RightBtn" type="PanelContainer" parent="NoteOverlay/Notes"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_hcu3t")
+
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/RightBtn"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="MessageBtn" type="PanelContainer" parent="NoteOverlay/Notes/RightBtn/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_qdkat")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/MarginContainer/MessageBtn"]
+[node name="HBoxContainer" type="HBoxContainer" parent="NoteOverlay/Notes/RightBtn/MarginContainer/MessageBtn"]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="NoteOverlay/Notes/RightBtn/MarginContainer/MessageBtn/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer/ColorRect"]
+[node name="Label" type="Label" parent="NoteOverlay/Notes/RightBtn/MarginContainer/MessageBtn/HBoxContainer/ColorRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -557,14 +602,14 @@ label_settings = SubResource("LabelSettings_udh0u")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="NoteOverlay/Notes/RightBtn/MarginContainer/MessageBtn/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="NoteOverlay/Notes/MarginContainer/MessageBtn/HBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="NoteOverlay/Notes/RightBtn/MarginContainer/MessageBtn/HBoxContainer/MarginContainer"]
 layout_mode = 2
 text = "NEW MESSAGE"
 label_settings = ExtResource("12_epx8f")

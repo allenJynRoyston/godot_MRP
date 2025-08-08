@@ -265,29 +265,31 @@ vertical_alignment = 1
 [node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="GotoFloorBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="ToggleLevelBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
-title = "BASE"
-assigned_key = "1"
+title = "ZOOM IN"
+assigned_key = "B"
 icon = 70
 is_disabled = false
 allow_hint = false
 
 [node name="GotoWingBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
-title = "WING"
+title = "ZOOM OUT"
 assigned_key = "2"
 icon = 29
 is_disabled = false
 allow_hint = false
 
 [node name="GotoGeneratorBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -304,8 +306,8 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "DEBUG"
-assigned_key = "5"
-icon = 15
+assigned_key = "R"
+icon = 9
 is_disabled = false
 allow_hint = false
 

@@ -35,8 +35,9 @@ extends PanelContainer
 @onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
 
 # NOTE AND MESSAGE BUTTON
-@onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/MarginContainer/NoteBtn
-@onready var MessageBtn:PanelContainer = $NoteOverlay/Notes/MarginContainer/MessageBtn
+@onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn
+# @onready var MessageBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/MessageBtn
+@onready var NoteComponent:Control = $NoteOverlay/Note
 
 # COLORRECT bluescreens
 @onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG
@@ -298,8 +299,8 @@ func _ready() -> void:
 	# assign debugs
 	assign_debugs()
 	
-	NoteBtn.modulate.a = 0.1
-	MessageBtn.modulate.a = 0.1
+	#NoteBtn.modulate.a = 0.1
+	#MessageBtn.modulate.a = 0.1
 
 	# assign functions
 	CellScene.transInFx = func(duration:float = 1.3) -> void:
@@ -485,7 +486,7 @@ func on_note_update(new_val:Dictionary) -> void:
 	if !note.is_empty():
 		print("NOTE: ", note)
 	has_note = !note.is_empty()
-	NoteBtn.modulate.a = 1 if has_note else 0.2
+	# NoteBtn.modulate.a = 1 if has_note else 0.2
 # -----------------------------------	
 
 # -----------------------------------	
@@ -732,11 +733,27 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key	
 	match key:
 		"N":
-			if has_note:
-				print(note)
-		"M":
-			if has_message:
-				print("open message")
+			NoteBtn.hide()
+			#MessageBtn.hide()
+			CellScene.hide()
+			OsScene.hide()
+			ArticleScene.hide()
+			
+			await NoteComponent.open_notes()
+			on_current_layer_update()
+			NoteBtn.show()
+			#MessageBtn.show()
+		#"M":
+			#if has_message:
+				#NoteBtn.hide()
+				#MessageBtn.hide()
+				#CellScene.hide()
+				#OsScene.hide()
+				#ArticleScene.hide()
+				#await NoteComponent.open_notes()
+				#on_current_layer_update()
+				#NoteBtn.show()
+				#MessageBtn.show()
 # -----------------------------------				
 
 # -----------------------------------	
