@@ -1,16 +1,20 @@
-[gd_scene load_steps=23 format=3 uid="uid://dww60raoe5gef"]
+[gd_scene load_steps=26 format=3 uid="uid://dww60raoe5gef"]
 
 [ext_resource type="Script" uid="uid://bl35n2knhxeuu" path="res://Scenes/Note/note.gd" id="1_urdro"]
 [ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="2_2m4no"]
-[ext_resource type="Shader" path="res://Shader/Sephia/sephia.gdshader" id="2_qsuu7"]
+[ext_resource type="Shader" uid="uid://dmludjy5n4ygv" path="res://Shader/Sephia/sephia.gdshader" id="2_qsuu7"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="6_qsuu7"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="7_b8pka"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="7_inb6f"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b8pka"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8pka"]
+bg_color = Color(0.07, 0.07, 0.07, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_inb6f"]
 shader = ExtResource("2_qsuu7")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4xxh"]
+bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="Shader" id="Shader_qsuu7"]
 code = "shader_type canvas_item;
@@ -52,8 +56,8 @@ shader_parameter/glow_radius = 5.0
 shader_parameter/opacity = 1.0
 shader_parameter/glow_offset_strength = 2.888
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_sau7f"]
-viewport_path = NodePath("Snapshot/SubViewport")
+[sub_resource type="ViewportTexture" id="ViewportTexture_qsuu7"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inb6f"]
 
@@ -80,6 +84,12 @@ font = ExtResource("6_qsuu7")
 shadow_size = 3
 shadow_color = Color(0, 0, 0, 0.380392)
 shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qsuu7"]
+bg_color = Color(0.6, 0.6, 0.6, 0.54902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inb6f"]
+bg_color = Color(0.6, 0.6, 0.6, 0.623529)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ief6q"]
 font = ExtResource("6_qsuu7")
@@ -113,34 +123,41 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_b8pka")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b8pka")
 script = ExtResource("1_urdro")
 
-[node name="Snapshot" type="MarginContainer" parent="."]
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="SnapshotTextureRect" type="TextureRect" parent="SubViewport"]
+material = SubResource("ShaderMaterial_inb6f")
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="SnapshotControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SnapshotControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b4xxh")
+
+[node name="MarginContainer" type="MarginContainer" parent="SnapshotControl/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="SubViewport" type="SubViewport" parent="Snapshot"]
-size = Vector2i(1920, 1080)
-
-[node name="SnapshotTextureRect" type="TextureRect" parent="Snapshot/SubViewport"]
-material = SubResource("ShaderMaterial_inb6f")
-offset_right = 1920.0
-offset_bottom = 1080.0
-stretch_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="Snapshot"]
+[node name="TextureRect" type="TextureRect" parent="SnapshotControl/PanelContainer/MarginContainer"]
 material = SubResource("ShaderMaterial_b8pka")
 layout_mode = 2
-texture = SubResource("ViewportTexture_sau7f")
-expand_mode = 1
-stretch_mode = 2
-
-[node name="PreviewControl" type="Control" parent="."]
-layout_mode = 2
+texture = SubResource("ViewportTexture_qsuu7")
+expand_mode = 2
 
 [node name="PromptControl" type="Control" parent="."]
 layout_mode = 2
@@ -210,52 +227,67 @@ icon = 37
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(10, 10)
 
+[node name="PreviewControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PreviewControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qsuu7")
+
+[node name="MarginContainer" type="MarginContainer" parent="PreviewControl/PanelContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="PreviewControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+
 [node name="CreateNoteControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="CreateNoteControl"]
+[node name="PanelContainer" type="PanelContainer" parent="CreateNoteControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.118581, 0.118581, 0.118581, 0.490196)
+theme_override_styles/panel = SubResource("StyleBoxFlat_inb6f")
 
-[node name="CenterContainer" type="CenterContainer" parent="CreateNoteControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="PanelContainer" type="PanelContainer" parent="CreateNoteControl/CenterContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="CreateNoteControl/PanelContainer/MarginContainer"]
 custom_minimum_size = Vector2(450, 100)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("2_2m4no")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CreateNoteControl/CenterContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer"]
+[node name="Label" type="Label" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 text = "Create note:"
 label_settings = SubResource("LabelSettings_ief6q")
 
-[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(1.22733e-06, 0.424974, 0.101946, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/ColorRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -267,7 +299,7 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 0
 
-[node name="LineEdit" type="LineEdit" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/ColorRect/MarginContainer"]
+[node name="LineEdit" type="LineEdit" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/ColorRect/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_colors/font_placeholder_color = Color(0.654232, 0.654232, 0.654232, 1)
@@ -288,28 +320,28 @@ selecting_enabled = false
 deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 
-[node name="MarginContainer2" type="MarginContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Action" type="HBoxContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+[node name="Action" type="HBoxContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action"]
+[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action"]
 custom_minimum_size = Vector2(80, 30)
 layout_mode = 2
 color = Color(0, 0.964706, 0.278431, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action/ColorRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -317,7 +349,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action/ColorRect/MarginContainer"]
+[node name="Label" type="Label" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action/ColorRect/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Enter"
@@ -325,22 +357,22 @@ label_settings = ExtResource("7_b8pka")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionLabel" type="Label" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action"]
+[node name="ActionLabel" type="Label" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Action"]
 layout_mode = 2
 text = "Save"
 label_settings = SubResource("LabelSettings_4wpmt")
 
-[node name="Back" type="HBoxContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+[node name="Back" type="HBoxContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back"]
+[node name="ColorRect" type="ColorRect" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back"]
 custom_minimum_size = Vector2(80, 30)
 layout_mode = 2
 color = Color(0, 0.964706, 0.278431, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back/ColorRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -348,7 +380,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back/ColorRect/MarginContainer"]
+[node name="Label" type="Label" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back/ColorRect/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "tab"
@@ -356,10 +388,18 @@ label_settings = ExtResource("7_b8pka")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back"]
+[node name="Label" type="Label" parent="CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/HBoxContainer/Back"]
 layout_mode = 2
 text = "Cancel"
 label_settings = SubResource("LabelSettings_ei6v4")
+
+[node name="CenterContainer" type="CenterContainer" parent="CreateNoteControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="NoteControl" type="Control" parent="."]
 layout_mode = 2

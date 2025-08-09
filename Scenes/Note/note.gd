@@ -1,14 +1,21 @@
 extends Control
 
-@onready var Snapshot:Control = $Snapshot
-@onready var SnapshotRect:TextureRect = $Snapshot/SubViewport/SnapshotTextureRect
+@onready var SnapshotControl:Control = $SnapshotControl
+@onready var SnapshotPanel:PanelContainer = $SnapshotControl/PanelContainer
+@onready var SnapshotMargin:MarginContainer = $SnapshotControl/PanelContainer/MarginContainer
+@onready var SnapshotRect:TextureRect = $SnapshotControl/PanelContainer/MarginContainer/TextureRect
 
-@onready var PreviewControl:Control = $PreviewControl
 @onready var PromptContainer:PanelContainer = $PromptControl/PanelContainer
 @onready var PromptLabel:Label = $PromptControl/PanelContainer/Terminal/MarginContainer/HBoxContainer/PromptLabel
 
+@onready var PreviewControl:Control = $PreviewControl/PanelContainer/MarginContainer/Control
+@onready var PreviewPanel:PanelContainer = $PreviewControl/PanelContainer
+@onready var PreviewMargin:MarginContainer = $PreviewControl/PanelContainer/MarginContainer
+
 @onready var CreateNoteControl:Control = $CreateNoteControl
-@onready var CreateLineEdit:LineEdit = $CreateNoteControl/CenterContainer/PanelContainer/VBoxContainer/ColorRect/MarginContainer/LineEdit
+@onready var CreatePanel:PanelContainer = $CreateNoteControl/PanelContainer
+@onready var CreateMargin:MarginContainer = $CreateNoteControl/PanelContainer/MarginContainer
+@onready var CreateLineEdit:LineEdit = $CreateNoteControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/ColorRect/MarginContainer/LineEdit
 
 enum STATE {PROMPT, SELECT_NOTE, READ_NOTE, CREATE_NOTE}
 
@@ -69,20 +76,43 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)	
 
 func _ready() -> void:
-	CreateNoteControl.hide()
-	
+	# CreateNoteControl.hide()
 	await U.tick()
-	control_pos[PromptContainer] = {
-		"show": 0,
-		"hide": -(PromptContainer.size.x + 20)
+	
+	control_pos[SnapshotPanel] = {
+		"show": 0, 
+		"hide": -SnapshotMargin.size.y
 	}
 	
-	PromptContainer.position.x = control_pos[PromptContainer].hide
+	control_pos[PromptContainer] = {
+		"show": 0,
+		"hide": -(PromptContainer.size.y)
+	}
+	
+	control_pos[PreviewPanel] = {
+		"show": 0, 
+		"hide": -PreviewPanel.size.y 
+	}
+	
+	control_pos[CreatePanel] = {
+		"show": 0, 
+		"hide": -CreateMargin.size.y 
+	}
+	
+	PromptContainer.position.y = control_pos[PromptContainer].hide	
+	SnapshotPanel.position.y = control_pos[SnapshotPanel].hide
+	PreviewPanel.position.y = control_pos[PreviewPanel].hide
+	CreatePanel.position.y = control_pos[CreatePanel].hide
+
 	reveal(false, true)
+	reveal_preview(false, true)
+	reveal_create_note(false, true)
+	
 	on_prompt_index_update()
 	on_note_index_update()
 
 func end() -> void:
+	onClose.call()		
 	await reveal(false)
 	is_opened = false
 	prompt_index = 1
@@ -92,7 +122,7 @@ func end() -> void:
 	note_items = []
 	SelectedNoteNode = null
 	current_state = STATE.PROMPT
-	onClose.call()	
+
 # -----------------------------------	
 
 # -----------------------------------	
@@ -141,15 +171,34 @@ func get_background() -> void:
 func reveal(state:bool, skip_animation:bool = false) -> void:
 	if !is_node_ready():return
 	
-	if state:
-		Snapshot.show()	
-		
 	is_animating = true
-	await U.tween_node_property(PromptContainer, "position:x", control_pos[PromptContainer].show if state else control_pos[PromptContainer].hide, 0.7 if !skip_animation else 0.02, 0, Tween.TRANS_CIRC)
+	await U.tween_node_property(SnapshotPanel, "position:y", control_pos[SnapshotPanel].show if state else control_pos[SnapshotPanel].hide, 0.7 if !skip_animation else 0.02, 0, Tween.TRANS_CIRC)
 	is_animating = false
 	
-	if !state:
-		Snapshot.hide()
+func reveal_prompt(state:bool, skip_animation:bool = false) -> void:
+	if !is_node_ready():return
+	
+	is_animating = true
+	await U.tween_node_property(PromptContainer, "position:y", control_pos[PromptContainer].show if state else control_pos[PromptContainer].hide, 0.7 if !skip_animation else 0.02, 0, Tween.TRANS_CIRC)
+	is_animating = false
+	
+
+		
+func reveal_preview(state:bool, skip_animation:bool = false) -> void:
+	if !is_node_ready():return
+		
+	is_animating = true
+	await U.tween_node_property(PreviewPanel, "position:y", control_pos[PreviewPanel].show if state else control_pos[PreviewPanel].hide, 0.7 if !skip_animation else 0.02, 0, Tween.TRANS_CIRC)
+	is_animating = false
+	
+	
+func reveal_create_note(state:bool, skip_animation:bool = false) -> void:
+	if !is_node_ready():return
+		
+	is_animating = true
+	await U.tween_node_property(CreatePanel, "position:y", control_pos[CreatePanel].show if state else control_pos[PreviewPanel].hide, 0.7 if !skip_animation else 0.02, 0, Tween.TRANS_CIRC)
+	is_animating = false
+	
 
 func execute_prompt() -> void:
 	prompts[prompt_index].func.call()
@@ -224,6 +273,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				note_copy = notes.duplicate()
 				# reveal
 				await reveal(true)
+				await reveal_prompt(true)
 				# hide other scenes
 				onOpen.call()
 				# open notes by default
@@ -262,7 +312,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"E":
 					if SelectedNoteNode == null:return
 					current_state = STATE.READ_NOTE
-					
+					print("reveal preview...")
+					reveal_preview(true)
 					for child in PreviewControl.get_children():
 						if SelectedNoteNode == child:
 							child.show()
@@ -283,6 +334,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"S":
 					note_item_index = U.min_max(note_item_index + 1, 0, note_items.size() - 1, true)
 				"B":
+					await reveal_preview(false)					
 					note_item_index = 0
 					note_items = []
 					for child in PreviewControl.get_children():
@@ -294,15 +346,19 @@ func on_control_input_update(input_data:Dictionary) -> void:
 						'delete':
 							remove_note(item.index)							
 						"create":
+							reveal_create_note(true)
 							current_state = STATE.CREATE_NOTE
 		# -------------------
 		STATE.CREATE_NOTE:
 			match key:
 				"TAB":
+					await reveal_create_note(false)
 					current_state = STATE.READ_NOTE
 				"ENTER":
+					await reveal_create_note(false)					
 					await save_note()
 					current_state = STATE.READ_NOTE
+
 			
 			# add characters...
 			var new_chr:String = OS.get_keycode_string(input_data.keycode)
