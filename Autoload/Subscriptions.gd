@@ -530,10 +530,21 @@ func unsubscribe_to_hints_unlocked(node:Node) -> void:
 	hints_unlocked_subscriptions.erase(node)				
 # ------------------------------------------------------------	
 
-# ------------------------------------------------------------	
-var notes_subscriptions:Array = []
 
-var note:Dictionary = {} :
+# ------------------------------------------------------------	
+var notable_nodes:Array = []
+func add_note_node(node:Node) -> void:
+	if node not in notable_nodes:
+		notable_nodes.push_back(node)
+	note = notable_nodes
+
+func remove_note_node(node:Node) -> void:
+	notable_nodes.erase(node)
+	note = notable_nodes
+
+
+var notes_subscriptions:Array = []
+var note:Array = [] :
 	set(val):
 		note = val 
 		for node in notes_subscriptions:

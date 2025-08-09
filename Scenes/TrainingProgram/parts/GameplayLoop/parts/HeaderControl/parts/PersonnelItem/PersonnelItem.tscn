@@ -8,28 +8,28 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_ykt78"]
 font = ExtResource("2_ykt78")
-font_color = Color(0.05, 0.05, 0.05, 1)
+font_color = Color(1, 0, 0, 1)
 outline_size = 2
-outline_color = Color(0.05, 0.05, 0.05, 0.2)
+outline_color = Color(1, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="LabelSettings" id="LabelSettings_me31e"]
 font = ExtResource("3_me31e")
-font_color = Color(0.05, 0.05, 0.05, 1)
-outline_color = Color(0.05, 0.05, 0.05, 0.2)
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(1, 0, 0, 0.2)
 
 [sub_resource type="LabelSettings" id="LabelSettings_xqbyf"]
 font = ExtResource("3_me31e")
 font_size = 24
-font_color = Color(0.05, 0.05, 0.05, 1)
-outline_color = Color(0.05, 0.05, 0.05, 0.2)
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(1, 0, 0, 0.2)
 
 [sub_resource type="LabelSettings" id="LabelSettings_26run"]
 font = ExtResource("3_me31e")
 font_size = 14
-font_color = Color(0.05, 0.05, 0.05, 1)
-outline_color = Color(0.05, 0.05, 0.05, 0.2)
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(1, 0, 0, 0.2)
 
 [node name="PersonnelItem" type="PanelContainer"]
 offset_right = 40.0

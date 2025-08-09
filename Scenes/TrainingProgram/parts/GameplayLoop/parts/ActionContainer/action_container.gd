@@ -228,7 +228,6 @@ func start() -> void:
 
 	# -------------------------------------
 	ToggleLevelBtn.onClick = func() -> void:
-		
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
 		ToggleLevelBtn.title = "ZOOM OUT" if camera_settings.type else "ZOOM IN"
 		SUBSCRIBE.camera_settings = camera_settings

@@ -201,7 +201,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
-visible = false
 layout_mode = 2
 show_researcher_card = false
 show_room_card = false

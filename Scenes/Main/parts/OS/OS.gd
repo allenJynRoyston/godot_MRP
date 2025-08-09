@@ -829,7 +829,9 @@ func toggle_show_taskbar(state:bool = !show_taskbar) -> void:
 
 # -----------------------------------
 func switch_to() -> void:	
-	BtnControls.reveal(true)
+	pass
+	# print('switch to...')
+	# BtnControls.reveal(true)
 # -----------------------------------
 
 # -----------------------------------

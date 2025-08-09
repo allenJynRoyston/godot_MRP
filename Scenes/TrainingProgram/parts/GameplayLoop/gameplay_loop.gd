@@ -897,7 +897,7 @@ func on_current_phase_update() -> void:
 			await restore_player_hud()			
 			GAME_UTIL.disable_taskbar(false)
 			await U.set_timeout(0.4)
-			NOTES.use(NOTES.REF.FIRST_NOTE)			
+
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			await show_only([Structure3dContainer, TimelineContainer])

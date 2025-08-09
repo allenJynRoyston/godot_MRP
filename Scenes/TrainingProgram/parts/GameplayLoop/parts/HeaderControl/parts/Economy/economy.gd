@@ -57,6 +57,8 @@ extends PanelContainer
 	set(val):
 		core_income = val
 		on_core_income_update()
+
+const tutorial_notes:Array = [ "I can't let all these values hit 0 or I lose the game."]
 # --------------------------------------------
 
 # --------------------------------------------
@@ -65,6 +67,14 @@ func _init() -> void:
 	
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
+	
+func _notification(what):
+	match what:
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if is_visible_in_tree():
+				SUBSCRIBE.add_note_node(self)
+			else:
+				SUBSCRIBE.remove_note_node(self)
 
 func _ready() -> void:
 	Header.set('theme_override_styles/panel', header_stylebox_copy)		

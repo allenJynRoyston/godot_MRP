@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://nkqud1uuvula"]
+
+[ext_resource type="Script" uid="uid://cu20shmdndah7" path="res://Scenes/Note/parts/note_line_item.gd" id="2_kpnm2"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_yttpu"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_6gu3u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hlx80"]
+font = ExtResource("3_6gu3u")
+font_color = Color(0, 0.909804, 0.105882, 1)
+outline_size = 2
+outline_color = Color(0, 0.96, 0.272, 0.419608)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)
+
+[node name="NoteItem" type="VBoxContainer"]
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 166.0
+offset_bottom = 21.0
+script = ExtResource("2_kpnm2")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="SVGIcon" parent="HBoxContainer/MarginContainer" instance=ExtResource("2_yttpu")]
+layout_mode = 2
+icon = 27
+icon_color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="LockIcon" parent="HBoxContainer/MarginContainer2" instance=ExtResource("2_yttpu")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 48
+icon_color = Color(0, 0.964706, 0.278431, 1)
+icon_size = Vector2(15, 15)
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "I am a note and I go here."
+label_settings = SubResource("LabelSettings_hlx80")

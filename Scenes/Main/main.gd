@@ -4,6 +4,7 @@ extends PanelContainer
 @onready var Output:TextureRect = $FinalOutput/Output
 @onready var ActiveSubviewport:SubViewport = $ActiveSubviewport
 @onready var MusicShaderViewport:SubViewport = $MusicShader
+@onready var FinalCompositeViewport:SubViewport = $FinalComposition
 
 # OS
 @onready var OSViewport:SubViewport = $OSViewport
@@ -35,9 +36,9 @@ extends PanelContainer
 @onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
 
 # NOTE AND MESSAGE BUTTON
-@onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn
+# @onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn
 # @onready var MessageBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/MessageBtn
-@onready var NoteComponent:Control = $NoteOverlay/Note
+@onready var Terminal:Control = $GlitchShader/Terminal
 
 # COLORRECT bluescreens
 @onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG
@@ -215,7 +216,10 @@ var default_save_profiles:Dictionary = {
 			"screen_burn": true,
 			"monitor_overlay": true
 		}	
-	},	
+	},
+	"note_data":{
+		
+	},
 	"gameplay_settings": {
 		"enable_build_confirm": false
 	},
@@ -249,9 +253,9 @@ var current_layer:LAYER :
 		current_layer = val
 		on_current_layer_update()
 
-var has_note:bool = false
-var has_message:bool = false
-var note:Dictionary 
+#var has_note:bool = false
+#var has_message:bool = false
+#var note:Dictionary 
 
 # ------------------------------------------------------------------------------
 # SETUP GAME RESOLUTION
@@ -265,10 +269,8 @@ func _init() -> void:
 		GBL.save_resolution(DisplayServer.screen_get_size())
 		
 	GBL.register_node(REFS.MAIN, self)		
-	GBL.subscribe_to_process(self)
-	GBL.subscribe_to_control_input(self)	
+	GBL.subscribe_to_process(self)	
 	GBL.subscribe_to_mouse_icons(self)
-	SUBSCRIBE.subscribe_to_notes(self)
 # ------------------------------------------------------------------------------
 
 # -----------------------------------	
@@ -278,10 +280,8 @@ func _exit_tree() -> void:
 	GBL.unregister_node(REFS.MAIN_ACTIVE_VIEWPORT)
 	GBL.unregister_node(REFS.MAIN_ARTICLE_VIEWPORT)
 	GBL.unregister_node(REFS.MAIN_OS_VIEWPORT)
+	GBL.unregister_node(REFS.MAIN_FINAL_COMPOSITION_VIEWPORT)
 	GBL.unsubscribe_to_mouse_icons(self)
-	GBL.unsubscribe_to_control_input(self)	
-	SUBSCRIBE.unsubscribe_to_notes(self)
-
 # -----------------------------------		
 
 # -----------------------------------	
@@ -295,12 +295,20 @@ func _ready() -> void:
 	GBL.register_node(REFS.MAIN_ARTICLE_VIEWPORT, ArticleViewport)
 	GBL.register_node(REFS.MAIN_OS_VIEWPORT, OSViewport)
 	GBL.register_node(REFS.MAIN_CELL_VIEWPORT, CellViewport)
+	GBL.register_node(REFS.MAIN_FINAL_COMPOSITION_VIEWPORT, FinalCompositeViewport)
 	
 	# assign debugs
 	assign_debugs()
 	
-	#NoteBtn.modulate.a = 0.1
-	#MessageBtn.modulate.a = 0.1
+	# assign note events
+	Terminal.onOpen = func() -> void:
+		for node in [CellScene, OsScene, ArticleScene]:
+			node.set_process(false)
+			node.set_physics_process(false)		
+			node.hide()
+	
+	Terminal.onClose = func() -> void:
+		on_current_layer_update()
 
 	# assign functions
 	CellScene.transInFx = func(duration:float = 1.3) -> void:
@@ -477,16 +485,6 @@ func toggle_fullscreen() -> void:
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WindowMode.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)	
 		on_fullscreen_update( get_max_resolution() )
-# -----------------------------------	
-
-# -----------------------------------	
-func on_note_update(new_val:Dictionary) -> void:
-	if !is_node_ready():return
-	note = new_val
-	if !note.is_empty():
-		print("NOTE: ", note)
-	has_note = !note.is_empty()
-	# NoteBtn.modulate.a = 1 if has_note else 0.2
 # -----------------------------------	
 
 # -----------------------------------	
@@ -726,35 +724,6 @@ func on_shader_profile_update() -> void:
 			add_all_shaders()
 			set_monitor_overlay(true)
 # -----------------------------------	
-
-# -----------------------------------	
-func on_control_input_update(input_data:Dictionary) -> void:	
-	if !is_node_ready():return
-	var key:String = input_data.key	
-	match key:
-		"N":
-			NoteBtn.hide()
-			#MessageBtn.hide()
-			CellScene.hide()
-			OsScene.hide()
-			ArticleScene.hide()
-			
-			await NoteComponent.open_notes()
-			on_current_layer_update()
-			NoteBtn.show()
-			#MessageBtn.show()
-		#"M":
-			#if has_message:
-				#NoteBtn.hide()
-				#MessageBtn.hide()
-				#CellScene.hide()
-				#OsScene.hide()
-				#ArticleScene.hide()
-				#await NoteComponent.open_notes()
-				#on_current_layer_update()
-				#NoteBtn.show()
-				#MessageBtn.show()
-# -----------------------------------				
 
 # -----------------------------------	
 func on_process_update(_delta: float, _time_passed:float) -> void:
