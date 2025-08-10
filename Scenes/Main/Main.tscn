@@ -276,8 +276,6 @@ offset_bottom = 40.0
 texture = SubResource("ViewportTexture_y3p8a")
 stretch_mode = 2
 
-[node name="Terminal" parent="GlitchShader" instance=ExtResource("14_epx8f")]
-
 [node name="CRTShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)
 
@@ -399,6 +397,8 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_3omms")
 stretch_mode = 2
+
+[node name="Terminal" parent="BorderShader" instance=ExtResource("14_epx8f")]
 
 [node name="MusicShader" type="SubViewport" parent="."]
 size = Vector2i(1920, 1080)

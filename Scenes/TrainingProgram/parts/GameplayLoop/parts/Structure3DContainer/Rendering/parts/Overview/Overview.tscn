@@ -20,7 +20,7 @@ bottom_radius = 4.0
 height = 70.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_becvl"]
-size = Vector3(25, 8, 25)
+size = Vector3(25, 15, 25)
 
 [node name="Overview" type="Control"]
 layout_mode = 3
@@ -82,7 +82,8 @@ skeleton = NodePath("")
 [node name="FloorInstanceContainer" type="Node3D" parent="SubViewport/Node3D"]
 
 [node name="FloorCamera" type="Camera3D" parent="SubViewport/Node3D"]
-transform = Transform3D(-1.04878, 0.232615, -0.639106, 0, 1.17462, 0.427523, 0.680123, 0.358703, -0.985529, -34.006, 0, -50)
+transform = Transform3D(-0.839022, 0.186091, -0.511284, 0, 0.939693, 0.342019, 0.544097, 0.286961, -0.788423, -34.006, 5.16914, -50)
 cull_mask = 1023
+h_offset = -10.0
 projection = 1
-size = 120.0
+size = 76.73

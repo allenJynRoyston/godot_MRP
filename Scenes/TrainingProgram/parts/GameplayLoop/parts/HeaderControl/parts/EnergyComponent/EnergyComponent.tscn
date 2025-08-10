@@ -16,7 +16,7 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="EnergyComponent" type="PanelContainer"]
+[node name="Energy" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_vertical = 3

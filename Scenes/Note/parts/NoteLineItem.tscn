@@ -4,8 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_yttpu"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_6gu3u"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_hlx80"]
+[sub_resource type="LabelSettings" id="LabelSettings_yttpu"]
 font = ExtResource("3_6gu3u")
+font_size = 24
 font_color = Color(0, 0.909804, 0.105882, 1)
 outline_size = 2
 outline_color = Color(0, 0.96, 0.272, 0.419608)
@@ -24,6 +25,7 @@ script = ExtResource("2_kpnm2")
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 
@@ -44,6 +46,9 @@ icon_color = Color(0, 0.964706, 0.278431, 1)
 icon_size = Vector2(15, 15)
 
 [node name="Label" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "I am a note and I go here."
-label_settings = SubResource("LabelSettings_hlx80")
+label_settings = SubResource("LabelSettings_yttpu")
+horizontal_alignment = 1
+autowrap_mode = 3

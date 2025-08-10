@@ -17,12 +17,20 @@ extends PanelContainer
 @export var flashing:bool = false
 
 # --------------------------------------------------------------------------------------------------
-func _init() -> void:
+func _init() -> void:	
 	GBL.subscribe_to_process(self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
-	
+
+func _notification(what):
+	match what:
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if is_visible_in_tree():
+				SUBSCRIBE.add_note_node(self)
+			else:
+				SUBSCRIBE.remove_note_node(self)
+
 func _ready() -> void:
 	Header.set('theme_override_styles/panel', header_stylebox_copy)	
 # --------------------------------------------------------------------------------------------------

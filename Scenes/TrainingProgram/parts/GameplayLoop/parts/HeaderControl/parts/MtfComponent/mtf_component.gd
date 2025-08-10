@@ -11,6 +11,14 @@ var mtf:Array = [] :
 		on_mtf_update()
 
 # --------------------------------------------------------------------------------------------------
+func _notification(what):
+	match what:
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if is_visible_in_tree():
+				SUBSCRIBE.add_note_node(self)
+			else:
+				SUBSCRIBE.remove_note_node(self)
+				
 func _ready() -> void:	
 	await U.tick()
 	on_mtf_update()

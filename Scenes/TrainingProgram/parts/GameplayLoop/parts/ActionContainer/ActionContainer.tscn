@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=28 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
@@ -103,6 +103,11 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bk83u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x63m5"]
+bg_color = Color(0, 0, 0, 0.780392)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
@@ -567,6 +572,43 @@ a_btn_icon = 24
 intercept_click_event = true
 c_btn_title = "REPLAY TUTORIAL"
 hide_c_btn = false
+
+[node name="FloorInfo" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="FloorInfo"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_bk83u")
+
+[node name="MarginContainer" type="MarginContainer" parent="FloorInfo/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/margin_left = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="FloorInfo/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
+
+[node name="MarginContainer" type="MarginContainer" parent="FloorInfo/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="Label" type="Label" parent="FloorInfo/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "FLOOR INFO
+HEATING LVL 1-4
+COOLING LVL 1-4
+VENTILATION LVL 1-4
+ENERGY LVL 1-4"
 
 [node name="NotificationControls" type="Control" parent="."]
 visible = false

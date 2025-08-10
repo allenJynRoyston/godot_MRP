@@ -34,14 +34,16 @@ func _ready() -> void:
 
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	SelectIcon.show() if is_selected else SelectIcon.hide()
-	var new_color:Color = Color.WHITE if is_selected else Color.GREEN
-	new_color.a = 0.5 if !is_selected else 1
-	label_settings_copy.font_color = new_color
-	label_settings_copy.outline_color = new_color
-	label_settings_copy.outline_color.a = 0.2
-	SelectIcon.icon_color = new_color
-	LockIcon.icon_color = new_color
+	show() if is_selected else hide()
+	#SelectIcon.show() if is_selected else SelectIcon.hide()
+	#var new_color:Color = Color.WHITE if is_selected else Color.GREEN
+	#new_color.a = 0.5 if !is_selected else 1
+	#label_settings_copy.font_color = new_color
+	#label_settings_copy.outline_color = new_color
+	#label_settings_copy.outline_color.a = 0.2
+	#SelectIcon.icon_color = new_color
+	#LockIcon.icon_color = new_color
+	
 	
 func on_is_locked_update() -> void:
 	if !is_node_ready():return

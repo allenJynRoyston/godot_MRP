@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://cl3tx3ln0xeju"]
+
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="1_5h1sl"]
+[ext_resource type="Script" uid="uid://b2pigm12mxym" path="res://Scenes/Note/parts/note_btn.gd" id="1_o10qg"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_o10qg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qs14k"]
+font = ExtResource("2_o10qg")
+font_color = Color(0.266667, 1, 0.2, 0.8)
+outline_size = 2
+outline_color = Color(0.346667, 1, 0.2, 0.501961)
+
+[node name="NoteBtn" type="HBoxContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+script = ExtResource("1_o10qg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+color = Color(0, 0.964706, 0.278431, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="ColorRect/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "E"
+label_settings = ExtResource("1_5h1sl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+color = Color(2.51182e-07, 0.16491, 0.0204984, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+
+[node name="ActionLabel" type="Label" parent="ColorRect2/MarginContainer"]
+layout_mode = 2
+text = "ACTION"
+label_settings = SubResource("LabelSettings_qs14k")

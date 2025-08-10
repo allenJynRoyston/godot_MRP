@@ -36,9 +36,7 @@ extends PanelContainer
 @onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
 
 # NOTE AND MESSAGE BUTTON
-# @onready var NoteBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/NoteBtn
-# @onready var MessageBtn:PanelContainer = $NoteOverlay/Notes/LeftBtn/MarginContainer/MessageBtn
-@onready var Terminal:Control = $GlitchShader/Terminal
+@onready var Terminal:Control = $BorderShader/Terminal
 
 # COLORRECT bluescreens
 @onready var CRTColorRect:ColorRect = $CRTShader/ColorRectBG

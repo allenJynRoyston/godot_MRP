@@ -17,7 +17,7 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="MTFComponent" type="PanelContainer"]
+[node name="MTF" type="PanelContainer"]
 custom_minimum_size = Vector2(210, 83)
 offset_right = 40.0
 offset_bottom = 40.0

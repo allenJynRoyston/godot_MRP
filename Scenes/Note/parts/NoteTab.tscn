@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3 uid="uid://oo1kro8cfwvg"]
+
+[ext_resource type="Script" uid="uid://dky3c67jly4rj" path="res://Scenes/Note/parts/note_tab.gd" id="1_kkh6y"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_w3c0x"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_3qrx0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eo6ft"]
+bg_color = Color(0.118663, 0.839882, 7.70092e-07, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 1
+shadow_offset = Vector2(5, 5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rrcvd"]
+font = ExtResource("3_3qrx0")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0.19, 0.19, 0.19, 0.376471)
+shadow_offset = Vector2(2, 2)
+
+[node name="Tab" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 0)
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_eo6ft")
+script = ExtResource("1_kkh6y")
+tab_title = "Tab"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_w3c0x")]
+visible = false
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 10
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(15, 15)
+flip_v = true
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Tab"
+label_settings = SubResource("LabelSettings_rrcvd")

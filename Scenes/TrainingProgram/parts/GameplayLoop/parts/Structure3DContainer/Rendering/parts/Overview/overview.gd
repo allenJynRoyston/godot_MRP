@@ -49,7 +49,7 @@ func build_floors() -> void:
 	for n in range(7):
 		var floor_duplicate:Node3D = FloorInstance.duplicate()
 		floor_duplicate.show()
-		floor_duplicate.position.y = n * -10
+		floor_duplicate.position.y = n * -27
 		FloorInstanceContainer.add_child(floor_duplicate)
 	FloorInstance.queue_free()
 # ------------------------------------------------
