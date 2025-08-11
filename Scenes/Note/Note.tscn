@@ -15,7 +15,7 @@ bg_color = Color(0.07, 0.07, 0.07, 0)
 shader = ExtResource("2_qsuu7")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4xxh"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.133196, 0.133196, 0.133196, 1)
 
 [sub_resource type="Shader" id="Shader_qsuu7"]
 code = "shader_type canvas_item;

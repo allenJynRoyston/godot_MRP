@@ -528,6 +528,7 @@ func start_new_game() -> void:
 	
 	# start actionContainer or start at ring level
 	ActionContainer.start()
+	HeaderControl.start()
 		
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
 	# clear all quicksaves/restorespoints/aftersetup

@@ -1,0 +1,69 @@
+[gd_scene load_steps=5 format=3 uid="uid://c2hubc813jb5x"]
+
+[ext_resource type="Script" uid="uid://ba8ebt87m7adg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Base/parts/base_rendering.gd" id="1_gi6w5"]
+
+[sub_resource type="Environment" id="Environment_a1lc7"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+volumetric_fog_density = 0.0167
+volumetric_fog_gi_inject = 0.89
+volumetric_fog_length = 22.9
+volumetric_fog_detail_spread = 0.5
+volumetric_fog_ambient_inject = 0.84
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gi6w5"]
+top_radius = 4.0
+bottom_radius = 4.0
+height = 70.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_b0ydy"]
+size = Vector3(25, 18, 25)
+
+[node name="BaseRendering" type="Node3D"]
+script = ExtResource("1_gi6w5")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_a1lc7")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(-0.887763, 0.273855, 0.369974, 0.410309, 0.835101, 0.366406, -0.208622, 0.477086, -0.853736, 0, 8.3956, 0)
+shadow_enabled = true
+
+[node name="Elevator" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
+layers = 1023
+mesh = SubResource("CylinderMesh_gi6w5")
+skeleton = NodePath("../../../../..")
+
+[node name="FloorInstance" type="Node3D" parent="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5052, 0, -13.2129)
+mesh = SubResource("BoxMesh_b0ydy")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2659, 0, -13.2129)
+mesh = SubResource("BoxMesh_b0ydy")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, 13.2659, 0, 13.1206)
+mesh = SubResource("BoxMesh_b0ydy")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D/FloorInstance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5052, 0, 13.1206)
+mesh = SubResource("BoxMesh_b0ydy")
+skeleton = NodePath("")
+
+[node name="FloorInstanceContainer" type="Node3D" parent="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(-0.839022, 0.186091, -0.511285, 0, 0.939693, 0.342018, 0.544097, 0.286961, -0.788424, -30, 25, -80)
+cull_mask = 1023
+h_offset = -10.0
+projection = 1
+size = 100.0

@@ -17,8 +17,8 @@ extends Node3D
 @export var room_type:int
 @export var skip_animation:bool = false
 
-const RoomRenderUnderConstructionMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/textures/RoomRender_UnderConstruction.tres")
-const RoomRenderBuiltMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/textures/RoomRender_Built.tres")
+const RoomRenderUnderConstructionMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_UnderConstruction.tres")
+const RoomRenderBuiltMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_Built.tres")
 const animation_speed:float = 0.2
 
 var current_location:Dictionary

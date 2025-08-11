@@ -5,17 +5,17 @@ extends MouseInteractions
 @onready var TitleLabel:Label = $MarginContainer/HBoxContainer/TitleLabel
 @onready var DurationLabel:Label = $MarginContainer/HBoxContainer/DurationLabel
 
-@onready var duration:int = 0 : 
+@export var duration:int = 0 : 
 	set(val):
 		duration = val
 		on_duration_update()
 		
-@onready var title:String = "" : 
+@export var title:String = "" : 
 	set(val):
 		title = val
 		on_title_update()
 		
-@onready var type:BASE.TYPE : 
+@export var type:BASE.TYPE : 
 	set(val):
 		type = val
 		on_type_update()
@@ -41,7 +41,7 @@ func on_title_update() -> void:
 
 func on_duration_update() -> void:
 	if !is_node_ready():return
-	DurationLabel.hide() if duration >= 20 else DurationLabel.show()
+	DurationLabel.hide() if duration >= 20 or duration < 0 else DurationLabel.show()
 	DurationLabel.text = "(%s)" % duration
 
 func on_type_update() -> void:

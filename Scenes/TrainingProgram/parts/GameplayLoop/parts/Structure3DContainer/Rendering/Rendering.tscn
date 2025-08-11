@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_lh6qf"]
 [ext_resource type="Shader" uid="uid://cmqkpk1mn6eq7" path="res://CanvasShader/AudioShader/audio_shader_3.gdshader" id="2_uoiph"]
-[ext_resource type="PackedScene" uid="uid://m74gitiqvwla" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Overview/Overview.tscn" id="2_urwmy"]
+[ext_resource type="PackedScene" uid="uid://m74gitiqvwla" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Base/Base.tscn" id="2_urwmy"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="3_kgjio"]
 [ext_resource type="PackedScene" uid="uid://c83wswsjxnmva" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Generator/Generator.tscn" id="4_dy8ob"]
 [ext_resource type="PackedScene" uid="uid://2egdont4wbiv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ControllerOverlay/ControllerOverlay.tscn" id="4_kgjio"]
@@ -40,7 +40,7 @@ shader_parameter/step_count_v = 6
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_urwmy"]
-viewport_path = NodePath("SubViewport/Rendering/OverviewScene/SubViewport")
+viewport_path = NodePath("SubViewport/Rendering/BaseScene/SubViewport")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_pgdfi"]
 viewport_path = NodePath("SubViewport/Rendering/WingScene/SubViewport")
@@ -117,25 +117,26 @@ size = Vector2i(1920, 1080)
 
 [node name="Rendering" type="Node3D" parent="SubViewport"]
 
-[node name="OverviewScene" type="Node3D" parent="SubViewport/Rendering"]
+[node name="BaseScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 
-[node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/OverviewScene"]
+[node name="SubViewport" type="SubViewport" parent="SubViewport/Rendering/BaseScene"]
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 
-[node name="OverviewNode" parent="SubViewport/Rendering/OverviewScene/SubViewport" instance=ExtResource("2_urwmy")]
+[node name="BaseRendering" parent="SubViewport/Rendering/BaseScene/SubViewport" instance=ExtResource("2_urwmy")]
 
-[node name="OverviewCamera" type="Camera3D" parent="SubViewport/Rendering/OverviewScene"]
+[node name="BaseCamera" type="Camera3D" parent="SubViewport/Rendering/BaseScene"]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0.00520379, 0)
 projection = 1
 current = true
-size = 1.2
+size = 0.9
 far = 10.0
 
-[node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/OverviewScene/OverviewCamera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+[node name="Sprite3D" type="Sprite3D" parent="SubViewport/Rendering/BaseScene/BaseCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0853216, -1)
 pixel_size = 0.001
 texture = SubResource("ViewportTexture_urwmy")
 

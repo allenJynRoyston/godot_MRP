@@ -36,6 +36,9 @@ func _ready() -> void:
 func reveal(state:bool, instant:bool = false) -> void:
 	if control_pos.is_empty():return
 	
+	if state:
+		show()
+	
 	var new_pos:int = control_pos[RootPanel].show if state else control_pos[RootPanel].hide
 	
 	if instant:
@@ -43,6 +46,9 @@ func reveal(state:bool, instant:bool = false) -> void:
 		return
 	
 	await U.tween_node_property(RootPanel, "position:y", new_pos)
+	
+	if !state:
+		hide()
 # --------------------------------------------------------------------------------------------------
 
 # -----------------------------------------------	

@@ -24,10 +24,13 @@ func _ready() -> void:
 func activate() -> void:
 	modulate = Color(1, 1, 1, 1)	
 	update.call_deferred()
+	
+func start() -> void:
+	on_camera_settings_update()
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------	
-func on_camera_settings_update(new_val:Dictionary) -> void:
+func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	U.debounce(str(self, "_update"), update)
 # --------------------------------------------------------------------------------------------------	

@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=4 uid="uid://dd18gu8px7b47"]
 
-[ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
+[ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="2_5s4vs"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="3_donpq"]
 

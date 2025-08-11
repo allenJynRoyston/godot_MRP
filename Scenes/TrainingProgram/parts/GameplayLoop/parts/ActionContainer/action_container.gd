@@ -5,7 +5,6 @@ extends GameContainer
 @onready var Backdrop:ColorRect = $Backdrop
 @onready var SummaryControls:Control = $SummaryControls
 @onready var NameControl:Control = $NameControl
-@onready var RoomDetailsControl:Control = $RoomDetails
 @onready var TransistionScreen:Control = $TransitionScreen
 #  ---------------------------------------
 
@@ -15,6 +14,7 @@ extends GameContainer
 @onready var CommandControls:Control = $CommandControls
 @onready var InfoControls:Control = $InfoControls
 @onready var ProgramControls:Control = $ProgramControls
+@onready var BaseManagementControls:Control = $BaseMangementControls
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -34,6 +34,12 @@ extends GameContainer
 @onready var ModulesPanel:PanelContainer = $ModulesAndPrograms/PanelContainer
 @onready var ModulesMargin:MarginContainer = $ModulesAndPrograms/PanelContainer/MarginContainer
 @onready var ModulesCard:PanelContainer = $ModulesAndPrograms/PanelContainer/MarginContainer/ModulesCard
+
+# BASE MANAGEMENT
+@onready var BaseManagementPanel:PanelContainer = $BaseManagement/PanelContainer
+@onready var BaseManagementMargin:MarginContainer = $BaseManagement/PanelContainer/MarginContainer
+@onready var BaseSummaryPanel:PanelContainer = $BaseSummary/PanelContainer
+@onready var BaseSummaryMargin:MarginContainer = $BaseSummary/PanelContainer/MarginContainer
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -67,19 +73,19 @@ extends GameContainer
 @onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
 # FACILITY ACTION PANELS
-@onready var FacilityActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions
-@onready var FacilityActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer/FacilityActionBtn
+@onready var BaseActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions
+@onready var BaseManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer/BaseManagementBtn
 
 # GENERATION ACTION PANEL
 @onready var GeneratorActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
 @onready var GenActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
 #  ---------------------------------------
 
-
 enum MODE { 
 	NONE,
 	COMMANDS,
 	SUMMARY_CARD,
+	BASE_MANAGEMENT,
 	INFO,
 	ABILITY,
 	PROGRAMS,
@@ -132,6 +138,7 @@ func _ready() -> void:
 	CommandControls.reveal(false)
 	InfoControls.reveal(false)
 	ProgramControls.reveal(false)
+	BaseManagementControls.reveal(false)
 	
 	DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
@@ -143,8 +150,6 @@ func _ready() -> void:
 		var new_node:Control = NametagPreload.instantiate()
 		new_node.index = index
 		NameControl.add_child(new_node)
-		
-	
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -171,6 +176,18 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": -SummaryPanelMargin.size.x
 	}
 	
+	control_pos[BaseManagementPanel] = {
+		"show": 0, 
+		"hide": -BaseManagementMargin.size.x
+	}
+	
+	
+	control_pos[BaseSummaryPanel] = {
+		"show": 0, 
+		"hide": -BaseSummaryMargin.size.x
+	}
+		
+	
 	# for eelements in the top right
 	control_pos[ModulesPanel] = {
 		"show": 0, 
@@ -191,7 +208,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, BaseManagementPanel, BaseSummaryPanel]: 
 		node.position.x = control_pos[node].hide
 	
 	# hide by default
@@ -230,8 +247,10 @@ func start() -> void:
 	ToggleLevelBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
 		ToggleLevelBtn.title = "ZOOM OUT" if camera_settings.type else "ZOOM IN"
+			
 		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)		
+		TransistionScreen.start(0.3, true)
+		reveal_base_summary(camera_settings.type != CAMERA.TYPE.WING_SELECT)		
 	
 		
 	WingDesignBtn.onClick = func() -> void:
@@ -250,13 +269,25 @@ func start() -> void:
 		await lock_actions(true)
 		current_mode = MODE.INFO	
 
-	FacilityActionBtn.onClick = func() -> void:		
-		set_backdrop_state(true)
+	BaseManagementBtn.onClick = func() -> void:			
+		GBL.find_node( REFS.BASE_RENDER ).set_base_zoom(1)
+		current_mode = MODE.BASE_MANAGEMENT
+		reveal_base_summary(false)
 		await lock_actions(true)
-		current_mode = MODE.ACTIVE_MENU_OPEN	
-		await show_facility_updates()
-		current_mode = MODE.NONE
-		
+		reveal_base_management(true)
+		BaseManagementControls.reveal(true)
+	
+	BaseManagementControls.onAction = func() -> void:
+		reveal_base_management(true)
+
+	BaseManagementControls.onBack = func() -> void:			
+		GBL.find_node( REFS.BASE_RENDER ).set_base_zoom(0)
+		reveal_base_management(false)
+		await BaseManagementControls.reveal(false)
+		lock_actions(false)
+		reveal_base_summary(true)
+		current_mode = MODE.NONE		
+
 	SettingsBtn.onClick = func() -> void:
 		set_backdrop_state(true)
 		await lock_actions(true)
@@ -279,7 +310,6 @@ func start() -> void:
 	on_current_mode_update()
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)	
 # --------------------------------------------------------------------------------------------------	
-
 
 # --------------------------------------------------------------------------------------------------	
 func reveal_new_message(state:bool) -> void:
@@ -1211,31 +1241,27 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
 	
-	#GotoWingBtn.is_disabled = !has_one_floor_activated
-	#GotoGeneratorBtn.is_disabled = !has_generator_prerequisite	
-	
 	match camera_settings.type:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
 			WingActions.hide()
-			FacilityActions.show()
+			BaseManagementBtn.show()
 			GeneratorActions.hide()
-		
-
+			
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			NameControl.hide()
 			WingActions.show()
-			FacilityActions.hide()
+			BaseManagementBtn.hide()
 			GeneratorActions.hide()
 
-		# ----------------------
-		CAMERA.TYPE.GENERATOR:
-			NameControl.hide()
-			WingActions.hide()
-			FacilityActions.hide()
-			GeneratorActions.show()	
+		## ----------------------
+		#CAMERA.TYPE.GENERATOR:
+			#NameControl.hide()
+			#WingActions.hide()
+			#BaseManagementBtn.hide()
+			#GeneratorActions.show()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1459,7 +1485,13 @@ func set_backdrop_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 func reveal_action_label(state:bool, duration:float = 0.3, title:String = "") -> void:
 	CurrentActionLabel.text = str(title)
+	if state:
+		ActionPanel.show()
+		
 	await U.tween_node_property(ActionPanel, "position:x", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
+	
+	if !state:
+		ActionPanel.hide()
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
@@ -1474,7 +1506,7 @@ func reveal_notification(state:bool, duration:float = 0.3) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_action_controls(state:bool, duration:float = 0.2) -> void:
-	if control_pos.is_empty():return
+	if !is_node_ready() or control_pos.is_empty():return
 	
 	is_in_transition = true
 	await U.tween_node_property(WingRootPanel, "position:y", control_pos[WingRootPanel].show if state else control_pos[WingRootPanel].hide, duration)
@@ -1489,6 +1521,33 @@ func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0
 		ModulesPanel.position.x = control_pos[ModulesPanel].hide
 		
 	await U.tween_node_property(SummaryPanel, "position:x", control_pos[SummaryPanel].show if state else control_pos[SummaryPanel].hide, duration)
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func reveal_base_management(state:bool, duration:float = 0.3) -> void:
+	if !is_node_ready():return
+	if state:
+		BaseManagementPanel.show()
+		
+	print(state, BaseManagementPanel)
+	
+	await U.tween_node_property(BaseManagementPanel, "position:x", control_pos[BaseManagementPanel].show if state else control_pos[BaseManagementPanel].hide, duration)
+	
+	if !state:
+		BaseManagementPanel.hide()
+
+# --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func reveal_base_summary(state:bool, duration:float = 0.3) -> void:
+	if !is_node_ready():return
+	if state:
+		BaseSummaryPanel.show()
+	
+	await U.tween_node_property(BaseSummaryPanel, "position:x", control_pos[BaseSummaryPanel].show if state else control_pos[BaseSummaryPanel].hide, duration)
+	
+	if !state:
+		BaseSummaryPanel.hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1651,5 +1710,17 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.room_left(true)
-
-# --------------------------------------------------------------------------------------------------	
+		MODE.BASE_MANAGEMENT:
+			match key:
+				# ----------------------------
+				"W":
+					U.inc_floor(false)
+				# ----------------------------
+				"S":
+					U.dec_floor(false)
+				# ----------------------------
+				"D":
+					U.inc_ring(false)
+				# ----------------------------
+				"A":
+					U.dec_ring(false)

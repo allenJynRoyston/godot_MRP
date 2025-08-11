@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=4 uid="uid://da46sqhr4dsg3"]
 
-[ext_resource type="Script" uid="uid://msp6bf3cru8w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/WingRender/parts/GateRender/gate_render.gd" id="1_lnxyw"]
+[ext_resource type="Script" uid="uid://msp6bf3cru8w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/GateRender/gate_render.gd" id="1_lnxyw"]
 [ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="2_62k34"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="3_7np6m"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="4_8q6u5"]

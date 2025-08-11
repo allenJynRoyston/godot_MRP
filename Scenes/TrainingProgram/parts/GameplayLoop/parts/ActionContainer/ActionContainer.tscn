@@ -1,10 +1,11 @@
-[gd_scene load_steps=28 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=29 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="2_i3yab"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_n6idl"]
-[ext_resource type="PackedScene" uid="uid://cxkkni8jbnrqq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/StoreGrid/parts/DetailPanel/DetailPanel.tscn" id="7_ah17n"]
+[ext_resource type="PackedScene" uid="uid://dxeregxb5my7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/BaseMangementPanel.tscn" id="6_bk83u"]
+[ext_resource type="PackedScene" uid="uid://ck4ghs6psctsy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/BaseSummaryPanel.tscn" id="7_xathl"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="8_bk83u"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="9_bk83u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_58xi4"]
@@ -106,8 +107,7 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bk83u"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x63m5"]
-bg_color = Color(0, 0, 0, 0.780392)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ah17n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
 
@@ -204,13 +204,6 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-
-[node name="RoomDetails" parent="." instance=ExtResource("7_ah17n")]
-layout_mode = 2
-show_researcher_card = false
-show_room_card = false
-show_scp_card = false
-hide_next_prev_btns = true
 
 [node name="RootControls" type="Control" parent="."]
 layout_mode = 2
@@ -394,25 +387,24 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 alignment = 1
 
-[node name="FacilityActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
-visible = false
+[node name="BaseActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
 
-[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions"]
+[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions"]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = -10
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 2
 
-[node name="Label" type="Label" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
@@ -421,10 +413,10 @@ label_settings = ExtResource("2_i3yab")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="FacilityActionBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/FacilityActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="BaseManagementBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -573,10 +565,13 @@ intercept_click_event = true
 c_btn_title = "REPLAY TUTORIAL"
 hide_c_btn = false
 
-[node name="FloorInfo" type="Control" parent="."]
+[node name="BaseMangementControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="FloorInfo"]
+[node name="BaseManagement" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="BaseManagement"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -585,30 +580,36 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_bk83u")
 
-[node name="MarginContainer" type="MarginContainer" parent="FloorInfo/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="BaseManagement/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 4
 theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 40
 
-[node name="PanelContainer" type="PanelContainer" parent="FloorInfo/PanelContainer/MarginContainer"]
+[node name="BaseMangementPanel" parent="BaseManagement/PanelContainer/MarginContainer" instance=ExtResource("6_bk83u")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_x63m5")
+size_flags_vertical = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="FloorInfo/PanelContainer/MarginContainer/PanelContainer"]
+[node name="BaseSummary" type="Control" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
 
-[node name="Label" type="Label" parent="FloorInfo/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="BaseSummary"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
+
+[node name="MarginContainer" type="MarginContainer" parent="BaseSummary/PanelContainer"]
 layout_mode = 2
-text = "FLOOR INFO
-HEATING LVL 1-4
-COOLING LVL 1-4
-VENTILATION LVL 1-4
-ENERGY LVL 1-4"
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="BaseSummaryPanel" parent="BaseSummary/PanelContainer/MarginContainer" instance=ExtResource("7_xathl")]
+layout_mode = 2
+size_flags_vertical = 4
 
 [node name="NotificationControls" type="Control" parent="."]
 visible = false

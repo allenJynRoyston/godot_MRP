@@ -9,10 +9,10 @@ extends Control
 @onready var MaterialRect:ColorRect = $ColorRect
 @onready var NukeSplashContainer:Control = $NukeSplashContainer
 
-@onready var OverviewScene:Node3D = $SubViewport/Rendering/OverviewScene
-@onready var OverviewCamera:Camera3D = $SubViewport/Rendering/OverviewScene/OverviewCamera
-@onready var OverviewSubviewport:SubViewport = $SubViewport/Rendering/OverviewScene/SubViewport
-@onready var OverviewNode:Control = $SubViewport/Rendering/OverviewScene/SubViewport/OverviewNode
+@onready var BaseScene:Node3D = $SubViewport/Rendering/BaseScene
+@onready var BaseCamera:Camera3D = $SubViewport/Rendering/BaseScene/BaseCamera
+@onready var BaseSubviewport:SubViewport = $SubViewport/Rendering/BaseScene/SubViewport
+@onready var BaseRendering:Control = $SubViewport/Rendering/BaseScene/SubViewport/BaseRendering
 
 @onready var WingScene:Node3D = $SubViewport/Rendering/WingScene
 @onready var WingCamera:Camera3D = $SubViewport/Rendering/WingScene/WingCamera
@@ -20,11 +20,11 @@ extends Control
 @onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
 @onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/SpriteA
 @onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/SpriteB
-
-@onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
-@onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
-@onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
-@onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
+#
+#@onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
+#@onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
+#@onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
+#@onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
 
 @onready var main_viewport_texture_material_duplicate:ShaderMaterial = MainViewportTexture.material.duplicate(true)
 @onready var material_rect_duplicate:ShaderMaterial = MaterialRect.material.duplicate(true)
@@ -80,14 +80,14 @@ func transition() -> void:
 # ------------------------------------------------
 func enable_overview(state:bool) -> void:
 	if state:
-		OverviewScene.show()
-		OverviewNode.show()
-		OverviewNode.set_process(true)
-		OverviewCamera.make_current()
+		BaseScene.show()
+		BaseRendering.show()
+		BaseRendering.set_process(true)
+		BaseCamera.make_current()
 	else:
-		OverviewNode.hide()
-		OverviewNode.set_process(false)		
-		OverviewScene.hide()
+		BaseRendering.hide()
+		BaseRendering.set_process(false)		
+		BaseScene.hide()
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -101,19 +101,6 @@ func enable_wing(state:bool) -> void:
 		WingScene.hide()
 		WingCurrentFloor.hide()
 		WingCurrentFloor.set_process(false)
-# ------------------------------------------------
-
-# ------------------------------------------------
-func enable_generator(state:bool) -> void:
-	if state:
-		GeneratorScene.show()
-		GeneratorNode.show()
-		GeneratorNode.set_process(true)
-		GeneratorCamera.make_current()
-	else:
-		GeneratorScene.hide()
-		GeneratorNode.hide()
-		GeneratorNode.set_process(false)
 # ------------------------------------------------
 
 # ------------------------------------------------
@@ -157,7 +144,6 @@ func shift_horizontally(state:bool, duration:float, previous_location:Dictionary
 	WingSpriteB.position.x = 0
 	WingSpriteA.position.x = -(shift_pos)
 	WingSpriteA.modulate = Color(0, 0, 0.2, 1)
-
 	
 	await U.tween_node_property(WingCamera, "size", 1.7, duration/2, 0, Tween.TRANS_SINE)
 	U.tween_node_property(WingSpriteA, "position:x", 0, duration, 0, Tween.TRANS_SINE)
@@ -194,7 +180,12 @@ func check_for_conditions() -> void:
 	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
 	var is_overheated:bool = ring_config_data.is_overheated
 	var is_ventilated:bool = ring_config_data.is_ventilated
-
+	
+	if camera_settings.type == 	CAMERA.TYPE.FLOOR_SELECT:
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)
+		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
+		return
+	
 	if is_overheated:
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)		
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
@@ -220,28 +211,18 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			transition()
 			enable_overview(true)
 			enable_wing(false)
-			enable_generator(false)
 			set_shader_strength(0)
 		# --------------------	
 		CAMERA.TYPE.WING_SELECT:	
 			transition()
 			enable_wing(true)			
 			enable_overview(false)
-			enable_generator(false)
 			set_shader_strength(1)
 		# --------------------		
 		CAMERA.TYPE.ROOM_SELECT:
 			transition()
 			enable_wing(true)			
 			enable_overview(false)
-			enable_generator(false)
-			set_shader_strength(0)
-		# --------------------	
-		CAMERA.TYPE.GENERATOR:
-			transition()
-			enable_generator(true)
-			enable_overview(false)
-			enable_wing(false)
 			set_shader_strength(0)
 # ------------------------------------------------
 

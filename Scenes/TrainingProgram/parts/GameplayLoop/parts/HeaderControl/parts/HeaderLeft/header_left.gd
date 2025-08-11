@@ -33,7 +33,7 @@ func _ready() -> void:
 		"hide": -MarginPanel.size.y
 	}
 		
-	reveal(false, true)
+	reveal(true, true)
 	update.call_deferred()
 # --------------------------------------------------------------------------------------------------
 
@@ -43,11 +43,17 @@ func reveal(state:bool, instant:bool = false) -> void:
 	
 	var new_pos:int = control_pos[RootPanel].show if state else control_pos[RootPanel].hide
 	
+	if state:
+		show()
+	
 	if instant:
 		RootPanel.position.y = new_pos
 		return
 	
 	await U.tween_node_property(RootPanel, "position:y", new_pos)
+	
+	if !state:
+		hide()
 # --------------------------------------------------------------------------------------------------
 
 # -----------------------------------------------	
