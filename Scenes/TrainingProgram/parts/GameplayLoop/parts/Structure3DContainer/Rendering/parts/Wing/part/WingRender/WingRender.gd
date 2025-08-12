@@ -220,12 +220,14 @@ func update_camera_size(size:int) -> void:
 # --------------------------------------------------------------------------------------------------		
 func update_vars() -> void:
 	if room_config.is_empty() or use_location.is_empty():return
+	var power_distribution:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].power_distribution
 	in_lockdown = room_config.floor[use_location.floor].in_lockdown
-	is_powered = room_config.floor[use_location.floor].is_powered
 	emergency_mode = room_config.floor[use_location.floor].ring[use_location.ring].emergency_mode		
-	is_ventilated = room_config.floor[use_location.floor].ring[use_location.ring].is_ventilated	
-	is_overheated = room_config.floor[use_location.floor].ring[use_location.ring].is_overheated
 	
+	is_powered = power_distribution.energy > 1
+	is_ventilated = power_distribution.ventilation > 1
+	is_overheated = false # TODO REVIST THIS
+
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)		

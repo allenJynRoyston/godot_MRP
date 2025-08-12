@@ -15,6 +15,7 @@ extends GameContainer
 @onready var InfoControls:Control = $InfoControls
 @onready var ProgramControls:Control = $ProgramControls
 @onready var BaseManagementControls:Control = $BaseMangementControls
+@onready var BaseManagementEditControls:Control = $BaseMangementEditControls
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -38,6 +39,8 @@ extends GameContainer
 # BASE MANAGEMENT
 @onready var BaseManagementPanel:PanelContainer = $BaseManagement/PanelContainer
 @onready var BaseManagementMargin:MarginContainer = $BaseManagement/PanelContainer/MarginContainer
+@onready var BaseManagementComponent:Control = $BaseManagement/PanelContainer/MarginContainer/BaseMangemenComponent
+
 @onready var BaseSummaryPanel:PanelContainer = $BaseSummary/PanelContainer
 @onready var BaseSummaryMargin:MarginContainer = $BaseSummary/PanelContainer/MarginContainer
 #  ---------------------------------------
@@ -77,8 +80,8 @@ extends GameContainer
 @onready var BaseManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer/BaseManagementBtn
 
 # GENERATION ACTION PANEL
-@onready var GeneratorActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
-@onready var GenActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
+#@onready var GeneratorActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
+#@onready var GenActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
 #  ---------------------------------------
 
 enum MODE { 
@@ -86,6 +89,7 @@ enum MODE {
 	COMMANDS,
 	SUMMARY_CARD,
 	BASE_MANAGEMENT,
+	BASE_MANAGEMENT_COMPONENT,
 	INFO,
 	ABILITY,
 	PROGRAMS,
@@ -133,13 +137,8 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	SummaryControls.reveal(false)
-	DesignControls.reveal(false)
-	CommandControls.reveal(false)
-	InfoControls.reveal(false)
-	ProgramControls.reveal(false)
-	BaseManagementControls.reveal(false)
-	
+	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, BaseManagementControls, BaseManagementEditControls]:
+		node.reveal(false)
 	DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
 	# set reference 
@@ -180,14 +179,12 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"show": 0, 
 		"hide": -BaseManagementMargin.size.x
 	}
-	
-	
+
 	control_pos[BaseSummaryPanel] = {
 		"show": 0, 
 		"hide": -BaseSummaryMargin.size.x
 	}
 		
-	
 	# for eelements in the top right
 	control_pos[ModulesPanel] = {
 		"show": 0, 
@@ -278,7 +275,10 @@ func start() -> void:
 		BaseManagementControls.reveal(true)
 	
 	BaseManagementControls.onAction = func() -> void:
-		reveal_base_management(true)
+		current_mode = MODE.BASE_MANAGEMENT_COMPONENT
+		await BaseManagementControls.reveal(false)
+		BaseManagementComponent.start()
+		BaseManagementEditControls.reveal(true)
 
 	BaseManagementControls.onBack = func() -> void:			
 		GBL.find_node( REFS.BASE_RENDER ).set_base_zoom(0)
@@ -286,7 +286,13 @@ func start() -> void:
 		await BaseManagementControls.reveal(false)
 		lock_actions(false)
 		reveal_base_summary(true)
-		current_mode = MODE.NONE		
+		current_mode = MODE.NONE
+		
+	BaseManagementEditControls.onBack = func() -> void:
+		BaseManagementComponent.end()
+		await BaseManagementEditControls.reveal(false)
+		await BaseManagementControls.reveal(true)
+		current_mode = MODE.BASE_MANAGEMENT
 
 	SettingsBtn.onClick = func() -> void:
 		set_backdrop_state(true)
@@ -778,45 +784,45 @@ func show_debug() -> void:
 		{
 			"title": "BASE STATES",
 			"items": [
-				{
-					"title": "TOGGLE IS_POWERED",
-					"icon": SVGS.TYPE.DANGER,
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "HINT",
-						"description": "DEBUG: toggle the IS_POWERED flag.."
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.toggle_is_powered(current_location.floor)
-						ActiveMenuNode.unlock(),
-				},
-				{
-					"title": "TOGGLE IS_OVERHEATED",
-					"icon": SVGS.TYPE.DANGER,
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "HINT",
-						"description": "DEBUG: toggle the IS_OVERHEATED flag.."
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.toggle_is_overheated(current_location)
-						ActiveMenuNode.unlock(),
-				},							
-				{
-					"title": "TOGGLE VENTILATION",
-					"icon": SVGS.TYPE.DANGER,
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "HINT",
-						"description": "DEBUG: toggle the IS_VENTILATED flag.."
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.toggle_is_ventilated(current_location)
-						ActiveMenuNode.unlock(),
-				},			
+				#{
+					#"title": "TOGGLE IS_POWERED",
+					#"icon": SVGS.TYPE.DANGER,
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"title": "HINT",
+						#"description": "DEBUG: toggle the IS_POWERED flag.."
+					#},
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#await GAME_UTIL.toggle_is_powered(current_location.floor)
+						#ActiveMenuNode.unlock(),
+				#},
+				#{
+					#"title": "TOGGLE IS_OVERHEATED",
+					#"icon": SVGS.TYPE.DANGER,
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"title": "HINT",
+						#"description": "DEBUG: toggle the IS_OVERHEATED flag.."
+					#},
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#await GAME_UTIL.toggle_is_overheated(current_location)
+						#ActiveMenuNode.unlock(),
+				#},							
+				#{
+					#"title": "TOGGLE VENTILATION",
+					#"icon": SVGS.TYPE.DANGER,
+					#"hint": {
+						#"icon": SVGS.TYPE.CONVERSATION,
+						#"title": "HINT",
+						#"description": "DEBUG: toggle the IS_VENTILATED flag.."
+					#},
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#await GAME_UTIL.toggle_is_ventilated(current_location)
+						#ActiveMenuNode.unlock(),
+				#},			
 				{
 					"title": "TOGGLE NUKE",
 					"icon": SVGS.TYPE.DANGER,
@@ -984,124 +990,124 @@ func show_debug() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-signal show_facility_complete
-func show_facility_updates() -> void:			
-	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	var is_powered:bool = base_states.floor[str(current_location.floor)].is_powered
-	
-	var options:Array = [
-		{
-			"title": "ENERGY",
-			"items": [
-				{
-					"title": "SUPPLY POWER",
-					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
-						"title": "HINT",
-						"description": "Supply power to FLOOR %s." % [current_location.floor]
-					},
-					#"is_disabled": is_powered,
-					"is_checked": is_powered,
-					"is_togglable": true,
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25 if !is_powered else 0
-
-						var costs:Array = [{
-							"amount": -(activation_cost), 
-							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
-						}]
-						
-						var confirm:bool 
-						
-						if is_powered:
-							confirm = await GAME_UTIL.create_warning("Remove power from floor %s" % current_location.floor, "Rooms on this floor will be deactivated and any SCP's contained here a be at risk of breaking containment.", "res://Media/images/Defaults/stop_sign.png")						
-						else:
-							confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "All rings will become usable." , "res://Media/images/Defaults/lightbulb_on.jpg", costs)
-						
-						if confirm:
-							ActiveMenuNode.close()
-							if !is_powered:
-								GAME_UTIL.activate_floor(current_location.floor)
-							else:
-								GAME_UTIL.deactivate_floor(current_location.floor)
-							await U.set_timeout(0.7)
-							camera_settings.type = CAMERA.TYPE.WING_SELECT
-							SUBSCRIBE.camera_settings = camera_settings	
-							return			
-							
-						ActiveMenuNode.unlock(),
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				}
-			]
-		},
-		{
-			"title": "PERSONNEL MANAGEMENT",
-			"items": [
-				{
-					"title": "VIEW PROFILES" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
-					"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
-					"hint": {
-						"icon": SVGS.TYPE.INVESTIGATE,
-						"title": "HINT",
-						"description": "View personnel records"
-					} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
-						"icon": SVGS.TYPE.QUESTION_MARK,
-						"title": "HINT",
-						"description": "???"
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						
-						await GAME_UTIL.view_personnel()
-							
-						ActiveMenuNode.unlock(),
-				},
-				{
-					"title": "PROMOTE" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
-					"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
-					"hint": {
-						"icon": SVGS.TYPE.INVESTIGATE,
-						"title": "HINT",
-						"description": "Promote a researcher, security officer or administrator."
-					} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
-						"icon": SVGS.TYPE.QUESTION_MARK,
-						"title": "HINT",
-						"description": "???"
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						
-						await GAME_UTIL.promote_researcher()
-							
-						ActiveMenuNode.unlock(),
-				}
-			]
-		}		
-	]
-	
-	active_menu_is_open = true
-	ActiveMenuNode.onClose = func() -> void:	
-		active_menu_is_open = false
-		show_facility_complete.emit()		
-	
-	ActiveMenuNode.options_list = options
-	
-	add_child(ActiveMenuNode)
-	await ActiveMenuNode.activate(2)
-	ActiveMenuNode.open()	
-	
-	await show_facility_complete
+#signal show_facility_complete
+#func show_facility_updates() -> void:			
+	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+	#var is_powered:bool = base_states.floor[str(current_location.floor)].is_powered
+	#
+	#var options:Array = [
+		#{
+			#"title": "ENERGY",
+			#"items": [
+				#{
+					#"title": "SUPPLY POWER",
+					#"hint": {
+						#"icon": SVGS.TYPE.ENERGY,
+						#"title": "HINT",
+						#"description": "Supply power to FLOOR %s." % [current_location.floor]
+					#},
+					##"is_disabled": is_powered,
+					#"is_checked": is_powered,
+					#"is_togglable": true,
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25 if !is_powered else 0
+#
+						#var costs:Array = [{
+							#"amount": -(activation_cost), 
+							#"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
+						#}]
+						#
+						#var confirm:bool 
+						#
+						#if is_powered:
+							#confirm = await GAME_UTIL.create_warning("Remove power from floor %s" % current_location.floor, "Rooms on this floor will be deactivated and any SCP's contained here a be at risk of breaking containment.", "res://Media/images/Defaults/stop_sign.png")						
+						#else:
+							#confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "All rings will become usable." , "res://Media/images/Defaults/lightbulb_on.jpg", costs)
+						#
+						#if confirm:
+							#ActiveMenuNode.close()
+							#if !is_powered:
+								#GAME_UTIL.activate_floor(current_location.floor)
+							#else:
+								#GAME_UTIL.deactivate_floor(current_location.floor)
+							#await U.set_timeout(0.7)
+							#camera_settings.type = CAMERA.TYPE.WING_SELECT
+							#SUBSCRIBE.camera_settings = camera_settings	
+							#return			
+							#
+						#ActiveMenuNode.unlock(),
+				#},
+				#{
+					#"title": "???",
+					#"hint": {
+						#"icon": SVGS.TYPE.ENERGY,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"is_disabled": true,
+					#"action": func() -> void:
+						#pass,
+				#}
+			#]
+		#},
+		#{
+			#"title": "PERSONNEL MANAGEMENT",
+			#"items": [
+				#{
+					#"title": "VIEW PROFILES" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
+					#"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
+					#"hint": {
+						#"icon": SVGS.TYPE.INVESTIGATE,
+						#"title": "HINT",
+						#"description": "View personnel records"
+					#} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
+						#"icon": SVGS.TYPE.QUESTION_MARK,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#
+						#await GAME_UTIL.view_personnel()
+							#
+						#ActiveMenuNode.unlock(),
+				#},
+				#{
+					#"title": "PROMOTE" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
+					#"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
+					#"hint": {
+						#"icon": SVGS.TYPE.INVESTIGATE,
+						#"title": "HINT",
+						#"description": "Promote a researcher, security officer or administrator."
+					#} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
+						#"icon": SVGS.TYPE.QUESTION_MARK,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+						#
+						#await GAME_UTIL.promote_researcher()
+							#
+						#ActiveMenuNode.unlock(),
+				#}
+			#]
+		#}		
+	#]
+	#
+	#active_menu_is_open = true
+	#ActiveMenuNode.onClose = func() -> void:	
+		#active_menu_is_open = false
+		#show_facility_complete.emit()		
+	#
+	#ActiveMenuNode.options_list = options
+	#
+	#add_child(ActiveMenuNode)
+	#await ActiveMenuNode.activate(2)
+	#ActiveMenuNode.open()	
+	#
+	#await show_facility_complete
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -1247,14 +1253,14 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			NameControl.hide()
 			WingActions.hide()
 			BaseManagementBtn.show()
-			GeneratorActions.hide()
+			#GeneratorActions.hide()
 			
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			NameControl.hide()
 			WingActions.show()
 			BaseManagementBtn.hide()
-			GeneratorActions.hide()
+			#GeneratorActions.hide()
 
 		## ----------------------
 		#CAMERA.TYPE.GENERATOR:
@@ -1291,13 +1297,15 @@ func check_btn_states() -> void:
 	if current_location.is_empty() or room_config.is_empty():return
 	# update room details control
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
-	var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
+	#var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
 	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
-	var is_powered:bool = room_config.floor[current_location.floor].is_powered
-	var is_ventilated:bool = room_config.floor[current_location.floor].ring[current_location.ring].is_ventilated	
-	var is_overheated:bool = room_config.floor[current_location.floor].ring[current_location.ring].is_overheated	
+	
+	var is_powered:bool = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.energy > 1
+	#var is_ventilated:bool = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.ventilation > 1
+	#var is_overheated:bool = false #room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.heating == 0	
+	
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.room.is_empty()
 	var is_scp_empty:bool = room_extract.scp.is_empty()
@@ -1322,11 +1330,11 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			WingDesignBtn.is_disabled = !is_powered or !is_ventilated or is_overheated
-			WingDesignBtn.title = "DESIGN" if (is_powered and is_ventilated and !is_overheated) else "UNAVAILABLE"
+			WingDesignBtn.is_disabled = !is_powered
+			WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
 			WingProgramBtn.hide() if GAME_UTIL.get_list_of_programs(current_location, true).is_empty() else WingProgramBtn.show()
 			WingActionBtn.is_disabled = rooms_in_wing_count == 0
-			GenActionBtn.is_disabled = !has_one_floor_activated
+			#GenActionBtn.is_disabled = !has_one_floor_activated
 		# -----------	
 		MODE.INFO:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -1529,13 +1537,10 @@ func reveal_base_management(state:bool, duration:float = 0.3) -> void:
 	if state:
 		BaseManagementPanel.show()
 		
-	print(state, BaseManagementPanel)
-	
 	await U.tween_node_property(BaseManagementPanel, "position:x", control_pos[BaseManagementPanel].show if state else control_pos[BaseManagementPanel].hide, duration)
 	
 	if !state:
 		BaseManagementPanel.hide()
-
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		

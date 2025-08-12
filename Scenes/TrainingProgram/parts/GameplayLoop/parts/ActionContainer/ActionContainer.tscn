@@ -421,7 +421,7 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tvjm1")
-title = "BASE MANAGEMENT"
+title = "POWER DISTRIBUTION"
 assigned_key = "E"
 icon = 15
 is_disabled = false
@@ -567,6 +567,12 @@ hide_c_btn = false
 
 [node name="BaseMangementControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
+a_btn_title = "CHANGE DISTRIBUTION"
+
+[node name="BaseMangementEditControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "UPDATE"
+hide_a_btn = true
 
 [node name="BaseManagement" type="Control" parent="."]
 layout_mode = 2
@@ -586,7 +592,7 @@ size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 40
 
-[node name="BaseMangementPanel" parent="BaseManagement/PanelContainer/MarginContainer" instance=ExtResource("6_bk83u")]
+[node name="BaseMangemenComponent" parent="BaseManagement/PanelContainer/MarginContainer" instance=ExtResource("6_bk83u")]
 layout_mode = 2
 size_flags_vertical = 4
 

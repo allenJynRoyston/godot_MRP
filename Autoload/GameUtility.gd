@@ -141,15 +141,15 @@ func extract_wing_details(use_location:Dictionary = current_location) -> Diction
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_activated_floor_count() -> int:
-	if room_config.is_empty():return -1
-	
-	var activated_count:int = 0
-	for floor_index in room_config.floor.size():
-		if base_states.floor[str(floor_index)].is_powered:
-			activated_count += 1
-
-	return activated_count
+#func get_activated_floor_count() -> int:
+	#if room_config.is_empty():return -1
+	#
+	#var activated_count:int = 0
+	#for floor_index in room_config.floor.size():
+		#if base_states.floor[str(floor_index)].is_powered:
+			#activated_count += 1
+#
+	#return activated_count
 # ------------------------------------------------------------------------------
 						
 # ------------------------------------------------------------------------------
@@ -1181,48 +1181,48 @@ func rush_construction_room(use_location:Dictionary = current_location, state:bo
 	#return confirm
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func toggle_is_ventilated(use_loction:Dictionary) -> void:
-	base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func toggle_is_ventilated(use_loction:Dictionary) -> void:
+	#base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func set_is_ventilated(use_loction:Dictionary, state:bool) -> void:
+	#base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = state
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func toggle_is_overheated(use_loction:Dictionary) -> void:
+	#base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func set_is_overheated(use_loction:Dictionary, state:bool) -> void:
+	#base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = state
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
+#
+#
+## ------------------------------------------------------------------------------
+#func toggle_is_powered(floor_val:int) -> void:
+	#base_states.floor[str(floor_val)].is_powered = !base_states.floor[str(floor_val)].is_powered
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func set_is_ventilated(use_loction:Dictionary, state:bool) -> void:
-	base_states.ring[str(use_loction.floor, use_loction.ring)].is_ventilated = state
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func toggle_is_overheated(use_loction:Dictionary) -> void:
-	base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = !base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func set_is_overheated(use_loction:Dictionary, state:bool) -> void:
-	base_states.ring[str(use_loction.floor, use_loction.ring)].is_overheated = state
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-func toggle_is_powered(floor_val:int) -> void:
-	base_states.floor[str(floor_val)].is_powered = !base_states.floor[str(floor_val)].is_powered
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func activate_floor(floor_val:int) -> void:
-	base_states.floor[str(floor_val)].is_powered = true
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func deactivate_floor(floor_val:int) -> void:
-	base_states.floor[str(floor_val)].is_powered = false
-	SUBSCRIBE.base_states = base_states 
-# ------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
+#func activate_floor(floor_val:int) -> void:
+	#base_states.floor[str(floor_val)].is_powered = true
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
+#
+## ------------------------------------------------------------------------------
+#func deactivate_floor(floor_val:int) -> void:
+	#base_states.floor[str(floor_val)].is_powered = false
+	#SUBSCRIBE.base_states = base_states 
+## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func upgrade_generator_level(use_location:Dictionary = current_location) -> void:

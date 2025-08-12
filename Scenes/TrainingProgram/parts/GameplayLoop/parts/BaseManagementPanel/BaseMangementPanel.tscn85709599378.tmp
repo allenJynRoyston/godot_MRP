@@ -9,18 +9,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctfup"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_ki5i7"]
-font = ExtResource("3_avmel")
-outline_size = 2
-outline_color = Color(1, 1, 1, 0.2)
-shadow_size = 0
-shadow_color = Color(1, 1, 1, 0.235294)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbxtp"]
 bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 corner_radius_top_right = 5
@@ -54,43 +42,24 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctfup"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_ki5i7"]
+font = ExtResource("3_avmel")
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.2)
+shadow_size = 0
+shadow_color = Color(1, 1, 1, 0.235294)
+
 [node name="BaseMangementComponent" type="PanelContainer"]
+clip_contents = true
 offset_right = 325.0
 offset_bottom = 218.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
 script = ExtResource("1_ctfup")
-
-[node name="DescriptionControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="DescriptionControl"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-offset_top = 286.0
-offset_right = 270.0
-offset_bottom = 336.0
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ctfup")
-
-[node name="MarginContainer" type="MarginContainer" parent="DescriptionControl/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="DescriptionControl/PanelContainer/MarginContainer"]
-layout_mode = 2
-
-[node name="DescriptionLabel" type="Label" parent="DescriptionControl/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "Description goes here."
-label_settings = SubResource("LabelSettings_ki5i7")
-vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -192,6 +161,7 @@ theme_override_constants/margin_top = 10
 layout_mode = 2
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5"]
@@ -209,6 +179,7 @@ label_settings = ExtResource("4_ki5i7")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 
 [node name="FloorLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer"]
@@ -289,3 +260,28 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 color = Color(0, 0, 0, 0)
+
+[node name="Description" type="PanelContainer" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ctfup")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Description"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Description/MarginContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="VBoxContainer/Description/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Description goes here."
+label_settings = SubResource("LabelSettings_ki5i7")
+autowrap_mode = 3

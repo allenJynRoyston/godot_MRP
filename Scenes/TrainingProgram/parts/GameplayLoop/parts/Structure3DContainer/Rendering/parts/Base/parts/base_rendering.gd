@@ -26,7 +26,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
 func _ready() -> void:	
-	build_floors()
+	#build_floors()
 	set_base_zoom(0)
 	camera_tween = create_tween()
 # ------------------------------------------------
@@ -63,7 +63,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	# move to floor
 	if previous_floor != current_location.floor:
 		previous_floor = current_location.floor
-		custom_tween_range(Camera.position.y, -(current_location.floor * 25) + 10, 0.3, 
+		custom_tween_range(Camera.position.y, -(current_location.floor * 25) + 20, 0.3, 
 			func(val:float) -> void:
 				Camera.position.y = val
 		)
@@ -89,25 +89,25 @@ func build_floors() -> void:
 # ------------------------------------------------
 func update_mesh() -> void:	
 	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	
-
-	for floor_index in FloorInstanceContainer.get_child_count():
-		var floor_node:Node3D = FloorInstanceContainer.get_child(floor_index)
-		for ring_index in floor_node.get_child_count():
-			var child:MeshInstance3D = floor_node.get_child(ring_index)
-			var mesh_duplicate = child.mesh.duplicate()
-			if camera_settings.is_locked:
-				mesh_duplicate.material = TransparencyShaderPreload.duplicate()	
-				var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor else RoomMaterialInactive.duplicate()
-				material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-				mesh_duplicate.material = material_copy	
-			else:
-				if floor_index < current_location.floor:
-					mesh_duplicate.material = TransparencyShaderPreload.duplicate()		
-				else:					
-					var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor and ring_index == current_location.ring else RoomMaterialInactive.duplicate()
-					material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-					mesh_duplicate.material = material_copy		
-			child.mesh = mesh_duplicate	
+	pass
+	#for floor_index in FloorInstanceContainer.get_child_count():
+		#var floor_node:Node3D = FloorInstanceContainer.get_child(floor_index)
+		#for ring_index in floor_node.get_child_count():
+			#var child:MeshInstance3D = floor_node.get_child(ring_index)
+			#var mesh_duplicate = child.mesh.duplicate()
+			#if camera_settings.is_locked:
+				#mesh_duplicate.material = TransparencyShaderPreload.duplicate()	
+				#var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor else RoomMaterialInactive.duplicate()
+				#material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+				#mesh_duplicate.material = material_copy	
+			#else:
+				#if floor_index < current_location.floor:
+					#mesh_duplicate.material = TransparencyShaderPreload.duplicate()		
+				#else:					
+					#var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor and ring_index == current_location.ring else RoomMaterialInactive.duplicate()
+					#material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
+					#mesh_duplicate.material = material_copy		
+			#child.mesh = mesh_duplicate	
 # ------------------------------------------------
 
 
@@ -116,9 +116,9 @@ func set_base_zoom(zoom_val:int) -> void:
 	match zoom_val:
 		0:
 			#U.tween_node_property(Camera, "position:x", 150, 0.7, 0, Tween.TRANS_CUBIC)
-			await U.tween_node_property(Camera, "size", 150, 0.7, 0, Tween.TRANS_CUBIC)
+			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_CUBIC)
 		1:
-			await U.tween_node_property(Camera, "size", 70, 0.7, 0, Tween.TRANS_CUBIC)
+			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_CUBIC)
 
 # ------------------------------------------------
 

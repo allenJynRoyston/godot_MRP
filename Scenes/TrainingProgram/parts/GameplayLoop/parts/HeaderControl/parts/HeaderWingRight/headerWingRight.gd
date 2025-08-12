@@ -79,6 +79,10 @@ func update() -> void:
 	var floor_config_data:Dictionary = room_config.floor[current_location.floor]
 	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]	
 	var room_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].room[current_location.room]	
+	var power_distribution:Dictionary = ring_config_data.power_distribution
+	var is_ventilated:bool = power_distribution.ventilation > 1
+	var is_powered:bool = power_distribution.energy > 1
+	 
 	var mtf:Array = ring_config_data.mtf
 	var summary_data:Dictionary = {}
 
@@ -95,7 +99,7 @@ func update() -> void:
 	
 	# warning
 	#print( ring_config_data.has_containment_breach  )
-	WarningComponent.flashing = !ring_config_data.is_ventilated or ring_config_data.is_overheated or ring_config_data.emergency_mode != ROOM.EMERGENCY_MODES.NORMAL 
+	WarningComponent.flashing = !is_ventilated or !is_powered or ring_config_data.emergency_mode != ROOM.EMERGENCY_MODES.NORMAL 
 
 	# energy
 	EnergyComponent.amount = ring_config_data.energy.available - ring_config_data.energy.used

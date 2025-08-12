@@ -106,6 +106,15 @@ func update() -> void:
 		})
 	
 	
+	for buffs in ring_config_data.buffs:
+		status_list.push_back({
+			"title": buffs.data.name,
+			"duration": buffs.duration,
+			"hint_description": buffs.data.description,
+			"type": BASE.TYPE.BUFF
+		})
+		
+			
 	for debuff in ring_config_data.debuffs:
 		status_list.push_back({
 			"title": debuff.data.name,

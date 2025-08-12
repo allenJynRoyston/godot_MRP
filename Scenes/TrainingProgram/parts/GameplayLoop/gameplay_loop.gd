@@ -145,8 +145,7 @@ var initial_values:Dictionary = {
 				"debuffs": [],
 				"onsite_nuke": {
 					"triggered": false
-				},				
-				"generator_lvl": 0,
+				},
 			},
 			"floor": {
 				0: get_floor_default(3),
@@ -175,8 +174,6 @@ var initial_values:Dictionary = {
 			floor[str(floor_index)] = {
 				# if start on ring level, floor 0 starts with power
 				"previous_powered": false,
-				"is_powered": floor_index in [0] if DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL) else false,
-				"generator_level": 0,
 				"buffs": [],
 				"debuffs": [],
 			} 
@@ -185,10 +182,15 @@ var initial_values:Dictionary = {
 				ring[str(floor_index, ring_index)] = {
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
-					"is_ventilated": floor_index in [0, 1],
-					"is_overheated": floor_index not in [0, 1, 2, 3],
 					"buffs": [],
 					"debuffs": [],
+					"power_distribution": {
+						"heating": 1,
+						"cooling": 1,
+						"ventilation": 2,
+						"security": 1,
+						"energy": 2 if floor_index in [0, 1] else 1,
+					}
 				}
 				
 				# ------------------------------
@@ -567,9 +569,6 @@ func get_floor_default(array_size:int) -> Dictionary:
 		"debuffs": [],
 		# --------------
 		"in_lockdown": false,
-		"is_powered": false,
-		"is_ventilated": false,
-		"is_overheated": false,
 		"array_size": array_size,
 		# --------------
 		"ring": { 
@@ -597,11 +596,16 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
-		"mtf": [
-
-		],
+		"mtf": [],
 		"buffs": [],
 		"debuffs": [],
+		"power_distribution": {
+			"heating": 0,
+			"cooling": 0,
+			"ventilation": 0,
+			"security": 0,
+			"energy": 0
+		},
 		# --------------
 		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,		
 		"abl_lvl": 0,
@@ -809,33 +813,27 @@ func on_hints_unlocked_update(new_val:Array = hints_unlocked) -> void:
 
 func on_hired_lead_researchers_arr_update(new_val:Array = hired_lead_researchers_arr) -> void:
 	hired_lead_researchers_arr = new_val
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 
 func on_base_states_update(new_val:Dictionary = base_states) -> void:
 	base_states = new_val
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 		
 func on_purchased_facility_arr_update(new_val:Array = purchased_facility_arr) -> void:
 	purchased_facility_arr = new_val	
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 	
 func on_purchased_base_arr_update(new_val:Array = purchased_base_arr) -> void:
 	purchased_base_arr = new_val	
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 
 func on_timeline_array_update(new_val:Array = timeline_array) -> void:
 	timeline_array = new_val	
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 
 func on_scp_data_update(new_val:Dictionary = scp_data) -> void:
 	scp_data = new_val
-	if setup_complete:
-		U.debounce("update_room_config", update_room_config)
+	U.debounce("update_room_config", update_room_config)
 
 #endregion
 # ------------------------------------------------------------------------------	
@@ -937,10 +935,12 @@ func on_current_phase_update() -> void:
 				for ring_index in room_config.floor[floor_index].ring.size():
 					var ring_list:Array = []
 					for room_index in room_config.floor[floor_index].ring[ring_index].room.size():
+						var power_distribution:Dictionary = room_config.floor[floor_index].ring[ring_index].power_distribution
+						
 						var filtered:Array = purchased_facility_arr.filter(func(x):
 							if x.location.floor == floor_index and x.location.ring == ring_index and x.location.room == room_index:
 								var floor_base_state:Dictionary = base_states.floor[str(x.location.floor)]
-								return floor_base_state.is_powered and x.under_construction
+								return power_distribution.energy > 0 and x.under_construction
 							return false
 						)
 						if !filtered.is_empty():
@@ -980,8 +980,6 @@ func on_current_phase_update() -> void:
 								# wait for animation
 								await U.set_timeout(0.3)
 						
-				
-			
 			# reduce cooldown in abilities
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
@@ -1345,25 +1343,27 @@ func update_room_config(force_setup:bool = false) -> void:
 			var amount:int = floor_level.currencies[key]
 			resource_diff[key] += amount
 	
+
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
 	
 func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	# energy availble per levels
-	const energy_levels:Array = [5, 10, 15, 20, 25]
+	const energy_levels:Array = [0, 5, 10, 15]
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
+	#new_room_config.base.generator_level = base_states.base.generator_level
+	#new_room_config.base.generator_energy = base_states.base.generator_energy
 	
 	# FLOOR LEVEL ------------- 
 	for floor_index in new_room_config.floor.size():
 		var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
-		var energy_available:int = energy_levels[base_states.floor[str(floor_index)].generator_level]
 		var floor_level:Dictionary = new_room_config.floor[floor_index]
 		
 		# set is_powered state
-		floor_level.is_powered = floor_base_state.is_powered
+		#floor_level.is_powered = floor_base_state.is_powered
 		
 		# RING LEVEL ------------- 
 		for ring_index in new_room_config.floor[floor_index].ring.size():
@@ -1371,10 +1371,13 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
 
 			# setup initial energy
-			ring_level.energy.available = energy_available if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
+			ring_level.energy.available = energy_levels[ring_base_state.power_distribution.energy - 1] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
 			ring_level.energy.used = 0
-			ring_level.is_ventilated = ring_base_state.is_ventilated
-			ring_level.is_overheated = ring_base_state.is_overheated
+			#ring_level.is_ventilated = ring_base_state.is_ventilated
+			#ring_level.is_overheated = ring_base_state.is_overheated
+			
+			# transfer power_distribution
+			ring_level.power_distribution = ring_base_state.power_distribution
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
@@ -1434,14 +1437,6 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 				if floor_designation not in floor_added:
 					floor_added.push_back(floor_designation)
 					
-					if floor_base_state.is_powered:
-						var data:Dictionary = BASE_UTIL.return_buff(BASE.BUFF.POWERED)
-						floor_level.buffs.push_back({"data": data, "duration": 100})
-					else:
-						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.UNPOWERED)
-						floor_level.debuffs.push_back({"data": data, "duration": 100})
-
-					
 					for prop in ["buffs", "debuffs"]:
 						# buffs only work when nuke is NOT triggered	
 						if (prop == "buffs" and !base_states.base.onsite_nuke.triggered or prop == "debuffs"):						
@@ -1459,15 +1454,20 @@ func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 				
 				# --------------------------------------------------------------		FLOOR BUFFS/DEBUFFS
 				if ring_designation not in ring_added:
+					var power_distribution:Dictionary = ring_base_state.power_distribution
 					
-					if !ring_base_state.is_ventilated:
-						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.MIASMA)
+					# TODO CHANGE THIS LATER
+					#if power_distribution.ventilation == 1:
+						#var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.MIASMA)
+						#ring_level.debuffs.push_back({"data": data, "duration": 100})
+						
+					if power_distribution.energy > 1:
+						var data:Dictionary = BASE_UTIL.return_buff(BASE.BUFF.POWERED)
+						ring_level.buffs.push_back({"data": data, "duration": 100})
+					else:
+						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.UNPOWERED)
 						ring_level.debuffs.push_back({"data": data, "duration": 100})
-						
-					if ring_base_state.is_overheated:
-						var data:Dictionary = BASE_UTIL.return_debuff(BASE.DEBUFF.OVERHEATED)
-						ring_level.debuffs.push_back({"data": data, "duration": 100})						
-						
+				
 
 					ring_added.push_back(ring_designation)
 					for prop in ["buffs", "debuffs"]:	

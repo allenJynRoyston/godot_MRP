@@ -21,22 +21,22 @@ var chapters:Array = [
 		"objectives": {
 			"title": "SETUP",
 			"complete_by_day": 5,
-			"required":[
-				{
-					"custom": {
-						"title": "Supply power to AT LEAST 1 floor.",
-						"count_str": func(amount:int) -> String:
-							return "Required 1 FLOOR to be activated.",
-						"you_have": func() -> int: 
-							return GAME_UTIL.get_activated_floor_count(),
-						"is_completed": func() -> bool:
-							return GAME_UTIL.get_activated_floor_count() > 0,
-						},
-					"hints": [
-						{"title": "Custom step A", "cost": 1},
-					]
-				},
-			],
+			#"required":[
+				#{
+					#"custom": {
+						#"title": "Supply power to AT LEAST 1 floor.",
+						#"count_str": func(amount:int) -> String:
+							#return "Required 1 FLOOR to be activated.",
+						#"you_have": func() -> int: 
+							#return GAME_UTIL.get_activated_floor_count(),
+						#"is_completed": func() -> bool:
+							#return GAME_UTIL.get_activated_floor_count() > 0,
+						#},
+					#"hints": [
+						#{"title": "Custom step A", "cost": 1},
+					#]
+				#},
+			#],
 		},
 		"tutorial": {
 			"title": "TUTORIAL 1",

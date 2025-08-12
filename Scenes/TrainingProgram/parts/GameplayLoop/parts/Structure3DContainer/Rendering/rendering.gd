@@ -177,9 +177,9 @@ func on_room_config_update(new_val:Dictionary) -> void:
 # ------------------------------------------------
 func check_for_conditions() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty():return
-	var ring_config_data:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
-	var is_overheated:bool = ring_config_data.is_overheated
-	var is_ventilated:bool = ring_config_data.is_ventilated
+	var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
+	var is_overheated:bool = power_distribution.heating == 0
+	var is_ventilated:bool = power_distribution.ventilation > 0
 	
 	if camera_settings.type == 	CAMERA.TYPE.FLOOR_SELECT:
 		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)

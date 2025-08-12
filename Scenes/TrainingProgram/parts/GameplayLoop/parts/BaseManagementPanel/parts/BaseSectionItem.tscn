@@ -1,8 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://cbkmvlrdq81vr"]
+[gd_scene load_steps=6 format=3 uid="uid://cbkmvlrdq81vr"]
 
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="1_dw27i"]
 [ext_resource type="Script" uid="uid://boeckrg7b7y05" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/parts/base_section_item.gd" id="1_kq107"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_kq107"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kq107"]
+bg_color = Color(0.05, 0.05, 0.05, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="LabelSettings" id="LabelSettings_ltr2p"]
 font = ExtResource("1_dw27i")
@@ -14,27 +21,24 @@ shadow_offset = Vector2(2, 2)
 [node name="VBoxContainer" type="VBoxContainer"]
 script = ExtResource("1_kq107")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(20, 30)
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(25, 30)
 layout_mode = 2
-size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_kq107")
 
-[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 3
 
-[node name="AmountLabel" type="Label" parent="ColorRect/MarginContainer"]
+[node name="AmountLabel" type="Label" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_ltr2p")
 horizontal_alignment = 1
 
-[node name="SVGIcon" parent="." instance=ExtResource("2_kq107")]
+[node name="SVGIcon" parent="PanelContainer/MarginContainer" instance=ExtResource("2_kq107")]
+visible = false
 custom_minimum_size = Vector2(10, 15)
 layout_mode = 2
 icon = 32

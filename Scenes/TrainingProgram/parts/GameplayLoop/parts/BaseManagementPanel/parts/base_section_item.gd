@@ -1,9 +1,12 @@
 @tool
 extends VBoxContainer
 
-@onready var ColorBlock:ColorRect = $ColorRect
-@onready var AmountLabel:Label = $ColorRect/MarginContainer/AmountLabel
-@onready var SelectorIcon:Control = $SVGIcon
+@onready var BlockPanel:PanelContainer = $PanelContainer
+@onready var AmountLabel:Label = $PanelContainer/MarginContainer/AmountLabel
+@onready var SelectorIcon:Control = $PanelContainer/MarginContainer/SVGIcon
+
+@onready var amount_label_settings_copy:LabelSettings = AmountLabel.label_settings.duplicate()
+@onready var block_panel_copy:StyleBoxFlat = BlockPanel.get("theme_override_styles/panel").duplicate()
 
 @export var block_color:Color = Color.WHITE : 
 	set(val):
@@ -25,9 +28,13 @@ func _ready() -> void:
 	on_amount_val_update()
 	on_block_color_update()
 	
+	BlockPanel.set("theme_override_styles/panel", block_panel_copy)
+	AmountLabel.label_settings = amount_label_settings_copy
+	
 func on_is_active_update() -> void:
 	if !is_node_ready():return
-	SelectorIcon.show() if is_active else SelectorIcon.hide()
+	SelectorIcon.hide()
+	#SelectorIcon.show() if is_active else SelectorIcon.hide()
 	on_block_color_update()
 	
 func on_amount_val_update() -> void:
@@ -36,4 +43,7 @@ func on_amount_val_update() -> void:
 	
 func on_block_color_update() -> void:
 	if !is_node_ready():return
-	ColorBlock.color = block_color if is_active else Color.DIM_GRAY
+	block_panel_copy.bg_color = block_color if is_active else COLORS.primary_black
+	amount_label_settings_copy.font_color = Color.WHITE if is_active else block_color
+	
+	BlockPanel.set("theme_override_styles/panel", block_panel_copy)
