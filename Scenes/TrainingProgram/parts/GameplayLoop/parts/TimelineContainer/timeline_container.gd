@@ -33,13 +33,13 @@ func _ready() -> void:
 	super._ready()	
 	Gradiant.modulate = Color(1, 1, 1, 0)
 	
-	DetectorPanel.onFocus = func() -> void:
-		if control_pos.is_empty():return
-		fade_in_gradiant(true)
-
-	DetectorPanel.onBlur = func() -> void:
-		if control_pos.is_empty():return
-		fade_in_gradiant(false)
+	#DetectorPanel.onFocus = func() -> void:
+		#if control_pos.is_empty():return
+		#fade_in_gradiant(true)
+#
+	#DetectorPanel.onBlur = func() -> void:
+		#if control_pos.is_empty():return
+		#fade_in_gradiant(false)
 	
 func on_reset() -> void:
 	for child in ListContainer.get_children():

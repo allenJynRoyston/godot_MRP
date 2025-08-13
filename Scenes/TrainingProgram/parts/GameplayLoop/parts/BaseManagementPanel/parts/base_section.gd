@@ -79,7 +79,7 @@ func on_active_level_update() -> void:
 			total = node.amount_val
 
 	TotalLabel.text = str(total)
-	LevelLabel.text = str("LVL ", active_level)
+	LevelLabel.text = str("LVL ", active_level - 1)
 	
 	custom_tween_node_property(animation_tween, ProgressBarItem, "value", ((active_level -1  * 1.0) / 4.0) + 0.1, 0.3, 0, Tween.TRANS_SINE )
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://cnp4c6rqoeddl"]
+[gd_scene load_steps=35 format=4 uid="uid://cnp4c6rqoeddl"]
 
 [ext_resource type="Script" uid="uid://chdco1ai6lcat" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Base/parts/base_wing_model_mesh.gd" id="1_g8ghk"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="2_6fcw8"]
@@ -71,7 +71,7 @@ texture_repeat = false
 [sub_resource type="QuadMesh" id="QuadMesh_00axi"]
 lightmap_size_hint = Vector2i(2, 2)
 material = SubResource("StandardMaterial3D_c3rb4")
-size = Vector2(10, 10)
+size = Vector2(20, 20)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_o5624"]
 _surfaces = [{
@@ -150,6 +150,32 @@ _surfaces = [{
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5624"]
 albedo_color = Color(0.431437, 0.579034, 1, 1)
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6rm1k"]
+particle_flag_rotate_y = true
+particle_flag_damping_as_friction = true
+emission_shape_scale = Vector3(-2, 5, 3)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -372.0
+angle_max = 348.0
+flatness = 1.0
+gravity = Vector3(10, 0, 0)
+linear_accel_min = -3.33
+linear_accel_max = -2.23517e-06
+scale_min = 0.01
+scale_max = 0.05
+turbulence_noise_strength = 4.26
+turbulence_noise_scale = 0.596
+turbulence_influence_min = 0.0
+turbulence_influence_max = 0.168
+turbulence_initial_displacement_min = -17.5
+turbulence_initial_displacement_max = 18.6
+
+[sub_resource type="QuadMesh" id="QuadMesh_6rm1k"]
+lightmap_size_hint = Vector2i(2, 2)
+material = SubResource("StandardMaterial3D_c3rb4")
+size = Vector2(15, 15)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ckahk"]
 albedo_color = Color(0, 0.964706, 0.278431, 1)
 metallic = 1.0
@@ -188,7 +214,7 @@ _surfaces = [{
 albedo_color = Color(0.990027, 0.733613, 0.249749, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_oio1q"]
-viewport_path = NodePath("PowerGrid/Sprite3D/SubViewport")
+viewport_path = NodePath("PowerGrid/EnergySprite/SubViewport")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_hel1b"]
 _surfaces = [{
@@ -267,6 +293,18 @@ mesh = SubResource("ArrayMesh_6fcw8")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_o5624")
 
+[node name="FanParticles" type="GPUParticles3D" parent="ACUnit"]
+transform = Transform3D(2.02969, 0, -4.61936e-07, 0, 0.931609, 0, 1.63913e-07, 0, 1.07234, 3.26951, 0.292884, -0.308893)
+cast_shadow = 0
+gi_mode = 0
+amount = 100
+preprocess = 1.0
+speed_scale = 4.0
+fixed_fps = 60
+visibility_aabb = AABB(-2, -2, -2, 3, 4, 5)
+process_material = SubResource("ParticleProcessMaterial_6rm1k")
+draw_pass_1 = SubResource("QuadMesh_6rm1k")
+
 [node name="SRA" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.1293, -8.74929, 0.0439463)
 mesh = SubResource("ArrayMesh_oa2iy")
@@ -277,16 +315,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.7813, -8.1308, -8.49975)
 mesh = SubResource("ArrayMesh_bfksn")
 surface_material_override/0 = SubResource("StandardMaterial3D_24v6h")
 
-[node name="Sprite3D" type="Sprite3D" parent="PowerGrid"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.80427, 6.7858)
+[node name="EnergySprite" type="Sprite3D" parent="PowerGrid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.79052, 3.2866, 9.00468)
+pixel_size = 0.05
 billboard = 1
 texture = SubResource("ViewportTexture_oio1q")
 
-[node name="SubViewport" type="SubViewport" parent="PowerGrid/Sprite3D"]
+[node name="SubViewport" type="SubViewport" parent="PowerGrid/EnergySprite"]
 transparent_bg = true
 size = Vector2i(50, 57)
 
-[node name="Control" type="Control" parent="PowerGrid/Sprite3D/SubViewport"]
+[node name="Control" type="Control" parent="PowerGrid/EnergySprite/SubViewport"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -294,44 +333,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Control" type="Control" parent="PowerGrid/Sprite3D/SubViewport/Control"]
+[node name="Control" type="Control" parent="PowerGrid/EnergySprite/SubViewport/Control"]
 layout_mode = 2
 anchors_preset = 0
 offset_right = 50.0
 offset_bottom = 50.0
 
-[node name="SVGIcon" parent="PowerGrid/Sprite3D/SubViewport/Control/Control" instance=ExtResource("3_6rm1k")]
+[node name="SVGIcon" parent="PowerGrid/EnergySprite/SubViewport/Control/Control" instance=ExtResource("3_6rm1k")]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 42.0
 offset_right = 34.0
 offset_bottom = 62.0
 icon = 37
+icon_color = Color(0, 0, 0, 1)
 
-[node name="PanelContainer" type="PanelContainer" parent="PowerGrid/Sprite3D/SubViewport/Control"]
+[node name="PanelContainer" type="PanelContainer" parent="PowerGrid/EnergySprite/SubViewport/Control"]
 custom_minimum_size = Vector2(50, 50)
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
 theme_override_styles/panel = ExtResource("4_bfksn")
 
-[node name="MarginContainer" type="MarginContainer" parent="PowerGrid/Sprite3D/SubViewport/Control/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PowerGrid/EnergySprite/SubViewport/Control/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PowerGrid/Sprite3D/SubViewport/Control/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PowerGrid/EnergySprite/SubViewport/Control/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="SVGIcon" parent="PowerGrid/Sprite3D/SubViewport/Control/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_6rm1k")]
+[node name="SVGIcon" parent="PowerGrid/EnergySprite/SubViewport/Control/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_6rm1k")]
 layout_mode = 2
 icon = 32
-icon_color = Color(1, 1, 0, 1)
+icon_color = Color(1, 0.745178, 0.380506, 1)
 
-[node name="EnergyLabel" type="Label" parent="PowerGrid/Sprite3D/SubViewport/Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="EnergyLabel" type="Label" parent="PowerGrid/EnergySprite/SubViewport/Control/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "3"
@@ -341,7 +382,6 @@ vertical_alignment = 1
 
 [node name="Lid" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5, 0, 0)
-visible = false
 mesh = SubResource("ArrayMesh_hel1b")
 surface_material_override/0 = SubResource("StandardMaterial3D_oio1q")
 

@@ -99,7 +99,7 @@ func set_base_zoom(zoom_val:int) -> void:
 			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_SINE)
 		1:
 			U.tween_node_property(Camera, "position:x", -30, 0.7, 0, Tween.TRANS_SINE)
-			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_SINE)
+			await U.tween_node_property(Camera, "size", 55, 0.7, 0, Tween.TRANS_SINE)
 		2:
 			U.tween_node_property(Camera, "position:x", -35, 0.7, 0, Tween.TRANS_SINE)
 			await U.tween_node_property(Camera, "size", 40, 0.7, 0, Tween.TRANS_SINE)

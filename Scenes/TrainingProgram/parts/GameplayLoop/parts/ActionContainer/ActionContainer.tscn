@@ -567,7 +567,7 @@ hide_c_btn = false
 
 [node name="BaseMangementControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "CHANGE DISTRIBUTION"
+a_btn_title = "CUSTOMIZEB"
 
 [node name="BaseMangementEditControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2

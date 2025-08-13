@@ -180,7 +180,7 @@ size_flags_horizontal = 0
 title = "ENERGY"
 active_level = 4
 color = Color(0.864543, 0.586489, 0.281442, 1)
-values = [0, 5, 10, 15]
+values = [0, 1, 2, 3]
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)

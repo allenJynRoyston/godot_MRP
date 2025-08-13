@@ -16,6 +16,10 @@ extends Node3D
 
 @onready var FrostParticles:GPUParticles3D = $Ventilation/FrostParticles
 @onready var HeatParticles:GPUParticles3D = $HeatingVents/HeatParticles
+@onready var FanParticles:GPUParticles3D = $ACUnit/FanParticles
+
+@onready var EnergySprite:Sprite3D = $PowerGrid/EnergySprite
+@onready var EnergyLabel:Label = $PowerGrid/EnergySprite/SubViewport/Control/PanelContainer/MarginContainer/VBoxContainer/EnergyLabel
 
 @onready var VentilationMeshMaterial:StandardMaterial3D = VentilationMesh.get("surface_material_override/0").duplicate(true)
 @onready var ACMeshMaterial:StandardMaterial3D = ACMesh.get("surface_material_override/0").duplicate(true)
@@ -42,8 +46,11 @@ func _ready() -> void:
 	LidMesh.set_surface_override_material(0, LidMeshMaterial)
 	
 	# set defaults
+	EnergySprite.hide()
 	Spotlight.hide()
 	LidMeshMaterial.proximity_fade_enabled = false
+	FanParticles.emitting = false
+	FrostParticles.emitting = false	
 	for material in [VentilationMeshMaterial, FanBladeMeshMaterial, SRAMeshMaterial, ACMeshMaterial, PowerGridMaterial, HeatingMeshMaterial]:
 		material.albedo_color = Color.WHITE	
 		
@@ -65,19 +72,27 @@ func remove_shell(state:bool) -> void:
 		Billboard.hide()
 		Spotlight.show()
 		
+		
 	if !state:
+		EnergySprite.hide()
 		LidMeshMaterial.proximity_fade_enabled = false
+		FanParticles.emitting = false
+		FrostParticles.emitting = false		
 
 func highligh_item(item: Dictionary, power_distribution:Dictionary) -> void:
+	const energy_levels:Array = [0, 5, 10, 15]
+
 	match item.prop:
 		# ------------
 		"heating":
+			EnergySprite.hide()
 			HeatParticles.emitting = power_distribution[item.prop] > 1
 			HeatParticles.amount = power_distribution[item.prop] * 20
 						
-			HeatingMeshMaterial.albedo_color = Color.RED.darkened(1 - power_distribution[item.prop] * 0.25) if power_distribution[item.prop] > 1 else Color.BLACK
+			HeatingMeshMaterial.albedo_color = Color.RED.darkened(1 - power_distribution[item.prop] * 0.25) if power_distribution[item.prop] > 1 else Color.DARK_RED.darkened(0.5)
 		# ------------
 		"cooling":
+			EnergySprite.hide()
 			FrostParticles.emitting = power_distribution[item.prop] > 1
 			FrostParticles.amount = power_distribution[item.prop] * 250
 			FrostParticles.speed_scale = power_distribution[item.prop]
@@ -85,16 +100,28 @@ func highligh_item(item: Dictionary, power_distribution:Dictionary) -> void:
 			VentilationMeshMaterial.albedo_color = Color.BLUE.darkened(1 - power_distribution[item.prop] * 0.25) if power_distribution[item.prop] > 1 else Color.BLACK			
 		# ------------
 		"ventilation":
+			EnergySprite.hide()
+			FanParticles.emitting = power_distribution[item.prop] > 1
+			FanParticles.amount = power_distribution[item.prop] * 50
+			FanParticles.speed_scale = power_distribution[item.prop]
+			
 			FanBladeMeshMaterial.albedo_color = Color.GREEN.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.BLACK
 			ACMeshMaterial.albedo_color = Color.GREEN.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.BLACK
 			fan_speed = power_distribution[item.prop] 
 		# ------------
 		"sra":
-			SRAMeshMaterial.albedo_color = Color.PURPLE.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.DARK_GRAY
+			EnergySprite.hide()
+			SRAMeshMaterial.albedo_color = Color.PURPLE.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.DARK_GRAY		
 		# ------------
 		"energy":
+			EnergySprite.show()
+			EnergyLabel.text = str(energy_levels[power_distribution.energy - 1])
+			
 			PowerGridMaterial.albedo_color = Color.ORANGE.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.DARK_GRAY
-
+	
+	
+	
+	
 func on_assign_location_update() -> void:
 	if !is_node_ready():return
 	FloorLabel.text = str(assign_location.floor)

@@ -8,19 +8,19 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wex4x"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_mdmm6"]
+[sub_resource type="LabelSettings" id="LabelSettings_oqfi0"]
 font = ExtResource("2_4k3bo")
-font_color = Color(0, 0, 0, 1)
+font_color = Color(0.05, 0.05, 0.05, 1)
 outline_size = 2
-outline_color = Color(0, 0, 0, 0.2)
+outline_color = Color(0.05, 0.05, 0.05, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4k3bo"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqfi0"]
-bg_color = Color(0.433333, 0.15, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0oyx5"]
+bg_color = Color(0.4, 0.2, 0.6, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wex4x"]
 bg_color = Color(0, 0, 0, 1)
@@ -67,14 +67,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Section"
-label_settings = SubResource("LabelSettings_mdmm6")
+label_settings = SubResource("LabelSettings_oqfi0")
 uppercase = true
 
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "LVL 1"
-label_settings = SubResource("LabelSettings_mdmm6")
+label_settings = SubResource("LabelSettings_oqfi0")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -95,8 +95,9 @@ offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_4k3bo")
-theme_override_styles/fill = SubResource("StyleBoxFlat_oqfi0")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0oyx5")
 max_value = 1.0
+value = 0.1
 show_percentage = false
 
 [node name="Items" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]

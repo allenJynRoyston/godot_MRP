@@ -29,8 +29,7 @@ environment = SubResource("Environment_a1lc7")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
 transform = Transform3D(0.49834, -0.840359, 0.213197, -0.800393, -0.540448, -0.259398, 0.33321, -0.0413734, -0.941945, 0, 20, 0)
-light_color = Color(0.565355, 0.551749, 0.571961, 1)
-light_energy = 0.556
+light_color = Color(1, 0.174848, 0.2702, 1)
 light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_normal_bias = 10.0
@@ -40,8 +39,8 @@ directional_shadow_blend_splits = true
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Node3D"]
 transform = Transform3D(0.123361, 0.274959, -0.953509, 0.0565093, -0.961235, -0.269876, -0.990752, -0.0205901, -0.134117, 0, 20, 0)
-light_color = Color(0.66398, 0.743362, 1, 1)
-light_energy = 0.556
+light_color = Color(0.328698, 0.427559, 0.99997, 1)
+light_energy = 4.948
 light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_normal_bias = 10.0

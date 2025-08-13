@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ck4ghs6psctsy"]
+[gd_scene load_steps=8 format=3 uid="uid://ck4ghs6psctsy"]
 
 [ext_resource type="Script" uid="uid://c0qmt8nmsb7lq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/base_summary_panel.gd" id="1_ctg7u"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="1_kbybp"]
@@ -21,17 +21,6 @@ shadow_offset = Vector2(2, 2)
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_mscv4"]
-font = ExtResource("1_kbybp")
-font_size = 32
-font_color = Color(0, 0, 0, 1)
-outline_color = Color(0, 0, 0, 0.615686)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_4d3gu"]
-thickness = 2
 
 [node name="BaseSummaryPanel" type="PanelContainer"]
 offset_right = 40.0
@@ -85,14 +74,14 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "FLOOR"
+text = "WING 0"
 label_settings = ExtResource("3_c4tei")
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "WING"
+text = "NO ISSUES"
 label_settings = ExtResource("3_c4tei")
 horizontal_alignment = 1
 
@@ -102,27 +91,16 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "1"
-label_settings = SubResource("LabelSettings_mscv4")
+text = "WING 0"
+label_settings = ExtResource("3_c4tei")
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "A"
-label_settings = SubResource("LabelSettings_mscv4")
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
 horizontal_alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_4d3gu")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -130,5 +108,30 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer3"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "stats"
+text = "WING 0"
 label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "WING 0"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
