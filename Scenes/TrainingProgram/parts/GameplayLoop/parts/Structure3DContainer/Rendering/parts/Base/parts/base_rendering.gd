@@ -8,25 +8,24 @@ const TransparencyShaderPreload:ShaderMaterial = preload("res://Shader/Spatial/T
 const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
 const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
 
+var ActiveWingNode:Node3D
 var camera_settings:Dictionary = {} 
 var current_location:Dictionary = {} 
 var camera_tween:Tween = create_tween()
 
 # ------------------------------------------------
 func _init() -> void:
-	GBL.subscribe_to_process(self)
 	GBL.register_node(REFS.BASE_RENDER, self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
 	
 func _exit_tree() -> void:
-	GBL.unsubscribe_to_process(self)
 	GBL.unregister_node(REFS.BASE_RENDER)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
 func _ready() -> void:	
-	#build_floors()
+	assign_floor_data()
 	set_base_zoom(0)
 	camera_tween = create_tween()
 # ------------------------------------------------
@@ -77,54 +76,55 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 # -----------------------------------------------			
 
 # ------------------------------------------------
-func build_floors() -> void:
-	for n in range(7):
-		var floor_duplicate:Node3D = FloorInstance.duplicate()
-		floor_duplicate.show()
-		floor_duplicate.position.y = n * -27
-		FloorInstanceContainer.add_child(floor_duplicate)
-	FloorInstance.queue_free()
+func assign_floor_data() -> void:
+	for index in FloorInstanceContainer.get_child_count():
+		var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
+		for ring_index in FloorNode.get_child_count():
+			var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )		
+			WingNode.assign_location = {"floor": index, "ring": ring_index}
+
 # ------------------------------------------------
 
 # ------------------------------------------------
 func update_mesh() -> void:	
 	if !is_node_ready() or current_location.is_empty() or camera_settings.is_empty() or FloorInstanceContainer.get_child_count() == 0:return	
 	pass
-	#for floor_index in FloorInstanceContainer.get_child_count():
-		#var floor_node:Node3D = FloorInstanceContainer.get_child(floor_index)
-		#for ring_index in floor_node.get_child_count():
-			#var child:MeshInstance3D = floor_node.get_child(ring_index)
-			#var mesh_duplicate = child.mesh.duplicate()
-			#if camera_settings.is_locked:
-				#mesh_duplicate.material = TransparencyShaderPreload.duplicate()	
-				#var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor else RoomMaterialInactive.duplicate()
-				#material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-				#mesh_duplicate.material = material_copy	
-			#else:
-				#if floor_index < current_location.floor:
-					#mesh_duplicate.material = TransparencyShaderPreload.duplicate()		
-				#else:					
-					#var material_copy:StandardMaterial3D = RoomMaterialActive.duplicate() if floor_index == current_location.floor and ring_index == current_location.ring else RoomMaterialInactive.duplicate()
-					#material_copy.albedo_color = material_copy.albedo_color.lerp(Color(0, 0, 0), 0.5)
-					#mesh_duplicate.material = material_copy		
-			#child.mesh = mesh_duplicate	
 # ------------------------------------------------
-
 
 # ------------------------------------------------
 func set_base_zoom(zoom_val:int) -> void:
 	match zoom_val:
 		0:
 			#U.tween_node_property(Camera, "position:x", 150, 0.7, 0, Tween.TRANS_CUBIC)
-			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_CUBIC)
+			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_SINE)
 		1:
-			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_CUBIC)
-
+			U.tween_node_property(Camera, "position:x", -30, 0.7, 0, Tween.TRANS_SINE)
+			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_SINE)
+		2:
+			U.tween_node_property(Camera, "position:x", -35, 0.7, 0, Tween.TRANS_SINE)
+			await U.tween_node_property(Camera, "size", 40, 0.7, 0, Tween.TRANS_SINE)
 # ------------------------------------------------
 
 # ------------------------------------------------
-func on_process_update(_delta:float, _time_passed:float) -> void:
-	if !is_node_ready():return
-	
-	#FloorInstanceContainer.rotate_y(0.005)
+func animate_internals(state:bool) -> void:
+	#var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", current_location.floor) )
+
+	# first, hide all other floors
+	if state:
+		for index in FloorInstanceContainer.get_child_count():
+			var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
+			FloorNode.hide() if index != current_location.floor else FloorNode.show()
+			if index == current_location.floor:
+				ActiveWingNode = FloorNode.find_child( str("W", current_location.ring) )
+				ActiveWingNode.remove_shell(true)
+	# else 
+	else:
+		ActiveWingNode = null
+		for index in FloorInstanceContainer.get_child_count():
+			var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
+			FloorNode.show()
+			for ring_index in FloorNode.get_child_count():
+				var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )
+				WingNode.remove_shell(false)
+
 # ------------------------------------------------

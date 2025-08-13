@@ -1,8 +1,8 @@
 extends SubscribeWrapper
 
-@onready var FloorLabel:Label = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/FloorLabel
-@onready var RingLabel:Label = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/RingLabel
 @onready var CoreAmountLabel:Label = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer/HBoxContainer/CoreAmountLabel
+@onready var TempMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/TempMonitor
+@onready var RealityMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/RealityMonitor
 
 @onready var DescriptionPanel:PanelContainer = $DescriptionControl/PanelContainer
 @onready var DescriptionMargin:MarginContainer = $DescriptionControl/PanelContainer/MarginContainer
@@ -11,15 +11,15 @@ extends SubscribeWrapper
 @onready var Heating:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Heating
 @onready var Cooling:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Cooling
 @onready var Ventilation:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Ventilation
-@onready var Security:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Security
+@onready var SRA:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/SRA
 @onready var Energy:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Energy
 
 @onready var component_list:Array = [
 	{"node": Heating, "prop": "heating", "description": "Keeps rooms warm and comfortable."}, 
 	{"node": Cooling, "prop": "cooling", "description": "Keeps temperatures cool and pleasant."}, 
 	{"node": Ventilation, "prop": "ventilation", "description": "Circulates fresh air throughout the wing."}, 
-	#{"node": Security, "prop": "security", "description": "Protects the wing from intruders and hazards."}, 
-	{"node": Energy, "prop": "energy", "description": "Tracks and manages available energy for the wing."}, 
+	{"node": SRA, "prop": "sra", "description": "Set strength of localized Scranton Reality Anchors."}, 
+	{"node": Energy, "prop": "energy", "description": "Set the available energy for the wing."}, 
 ]
 
 var control_pos:Dictionary = {}
@@ -45,7 +45,6 @@ func _ready() -> void:
 		"show": DescriptionPanel.position.y,
 		"hide": DescriptionPanel.position.y - DescriptionMargin.size.y 
 	}
-	print(control_pos[DescriptionPanel])
 	DescriptionPanel.position.y = control_pos[DescriptionPanel].hide
 	
 func start() -> void:
@@ -89,27 +88,52 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
 	var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
+	var monitor:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].monitor
+	
+	# monitors
+	TempMonitor.slider_val = monitor.temp
+	RealityMonitor.slider_val = monitor.reality
 	
 	# update labels
-	FloorLabel.text = str(current_location.floor)
-	RingLabel.text = str(current_location.ring)
 	CoreAmountLabel.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
 	
 	# update values
 	Heating.active_level = power_distribution.heating
 	Cooling.active_level = power_distribution.cooling
 	Ventilation.active_level = power_distribution.ventilation
-	Security.active_level = power_distribution.security
+	SRA.active_level = power_distribution.sra
 	Energy.active_level = power_distribution.energy
+	
+	# check if they have the correct buildings to enable
+	Heating.is_disabled = false
+	Cooling.is_disabled = false
+	Ventilation.is_disabled = false
+	SRA.is_disabled = false
+	Energy.is_disabled = false
+	
+	# update active wing node
+	update_wing_node()
 	
 func on_component_list_update() -> void:
 	if !is_node_ready():return
+	var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
+	
 	for index in component_list.size():
 		var node:Control = component_list[index].node
 		node.make_selectable = index == component_index
 		if index == component_index:
 			ActiveNode = node
 			DescriptionLabel.text = component_list[index].description
+	
+	# update active wing node
+	update_wing_node()
+	
+func update_wing_node() -> void:
+	var ActiveWingNode:Node3D = GBL.find_node(REFS.BASE_RENDER).ActiveWingNode
+	if ActiveWingNode != null:
+		var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
+		# update active wing node
+		ActiveWingNode.highligh_item(component_list[component_index], power_distribution)		
 # ------------------------------------------
 
 # ------------------------------------------
@@ -127,6 +151,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"S":
 			component_index = U.min_max( component_index + 1, 0, component_list.size() - 1, true )
 		"A":
+			if ActiveNode.is_disabled:return
 			if prop_val > 1:
 				resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount + 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
 				base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] -= 1
@@ -134,6 +159,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				SUBSCRIBE.base_states = base_states
 				SUBSCRIBE.resources_data = resources_data
 		"D":
+			if ActiveNode.is_disabled:return
 			if resources_data[RESOURCE.CURRENCY.CORE].amount > 0 and prop_val < 4:
 				resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount - 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
 				base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] += 1

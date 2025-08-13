@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cea6twjuqri8r"]
+[gd_scene load_steps=12 format=3 uid="uid://cea6twjuqri8r"]
 
 [ext_resource type="Script" uid="uid://mqvlo03qekmt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/parts/base_section.gd" id="1_wex4x"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_4k3bo"]
@@ -15,6 +15,12 @@ outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4k3bo"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqfi0"]
+bg_color = Color(0.433333, 0.15, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wex4x"]
 bg_color = Color(0, 0, 0, 1)
@@ -77,14 +83,21 @@ theme_override_constants/separation = 10
 [node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Control"]
-custom_minimum_size = Vector2(125, 15)
-layout_mode = 0
-offset_left = 12.0
-offset_top = 8.0
-offset_right = 137.0
-offset_bottom = 23.0
-color = Color(0.4, 0.2, 0.6, 1)
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 9.0
+offset_right = 140.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_4k3bo")
+theme_override_styles/fill = SubResource("StyleBoxFlat_oqfi0")
+max_value = 1.0
+show_percentage = false
 
 [node name="Items" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2

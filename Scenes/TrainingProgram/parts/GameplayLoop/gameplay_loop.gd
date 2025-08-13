@@ -188,7 +188,7 @@ var initial_values:Dictionary = {
 						"heating": 1,
 						"cooling": 1,
 						"ventilation": 2,
-						"security": 1,
+						"sra": 1,
 						"energy": 2 if floor_index in [0, 1] else 1,
 					}
 				}
@@ -599,11 +599,15 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 		"mtf": [],
 		"buffs": [],
 		"debuffs": [],
+		"monitor": {
+			"temp": 0,
+			"reality": 0,
+		},
 		"power_distribution": {
 			"heating": 0,
 			"cooling": 0,
 			"ventilation": 0,
-			"security": 0,
+			"sra": 0,
 			"energy": 0
 		},
 		# --------------
@@ -1368,22 +1372,25 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 		# RING LEVEL ------------- 
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var ring_base_state:Dictionary = base_states.ring[str(floor_index, ring_index)]			
-			var ring_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
+			var ring_level_config:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
 
 			# setup initial energy
-			ring_level.energy.available = energy_levels[ring_base_state.power_distribution.energy - 1] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
-			ring_level.energy.used = 0
+			ring_level_config.energy.available = energy_levels[ring_base_state.power_distribution.energy - 1] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
+			ring_level_config.energy.used = 0
 			#ring_level.is_ventilated = ring_base_state.is_ventilated
 			#ring_level.is_overheated = ring_base_state.is_overheated
 			
 			# transfer power_distribution
-			ring_level.power_distribution = ring_base_state.power_distribution
+			ring_level_config.power_distribution = ring_base_state.power_distribution
+			
+			ring_level_config.monitor.temp = (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1)
+			ring_level_config.monitor.reality = (ring_base_state.power_distribution.sra - 1)
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
-				ring_level.emergency_mode = ROOM.EMERGENCY_MODES.DANGER
+				ring_level_config.emergency_mode = ROOM.EMERGENCY_MODES.DANGER
 			else:
-				ring_level.emergency_mode = ring_base_state.emergency_mode
+				ring_level_config.emergency_mode = ring_base_state.emergency_mode
 				
 			# ROOM LEVEL ------------- 
 			for room_index in new_room_config.floor[floor_index].ring[ring_index].room.size():

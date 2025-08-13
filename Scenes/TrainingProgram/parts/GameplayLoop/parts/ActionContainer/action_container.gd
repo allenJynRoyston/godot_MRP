@@ -217,7 +217,9 @@ func update_control_pos(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func start() -> void:	
+	var BaseRenderNode:Node3D = GBL.find_node( REFS.BASE_RENDER )
 	is_started = true
+	
 	
 	# -------------------------------------
 	for btn in [EndTurnBtn]:
@@ -267,7 +269,7 @@ func start() -> void:
 		current_mode = MODE.INFO	
 
 	BaseManagementBtn.onClick = func() -> void:			
-		GBL.find_node( REFS.BASE_RENDER ).set_base_zoom(1)
+		BaseRenderNode.set_base_zoom(1)
 		current_mode = MODE.BASE_MANAGEMENT
 		reveal_base_summary(false)
 		await lock_actions(true)
@@ -275,13 +277,20 @@ func start() -> void:
 		BaseManagementControls.reveal(true)
 	
 	BaseManagementControls.onAction = func() -> void:
+		# animate and zoom in
+		BaseRenderNode.set_base_zoom(2)
+		BaseRenderNode.animate_internals(true)
+		
+		# change mode and controls
 		current_mode = MODE.BASE_MANAGEMENT_COMPONENT
 		await BaseManagementControls.reveal(false)
+		
+		# start and reveal
 		BaseManagementComponent.start()
 		BaseManagementEditControls.reveal(true)
 
 	BaseManagementControls.onBack = func() -> void:			
-		GBL.find_node( REFS.BASE_RENDER ).set_base_zoom(0)
+		BaseRenderNode.set_base_zoom(0)
 		reveal_base_management(false)
 		await BaseManagementControls.reveal(false)
 		lock_actions(false)
@@ -289,6 +298,9 @@ func start() -> void:
 		current_mode = MODE.NONE
 		
 	BaseManagementEditControls.onBack = func() -> void:
+		BaseRenderNode.set_base_zoom(1)
+		BaseRenderNode.animate_internals(false)
+		
 		BaseManagementComponent.end()
 		await BaseManagementEditControls.reveal(false)
 		await BaseManagementControls.reveal(true)
