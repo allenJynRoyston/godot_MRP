@@ -21,18 +21,6 @@
 bg_color = Color(0.05, 0.05, 0.05, 0)
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nld38"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_273dx"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
@@ -69,18 +57,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvjm1"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xathl"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
@@ -94,6 +70,30 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_58xi4"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvjm1"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nld38"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
@@ -262,25 +262,13 @@ vertical_alignment = 1
 [node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ToggleLevelBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
-title = "ZOOM IN"
-assigned_key = "B"
-icon = 70
-is_disabled = false
-allow_hint = false
-
-[node name="GotoWingBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-visible = false
+[node name="OnBBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
-title = "ZOOM OUT"
-assigned_key = "2"
+title = "B BTN"
+assigned_key = "B"
 icon = 29
 is_disabled = false
 allow_hint = false
@@ -303,7 +291,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "DEBUG"
-assigned_key = "R"
+assigned_key = "5"
 icon = 9
 is_disabled = false
 allow_hint = false
@@ -387,46 +375,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 alignment = 1
 
-[node name="BaseActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
-
-[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 2
-
-[node name="Label" type="Label" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "FACILITY"
-label_settings = ExtResource("2_i3yab")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="BaseManagementBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tvjm1")
-title = "POWER DISTRIBUTION"
-assigned_key = "E"
-icon = 15
-is_disabled = false
-allow_hint = false
-
 [node name="WingActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
 layout_mode = 2
 size_flags_vertical = 8
@@ -461,8 +409,8 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "DESIGN"
-assigned_key = "T"
+title = "NEXUS COORDINATOR"
+assigned_key = "N"
 icon = 29
 is_disabled = false
 allow_hint = false
@@ -472,20 +420,19 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "ACTIONS"
-assigned_key = "E"
+title = "ROOM ADMIN"
+assigned_key = "R"
 icon = 29
 is_disabled = false
 allow_hint = false
 
 [node name="WingProgramBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "PROGRAMS"
-assigned_key = "R"
+title = "OPERATIONS"
+assigned_key = "O"
 icon = 29
 is_disabled = false
 allow_hint = false
@@ -528,6 +475,57 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_58xi4")
 title = "GENERATOR UPGRADES"
 assigned_key = "E"
 icon = 29
+is_disabled = false
+allow_hint = false
+
+[node name="BaseActions" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
+
+[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = -10
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 2
+
+[node name="Label" type="Label" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "FACILITY"
+label_settings = ExtResource("2_i3yab")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BaseManagementBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tvjm1")
+title = "ENGINEERING DEPT."
+assigned_key = "E"
+icon = 15
+is_disabled = false
+allow_hint = false
+
+[node name="ToggleLevelBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
+title = "FLOOR DIRECTOR"
+assigned_key = "F"
+icon = 70
 is_disabled = false
 allow_hint = false
 
