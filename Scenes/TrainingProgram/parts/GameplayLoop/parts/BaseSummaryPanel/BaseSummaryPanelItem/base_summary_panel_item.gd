@@ -1,13 +1,14 @@
 @tool
 extends PanelContainer
 
-@onready var ContentList:VBoxContainer = $VBoxContainer/ContentList
+@onready var SelectedIcon:PanelContainer = $VBoxContainer/MarginContainer2/SVGIcon
 
-@export var show_content:bool = false : 
+
+@export var is_selected:bool = false : 
 	set(val):
-		show_content = val
-		on_show_content_update()
+		is_selected = val
+		on_is_selected_update()
 		
-func on_show_content_update() -> void:
+func on_is_selected_update() -> void:
 	if !is_node_ready():return
-	ContentList.show() if show_content else ContentList.hide()
+	SelectedIcon.show() if is_selected else SelectedIcon.hide()

@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://26x2t4j7c7td"]
+[gd_scene load_steps=8 format=3 uid="uid://26x2t4j7c7td"]
 
 [ext_resource type="Script" uid="uid://8fkxcp5488rx" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/BaseSummaryPanelItem/base_summary_panel_item.gd" id="1_dwiev"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="2_2mjk3"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_o6n8j"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_qe8d7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjo48"]
@@ -24,12 +23,22 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="BaseSummaryPanelItem" type="PanelContainer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 200.0
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qjo48")
 script = ExtResource("1_dwiev")
+is_selected = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 theme_override_constants/separation = 0
+alignment = 1
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -45,7 +54,7 @@ theme_override_constants/margin_bottom = 10
 [node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "WING A"
+text = "WING X"
 label_settings = SubResource("LabelSettings_c1471")
 
 [node name="Status" type="PanelContainer" parent="VBoxContainer"]
@@ -61,323 +70,19 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Status/MarginContainer"]
+[node name="SVGIcon" parent="VBoxContainer/Status/MarginContainer" instance=ExtResource("4_qe8d7")]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+icon = 20
+icon_size = Vector2(30, 30)
 
-[node name="Label" type="Label" parent="VBoxContainer/Status/MarginContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
-text = "ALERT 
-STATUS 
-GOES 
-HERE"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
+theme_override_constants/margin_left = -60
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Status/MarginContainer/VBoxContainer"]
-visible = false
+[node name="SVGIcon" parent="VBoxContainer/MarginContainer2" instance=ExtResource("4_qe8d7")]
 layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/Status/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="ContentList" type="VBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList"]
-layout_mode = 2
-theme_override_constants/margin_top = 5
-
-[node name="SVGIcon" parent="VBoxContainer/ContentList/MarginContainer" instance=ExtResource("4_qe8d7")]
-custom_minimum_size = Vector2(10, 20)
-layout_mode = 2
-icon = 37
+icon = 47
 icon_color = Color(1, 1, 1, 1)
-icon_size = Vector2(10, 20)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList"]
-layout_mode = 2
-
-[node name="R0" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R1" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R2" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R3" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R4" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R5" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R6" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="R7" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "ROOM STATUS: WHAT 
-THEY'RE DOING"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "NO ISSUES"
-label_settings = ExtResource("3_o6n8j")
-horizontal_alignment = 1

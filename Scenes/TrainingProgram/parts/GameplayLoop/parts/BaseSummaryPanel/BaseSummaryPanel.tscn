@@ -1,9 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://ck4ghs6psctsy"]
+[gd_scene load_steps=6 format=3 uid="uid://ck4ghs6psctsy"]
 
 [ext_resource type="PackedScene" uid="uid://26x2t4j7c7td" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/BaseSummaryPanelItem/BaseSummaryPanelItem.tscn" id="1_3akie"]
 [ext_resource type="Script" uid="uid://c0qmt8nmsb7lq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/base_summary_panel.gd" id="1_ctg7u"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_c4tei"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kbybp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mscv4"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="BaseSummaryPanel" type="PanelContainer"]
 offset_right = 190.0
@@ -11,21 +17,313 @@ offset_bottom = 106.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kbybp")
 script = ExtResource("1_ctg7u")
 
-[node name="List" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="W0" parent="List" instance=ExtResource("1_3akie")]
+[node name="List" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="W0" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+layout_mode = 2
+is_selected = null
+
+[node name="W1" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+layout_mode = 2
+is_selected = null
+
+[node name="W2" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+layout_mode = 2
+is_selected = null
+
+[node name="W3" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+layout_mode = 2
+is_selected = null
+
+[node name="ContentList" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="R0" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 
-[node name="W1" parent="List" instance=ExtResource("1_3akie")]
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R1" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 
-[node name="W2" parent="List" instance=ExtResource("1_3akie")]
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R2" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 
-[node name="W3" parent="List" instance=ExtResource("1_3akie")]
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R3" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R4" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R5" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R6" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="R7" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mscv4")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "ROOM STATUS: WHAT 
+THEY'RE DOING"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "NO ISSUES"
+label_settings = ExtResource("3_c4tei")
+horizontal_alignment = 1
