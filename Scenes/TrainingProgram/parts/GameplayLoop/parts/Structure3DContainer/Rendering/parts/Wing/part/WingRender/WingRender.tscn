@@ -183,7 +183,6 @@ transform = Transform3D(0.707106, -3.20375e-07, 0.707107, -0.078526, 0.993815, 0
 
 [node name="WingRenderMesh" parent="MeshRender" instance=ExtResource("2_sriu8")]
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
-in_edit_mode = true
 sra_val = 0
 ventilation_val = 4
 

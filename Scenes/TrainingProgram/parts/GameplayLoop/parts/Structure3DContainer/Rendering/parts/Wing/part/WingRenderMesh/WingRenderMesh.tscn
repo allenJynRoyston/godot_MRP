@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://q66xa2ie7ra0"]
+[gd_scene load_steps=35 format=4 uid="uid://q66xa2ie7ra0"]
 
 [ext_resource type="Script" uid="uid://b60pul6ylpvab" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRenderMesh/wing_render_mesh.gd" id="1_dujtb"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="1_v7x7n"]
@@ -246,16 +246,53 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AACCwgAAIMIAAIJCAACCwgAAIMIAAILCAACCwgAAIEIAAILCAACCwgAAIMIAAIJCAACCQgAAIMIAAILCAACCwgAAIMIAAILCAACCQgAAIMIAAILCAACCwgAAIEIAAILCAACCwgAAIMIAAILCAACCwgAAIEIAAILCAACCwgAAIEIAAIJCAACCwgAAIMIAAIJCAACCwgAAIEIAAIJCAACCQgAAIEIAAIJCAACCwgAAIMIAAIJCAACCwgAAIEIAAILCAACCQgAAIEIAAIJCAACCwgAAIEIAAIJCAACCwgAAIMIAAIJCAACCQgAAIMIAAIJCAACCQgAAIMIAAILCAACCQgAAIEIAAIJCAACCQgAAIMIAAIJCAACCwgAAIMIAAIJCAACCQgAAIMIAAIJCAACCQgAAIEIAAIJCAACCQgAAIMIAAILCAACCQgAAIMIAAILCAACCQgAAIEIAAILCAACCwgAAIEIAAILCAACCQgAAIEIAAILCAACCQgAAIEIAAIJCAACCwgAAIEIAAILCAACCQgAAIEIAAIJCAACCQgAAIEIAAILCAACCQgAAIMIAAILCAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
 }]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0fl8y"]
+albedo_color = Color(0.462291, 0.462291, 0.462291, 1)
+roughness = 0.58
+proximity_fade_distance = 0.01
+distance_fade_max_distance = 0.0
+
 [node name="WingRenderMesh" type="Node3D"]
 script = ExtResource("1_dujtb")
 
 [node name="DebugLighting" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.502449, 0.57948, -0.641677, 0.371986, 0.525076, 0.765455, 0.780495, -0.623296, 0.0482656, 0, 33.7628, 0)
 visible = false
-light_energy = 13.026
 
 [node name="Inner" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -16.4631, 0)
+
+[node name="EditLighting" type="Node3D" parent="Inner"]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Inner/EditLighting"]
+transform = Transform3D(0.772734, 0.421688, -0.474408, -1.49012e-08, 0.747416, 0.664357, 0.634731, -0.513371, 0.577553, -46.0543, 24.4574, 61.2037)
+visible = false
+light_color = Color(1, 0.788235, 1, 1)
+light_energy = 1.536
+light_volumetric_fog_energy = 0.0
+light_size = 0.275
+spot_range = 127.841
+spot_attenuation = -0.63
+spot_angle = 60.0
+spot_angle_attenuation = 0.0947323
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Inner/EditLighting"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 7.81243, 54.8655, -0.762285)
+light_color = Color(0.902445, 0.927751, 0.995594, 1)
+light_energy = 3.33
+light_indirect_energy = 10.83
+spot_range = 134.985
+spot_attenuation = -0.37
+spot_angle = 89.0
+spot_angle_attenuation = 0.217637
+
+[node name="EditModeLight" type="DirectionalLight3D" parent="Inner/EditLighting"]
+transform = Transform3D(0.707107, 0.345432, -0.61699, 0, 0.872556, 0.488515, 0.707107, -0.345432, 0.61699, -48.6999, 53.627, 57.2173)
+light_energy = 9.059
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+light_negative = true
+directional_shadow_mode = 0
 
 [node name="Building" type="Node3D" parent="Inner"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.53686, 0)
@@ -268,7 +305,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_dujtb")
 transform = Transform3D(0.522655, -1.76777, 1.68874, 2.38823, -1.19209e-07, -0.739146, 0.522655, 1.76777, 1.68874, 48, 28.4631, -48)
 
 [node name="FanBlades" type="MeshInstance3D" parent="Inner/Ventilation"]
-transform = Transform3D(0.958528, 0, -0.284974, 0, 1, 0, 0.284974, 0, 0.958528, 0, -1, 0)
+transform = Transform3D(-0.817399, 0, -0.576041, 0, 1, 0, 0.576041, 0, -0.817399, 0, -1, 0)
 mesh = SubResource("ArrayMesh_wegp0")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_2ysr2")
@@ -572,8 +609,8 @@ spin_speed = 0.05
 
 [node name="Outershell" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -16.4631, 0)
-visible = false
 
 [node name="CSGBox3D" type="MeshInstance3D" parent="Outershell"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -7)
 mesh = SubResource("ArrayMesh_2ysr2")
+surface_material_override/0 = SubResource("StandardMaterial3D_0fl8y")
