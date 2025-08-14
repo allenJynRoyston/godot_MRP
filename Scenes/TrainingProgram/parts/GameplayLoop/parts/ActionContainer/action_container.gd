@@ -62,8 +62,8 @@ extends GameContainer
 
 # GOTO PANEL
 @onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-@onready var ToggleLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ToggleLevelBtn
-#@onready var GotoWingBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoWingBtn
+@onready var ToggleLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer/ToggleLevelBtn
+@onready var OnBBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/OnBBtn
 #@onready var GotoGeneratorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
 
@@ -245,13 +245,22 @@ func start() -> void:
 	# -------------------------------------
 	ToggleLevelBtn.onClick = func() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
-		ToggleLevelBtn.title = "ENTER BASE MODE" if camera_settings.type else "ENTER WING MODE"
-			
+		ToggleLevelBtn.title = "SITE DIRECTOR" if camera_settings.type else "FLOOR MANAGER"
+		ToggleLevelBtn.assigned_key = "T" if camera_settings.type else "F"
+		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
 		reveal_base_summary(camera_settings.type != CAMERA.TYPE.WING_SELECT)		
 	
-		
+	OnBBtn.onClick = func() -> void:
+		print("on b btn.")
+		#camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
+		#ToggleLevelBtn.title = "OVERSEER MODE" if camera_settings.type else "RING LEVEL"
+			#
+		#SUBSCRIBE.camera_settings = camera_settings
+		#TransistionScreen.start(0.3, true)
+		#reveal_base_summary(camera_settings.type != CAMERA.TYPE.WING_SELECT)		
+		#
 	WingDesignBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.BUILD
@@ -1343,7 +1352,7 @@ func check_btn_states() -> void:
 	match current_mode:
 		MODE.NONE:
 			WingDesignBtn.is_disabled = !is_powered
-			WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
+			# WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
 			WingProgramBtn.hide() if GAME_UTIL.get_list_of_programs(current_location, true).is_empty() else WingProgramBtn.show()
 			WingActionBtn.is_disabled = rooms_in_wing_count == 0
 			#GenActionBtn.is_disabled = !has_one_floor_activated

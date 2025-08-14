@@ -3,10 +3,11 @@ extends Control
 @onready var VisulizerPanel:PanelContainer = $VisulizerPanel
 @onready var VisulizerMargin:MarginContainer = $VisulizerPanel/MarginContainer
 
-@onready var FloorVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/HBoxContainer/FloorVisualizer
-@onready var WingVisualizer:HBoxContainer = $VisulizerPanel/MarginContainer/HBoxContainer/WingVisualizer
-@onready var RoomVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/HBoxContainer/RoomVisualizer
+@onready var FloorVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer
+@onready var WingVisualizer:HBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer
+@onready var RoomVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer
 
+@onready var ModeLabel:Label = $VisulizerPanel/MarginContainer/VBoxContainer/ModeLabel
 
 var room_visualizer_nodes:Array = []
 
@@ -77,16 +78,13 @@ func on_camera_settings_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
 	var nodes:Array = [FloorVisualizer, WingVisualizer, RoomVisualizer]
 
-	#match new_val.type:
-		#CAMERA.TYPE.FLOOR_SELECT:
-			#for node in nodes:
-				#node.modulate = Color(1, 1, 1, 1 if node in [FloorVisualizer] else 0 )
-					#
-		#CAMERA.TYPE.WING_SELECT:
-			#for node in nodes:
-				#node.modulate = Color(1, 1, 1, 1 if node in [FloorVisualizer, WingVisualizer] else 0 )
-				#
-		#CAMERA.TYPE.ROOM_SELECT:
-			#for node in nodes:
-				#node.modulate = Color(1, 1, 1, 1)
+	match new_val.type:
+		CAMERA.TYPE.FLOOR_SELECT:
+			ModeLabel.text = "OVEERSEER MODE"
+					
+		CAMERA.TYPE.WING_SELECT:
+			ModeLabel.text = "FLOOR MANAGER MODE"
+			
+		CAMERA.TYPE.ROOM_SELECT:
+			ModeLabel.text = "ROOM MANAGER MODE"
 # -----------------------------------------------			
