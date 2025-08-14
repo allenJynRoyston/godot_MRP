@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://c2hubc813jb5x"]
+[gd_scene load_steps=6 format=3 uid="uid://c2hubc813jb5x"]
 
 [ext_resource type="Script" uid="uid://ba8ebt87m7adg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Base/parts/base_rendering.gd" id="1_gi6w5"]
-[ext_resource type="PackedScene" uid="uid://cnp4c6rqoeddl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Base/parts/BaseWingModelMesh.tscn" id="2_b0ydy"]
+[ext_resource type="PackedScene" uid="uid://q66xa2ie7ra0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRenderMesh/WingRenderMesh.tscn" id="2_gjrka"]
 
 [sub_resource type="Environment" id="Environment_a1lc7"]
 ambient_light_source = 3
@@ -14,9 +14,15 @@ volumetric_fog_length = 22.9
 volumetric_fog_detail_spread = 0.5
 volumetric_fog_ambient_inject = 0.84
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b0ydy"]
+albedo_color = Color(0.568792, 0.535466, 0.543969, 1)
+metallic = 1.0
+roughness = 0.4
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_gi6w5"]
-top_radius = 4.0
-bottom_radius = 4.0
+material = SubResource("StandardMaterial3D_b0ydy")
+top_radius = 3.0
+bottom_radius = 3.0
 height = 100.0
 
 [node name="BaseRendering" type="Node3D"]
@@ -49,112 +55,169 @@ directional_shadow_split_1 = 0.0
 directional_shadow_blend_splits = true
 
 [node name="Elevator" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28.1906, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -34, -5.0826)
 layers = 1023
 mesh = SubResource("CylinderMesh_gi6w5")
 skeleton = NodePath("../../../../..")
 
-[node name="FloorInstanceContainer" type="Node3D" parent="Node3D"]
+[node name="FloorInstanceContainer" type="Node3D" parent="Node3D/Elevator"]
 
-[node name="F0" type="Node3D" parent="Node3D/FloorInstanceContainer"]
+[node name="F0" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(-0.573577, 0, 0.819152, 0, 1, 0, -0.819152, 0, -0.573577, 0, 0, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F0" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F0" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, -9.53674e-07)
+show_outershell = true
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F0" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F0" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F0" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F0" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F0" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F0" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F1" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
+[node name="F1" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -25, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F1" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F1" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F1" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F1" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F1" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F1" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F1" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F1" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F2" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+[node name="F2" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -50, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F2" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F2" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F2" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F2" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F2" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F2" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F2" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F2" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F3" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -75, 0)
+[node name="F3" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -75, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F3" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F3" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F3" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F3" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F3" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F3" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F3" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F3" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F4" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+[node name="F4" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -100, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F4" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F4" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F4" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F4" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F4" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F4" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F4" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F4" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F5" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -125, 0)
+[node name="F5" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -125, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F5" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F5" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F5" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F5" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F5" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F5" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F5" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F5" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
-[node name="F6" type="Node3D" parent="Node3D/FloorInstanceContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -150, 0)
+[node name="F6" type="Node3D" parent="Node3D/Elevator/FloorInstanceContainer"]
+transform = Transform3D(0.819152, 0, 0.573577, 0, 1, 0, -0.573577, 0, 0.819152, 0, -150, 0)
 
-[node name="W0" parent="Node3D/FloorInstanceContainer/F6" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W0" parent="Node3D/Elevator/FloorInstanceContainer/F6" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, -0.176777, 0, 0, -25)
+show_outershell = true
+heating_val = 4
+power_val = 0
+sra_val = 4
 
-[node name="W1" parent="Node3D/FloorInstanceContainer/F6" instance=ExtResource("2_b0ydy")]
+[node name="W1" parent="Node3D/Elevator/FloorInstanceContainer/F6" instance=ExtResource("2_gjrka")]
+transform = Transform3D(-0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, -0.176777, 25, 0, 0)
+show_outershell = true
 
-[node name="W2" parent="Node3D/FloorInstanceContainer/F6" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="W2" parent="Node3D/Elevator/FloorInstanceContainer/F6" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, -0.176777, 0, 0.25, 0, 0.176777, 0, 0.176777, -25, 0, 0)
+show_outershell = true
 
-[node name="W3" parent="Node3D/FloorInstanceContainer/F6" instance=ExtResource("2_b0ydy")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+[node name="W3" parent="Node3D/Elevator/FloorInstanceContainer/F6" instance=ExtResource("2_gjrka")]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0, 25)
+show_outershell = true
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(-0.839022, 0.186091, -0.511285, 0, 0.939693, 0.342019, 0.544097, 0.286961, -0.788424, -30, 25, -80)
+transform = Transform3D(-0.839022, 0.186091, -0.511285, 0, 0.939693, 0.342019, 0.544097, 0.286961, -0.788424, -33.7081, -18.7247, -85.7181)
 cull_mask = 1023
 h_offset = -10.0
 projection = 1

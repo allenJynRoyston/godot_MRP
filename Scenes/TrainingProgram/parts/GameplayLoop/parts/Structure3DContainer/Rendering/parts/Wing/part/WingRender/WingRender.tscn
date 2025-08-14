@@ -1,7 +1,8 @@
-[gd_scene load_steps=32 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=33 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/WingRender.gd" id="1_nn2y2"]
 [ext_resource type="Shader" uid="uid://b5dg1k76unpwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/WingRender.gdshader" id="2_8vjbp"]
+[ext_resource type="PackedScene" uid="uid://q66xa2ie7ra0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRenderMesh/WingRenderMesh.tscn" id="2_sriu8"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="2_wsecj"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="3_8vjbp"]
 [ext_resource type="Material" uid="uid://c20bb2a0jbecw" path="res://Shader/StarPlasma/template.tres" id="4_jx7vp"]
@@ -79,9 +80,9 @@ _surfaces = [{
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsecj"]
 transparency = 1
 no_depth_test = true
-albedo_color = Color(0.89441, 0.318371, 1, 0.4)
-metallic = 0.44
-roughness = 0.73
+albedo_color = Color(0.894118, 0.317647, 1, 1)
+metallic = 1.0
+roughness = 0.3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yf1e1"]
 render_priority = 0
@@ -126,7 +127,7 @@ viewport_path = NodePath("MeshRender/Billboards/Left/SubViewport")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_nn2y2"]
 
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_wsecj"]
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_sriu8"]
 width = 124
 height = 124
 noise = SubResource("FastNoiseLite_nn2y2")
@@ -135,16 +136,16 @@ noise = SubResource("FastNoiseLite_nn2y2")
 density = 0.3
 height_falloff = 0.674132
 edge_fade = 0.627664
-density_texture = SubResource("NoiseTexture3D_wsecj")
+density_texture = SubResource("NoiseTexture3D_sriu8")
 
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_jx7vp"]
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_tiptr"]
 
 [sub_resource type="FogMaterial" id="FogMaterial_8vjbp"]
 density = 0.646
 albedo = Color(0, 0, 0, 1)
 emission = Color(1, 1, 1, 1)
 edge_fade = 3.42967
-density_texture = SubResource("NoiseTexture3D_jx7vp")
+density_texture = SubResource("NoiseTexture3D_tiptr")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_su1dq"]
 lightmap_size_hint = Vector2i(5458, 5470)
@@ -180,13 +181,20 @@ camera_attributes = SubResource("CameraAttributesPractical_bityt")
 [node name="MeshRender" type="Node3D" parent="."]
 transform = Transform3D(0.707106, -3.20375e-07, 0.707107, -0.078526, 0.993815, 0.0785264, -0.702733, -0.111053, 0.702733, 4.00853e-07, 26.0028, -71.1793)
 
+[node name="WingRenderMesh" parent="MeshRender" instance=ExtResource("2_sriu8")]
+transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
+in_edit_mode = true
+sra_val = 0
+ventilation_val = 4
+
 [node name="StructureMesh" type="MeshInstance3D" parent="MeshRender"]
+visible = false
 mesh = SubResource("ArrayMesh_sqqcm")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_nn2y2")
 
 [node name="MeshSelector" type="MeshInstance3D" parent="MeshRender"]
-transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -7.45058e-09, 0.999999, 7.45058e-09, 2.98023e-08, 0, 1, 0.270475, -12.8197, -0.407528)
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -7.45058e-09, 0.999999, 7.45058e-09, 2.98023e-08, 0, 1, 0, -11, 0)
 mesh = SubResource("ArrayMesh_yf1e1")
 surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
 
@@ -232,7 +240,7 @@ draw_pass_1 = SubResource("QuadMesh_g7dei")
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 7.62939e-06, 2, -38.9639)
 
 [node name="FloorLabel" type="Label3D" parent="MeshRender/Labeling"]
-transform = Transform3D(-4.37114e-08, 0, -0.999999, 0, 1, 0, 1, 0, -4.37113e-08, -57.0994, -21.8119, 40)
+transform = Transform3D(-4.37114e-08, 0, -0.999999, 0, 1, 0, 1, 0, -4.37113e-08, -58, -30, 78.5779)
 pixel_size = 0.02
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
@@ -244,7 +252,7 @@ uppercase = true
 line_spacing = 20.0
 
 [node name="WingLabel" type="Label3D" parent="MeshRender/Labeling"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, -21.5831, 96.0721)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, -42.9975, -30, 96.812)
 pixel_size = 0.02
 double_sided = false
 modulate = Color(1, 1, 1, 0.52549)
@@ -257,9 +265,10 @@ line_spacing = 20.0
 
 [node name="Billboards" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
+visible = false
 
 [node name="Left" type="Sprite3D" parent="MeshRender/Billboards"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3411e-07, 2, -46.6686)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -62)
 pixel_size = 0.02
 transparent = false
 shaded = true
@@ -276,17 +285,17 @@ stay alive."
 font = ExtResource("3_8vjbp")
 
 [node name="SubViewport" type="SubViewport" parent="MeshRender/Billboards/Left"]
-size = Vector2i(3200, 1000)
+size = Vector2i(2800, 1200)
 
 [node name="TextureRect" type="TextureRect" parent="MeshRender/Billboards/Left/SubViewport"]
 material = ExtResource("4_jx7vp")
-custom_minimum_size = Vector2(3200, 1400)
+custom_minimum_size = Vector2(2800, 1400)
 offset_right = 40.0
 offset_bottom = 40.0
 texture = SubResource("NoiseTexture2D_sqqcm")
 
 [node name="Right" type="Sprite3D" parent="MeshRender/Billboards"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 47.2371, 2, 4.0476e-07)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 62, 3, 0)
 pixel_size = 0.02
 transparent = false
 shaded = true
@@ -302,7 +311,7 @@ text = "Everything is fine."
 font = ExtResource("3_8vjbp")
 
 [node name="SubViewport" type="SubViewport" parent="MeshRender/Billboards/Right"]
-size = Vector2i(2090, 1000)
+size = Vector2i(2800, 1200)
 
 [node name="TextureRect" type="TextureRect" parent="MeshRender/Billboards/Right/SubViewport"]
 material = ExtResource("4_jx7vp")
@@ -312,7 +321,7 @@ offset_bottom = 40.0
 texture = SubResource("NoiseTexture2D_sqqcm")
 
 [node name="Rooms" type="Node3D" parent="MeshRender"]
-transform = Transform3D(1, 0, 8.9407e-08, 0, 1, -2.98023e-08, -8.9407e-08, 0, 1, 0.212093, -13.3503, -0.212097)
+transform = Transform3D(1, 0, 8.9407e-08, 0, 1, -2.98023e-08, -8.9407e-08, 0, 1, 0.212093, -19.3503, -0.212097)
 
 [node name="R1" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -30)
@@ -342,7 +351,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 30)
 
 [node name="Gates" type="Node3D" parent="MeshRender"]
 transform = Transform3D(0.707107, 0, -0.707107, 2.83547e-11, 1, 7.45058e-09, 0.707107, 0, 0.707107, -1.05367e-08, -13.7707, 1.05367e-08)
-visible = false
 
 [node name="G1" parent="MeshRender/Gates" instance=ExtResource("6_5obq1")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -42, 0, 0)
@@ -412,7 +420,8 @@ light_volumetric_fog_energy = 1.2
 light_specular = 10.0
 
 [node name="ConstantDirectional" type="DirectionalLight3D" parent="MeshRender/Lighting"]
-transform = Transform3D(0.872024, -0.0485955, 0.487044, 0.0284972, 0.998412, 0.0485952, -0.488632, -0.0284968, 0.872026, -0.923176, 11.6834, 0.92318)
+transform = Transform3D(0.988615, 0.113864, -0.0983667, -0.0127462, 0.714755, 0.699258, 0.149929, -0.690043, 0.708069, 0, 50, 0)
+visible = false
 light_color = Color(0.915352, 0.923462, 0.978611, 1)
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.5
@@ -422,33 +431,53 @@ directional_shadow_mode = 0
 [node name="BaseLights" type="Node3D" parent="MeshRender/Lighting"]
 transform = Transform3D(1, 7.45058e-09, 2.98023e-08, -7.45058e-09, 1, 0, 5.96046e-08, 7.45058e-09, 1, -32.1165, 15.0404, -37.09)
 
-[node name="CustomSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
-transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, -6.84801, -6, -7.3788)
-light_color = Color(0.869053, 0.843562, 0.909928, 1)
-godray_color = Color(0.830003, 0.718143, 0.997852, 1)
-godray_energy = 5.0
-spot_range = 30.0
-spot_energy = 10.0
+[node name="DoorSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
+transform = Transform3D(1, 2.23517e-08, 2.98023e-08, -3.72529e-08, 1, 7.45058e-09, -2.98023e-08, -2.23517e-08, 1, 81.6587, -12.9411, -12.6587)
+light_color = Color(1, 0.914559, 0.706983, 1)
+godray_color = Color(0.968717, 0.737285, 0.266567, 1)
+godray_energy = 3.0
+spot_range = 20.0
+spot_energy = 8.0
 omni_range = 0.0
 disable_reverse_shadow = true
 
 [node name="CustomSpotlight2" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
-transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, 76.5123, -6, 77.0045)
+transform = Transform3D(1, 0, 0, 0, 0.998719, 0.050593, 0, -0.0505929, 0.99872, 88.61, 2.88645, 16.6856)
 light_color = Color(0.869053, 0.843562, 0.909928, 1)
 godray_color = Color(0.830003, 0.718143, 0.997852, 1)
 godray_energy = 5.0
 spot_range = 30.0
-spot_energy = 10.0
+spot_energy = 5.0
 omni_range = 0.0
 disable_reverse_shadow = true
 
-[node name="CustomSpotlight3" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
-transform = Transform3D(1, -1.49012e-08, 0, 7.45058e-09, 0.996713, 0.0810166, 0, -0.0810166, 0.996713, 76.3886, -6, -7.06356)
+[node name="CustomSpotlight5" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
+transform = Transform3D(1, 0, 0, 0, 0.998719, 0.050593, 0, -0.0505929, 0.99872, 88.61, 2.15821, 57.222)
 light_color = Color(0.869053, 0.843562, 0.909928, 1)
 godray_color = Color(0.830003, 0.718143, 0.997852, 1)
 godray_energy = 5.0
 spot_range = 30.0
-spot_energy = 20.0
+spot_energy = 5.0
+omni_range = 0.0
+disable_reverse_shadow = true
+
+[node name="CustomSpotlight" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
+transform = Transform3D(1, -5.21541e-08, 2.08616e-07, -2.23517e-08, 0.996713, 0.0810166, -2.98023e-08, -0.0810167, 0.996713, 11.4153, 2.5, -19.712)
+light_color = Color(0.869053, 0.843562, 0.909928, 1)
+godray_color = Color(0.830003, 0.718143, 0.997852, 1)
+godray_energy = 5.0
+spot_range = 30.0
+spot_energy = 5.0
+omni_range = 0.0
+disable_reverse_shadow = true
+
+[node name="CustomSpotlight4" parent="MeshRender/Lighting/BaseLights" instance=ExtResource("7_fh3pe")]
+transform = Transform3D(1, 2.24255e-08, 3.16192e-08, -2.24255e-08, 1, 0, -3.16192e-08, -7.09074e-16, 1, 52.3121, 2.5, -19.712)
+light_color = Color(0.869053, 0.843562, 0.909928, 1)
+godray_color = Color(0.830003, 0.718143, 0.997852, 1)
+godray_energy = 5.0
+spot_range = 30.0
+spot_energy = 5.0
 omni_range = 0.0
 disable_reverse_shadow = true
 
@@ -457,21 +486,21 @@ transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
 visible = false
 
 [node name="SpotLight3D" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 43.3746, 1.47021, -2.90956)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 57.711, 1.47021, -2.90956)
 light_color = Color(0.997938, 0.698585, 0.494682, 1)
 light_energy = 0.7
 light_volumetric_fog_energy = 2.0
-spot_range = 34.136
+spot_range = 30.0
 spot_attenuation = -1.7
 spot_angle = 89.99
 spot_angle_attenuation = 0.307786
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="MeshRender/Lighting/BillboardLight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3181, 1.47021, -43.9068)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3181, 1.47021, -57.8462)
 light_color = Color(0.997938, 0.698585, 0.494682, 1)
 light_energy = 0.7
 light_volumetric_fog_energy = 2.0
-spot_range = 38.236
+spot_range = 30.0
 spot_attenuation = -1.7
 spot_angle = 89.99
 spot_angle_attenuation = 0.307786
@@ -521,15 +550,16 @@ light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
 
 [node name="LargeSpinLights" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_n6jqu")]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.864487, 12.5295, -45.3155)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.864, 17, -56)
 spin_speed = 0.05
 
 [node name="LargeSpinLights2" parent="MeshRender/Lighting/EmergencyLights" instance=ExtResource("8_n6jqu")]
-transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 43.9351, 13.4741, 7.1422)
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 56, 15, 7)
 spin_speed = 0.05
 
 [node name="Fog" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
+visible = false
 
 [node name="MoodFog" type="FogVolume" parent="MeshRender/Fog"]
 transform = Transform3D(-0.640013, 0.000834741, -0.759377, -0.000579491, 0.999999, 0.00158764, 0.759402, 0.00145619, -0.639994, -17.0996, -7.21848, 20.2894)
@@ -543,10 +573,11 @@ size = Vector3(500, 20, 500)
 material = SubResource("FogMaterial_8vjbp")
 script = ExtResource("13_yf1e1")
 
+[node name="DebugLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.215784, -0.9523, 0.215783, 0.673378, 0.305163, 0.673378, -0.707107, -5.68982e-07, 0.707107, 0, -42.7558, -150)
+visible = false
+
 [node name="OriginalMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, -42.7558, -150)
 visible = false
 mesh = SubResource("ArrayMesh_su1dq")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="OriginalMesh"]
-transform = Transform3D(0.652582, -0.673378, -0.347418, 0.673378, 0.305163, 0.673378, -0.347418, -0.673378, 0.652582, 0, 0, 0)

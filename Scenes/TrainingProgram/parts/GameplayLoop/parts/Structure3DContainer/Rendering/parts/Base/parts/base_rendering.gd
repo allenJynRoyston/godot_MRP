@@ -1,7 +1,8 @@
 extends Node3D
 
 @onready var FloorInstance:Node3D = $Node3D/FloorInstance
-@onready var FloorInstanceContainer:Node3D = $Node3D/FloorInstanceContainer
+@onready var Elevator:MeshInstance3D = $Node3D/Elevator
+@onready var FloorInstanceContainer:Node3D = $Node3D/Elevator/FloorInstanceContainer
 @onready var Camera:Camera3D = $Node3D/Camera3D
 
 const TransparencyShaderPreload:ShaderMaterial = preload("res://Shader/Spatial/Transparency.tres")
@@ -18,7 +19,7 @@ func _init() -> void:
 	GBL.register_node(REFS.BASE_RENDER, self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_camera_settings(self)
-	
+
 func _exit_tree() -> void:
 	GBL.unregister_node(REFS.BASE_RENDER)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
@@ -51,21 +52,31 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	if !is_node_ready() or current_location.is_empty():return
 	U.debounce(str(self.name, "_update_mesh"), update_mesh)
 	
-	# rotate ring
-	if previous_ring != current_location.ring:
-		previous_ring = current_location.ring
-		custom_tween_range(FloorInstanceContainer.rotation_degrees.y, -(current_location.ring * 90), 0.3, 
-			func(val:float) -> void:
-				FloorInstanceContainer.rotation_degrees.y = val
-		)	
-	
 	# move to floor
 	if previous_floor != current_location.floor:
 		previous_floor = current_location.floor
-		custom_tween_range(Camera.position.y, -(current_location.floor * 25) + 20, 0.3, 
+		
+		custom_tween_range(Camera.position.y, -(current_location.floor * 25) - 15, 0.3, 
 			func(val:float) -> void:
 				Camera.position.y = val
 		)
+		
+	# rotate ring
+	if previous_ring != current_location.ring:
+		previous_ring = current_location.ring
+
+		custom_tween_range(Elevator.rotation_degrees.y, -(current_location.ring * 90), 0.3, 
+			func(val:float) -> void:
+				Elevator.rotation_degrees.y = val
+		)
+		
+		for floor_index in FloorInstanceContainer.get_child_count():
+			var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", floor_index) )
+			for ring_index in FloorNode.get_child_count():
+				var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )
+				WingNode.show_outershell = !(floor_index == current_location.floor and ring_index == current_location.ring)
+				
+				
 # ------------------------------------------------
 
 # -----------------------------------------------			
@@ -81,7 +92,7 @@ func assign_floor_data() -> void:
 		var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
 		for ring_index in FloorNode.get_child_count():
 			var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )		
-			WingNode.assign_location = {"floor": index, "ring": ring_index}
+			#WingNode.assign_location = {"floor": index, "ring": ring_index}
 
 # ------------------------------------------------
 
@@ -95,19 +106,17 @@ func update_mesh() -> void:
 func set_base_zoom(zoom_val:int) -> void:
 	match zoom_val:
 		0:
-			#U.tween_node_property(Camera, "position:x", 150, 0.7, 0, Tween.TRANS_CUBIC)
 			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_SINE)
 		1:
 			U.tween_node_property(Camera, "position:x", -30, 0.7, 0, Tween.TRANS_SINE)
-			await U.tween_node_property(Camera, "size", 55, 0.7, 0, Tween.TRANS_SINE)
+			await U.tween_node_property(Camera, "size", 75, 0.7, 0, Tween.TRANS_SINE)
 		2:
-			U.tween_node_property(Camera, "position:x", -35, 0.7, 0, Tween.TRANS_SINE)
-			await U.tween_node_property(Camera, "size", 40, 0.7, 0, Tween.TRANS_SINE)
+			U.tween_node_property(Camera, "position:x", -37, 0.7, 0, Tween.TRANS_SINE)
+			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_SINE)
 # ------------------------------------------------
 
 # ------------------------------------------------
 func animate_internals(state:bool) -> void:
-	#var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", current_location.floor) )
 
 	# first, hide all other floors
 	if state:
@@ -116,7 +125,7 @@ func animate_internals(state:bool) -> void:
 			FloorNode.hide() if index != current_location.floor else FloorNode.show()
 			if index == current_location.floor:
 				ActiveWingNode = FloorNode.find_child( str("W", current_location.ring) )
-				ActiveWingNode.remove_shell(true)
+				#@ActiveWingNode.show_outershell = false
 	# else 
 	else:
 		ActiveWingNode = null
@@ -125,6 +134,6 @@ func animate_internals(state:bool) -> void:
 			FloorNode.show()
 			for ring_index in FloorNode.get_child_count():
 				var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )
-				WingNode.remove_shell(false)
+				#WingNode.show_outershell = true
 
 # ------------------------------------------------
