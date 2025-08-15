@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://26x2t4j7c7td"]
 
-[ext_resource type="Script" uid="uid://8fkxcp5488rx" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/BaseSummaryPanelItem/base_summary_panel_item.gd" id="1_dwiev"]
+[ext_resource type="Script" uid="uid://ci7nqjtxxs046" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanelItem/topography_panel_item.gd" id="1_gk4px"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="2_2mjk3"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_qe8d7"]
 
@@ -11,18 +11,18 @@ bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="LabelSettings" id="LabelSettings_c1471"]
+[sub_resource type="LabelSettings" id="LabelSettings_1eni4"]
 font = ExtResource("2_2mjk3")
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qm8uw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0y3g7"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="BaseSummaryPanelItem" type="PanelContainer"]
+[node name="TopopgraphyPanelItem" type="PanelContainer"]
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 200.0
@@ -30,8 +30,7 @@ grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qjo48")
-script = ExtResource("1_dwiev")
-is_selected = null
+script = ExtResource("1_gk4px")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -55,12 +54,12 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 size_flags_horizontal = 3
 text = "WING X"
-label_settings = SubResource("LabelSettings_c1471")
+label_settings = SubResource("LabelSettings_1eni4")
 
 [node name="Status" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qm8uw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0y3g7")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Status"]
 layout_mode = 2
@@ -77,6 +76,7 @@ icon = 20
 icon_size = Vector2(30, 30)
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = -60
 theme_override_constants/margin_top = 8

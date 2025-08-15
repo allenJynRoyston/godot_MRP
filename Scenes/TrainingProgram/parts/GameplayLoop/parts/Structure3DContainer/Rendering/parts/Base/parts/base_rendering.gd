@@ -9,7 +9,7 @@ const TransparencyShaderPreload:ShaderMaterial = preload("res://Shader/Spatial/T
 const RoomMaterialActive:StandardMaterial3D = preload("res://Materials/RoomMaterialUnderConstruction.tres")
 const RoomMaterialInactive:StandardMaterial3D = preload("res://Materials/RoomMaterialInactive.tres")
 
-var ActiveWingNode:Node3D
+#var ActiveWingNode:Node3D
 var camera_settings:Dictionary = {} 
 var current_location:Dictionary = {} 
 var camera_tween:Tween = create_tween()
@@ -107,40 +107,41 @@ func update_mesh() -> void:
 func set_base_zoom(zoom_val:int) -> void:
 	match zoom_val:
 		0:
+			#U.tween_node_property(Camera, "position:x", -67, 0.7, 0, Tween.TRANS_SINE)
 			await U.tween_node_property(Camera, "size", 120, 0.7, 0, Tween.TRANS_SINE)
 		1:
-			U.tween_node_property(Camera, "position:x", -40, 0.7, 0, Tween.TRANS_SINE)
+			#U.tween_node_property(Camera, "position:x", -40, 0.7, 0, Tween.TRANS_SINE)
 			await U.tween_node_property(Camera, "size", 75, 0.7, 0, Tween.TRANS_SINE)
 		2:
-			U.tween_node_property(Camera, "position:x", -39, 0.7, 0, Tween.TRANS_SINE)
+			#U.tween_node_property(Camera, "position:x", -39, 0.7, 0, Tween.TRANS_SINE)
 			await U.tween_node_property(Camera, "size", 50, 0.7, 0, Tween.TRANS_SINE)
 # ------------------------------------------------
 
 # ------------------------------------------------
-func animate_internals(state:bool) -> void:
-	var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
-	
-	# first, hide all other floors
-	if state:
-		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
-		for floor_index in FloorInstanceContainer.get_child_count():
-			var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", floor_index) )
-			FloorNode.hide() if floor_index != current_location.floor else FloorNode.show()
-			for ring_index in FloorNode.get_child_count():
-				var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )					
-				if floor_index == current_location.floor and ring_index == current_location.ring :
-					ActiveWingNode = WingNode
-					ActiveWingNode.in_edit_mode = true
-				else:
-					WingNode.hide()
-	# else 
-	else:
-		GameplayNode.restore_player_hud()	
-		for index in FloorInstanceContainer.get_child_count():
-			var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
-			FloorNode.show()
-			for ring_index in FloorNode.get_child_count():
-				var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )					
-				WingNode.show()
-				WingNode.in_edit_mode = false
+#func animate_internals(state:bool) -> void:
+	#var GameplayNode:Control = GBL.find_node(REFS.GAMEPLAY_LOOP)
+	#
+	## first, hide all other floors
+	#if state:
+		#GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])
+		#for floor_index in FloorInstanceContainer.get_child_count():
+			#var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", floor_index) )
+			#FloorNode.hide() if floor_index != current_location.floor else FloorNode.show()
+			#for ring_index in FloorNode.get_child_count():
+				#var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )					
+				#if floor_index == current_location.floor and ring_index == current_location.ring :
+					#ActiveWingNode = WingNode
+					#ActiveWingNode.in_edit_mode = true
+				#else:
+					#WingNode.hide()
+	## else 
+	#else:
+		#GameplayNode.restore_player_hud()	
+		#for index in FloorInstanceContainer.get_child_count():
+			#var FloorNode:Node3D = FloorInstanceContainer.find_child( str("F", index) )
+			#FloorNode.show()
+			#for ring_index in FloorNode.get_child_count():
+				#var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )					
+				#WingNode.show()
+				#WingNode.in_edit_mode = false
 # ------------------------------------------------

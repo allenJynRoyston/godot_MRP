@@ -1,15 +1,15 @@
 [gd_scene load_steps=12 format=3 uid="uid://cea6twjuqri8r"]
 
-[ext_resource type="Script" uid="uid://mqvlo03qekmt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/parts/base_section.gd" id="1_wex4x"]
-[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_4k3bo"]
-[ext_resource type="PackedScene" uid="uid://cbkmvlrdq81vr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/parts/BaseSectionItem.tscn" id="3_oqfi0"]
-[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_wex4x"]
-[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="5_4k3bo"]
+[ext_resource type="Script" uid="uid://k7crgw1u3ikl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/engineering_section.gd" id="1_tvfg0"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_elgp8"]
+[ext_resource type="PackedScene" uid="uid://cbkmvlrdq81vr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/EngineeringItem.tscn" id="3_tqe6a"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_ktqrq"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="5_1yimh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wex4x"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_oqfi0"]
-font = ExtResource("2_4k3bo")
+[sub_resource type="LabelSettings" id="LabelSettings_tvfg0"]
+font = ExtResource("2_elgp8")
 font_color = Color(0.05, 0.05, 0.05, 1)
 outline_size = 2
 outline_color = Color(0.05, 0.05, 0.05, 0.2)
@@ -19,7 +19,7 @@ shadow_color = Color(0, 0, 0, 0.235294)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4k3bo"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0oyx5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_elgp8"]
 bg_color = Color(0.4, 0.2, 0.6, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wex4x"]
@@ -30,19 +30,18 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_4k3bo"]
-font = ExtResource("4_wex4x")
+font = ExtResource("4_ktqrq")
 font_size = 32
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[node name="BaseSection" type="PanelContainer"]
+[node name="EngineeringSection" type="PanelContainer"]
 offset_top = 74.0
 offset_right = 130.0
 offset_bottom = 74.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_wex4x")
-script = ExtResource("1_wex4x")
-values = [0, 1, 3, 5]
+script = ExtResource("1_tvfg0")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -67,14 +66,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Section"
-label_settings = SubResource("LabelSettings_oqfi0")
+label_settings = SubResource("LabelSettings_tvfg0")
 uppercase = true
 
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "LVL 1"
-label_settings = SubResource("LabelSettings_oqfi0")
+text = "LVL 0"
+label_settings = SubResource("LabelSettings_tvfg0")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -95,7 +94,7 @@ offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_4k3bo")
-theme_override_styles/fill = SubResource("StyleBoxFlat_0oyx5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_elgp8")
 max_value = 1.0
 value = 0.1
 show_percentage = false
@@ -104,25 +103,25 @@ show_percentage = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BaseSectionItem" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_oqfi0")]
+[node name="BaseSectionItem" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_tqe6a")]
 layout_mode = 2
 block_color = Color(0.28, 0.14, 0.42, 1)
 is_active = true
 
-[node name="BaseSectionItem2" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_oqfi0")]
+[node name="BaseSectionItem2" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_tqe6a")]
 layout_mode = 2
 block_color = Color(0.28, 0.14, 0.42, 1)
 amount_val = 1
 
-[node name="BaseSectionItem3" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_oqfi0")]
+[node name="BaseSectionItem3" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_tqe6a")]
+layout_mode = 2
+block_color = Color(0.28, 0.14, 0.42, 1)
+amount_val = 2
+
+[node name="BaseSectionItem4" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_tqe6a")]
 layout_mode = 2
 block_color = Color(0.28, 0.14, 0.42, 1)
 amount_val = 3
-
-[node name="BaseSectionItem4" parent="MarginContainer/VBoxContainer/HBoxContainer/Items" instance=ExtResource("3_oqfi0")]
-layout_mode = 2
-block_color = Color(0.28, 0.14, 0.42, 1)
-amount_val = 5
 
 [node name="Total" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 visible = false
@@ -148,7 +147,7 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 2
 
-[node name="SVGIcon" parent="ActiveControl" instance=ExtResource("5_4k3bo")]
+[node name="SVGIcon" parent="ActiveControl" instance=ExtResource("5_1yimh")]
 custom_minimum_size = Vector2(10, 15)
 layout_mode = 0
 offset_left = -6.0

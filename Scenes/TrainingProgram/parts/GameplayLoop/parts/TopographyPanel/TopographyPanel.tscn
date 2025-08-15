@@ -1,21 +1,23 @@
 [gd_scene load_steps=6 format=3 uid="uid://ck4ghs6psctsy"]
 
-[ext_resource type="PackedScene" uid="uid://26x2t4j7c7td" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/BaseSummaryPanelItem/BaseSummaryPanelItem.tscn" id="1_3akie"]
-[ext_resource type="Script" uid="uid://c0qmt8nmsb7lq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseSummaryPanel/base_summary_panel.gd" id="1_ctg7u"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_c4tei"]
+[ext_resource type="Script" uid="uid://co1dmd623ptu1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/topography_panel.gd" id="1_j2r8v"]
+[ext_resource type="PackedScene" uid="uid://26x2t4j7c7td" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanelItem/TopographyPanelItem.tscn" id="2_tu308"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_o6iyc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kbybp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mscv4"]
 bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="BaseSummaryPanel" type="PanelContainer"]
+[node name="Topography" type="PanelContainer"]
 offset_right = 190.0
 offset_bottom = 106.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kbybp")
-script = ExtResource("1_ctg7u")
+script = ExtResource("1_j2r8v")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -23,28 +25,24 @@ layout_mode = 2
 [node name="List" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="W0" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+[node name="W0" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
-is_selected = null
 
-[node name="W1" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+[node name="W1" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
-is_selected = null
 
-[node name="W2" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+[node name="W2" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
-is_selected = null
 
-[node name="W3" parent="VBoxContainer/List" instance=ExtResource("1_3akie")]
+[node name="W3" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
-is_selected = null
 
 [node name="ContentList" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentList"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(356, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
@@ -69,7 +67,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R0/MarginContainer/VBoxContainer"]
@@ -80,7 +78,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R1" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -104,7 +102,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R1/MarginContainer/VBoxContainer"]
@@ -115,7 +113,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R2" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -139,7 +137,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R2/MarginContainer/VBoxContainer"]
@@ -150,7 +148,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R3" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -174,7 +172,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R3/MarginContainer/VBoxContainer"]
@@ -185,7 +183,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R4" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -209,7 +207,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R4/MarginContainer/VBoxContainer"]
@@ -220,7 +218,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R5" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -244,7 +242,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R5/MarginContainer/VBoxContainer"]
@@ -255,7 +253,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R6" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -279,7 +277,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R6/MarginContainer/VBoxContainer"]
@@ -290,7 +288,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="R7" type="PanelContainer" parent="VBoxContainer/ContentList/VBoxContainer"]
@@ -314,7 +312,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ROOM STATUS: WHAT 
 THEY'RE DOING"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentList/VBoxContainer/R7/MarginContainer/VBoxContainer"]
@@ -325,5 +323,5 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "NO ISSUES"
-label_settings = ExtResource("3_c4tei")
+label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1

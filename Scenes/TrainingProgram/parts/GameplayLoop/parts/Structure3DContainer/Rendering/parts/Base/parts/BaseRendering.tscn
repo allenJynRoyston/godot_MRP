@@ -219,7 +219,7 @@ transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.17677
 show_outershell = true
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(-0.839022, 0.186091, -0.511285, 0, 0.939693, 0.342019, 0.544097, 0.286961, -0.788424, -33.7081, -18.7247, -85.7181)
+transform = Transform3D(-0.839022, 0.186091, -0.511285, 0, 0.939693, 0.342019, 0.544097, 0.286961, -0.788424, -67, -18.725, -64.384)
 cull_mask = 1023
 h_offset = -10.0
 projection = 1

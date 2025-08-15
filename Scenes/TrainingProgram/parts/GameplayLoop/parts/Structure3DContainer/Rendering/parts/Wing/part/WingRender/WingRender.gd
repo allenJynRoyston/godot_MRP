@@ -4,6 +4,7 @@ extends Node3D
 @onready var MeshRender:Node3D = $MeshRender
 @onready var Laser:SpotLight3D = $MeshRender/Laser
 @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
+@onready var WingRenderMesh:Node3D = $MeshRender/WingRenderMesh
 
 @onready var RoomContainer:Node3D = $MeshRender/Rooms
 @onready var MarkersContainer:Node3D = $MeshRender/Markers
@@ -15,12 +16,16 @@ extends Node3D
 @onready var MiasmaFog:FogVolume = $MeshRender/Fog/MiasmaFog
 @onready var MoodFog:FogVolume = $MeshRender/Fog/MoodFog
 
+@onready var Lighting:Node3D = $MeshRender/Lighting
 @onready var WorldLight:DirectionalLight3D = $MeshRender/Lighting/WorldLight
 @onready var BaseLights:Node3D = $MeshRender/Lighting/BaseLights
 @onready var CautionLights:Node3D = $MeshRender/Lighting/CautionLights
 @onready var BillboardLights:Node3D = $MeshRender/Lighting/BillboardLight
 @onready var EmergencyLights:Node3D = $MeshRender/Lighting/EmergencyLights
 @onready var EmergencyFlareLight:DirectionalLight3D = $MeshRender/Lighting/EmergencyLights/EmergencyFlareLight
+
+@onready var EditLighting:Node3D = $MeshRender/EditLighting
+
 @onready var FloorLabel:Label3D = $MeshRender/Labeling/FloorLabel
 @onready var WingLabel:Label3D = $MeshRender/Labeling/WingLabel
 
@@ -69,6 +74,9 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
+
+func _ready() -> void:
+	set_engineering_mode(false)
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -153,6 +161,7 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	
 	U.debounce(str(self, "_update_vars"), update_vars)
+	update_engineering_stats()
 
 func on_base_states_update(new_base_state:Dictionary) -> void:
 	if !is_node_ready() or new_base_state.is_empty():return
@@ -179,11 +188,18 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				BaseLights.hide()
 				CautionLights.hide()
 				MeshSelector.show()
-				
-				update_camera_size(180)
+
+				update_camera_size(230)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
-			
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 75, -15), 0.3, 0, Tween.TRANS_SINE)
+			# ---------------------- 
+			CAMERA.VIEWPOINT.SHIFT_LEFT:
+				U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
+				update_camera_size(180)
+			# ---------------------- 
+			CAMERA.VIEWPOINT.SHIFT_RIGHT:
+				U.tween_node_property(SceneCamera, "position:x", 70, 0.3, 0, Tween.TRANS_SINE)
+				update_camera_size(180)				
 			# ---------------------- 
 			CAMERA.VIEWPOINT.DISTANCE:
 				Laser.show()
@@ -227,11 +243,65 @@ func update_vars() -> void:
 	is_powered = power_distribution.energy > 1
 	is_ventilated = power_distribution.ventilation > 1
 	is_overheated = false # TODO REVIST THIS
-
+	
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
-	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)		
+	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------
+func set_engineering_mode(state:bool) -> void:
+	WingRenderMesh.in_edit_mode = state
+	
+	Fog.hide() if state else Fog.show()
+	Lighting.hide() if state else Lighting.show()
+	EditLighting.show() if state else EditLighting.hide()
+	
+	
+	if !state:
+		WingRenderMesh.edit_cooling = false
+		WingRenderMesh.edit_heating = false
+		WingRenderMesh.edit_powergrid = false
+		WingRenderMesh.edit_ventilation = false
+		WingRenderMesh.edit_sra = false
+# --------------------------------------------------------
+
+# --------------------------------------------------------
+func set_to_build_mode(state:bool) -> void:
+	WingRenderMesh.set_to_build_mode(state)
+# --------------------------------------------------------	
+	
+
+# --------------------------------------------------------
+var engineering_stats:Dictionary = {}
+func update_engineering_stats(stat:Dictionary = engineering_stats) -> void:
+	engineering_stats = stat
+	if !WingRenderMesh.in_edit_mode or engineering_stats.is_empty():return
+	var power_distribution:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].power_distribution
+	WingRenderMesh.edit_cooling = false
+	WingRenderMesh.edit_heating = false
+	WingRenderMesh.edit_powergrid = false
+	WingRenderMesh.edit_ventilation = false
+	WingRenderMesh.edit_sra = false
+
+	match stat.prop:
+		"heating":
+			WingRenderMesh.edit_heating = true
+			WingRenderMesh.heating_val = power_distribution.heating
+		"cooling":
+			WingRenderMesh.edit_cooling = true
+			WingRenderMesh.cooling_val = power_distribution.cooling
+		"sra":
+			WingRenderMesh.edit_sra = true
+			WingRenderMesh.sra_val = power_distribution.sra
+		"ventilation":
+			WingRenderMesh.edit_ventilation = true
+			WingRenderMesh.ventilation_val = power_distribution.ventilation	
+		"energy":
+			WingRenderMesh.edit_powergrid = true
+			WingRenderMesh.power_val = power_distribution.energy
+	
+# --------------------------------------------------------
 
 # --------------------------------------------------------
 var previous_floor:int = -1

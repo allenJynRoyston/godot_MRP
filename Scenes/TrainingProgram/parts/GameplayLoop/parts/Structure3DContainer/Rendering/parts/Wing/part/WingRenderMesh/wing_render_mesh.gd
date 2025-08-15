@@ -35,8 +35,8 @@ const material_prop:String = "surface_material_override/0"
 
 # other
 @onready var Billboards:Node3D = $Inner/Billboards
-@onready var Lighting:Node3D = $Inner/Lighting
-@onready var EditLighting:Node3D = $Inner/EditLighting
+#@onready var Lighting:Node3D = $Inner/Lighting
+#@onready var EditLighting:Node3D = $Inner/EditLighting
 
 # materials
 @onready var BuildingMaterialCopy:StandardMaterial3D = BuildingMesh.get(material_prop).duplicate(true)
@@ -59,27 +59,29 @@ const material_prop:String = "surface_material_override/0"
 @export var edit_cooling:bool = false : 
 	set(val):
 		edit_cooling = val
-		update_cooling_mesh()
-		
+		on_edit_cooling_update()
+				
 @export var edit_heating:bool = false : 
 	set(val):
 		edit_heating = val
-		update_heating_mesh()		
+		on_edit_heating_update()
+			
 		
 @export var edit_powergrid:bool = false : 
 	set(val):
 		edit_powergrid = val
-		update_powergrid_mesh()		
+		on_edit_powergrid_update()
+		
 
 @export var edit_ventilation:bool = false : 
 	set(val):
 		edit_ventilation = val
-		update_ventilation_mesh()
+		on_edit_ventilation_update()
 		
 @export var edit_sra:bool = false : 
 	set(val):
-		edit_sra = val
-		update_sra_mesh()				
+		edit_sra = val		
+		on_edit_sra_update()
 				
 @export_range(0, 4, 1) var heating_val:int = 1 : 
 	set(val):
@@ -117,9 +119,20 @@ func _ready() -> void:
 	update_ventilation_mesh()
 	update_sra_mesh()
 	
-	for node in [DebugLighting, Lighting, EditLighting]:
-		node.hide()
+	on_edit_cooling_update()
+	on_edit_heating_update()
+	on_edit_powergrid_update()
+	on_edit_ventilation_update()
+	on_edit_sra_update()
+	
+	DebugLighting.hide()	
 # -----------------------------------------------
+
+# --------------------------------------------------------
+func set_to_build_mode(state:bool) -> void:
+	BuildingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if state else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	BuildingMaterialCopy.albedo_color = Color.SKY_BLUE if state else Color.DIM_GRAY
+# --------------------------------------------------------	
 
 # -----------------------------------------------
 func on_show_outershell_update() -> void:
@@ -129,12 +142,17 @@ func on_show_outershell_update() -> void:
 
 # -----------------------------------------------
 func on_in_edit_mode_update() -> void:
-	if !is_node_ready() or !Inner.is_visible_in_tree():return
+	if !is_node_ready():return
 #
-	EditLighting.show() if in_edit_mode else EditLighting.hide()
+	HeatingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED	if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	ACMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	PowerGridMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	FanBladeMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	SRAMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	
-	for node in [Building, AC, SRA, PowerGrid, Heating, Billboards]:
-		node.show()
+	BuildingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	BuildingMaterialCopy.albedo_color = Color.BLACK if in_edit_mode else Color.DIM_GRAY
+	BuildingMesh.set(material_prop, BuildingMaterialCopy )	
 		
 	update_cooling_mesh()
 	update_heating_mesh()
@@ -143,6 +161,36 @@ func on_in_edit_mode_update() -> void:
 	update_sra_mesh()
 # -----------------------------------------------
 
+func on_edit_cooling_update() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	U.tween_node_property(AC1Mesh, "position:z", -55 if in_edit_mode and edit_cooling else -61, 0.3, 0, Tween.TRANS_SINE)
+	U.tween_node_property(AC2Mesh, "position:x", 55 if in_edit_mode and edit_cooling else 61, 0.3, 0, Tween.TRANS_SINE)	
+	
+func on_edit_heating_update() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	U.tween_node_property(HeatingMesh, "position:y", -18 if in_edit_mode and edit_heating else -19, 0.3, 0, Tween.TRANS_SINE)	
+	
+func on_edit_powergrid_update() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	U.tween_node_property(PowerGridMesh, "position:y", -10 if in_edit_mode and edit_powergrid else -11, 0.3, 0, Tween.TRANS_SINE)	
+	
+func on_edit_ventilation_update() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	U.tween_node_property(FanBladeMesh, "position:y", -1 if in_edit_mode and edit_ventilation else -2, 0.3, 0, Tween.TRANS_SINE)
+	
+	
+func on_edit_sra_update() -> void:
+	if !is_node_ready():return
+	await U.tick()
+	U.tween_node_property(SRA1, "position:x", -58 if in_edit_mode and edit_sra else -54, 0.3, 0, Tween.TRANS_SINE)
+	U.tween_node_property(SRA2, "position:z", 58 if in_edit_mode and edit_sra else 54, 0.3, 0, Tween.TRANS_SINE)
+	U.tween_node_property(SRA3, "position:x", -58 if in_edit_mode and edit_sra else -54, 0.3, 0, Tween.TRANS_SINE)
+	U.tween_node_property(SRA4, "position:z", 58 if in_edit_mode and edit_sra else 54, 0.3, 0, Tween.TRANS_SINE)	
+	
 # -----------------------------------------------
 func update_heating_mesh() -> void:
 	if !is_node_ready():return	
@@ -150,22 +198,24 @@ func update_heating_mesh() -> void:
 		HeatingMesh.hide()
 		return
 	
-	HeatingMaterialCopy.albedo_color = Color.RED.darkened(1 - (heating_val * 0.2)) if in_edit_mode else Color.DARK_GRAY
+	
+	HeatingMaterialCopy.albedo_color = Color.RED.lightened(1 - ((heating_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	HeatingMesh.set(material_prop, HeatingMaterialCopy )
 	HeatingMesh.show()
 	
-	U.tween_node_property(HeatingMesh, "position:y", -18 if in_edit_mode and edit_heating else -19, 0.3, 0, Tween.TRANS_SINE)
+
 # -----------------------------------------------
 
 # -----------------------------------------------
 func update_cooling_mesh() -> void:
 	if !is_node_ready():return
-	ACMaterialCopy.albedo_color = Color.BLUE.darkened(1 - (cooling_val * 0.2)) if in_edit_mode else Color.DARK_GRAY
+
+	
+	ACMaterialCopy.albedo_color = Color.BLUE.lightened(1 - ((cooling_val -1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	for node in [AC1Mesh, AC2Mesh]:	
 		node.set(material_prop, ACMaterialCopy) 
-			
-	U.tween_node_property(AC1Mesh, "position:z", -55 if in_edit_mode and edit_cooling else -61, 0.3, 0, Tween.TRANS_SINE)
-	U.tween_node_property(AC2Mesh, "position:x", 55 if in_edit_mode and edit_cooling else 61, 0.3, 0, Tween.TRANS_SINE)
+	
+
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -175,33 +225,33 @@ func update_powergrid_mesh() -> void:
 		PowerGridMesh.hide()
 		return
 	
-	PowerGridMaterialCopy.albedo_color = Color.ORANGE.darkened(1 - (power_val * 0.2)) if in_edit_mode else Color.DARK_GRAY
+	PowerGridMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	PowerGridMaterialCopy.albedo_color = Color.ORANGE.lightened(1 - ((power_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	PowerGridMesh.set(material_prop, PowerGridMaterialCopy)
 	PowerGridMesh.show()
-	
-	U.tween_node_property(PowerGridMesh, "position:y", -10 if in_edit_mode and edit_powergrid else -11, 0.3, 0, Tween.TRANS_SINE)
+
 # -----------------------------------------------
 
 # -----------------------------------------------
 func update_ventilation_mesh() -> void:
 	if !is_node_ready():return
-	FanBladeMaterialCopy.albedo_color = Color.GREEN.darkened(1 - (ventilation_val * 0.2)) if in_edit_mode else Color.DARK_GRAY
+	
+	FanBladeMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	FanBladeMaterialCopy.albedo_color = Color.GREEN_YELLOW.lightened(1 - ((ventilation_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	FanBladeMesh.set(material_prop, FanBladeMaterialCopy)
 	
-	U.tween_node_property(FanBladeMesh, "position:y", -1 if in_edit_mode and edit_ventilation else -2, 0.3, 0, Tween.TRANS_SINE)
 # -----------------------------------------------
 
 # -----------------------------------------------
 func update_sra_mesh() -> void:
 	if !is_node_ready():return
-	SRAMaterialCopy.albedo_color = Color.PURPLE if in_edit_mode else Color.DARK_GRAY
+	
+	SRAMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	SRAMaterialCopy.albedo_color = Color.PLUM.lightened(1 - ((sra_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	for node in [SRA1, SRA2, SRA3, SRA4]:	
 		node.set(material_prop, SRAMaterialCopy) 
 		
-	U.tween_node_property(SRA1, "position:x", -58 if sra_val >= 1 else -54, 0.3, 0, Tween.TRANS_SINE)
-	U.tween_node_property(SRA2, "position:z", 58 if sra_val >= 2 else 54, 0.3, 0, Tween.TRANS_SINE)
-	U.tween_node_property(SRA3, "position:x", -58 if sra_val >= 3 else -54, 0.3, 0, Tween.TRANS_SINE)
-	U.tween_node_property(SRA4, "position:z", 58 if sra_val >= 4 else 54, 0.3, 0, Tween.TRANS_SINE)
+
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -259,5 +309,5 @@ func highligh_item(item: Dictionary, power_distribution:Dictionary) -> void:
 # -----------------------------------------------	
 func _process(delta: float) -> void:
 	if !is_node_ready():return
-	FanBladeMesh.rotate_y( (ventilation_val + 0.2) * (delta*2))
+	FanBladeMesh.rotate_y( (ventilation_val - 1 + 0.2) * (delta*2))
 # -----------------------------------------------

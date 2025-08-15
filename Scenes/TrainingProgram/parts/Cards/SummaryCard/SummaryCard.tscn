@@ -437,7 +437,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-text = "PROGRAMS"
+text = "OPERATIONS"
 label_settings = ExtResource("6_3otej")
 vertical_alignment = 1
 
@@ -705,7 +705,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ProgramContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "PROGRAMS"
+text = "OPERATIONS"
 label_settings = ExtResource("6_wqrfb")
 horizontal_alignment = 2
 

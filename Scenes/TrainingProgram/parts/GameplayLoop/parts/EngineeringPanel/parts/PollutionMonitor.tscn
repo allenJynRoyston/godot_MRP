@@ -1,0 +1,136 @@
+[gd_scene load_steps=10 format=3 uid="uid://dqn2ef77ux60p"]
+
+[ext_resource type="Script" uid="uid://qa8m51pes3la" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/pollution_monitor.gd" id="1_7udn1"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_i711y"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_3qdeu"]
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="4_7fcbf"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_uks7l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h05tw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_h27gk"]
+font = ExtResource("2_i711y")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lhnlx"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_7udn1"]
+font = ExtResource("5_uks7l")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[node name="PollutionMonitor" type="PanelContainer"]
+offset_right = 100.0
+offset_bottom = 225.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_h05tw")
+script = ExtResource("1_7udn1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "AIR QUALITY"
+label_settings = SubResource("LabelSettings_h27gk")
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_lhnlx")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer2/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 175)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 0
+
+[node name="T3" type="ColorRect" parent="HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(3.91062e-07, 0.296761, 0.0922857, 1)
+
+[node name="T2" type="ColorRect" parent="HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(3.85046e-07, 0.688464, 0.309617, 1)
+
+[node name="T1" type="ColorRect" parent="HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.498187, 1, 0.677942, 1)
+
+[node name="T0" type="ColorRect" parent="HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ResultLabel" type="Label" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "HEALTHY"
+label_settings = SubResource("LabelSettings_h27gk")
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Slider" type="Control" parent="HBoxContainer/Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -71.0
+offset_top = 165.0
+offset_right = -51.0
+offset_bottom = 185.0
+
+[node name="SVGIcon" parent="HBoxContainer/Control/Slider" instance=ExtResource("3_3qdeu")]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 24.0
+icon = 27
+icon_color = Color(0, 0, 0, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/Control/Slider"]
+layout_mode = 2
+offset_left = 52.0
+offset_top = 1.0
+offset_right = 76.0
+offset_bottom = 27.0
+theme_override_styles/panel = ExtResource("4_7fcbf")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Control/Slider/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 6
+
+[node name="Label" type="Label" parent="HBoxContainer/Control/Slider/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_7udn1")

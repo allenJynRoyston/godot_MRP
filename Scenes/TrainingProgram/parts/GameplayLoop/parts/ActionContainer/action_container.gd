@@ -14,8 +14,8 @@ extends GameContainer
 @onready var CommandControls:Control = $CommandControls
 @onready var InfoControls:Control = $InfoControls
 @onready var ProgramControls:Control = $ProgramControls
-@onready var BaseManagementControls:Control = $BaseMangementControls
-@onready var BaseManagementEditControls:Control = $BaseMangementEditControls
+@onready var TopographyControls:Control = $TopographyControls
+@onready var EngineeringControls:Control = $EngineeringControls
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -37,9 +37,9 @@ extends GameContainer
 @onready var ModulesCard:PanelContainer = $ModulesAndPrograms/PanelContainer/MarginContainer/ModulesCard
 
 # BASE MANAGEMENT
-@onready var BaseManagementPanel:PanelContainer = $BaseManagement/PanelContainer
-@onready var BaseManagementMargin:MarginContainer = $BaseManagement/PanelContainer/MarginContainer
-@onready var BaseManagementComponent:Control = $BaseManagement/PanelContainer/MarginContainer/BaseMangemenComponent
+@onready var EngineeringPanel:PanelContainer = $Engineering/PanelContainer
+@onready var EngineeringMargin:MarginContainer = $Engineering/PanelContainer/MarginContainer
+@onready var EngineeringComponent:Control = $Engineering/PanelContainer/MarginContainer/EngineeringComponent
 
 @onready var BaseSummaryPanel:PanelContainer = $BaseSummary/PanelContainer
 @onready var BaseSummaryMargin:MarginContainer = $BaseSummary/PanelContainer/MarginContainer
@@ -62,16 +62,17 @@ extends GameContainer
 
 # GOTO PANEL
 @onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-@onready var ToggleLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer/ToggleLevelBtn
-@onready var OnBBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/OnBBtn
-#@onready var GotoGeneratorBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/GotoGeneratorBtn
+
+@onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EngineeringBtn
+@onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FabricationBtn
+@onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ManagementBtn
+@onready var OperationsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/OperationsBtn
+@onready var TopLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TopLevelBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
 
 # WING ACTION PANELS
 @onready var WingActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
-@onready var WingActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingActionBtn
-@onready var WingDesignBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingDesignBtn
-@onready var WingProgramBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions/MarginContainer/VBoxContainer/HBoxContainer/WingProgramBtn
+
 @onready var WingInfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/WingInfoBtn
 @onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
@@ -89,7 +90,8 @@ enum MODE {
 	COMMANDS,
 	SUMMARY_CARD,
 	BASE_MANAGEMENT,
-	BASE_MANAGEMENT_COMPONENT,
+	ENGINEERING,
+	TOPOGRAPHY,
 	INFO,
 	ABILITY,
 	PROGRAMS,
@@ -137,9 +139,9 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, BaseManagementControls, BaseManagementEditControls]:
+	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, TopographyControls, EngineeringControls]:
 		node.reveal(false)
-	DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
+	#DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
 	# set reference 
 	GBL.direct_ref["SummaryCard"] = SummaryCard	
@@ -175,14 +177,14 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": -SummaryPanelMargin.size.x
 	}
 	
-	control_pos[BaseManagementPanel] = {
+	control_pos[EngineeringPanel] = {
 		"show": 0, 
-		"hide": -BaseManagementMargin.size.x
+		"hide": EngineeringMargin.size.x
 	}
 
 	control_pos[BaseSummaryPanel] = {
 		"show": 0, 
-		"hide": -BaseSummaryMargin.size.x
+		"hide": BaseSummaryMargin.size.x
 	}
 		
 	# for eelements in the top right
@@ -205,7 +207,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, BaseManagementPanel, BaseSummaryPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, BaseSummaryPanel]: 
 		node.position.x = control_pos[node].hide
 	
 	# hide by default
@@ -243,33 +245,58 @@ func start() -> void:
 	# -------------------------------------
 
 	# -------------------------------------
-	ToggleLevelBtn.onClick = func() -> void:
-		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
-		ToggleLevelBtn.title = "SITE DIRECTOR" if camera_settings.type else "FLOOR MANAGER"
-		ToggleLevelBtn.assigned_key = "T" if camera_settings.type else "F"
-		
+	TopLevelBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.TOPOGRAPHY
+		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
-		reveal_base_summary(camera_settings.type != CAMERA.TYPE.WING_SELECT)		
-	
-	OnBBtn.onClick = func() -> void:
-		print("on b btn.")
-		#camera_settings.type = CAMERA.TYPE.FLOOR_SELECT if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT
-		#ToggleLevelBtn.title = "OVERSEER MODE" if camera_settings.type else "RING LEVEL"
-			#
-		#SUBSCRIBE.camera_settings = camera_settings
-		#TransistionScreen.start(0.3, true)
-		#reveal_base_summary(camera_settings.type != CAMERA.TYPE.WING_SELECT)		
-		#
-	WingDesignBtn.onClick = func() -> void:
+		reveal_base_summary(true)		
+		TopographyControls.reveal(true)
+		
+	TopographyControls.onBack = func() -> void:			
+		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
+		SUBSCRIBE.camera_settings = camera_settings
+		TransistionScreen.start(0.3, true)		
+		reveal_base_summary(false)
+		await TopographyControls.reveal(false)
+		lock_actions(false)
+		current_mode = MODE.NONE
+		GameplayNode.restore_player_hud()
+		
+		GameplayNode.show_marked_objectives = true
+		GameplayNode.show_timeline = true
+		reveal_action_label(true,false)		
+		
+	EngineeringBtn.onClick = func() -> void:
+		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
+		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
+		# change mode and controls		
+		await lock_actions(true)
+		current_mode = MODE.ENGINEERING
+		reveal_engineering(true)
+		# start and reveal
+		EngineeringComponent.start()
+		EngineeringControls.reveal(true)
+		
+	EngineeringControls.onBack = func() -> void:
+		reveal_engineering(false)
+		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
+		await EngineeringControls.reveal(false)
+		lock_actions(false)
+		current_mode = MODE.NONE
+		GameplayNode.restore_player_hud()
+		reveal_action_label(false)
+		
+	FabricationBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.BUILD
 		
-	WingActionBtn.onClick = func() -> void:
+	ManagementBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.COMMANDS	
 	
-	WingProgramBtn.onClick = func() -> void:
+	OperationsBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.PROGRAMS
 
@@ -277,43 +304,18 @@ func start() -> void:
 		await lock_actions(true)
 		current_mode = MODE.INFO	
 
-	BaseManagementBtn.onClick = func() -> void:			
-		BaseRenderNode.set_base_zoom(1)
-		current_mode = MODE.BASE_MANAGEMENT
-		reveal_base_summary(false)
-		await lock_actions(true)
-		reveal_base_management(true)
-		BaseManagementControls.reveal(true)
-	
-	BaseManagementControls.onAction = func() -> void:
-		# animate and zoom in
-		BaseRenderNode.set_base_zoom(2)
-		BaseRenderNode.animate_internals(true)
-		
+	#BaseManagementBtn.onClick = func() -> void:			
+		#BaseRenderNode.set_base_zoom(1)
+		#current_mode = MODE.BASE_MANAGEMENT
+		#reveal_base_summary(false)
+		#await lock_actions(true)
+		#reveal_base_management(true)
+		#TopographyControls.reveal(true)
+	#
+	TopographyControls.onAction = func() -> void:
+		pass
 		# change mode and controls
-		current_mode = MODE.BASE_MANAGEMENT_COMPONENT
-		await BaseManagementControls.reveal(false)
-		
-		# start and reveal
-		BaseManagementComponent.start()
-		BaseManagementEditControls.reveal(true)
-
-	BaseManagementControls.onBack = func() -> void:			
-		BaseRenderNode.set_base_zoom(0)
-		reveal_base_management(false)
-		await BaseManagementControls.reveal(false)
-		lock_actions(false)
-		reveal_base_summary(true)
-		current_mode = MODE.NONE
-		
-	BaseManagementEditControls.onBack = func() -> void:
-		BaseRenderNode.set_base_zoom(1)
-		BaseRenderNode.animate_internals(false)
-		
-		BaseManagementComponent.end()
-		await BaseManagementEditControls.reveal(false)
-		await BaseManagementControls.reveal(true)
-		current_mode = MODE.BASE_MANAGEMENT
+		# does nothing right now...
 
 	SettingsBtn.onClick = func() -> void:
 		set_backdrop_state(true)
@@ -1272,23 +1274,10 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
 			NameControl.hide()
-			WingActions.hide()
-			BaseManagementBtn.show()
-			#GeneratorActions.hide()
 			
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			NameControl.hide()
-			WingActions.show()
-			BaseManagementBtn.hide()
-			#GeneratorActions.hide()
-
-		## ----------------------
-		#CAMERA.TYPE.GENERATOR:
-			#NameControl.hide()
-			#WingActions.hide()
-			#BaseManagementBtn.hide()
-			#GeneratorActions.show()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1351,10 +1340,10 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			WingDesignBtn.is_disabled = !is_powered
+			FabricationBtn.is_disabled = !is_powered
 			# WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
-			WingProgramBtn.hide() if GAME_UTIL.get_list_of_programs(current_location, true).is_empty() else WingProgramBtn.show()
-			WingActionBtn.is_disabled = rooms_in_wing_count == 0
+			OperationsBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty() 
+			ManagementBtn.is_disabled = rooms_in_wing_count == 0
 			#GenActionBtn.is_disabled = !has_one_floor_activated
 		# -----------	
 		MODE.INFO:
@@ -1462,7 +1451,7 @@ func check_btn_states() -> void:
 			current_mode = MODE.NONE
 		# -----------	
 		MODE.BUILD:	
-			DesignControls.a_btn_title = ("BUILD" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
+			DesignControls.a_btn_title = ("SELECT FACILITY" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
 			DesignControls.c_btn_title = "RUSH CONSTRUCTION"
 			
 			DesignControls.hide_c_btn = !is_under_construction
@@ -1503,6 +1492,7 @@ func check_btn_states() -> void:
 				DesignControls.reveal(true)
 						
 			DesignControls.onBack = func() -> void:
+				WingRenderNode.set_to_build_mode(false)
 				await DesignControls.reveal(false)
 				current_mode = MODE.NONE
 
@@ -1553,15 +1543,15 @@ func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_base_management(state:bool, duration:float = 0.3) -> void:
+func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
 	if state:
-		BaseManagementPanel.show()
+		EngineeringPanel.show()
 		
-	await U.tween_node_property(BaseManagementPanel, "position:x", control_pos[BaseManagementPanel].show if state else control_pos[BaseManagementPanel].hide, duration)
+	await U.tween_node_property(EngineeringPanel, "position:x", control_pos[EngineeringPanel].show if state else control_pos[EngineeringPanel].hide, duration)
 	
 	if !state:
-		BaseManagementPanel.hide()
+		EngineeringPanel.hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1649,13 +1639,22 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				SummaryControls.itemlist = ModulesCard.get_ability_btns()
 				SummaryControls.item_index = 0
 			# --------------
+			MODE.ENGINEERING:
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
+				reveal_action_label(true, 0.4, "ENGINEERING")
+			MODE.TOPOGRAPHY:
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				reveal_action_label(true, 0.4, "TOPOLOGY")		
+			# --------------
 			MODE.BUILD:
+				WingRenderNode.set_to_build_mode(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
-				reveal_action_label(true, 0.4, "BUILD MODE")				
+				reveal_action_label(true, 0.4, "FABRICATION")				
 				DesignControls.reveal(true)			
 			# --------------
 			MODE.COMMANDS:
@@ -1663,7 +1662,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "ACTIONS")
+				reveal_action_label(true, 0.4, "MANAGEMENT")
 				reveal_summarycard(true, true)
 				CommandControls.reveal(true)
 				
@@ -1679,7 +1678,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "PROGRAMS")
+				reveal_action_label(true, 0.4, "OPERATIONS")
 
 		on_current_location_update()
 		on_camera_settings_update()

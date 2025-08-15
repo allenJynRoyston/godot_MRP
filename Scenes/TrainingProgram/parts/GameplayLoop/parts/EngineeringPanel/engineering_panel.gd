@@ -1,8 +1,13 @@
 extends SubscribeWrapper
 
-@onready var CoreAmountLabel:Label = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer/HBoxContainer/CoreAmountLabel
+@onready var UpgradeControl:Control = $Upgrade
+@onready var UpgradePanel:PanelContainer = $Upgrade/PanelContainer
+@onready var UpgradeCountLabel:Label = $Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/UpgradeCountLabel
+
 @onready var TempMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/TempMonitor
 @onready var RealityMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/RealityMonitor
+@onready var PollutionMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/PollutionMonitor
+@onready var EnergyItem:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer/EnergyItem
 
 @onready var DescriptionPanel:PanelContainer = $DescriptionControl/PanelContainer
 @onready var DescriptionMargin:MarginContainer = $DescriptionControl/PanelContainer/MarginContainer
@@ -87,16 +92,22 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
-	var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
+	var ring_config_data:Dictionary =room_config.floor[current_location.floor].ring[current_location.ring]
+	var power_distribution:Dictionary = ring_config_data.power_distribution
+	var energy_data:Dictionary = ring_config_data.energy
 	var monitor:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].monitor
-	
+
 	# monitors
 	TempMonitor.slider_val = monitor.temp
 	RealityMonitor.slider_val = monitor.reality
+	PollutionMonitor.slider_val = monitor.pollution
 	
 	# update labels
-	CoreAmountLabel.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
-	
+	UpgradeCountLabel.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
+	EnergyItem.amount = energy_data.used 
+	EnergyItem.max_amount = energy_data.available
+	EnergyItem.is_negative = energy_data.used > energy_data.available
+
 	# update values
 	Heating.active_level = power_distribution.heating
 	Cooling.active_level = power_distribution.cooling
@@ -111,8 +122,6 @@ func update_node() -> void:
 	SRA.is_disabled = false
 	Energy.is_disabled = false
 	
-	# update active wing node
-	update_wing_node()
 	
 func on_component_list_update() -> void:
 	if !is_node_ready():return
@@ -124,16 +133,10 @@ func on_component_list_update() -> void:
 		if index == component_index:
 			ActiveNode = node
 			DescriptionLabel.text = component_list[index].description
-	
-	# update active wing node
-	update_wing_node()
-	
-func update_wing_node() -> void:
-	var ActiveWingNode:Node3D = GBL.find_node(REFS.BASE_RENDER).ActiveWingNode
-	if ActiveWingNode != null:
-		var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
-		# update active wing node
-		ActiveWingNode.highligh_item(component_list[component_index], power_distribution)		
+			#UpgradePanel.position.y = node.position.y + 26
+			
+
+	GBL.find_node(REFS.WING_RENDER).update_engineering_stats(component_list[component_index])
 # ------------------------------------------
 
 # ------------------------------------------

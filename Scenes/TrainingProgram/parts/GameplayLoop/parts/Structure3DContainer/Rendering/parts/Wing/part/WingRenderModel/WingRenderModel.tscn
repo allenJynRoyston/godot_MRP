@@ -13,86 +13,103 @@ size = Vector3(115, 10, 115)
 
 [node name="R11" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -3, -15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R15" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -3, -45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R12" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -3, 15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R17" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -3, 45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R19" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -3, -15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R20" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -3, -45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R21" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -3, 15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R22" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -3, 45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R23" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -3, -15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R24" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -3, -45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R25" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -3, 15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R26" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -3, 45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R16" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -3, -45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R18" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -3, 45)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R13" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -3, -15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R14" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -3, 15)
+visible = false
 operation = 2
 size = Vector3(5, 30, 5)
 
 [node name="R3" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.06935, 0)
+visible = false
 operation = 2
 size = Vector3(15, 30, 15)
 
