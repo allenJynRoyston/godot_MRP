@@ -30,6 +30,16 @@ extends Node3D
 @onready var LeftLabel:Label3D = $MeshRender/Labeling/LeftLabel
 @onready var RightLabel:Label3D = $MeshRender/Labeling/RightLabel
 
+const LOCKDOWN_LIGHT_COLOR:Color = Color.ORANGE_RED	
+const CAUTION_LIGHT_COLOR:Color = Color.MEDIUM_VIOLET_RED
+const WARNING_LIGHT_COLOR:Color = Color.ORANGE
+const POLLUTION_LIGHT_COLOR:Color = Color(0.561, 0.239, 0.736)
+const DEFAULT_WORLD_COLOR:Color = Color(0.949, 0.947, 0.993)
+const DEFAULT_DOOR_LIGHT_COLOR:Color = Color(1.0, 1.0, 0.663)
+
+var previous_floor:int = -1
+var previous_ring:int = -1
+
 var current_location:Dictionary
 var camera_settings:Dictionary 
 var room_config:Dictionary
@@ -163,13 +173,14 @@ func on_use_location_update() -> void:
 	for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		room_assign_designation(i, use_location)
 	U.debounce(str(self, "_update_vars"), update_vars)
-	update_engineering_stats()
+
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	
 	U.debounce(str(self, "_update_vars"), update_vars)
-	update_engineering_stats()
+	
+
 
 func on_base_states_update(new_base_state:Dictionary) -> void:
 	if !is_node_ready() or new_base_state.is_empty():return
@@ -251,7 +262,8 @@ func update_vars() -> void:
 	#is_powered = power_distribution.energy > 1
 	#is_ventilated = power_distribution.ventilation > 1
 	#is_overheated = false # TODO REVIST THIS
-	
+
+	U.debounce(str(self, "_update_engineering_stats"), update_engineering_stats)
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
@@ -269,7 +281,6 @@ func set_engineering_mode(state:bool) -> void:
 		RoomContainer.show()
 		Lighting.show()
 #	
-		
 		WingRenderMesh.edit_cooling = false
 		WingRenderMesh.edit_heating = false
 		WingRenderMesh.edit_powergrid = false
@@ -278,7 +289,7 @@ func set_engineering_mode(state:bool) -> void:
 		
 		previous_floor = -1
 		previous_ring = -1		
-		
+		await U.tick()
 		update_room_lighting()
 # --------------------------------------------------------
 
@@ -327,6 +338,7 @@ func update_engineering_stats(stat:Dictionary = engineering_stats) -> void:
 	
 	
 	previous_floor = -1 # required to update correctly
+	previous_ring = -1
 	update_room_lighting()
 	update_mesh_values()
 # --------------------------------------------------------
@@ -343,17 +355,12 @@ func update_mesh_values() -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-var previous_floor:int = -1
-var previous_ring:int = -1
-const LOCKDOWN_LIGHT_COLOR:Color = Color.ORANGE_RED	
-const CAUTION_LIGHT_COLOR:Color = Color.MEDIUM_VIOLET_RED
-const WARNING_LIGHT_COLOR:Color = Color.ORANGE
-const POLLUTION_LIGHT_COLOR:Color = Color(0.561, 0.239, 0.736)
-const DEFAULT_WORLD_COLOR:Color = Color(0.949, 0.947, 0.993)
-const DEFAULT_DOOR_LIGHT_COLOR:Color = Color(1.0, 1.0, 0.663)
 func update_room_lighting() -> void:
+	print("update room lighting....")
 	if room_config.is_empty() or use_location.is_empty() or previous_camera_view == CAMERA.VIEWPOINT.OVERHEAD:return
+	print(previous_floor, previous_ring)
 	if previous_floor != current_location.floor or previous_ring != current_location.ring:
+		print("now update lighting...")
 		previous_floor = current_location.floor
 		previous_ring = current_location.ring
 		var monitor:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].monitor			
