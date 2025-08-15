@@ -176,28 +176,16 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	
 # ------------------------------------------------
 func check_for_conditions() -> void:
-	if !is_node_ready() or room_config.is_empty() or current_location.is_empty():return
-	var power_distribution:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution
-	var is_overheated:bool = power_distribution.heating == 0
-	var is_ventilated:bool = power_distribution.ventilation > 0
+	if !is_node_ready() or room_config.is_empty() or current_location.is_empty():return	
+	var monitor:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].monitor
+
+	# make wavy if temp is above 0	
+	main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", monitor.temp > 0)
+	main_viewport_texture_material_duplicate.set_shader_parameter("amplitude_h", monitor.temp * 3 )
 	
-	if camera_settings.type == 	CAMERA.TYPE.FLOOR_SELECT:
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
-		return
-	
-	if is_overheated:
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)		
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
-		return
-	
-	if !is_ventilated:
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", true)
-		main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", true)
-		return
-	
-	main_viewport_texture_material_duplicate.set_shader_parameter("enable_horizontal", false)
-	main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", false)
+	# make vertical wavy if reality is bending
+	main_viewport_texture_material_duplicate.set_shader_parameter("enable_vertical", monitor.reality > 0)	
+	main_viewport_texture_material_duplicate.set_shader_parameter("amplitude_v", monitor.reality * 3)
 # ------------------------------------------------
 
 # ------------------------------------------------

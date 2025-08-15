@@ -2,6 +2,7 @@
 extends SubscribeWrapper
 
 @onready var List:HBoxContainer = $VBoxContainer/List
+@onready var FloorLabel:Label = $Control/PanelContainer/VBoxContainer/MarginContainer/FloorLabel
 
 func _ready() -> void:
 	for node in List.get_children():
@@ -13,3 +14,5 @@ func on_current_location_update(new_val:Dictionary) -> void:
 		var panel_node:Control = List.get_child(index)
 		panel_node.show()
 		panel_node.is_selected = new_val.ring == index
+		
+	FloorLabel.text = str(new_val.floor, new_val.ring)

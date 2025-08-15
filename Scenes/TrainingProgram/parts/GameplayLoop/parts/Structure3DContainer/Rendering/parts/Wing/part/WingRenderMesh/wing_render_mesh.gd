@@ -35,10 +35,10 @@ const material_prop:String = "surface_material_override/0"
 
 # other
 @onready var Billboards:Node3D = $Inner/Billboards
-#@onready var Lighting:Node3D = $Inner/Lighting
 #@onready var EditLighting:Node3D = $Inner/EditLighting
 
 # materials
+@onready var BuildingMaterialOriginal:StandardMaterial3D = BuildingMesh.get(material_prop)
 @onready var BuildingMaterialCopy:StandardMaterial3D = BuildingMesh.get(material_prop).duplicate(true)
 @onready var ACMaterialCopy:StandardMaterial3D = AC1Mesh.get(material_prop).duplicate(true)
 @onready var HeatingMaterialCopy:StandardMaterial3D = HeatingMesh.get(material_prop).duplicate(true)
@@ -131,7 +131,8 @@ func _ready() -> void:
 # --------------------------------------------------------
 func set_to_build_mode(state:bool) -> void:
 	BuildingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if state else BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	BuildingMaterialCopy.albedo_color = Color.SKY_BLUE if state else Color.DIM_GRAY
+	BuildingMaterialCopy.albedo_color = Color.DEEP_SKY_BLUE if state else BuildingMaterialOriginal.albedo_color
+	BuildingMesh.set(material_prop, BuildingMaterialCopy )	
 # --------------------------------------------------------	
 
 # -----------------------------------------------
@@ -143,7 +144,7 @@ func on_show_outershell_update() -> void:
 # -----------------------------------------------
 func on_in_edit_mode_update() -> void:
 	if !is_node_ready():return
-#
+	
 	HeatingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED	if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	ACMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	PowerGridMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
@@ -151,7 +152,7 @@ func on_in_edit_mode_update() -> void:
 	SRAMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	
 	BuildingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if in_edit_mode else BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	BuildingMaterialCopy.albedo_color = Color.BLACK if in_edit_mode else Color.DIM_GRAY
+	BuildingMaterialCopy.albedo_color = Color.BLACK if in_edit_mode else BuildingMaterialOriginal.albedo_color
 	BuildingMesh.set(material_prop, BuildingMaterialCopy )	
 		
 	update_cooling_mesh()
@@ -209,13 +210,9 @@ func update_heating_mesh() -> void:
 # -----------------------------------------------
 func update_cooling_mesh() -> void:
 	if !is_node_ready():return
-
-	
 	ACMaterialCopy.albedo_color = Color.BLUE.lightened(1 - ((cooling_val -1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	for node in [AC1Mesh, AC2Mesh]:	
 		node.set(material_prop, ACMaterialCopy) 
-	
-
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -229,7 +226,6 @@ func update_powergrid_mesh() -> void:
 	PowerGridMaterialCopy.albedo_color = Color.ORANGE.lightened(1 - ((power_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	PowerGridMesh.set(material_prop, PowerGridMaterialCopy)
 	PowerGridMesh.show()
-
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -239,7 +235,6 @@ func update_ventilation_mesh() -> void:
 	FanBladeMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	FanBladeMaterialCopy.albedo_color = Color.GREEN_YELLOW.lightened(1 - ((ventilation_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	FanBladeMesh.set(material_prop, FanBladeMaterialCopy)
-	
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -250,8 +245,6 @@ func update_sra_mesh() -> void:
 	SRAMaterialCopy.albedo_color = Color.PLUM.lightened(1 - ((sra_val - 1) * 0.2)) if in_edit_mode else Color.DARK_GRAY
 	for node in [SRA1, SRA2, SRA3, SRA4]:	
 		node.set(material_prop, SRAMaterialCopy) 
-		
-
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -269,41 +262,22 @@ func highligh_item(item: Dictionary, power_distribution:Dictionary) -> void:
 		"heating":
 			edit_heating = true
 			heating_val = power_distribution[item.prop] 
-			#HeatParticles.emitting = power_distribution[item.prop] > 1
-			#HeatParticles.amount = power_distribution[item.prop] * 20
-						
 		# ------------
 		"cooling":
 			edit_cooling = true
 			cooling_val = power_distribution[item.prop] 
-			#FrostParticles.emitting = power_distribution[item.prop] > 1
-			#FrostParticles.amount = power_distribution[item.prop] * 250
-			#FrostParticles.speed_scale = power_distribution[item.prop]
-
 		# ------------
 		"ventilation":
 			edit_ventilation = true
 			ventilation_val = power_distribution[item.prop] 
-			#FanParticles.emitting = power_distribution[item.prop] > 1
-			#FanParticles.amount = power_distribution[item.prop] * 50
-			#FanParticles.speed_scale = power_distribution[item.prop]
-			# fan_speed = power_distribution[item.prop] 
 		# ------------
 		"sra":
 			edit_sra = true
 			sra_val = power_distribution[item.prop] 
-			#EnergySprite.hide()
-			#SRAMeshMaterial.albedo_color = Color.PURPLE.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.DARK_GRAY		
 		# ------------
 		"energy":
 			edit_powergrid = true
 			power_val = power_distribution[item.prop] 
-			#EnergySprite.show()
-			#EnergyLabel.text = str(energy_levels[power_distribution.energy - 1])
-			
-			#PowerGridMaterial.albedo_color = Color.ORANGE.darkened(1 - power_distribution[item.prop] * 0.25)  if power_distribution[item.prop] > 1 else Color.DARK_GRAY
-			
-	
 # -----------------------------------------------
 
 # -----------------------------------------------	

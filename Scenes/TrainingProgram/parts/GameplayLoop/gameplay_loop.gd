@@ -1384,10 +1384,10 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			# transfer power_distribution
 			ring_level_config.power_distribution = ring_base_state.power_distribution
 			
-			# TODO: swap 1 for heat, pollution, reality generated from room
-			ring_level_config.monitor.temp =  U.min_max(1 - (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
-			ring_level_config.monitor.reality = U.min_max(1 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
-			ring_level_config.monitor.pollution = U.min_max(1 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
+			# TODO: swap 0 for heat, pollution, reality generated from room
+			ring_level_config.monitor.temp =  U.min_max(0 + (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
+			ring_level_config.monitor.reality = U.min_max(0 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
+			ring_level_config.monitor.pollution = U.min_max(0 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:

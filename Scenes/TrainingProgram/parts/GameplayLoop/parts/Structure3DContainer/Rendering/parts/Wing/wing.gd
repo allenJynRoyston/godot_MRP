@@ -58,10 +58,10 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			outline_color = Color.WHITE	
 		# ----------------------
 		CAMERA.TYPE.FLOOR_SELECT:
-			outline_color = Color.BLACK	
+			outline_color = Color.WHITE	
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
-			outline_color = Color.BLACK
+			outline_color = Color.WHITE
 			
 	material_duplicate.set_shader_parameter("outline_color", outline_color )
 	TextureOutput.material = material_duplicate

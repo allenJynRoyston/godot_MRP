@@ -1,8 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://ck4ghs6psctsy"]
+[gd_scene load_steps=12 format=3 uid="uid://ck4ghs6psctsy"]
 
 [ext_resource type="Script" uid="uid://co1dmd623ptu1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/topography_panel.gd" id="1_j2r8v"]
 [ext_resource type="PackedScene" uid="uid://26x2t4j7c7td" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanelItem/TopographyPanelItem.tscn" id="2_tu308"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_o6iyc"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="4_e06bh"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_qtrut"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="6_hdba2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kbybp"]
 
@@ -12,6 +15,25 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bcsx4"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_6svch"]
+font = ExtResource("5_qtrut")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hxbqf"]
+font = ExtResource("5_qtrut")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [node name="Topography" type="PanelContainer"]
 offset_right = 190.0
@@ -24,18 +46,28 @@ layout_mode = 2
 
 [node name="List" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+alignment = 2
 
 [node name="W0" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
+active_str = "WING A"
+inactive_str = "A"
 
 [node name="W1" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
+active_str = "WING B"
+inactive_str = "B"
+is_selected = true
 
 [node name="W2" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
+active_str = "WING C"
+inactive_str = "C"
 
 [node name="W3" parent="VBoxContainer/List" instance=ExtResource("2_tu308")]
 layout_mode = 2
+active_str = "WING D"
+inactive_str = "D"
 
 [node name="ContentList" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -325,3 +357,63 @@ layout_mode = 2
 text = "NO ISSUES"
 label_settings = ExtResource("3_o6iyc")
 horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_left = -255.0
+offset_top = 154.0
+offset_right = -157.0
+offset_bottom = 220.0
+theme_override_styles/panel = ExtResource("4_e06bh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer"]
+layout_mode = 2
+
+[node name="Header" type="PanelContainer" parent="Control/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bcsx4")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Control/PanelContainer/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SECTION"
+label_settings = SubResource("LabelSettings_6svch")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 7
+
+[node name="FloorLabel" type="Label" parent="Control/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "01"
+label_settings = SubResource("LabelSettings_hxbqf")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="Control/PanelContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="Control/PanelContainer/Control" instance=ExtResource("6_hdba2")]
+layout_mode = 0
+offset_left = -13.0
+offset_top = 40.0
+offset_right = 7.0
+offset_bottom = 60.0
+icon = 28
+icon_color = Color(1, 0.74902, 0.2, 1)

@@ -109,7 +109,6 @@ size = Vector3(5, 30, 5)
 
 [node name="R3" type="CSGBox3D" parent="BuildingMesh/BuildingMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.06935, 0)
-visible = false
 operation = 2
 size = Vector3(15, 30, 15)
 

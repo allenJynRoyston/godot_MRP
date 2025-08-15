@@ -41,8 +41,8 @@ extends GameContainer
 @onready var EngineeringMargin:MarginContainer = $Engineering/PanelContainer/MarginContainer
 @onready var EngineeringComponent:Control = $Engineering/PanelContainer/MarginContainer/EngineeringComponent
 
-@onready var BaseSummaryPanel:PanelContainer = $BaseSummary/PanelContainer
-@onready var BaseSummaryMargin:MarginContainer = $BaseSummary/PanelContainer/MarginContainer
+@onready var TopographyPanel:PanelContainer = $Topography/PanelContainer
+@onready var TopographyMargin:MarginContainer = $Topography/PanelContainer/MarginContainer
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -182,9 +182,9 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": EngineeringMargin.size.x
 	}
 
-	control_pos[BaseSummaryPanel] = {
+	control_pos[TopographyPanel] = {
 		"show": 0, 
-		"hide": BaseSummaryMargin.size.x
+		"hide": TopographyPanel.size.x
 	}
 		
 	# for eelements in the top right
@@ -207,7 +207,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, BaseSummaryPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel]: 
 		node.position.x = control_pos[node].hide
 	
 	# hide by default
@@ -251,14 +251,14 @@ func start() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
-		reveal_base_summary(true)		
+		reveal_topography(true)		
 		TopographyControls.reveal(true)
 		
 	TopographyControls.onBack = func() -> void:			
 		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)		
-		reveal_base_summary(false)
+		reveal_topography(false)
 		await TopographyControls.reveal(false)
 		lock_actions(false)
 		current_mode = MODE.NONE
@@ -1555,15 +1555,15 @@ func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_base_summary(state:bool, duration:float = 0.3) -> void:
+func reveal_topography(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
 	if state:
-		BaseSummaryPanel.show()
+		TopographyPanel.show()
 	
-	await U.tween_node_property(BaseSummaryPanel, "position:x", control_pos[BaseSummaryPanel].show if state else control_pos[BaseSummaryPanel].hide, duration)
+	await U.tween_node_property(TopographyPanel, "position:x", control_pos[TopographyPanel].show if state else control_pos[TopographyPanel].hide, duration)
 	
 	if !state:
-		BaseSummaryPanel.hide()
+		TopographyPanel.hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1735,7 +1735,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.room_left(true)
-		MODE.BASE_MANAGEMENT:
+		MODE.TOPOGRAPHY:
 			match key:
 				# ----------------------------
 				"W":
