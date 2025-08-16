@@ -1,10 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=11 format=3 uid="uid://doexmbeotqsd4"]
 
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_hvfea"]
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_4l8vf"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_8ufj8"]
-[ext_resource type="FontFile" uid="uid://cl0rds8hm0r81" path="res://Fonts/m5x7.ttf" id="5_4l8vf"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="4_4l8vf"]
+[ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="5_8ufj8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_43xce"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_43xce"]
 font = ExtResource("3_8ufj8")
@@ -13,24 +15,33 @@ shadow_size = 2
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_4l8vf"]
-line_spacing = -5.0
-font = ExtResource("5_4l8vf")
-font_size = 24
-font_color = Color(0, 0, 0, 1)
-outline_color = Color(0.331019, 0.331019, 0.331019, 1)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.388235)
-shadow_offset = Vector2(0, 2)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1ljd"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kiami"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fb51e"]
 
 [node name="OptionListItem" type="PanelContainer"]
+custom_minimum_size = Vector2(300, 0)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("1_hvfea")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_43xce")
 script = ExtResource("1_j7po5")
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PropertyLabel" type="Label" parent="Control"]
@@ -43,36 +54,87 @@ offset_bottom = 9.0
 text = "Property"
 label_settings = SubResource("LabelSettings_43xce")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 20
+theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1ljd")
 
-[node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("3_4l8vf")]
-visible = false
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = -2
+
+[node name="LockIcon" parent="VBoxContainer/Header/MarginContainer/HBoxContainer/MarginContainer2" instance=ExtResource("3_4l8vf")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 icon = 48
+icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(15, 15)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="HeaderLabel" type="Label" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "OPTION A"
+label_settings = ExtResource("4_4l8vf")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiami")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(500, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "Title option..."
-label_settings = SubResource("LabelSettings_4l8vf")
+label_settings = ExtResource("5_8ufj8")
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_fb51e")
+
+[node name="SubImageLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(1, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "CONSEQUENCES"
+label_settings = ExtResource("5_8ufj8")
+vertical_alignment = 1
 autowrap_mode = 2

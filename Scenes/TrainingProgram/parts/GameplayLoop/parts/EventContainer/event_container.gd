@@ -24,13 +24,13 @@ extends GameContainer
 @onready var ContentPanel:PanelContainer	 = $ContentControl/PanelContainer
 @onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
 
-@onready var DialogBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/SVGIcon
-@onready var BodyContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
-@onready var BodyLabelBtm:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
-@onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
+@onready var DialogBtn:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/DialogBtn
+@onready var BodyContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer
+@onready var BodyLabelBtm:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelBtm
+@onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
 @onready var OptionsContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
-@onready var OptionsListContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionListContainer
+@onready var OptionsContainerList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionsContainerList
 @onready var NoteContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 
 @onready var ImageBG:TextureRect = $ImageControl/PanelContainer/MarginContainer/OutputTexture/SubViewport/TextureRect
@@ -90,14 +90,14 @@ func _ready() -> void:
 	BtnControls.hide_c_btn = !DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
 	use_force_results = DEBUG.get_val(DEBUG.GAMEPLAY_ENABLE_SCP_DEBUG)
 	
-	BtnControls.onCBtn = func() -> void:
-		force_is_success = !force_is_success
-		BtnControls.c_btn_title = "FORCE %s" % ['SUCCESS' if force_is_success else 'FAILURE']
+	#BtnControls.onCBtn = func() -> void:
+		#force_is_success = !force_is_success
+		#BtnControls.c_btn_title = "FORCE %s" % ['SUCCESS' if force_is_success else 'FAILURE']
 	
 	# setup btn controls
 	BtnControls.onUpdate = func(_node:Control) -> void:
-		for index in OptionsListContainer.get_child_count():
-			var node:Control = OptionsListContainer.get_child(index)
+		for index in OptionsContainerList.get_child_count():
+			var node:Control = OptionsContainerList.get_child(index)
 			node.is_selected = node == _node	
 			if node == _node:
 				# assign
@@ -180,7 +180,7 @@ func reset_content_nodes() -> void:
 	BodyLabelBtm.text = ""
 	BodyLabelTop.text = ""
 	
-	for node in [NoteContainer, OptionsListContainer]:
+	for node in [NoteContainer, OptionsContainerList]:
 		for child in node.get_children():
 			child.queue_free()	
 # --------------------------------------------------------------------------------------------------		
@@ -475,7 +475,7 @@ func on_current_instruction_update() -> void:
 		option_selected_index = 0
 		DialogBtn.icon = SVGS.TYPE.QUESTION_MARK
 
-		for child in OptionsListContainer.get_children():
+		for child in OptionsContainerList.get_children():
 			child.queue_free()			
 		
 		var options:Array = current_instruction.options
@@ -503,22 +503,23 @@ func on_current_instruction_update() -> void:
 				new_node.data = option
 				new_node.render_if = render_if
 				new_node.is_hoverable = false
+				new_node.is_selected = option_selected_index == index
 				new_node.onClick = func() -> void:
 					if !new_node.is_available:return
 					on_option_select(option)
 					
-				OptionsListContainer.add_child(new_node)
+				OptionsContainerList.add_child(new_node)
 		
 		await U.tick()
 		
 		# fade in options
-		for index in OptionsListContainer.get_child_count():
-			var option:Control = OptionsListContainer.get_child(index)
+		for index in OptionsContainerList.get_child_count():
+			var option:Control = OptionsContainerList.get_child(index)
 			option.start()
 		
 		# add BtnControl funcs
-		BtnControls.itemlist = OptionsListContainer.get_children()
-		BtnControls.directional_pref = "UD"
+		BtnControls.itemlist = OptionsContainerList.get_children()
+		BtnControls.directional_pref = "LR"
 		
 		await U.tick()
 		BtnControls.item_index = 0
@@ -553,8 +554,8 @@ func on_option_select(option:Dictionary) -> void:
 	
 	SuccessRoll.set_title(option.title)
 	
-	for index in OptionsListContainer.get_child_count():
-		var node:Control = OptionsListContainer.get_child(index)
+	for index in OptionsContainerList.get_child_count():
+		var node:Control = OptionsContainerList.get_child(index)
 		node.fade_out(0 if node != SelectedNode else 1.0) 
 	
 	await U.set_timeout(1.0)

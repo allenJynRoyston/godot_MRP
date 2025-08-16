@@ -1,10 +1,16 @@
 extends MouseInteractions
 
-@onready var RootPanel:PanelContainer = $"."
-@onready var IconBtn:Control = $MarginContainer/HBoxContainer/SVGIcon
+@onready var HeaderPanel:PanelContainer = $VBoxContainer/Header
+@onready var ContentPanel:PanelContainer = $VBoxContainer/PanelContainer
+@onready var IconBtn:Control = $VBoxContainer/Header/MarginContainer/HBoxContainer/MarginContainer2/LockIcon
 
-@onready var PropertyLabel:Label = $Control/PropertyLabel
-@onready var TitleLabel:Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/TitleLabel
+@onready var HeaderLabel:Label = $VBoxContainer/Header/MarginContainer/HBoxContainer/HeaderLabel
+@onready var TitleLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel
+@onready var ImageRect:TextureRect = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/TextureRect
+@onready var SubImageLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/SubImageLabel
+
+@onready var content_stylebox_copy:StyleBoxFlat = ContentPanel.get("theme_override_styles/panel").duplicate()
+@onready var header_stylebox_copy:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
 
 var index:int
 var enabled:bool = false 
@@ -44,14 +50,19 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	on_data_update()
+	ContentPanel.set('theme_override_styles/panel', content_stylebox_copy)		
+	HeaderPanel.set("theme_override_styles/panel", header_stylebox_copy)
 	on_render_if_update.call_deferred()	
+	
 	hint_title = "HINT"
+	on_is_selected_update()
 	
 
 func start(delay:float = 0) -> void:
-	U.tween_node_property(IconBtn, 'icon_color:a', 0.6, 0.3, delay)
-	U.tween_node_property(self, 'modulate:a', 0.6, 0.3, delay)
-	await U.set_timeout(0.1)
+	pass
+	#U.tween_node_property(IconBtn, 'icon_color:a', 0.6, 0.3, delay)
+	#U.tween_node_property(self, 'modulate:a', 0.6, 0.3, delay)
+	#await U.set_timeout(0.1)
 # ----------------------
 
 # ----------------------	
@@ -62,52 +73,52 @@ func fade_out(delay:float = 0) -> void:
 
 # ----------------------	
 func is_available_update() -> void:
-	if !is_node_ready():return
-	IconBtn.hide() if is_available else IconBtn.show()
-	
-	on_is_selected_update()
-	on_data_update()
+	U.debounce(str(self, "_update_node"), update_node)
+
+func on_data_update() -> void:
+	U.debounce(str(self, "_update_node"), update_node)
+
+func on_is_selected_update() -> void:
+	U.debounce(str(self, "_update_node"), update_node)
 # ----------------------	
 
 # ----------------------	
-func on_is_selected_update() -> void:
-	if !is_node_ready():return
-	var stylebox:StyleBoxFlat = RootPanel.get("theme_override_styles/panel").duplicate()
-	var use_color:Color = COLORS.disabled_color if !is_available else COLORS.primary_color
-	use_color.a = 1 if is_selected else 0.75
+func update_node() -> void:
+	if !is_node_ready() or data.is_empty():return
 	
-	stylebox.bg_color = use_color
-	RootPanel.set('theme_override_styles/panel', stylebox)	
+	# update content stylebox
+	content_stylebox_copy.bg_color = Color.DARK_GRAY if !is_selected else COLORS.primary_color
 	
-	modulate = Color(1, 1, 1, 1 if is_selected else 0.6)
+	# update header when selected
+	header_stylebox_copy.bg_color = COLORS.primary_black if is_available else COLORS.disabled_color
+	
+	modulate.a = 1 if is_selected else 0.6
 	IconBtn.icon_color.a = 1 if is_selected else 0.6
+	IconBtn.hide() if is_available else IconBtn.show()
 	
 	if hint_description == "":
 		if is_available:
 			hint_description = "" if ("success_rate" not in data or !allow_for_hint) else "Estimated chance of success: %s%s." % [data.success_rate, "%"] 
 		else:
 			hint_description = "UNAVAILABLE" if render_if.is_empty() else render_if.hint_description
+# ----------------------	
 
-
+# ----------------------	
 func on_render_if_update() -> void:
 	if !is_node_ready():return
 	
 	if render_if.is_empty() or is_paranoid:
 		is_available = true
-		PropertyLabel.hide()
+		HeaderLabel.text = "???"
 		return
 	
 	if "lockout" in render_if and render_if.lockout:
 		is_available = false
-		PropertyLabel.text = "UNAVAILABLE"
+		HeaderLabel.text = "UNAVAILABLE"
 		return
 		
 	is_available = render_if.is_available	 
-	PropertyLabel.text = "%s (%s)" % [render_if.property, render_if.current_amount]
-	
-	
-func on_data_update() -> void:
-	if !is_node_ready() or data.is_empty():return
+	HeaderLabel.text = "%s (%s)" % [render_if.property, render_if.current_amount]
 	TitleLabel.text = "SUFFERING FROM PARANOIA..." if is_paranoid else U.simulate_dyslexia(data.title) if apply_dyslexia else data.title
 # ----------------------
 
