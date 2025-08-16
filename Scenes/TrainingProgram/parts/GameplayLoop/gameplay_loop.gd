@@ -201,6 +201,7 @@ var initial_values:Dictionary = {
 						"passives_enabled_list": [],
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
+						"events_pending": [],
 						"buffs": [],
 						"debuffs": [],
 					}	
@@ -639,8 +640,6 @@ func get_room_defaults() -> Dictionary:
 		},
 		"buffs": [],
 		"debuffs": [],		
-		# --------------
-		"applied_bonus": 0,
 		# --------------
 		"energy_used": 0, 		
 		"damage_val": 0,
@@ -1386,8 +1385,8 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			
 			# TODO: swap 0 for heat, pollution, reality generated from room
 			ring_level_config.monitor.temp =  U.min_max(0 + (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
-			ring_level_config.monitor.reality = U.min_max(0 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
-			ring_level_config.monitor.pollution = U.min_max(0 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
+			ring_level_config.monitor.reality = U.min_max(3 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
+			ring_level_config.monitor.pollution = U.min_max(3 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
@@ -1668,6 +1667,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		if energy_availble >= room_details.required_energy:
 			room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
 			ring_config_data.energy.used += room_details.required_energy
+			room_config_data.energy_used += room_details.required_energy
 		else:
 			room_config_data.is_activated = false
 		

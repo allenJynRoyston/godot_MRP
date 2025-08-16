@@ -16,6 +16,7 @@ extends GameContainer
 @onready var ProgramControls:Control = $ProgramControls
 @onready var TopographyControls:Control = $TopographyControls
 @onready var EngineeringControls:Control = $EngineeringControls
+@onready var TelemetryControls:Control = $TelemetryControls
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -43,6 +44,11 @@ extends GameContainer
 
 @onready var TopographyPanel:PanelContainer = $Topography/PanelContainer
 @onready var TopographyMargin:MarginContainer = $Topography/PanelContainer/MarginContainer
+@onready var TopographyComponent:PanelContainer = $Topography/PanelContainer/MarginContainer/TopographyComponent
+
+@onready var TelemetryPanel:PanelContainer = $Telemetry/PanelContainer
+@onready var TelemetryMargin:MarginContainer = $Telemetry/PanelContainer/MarginContainer 
+@onready var TelemetryComponent:Control = $Telemetry/PanelContainer/MarginContainer/TelemetryComponent
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -68,7 +74,9 @@ extends GameContainer
 @onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ManagementBtn
 @onready var OperationsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/OperationsBtn
 @onready var TopLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TopLevelBtn
+@onready var TelemetryBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TelemetryBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
+
 
 # WING ACTION PANELS
 @onready var WingActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
@@ -92,6 +100,7 @@ enum MODE {
 	BASE_MANAGEMENT,
 	ENGINEERING,
 	TOPOGRAPHY,
+	TELEMETRY,
 	INFO,
 	ABILITY,
 	PROGRAMS,
@@ -139,7 +148,7 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, TopographyControls, EngineeringControls]:
+	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, TopographyControls, EngineeringControls, TelemetryControls]:
 		node.reveal(false)
 	#DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
@@ -184,7 +193,12 @@ func update_control_pos(skip_animation:bool = false) -> void:
 
 	control_pos[TopographyPanel] = {
 		"show": 0, 
-		"hide": TopographyPanel.size.x
+		"hide": TopographyMargin.size.x
+	}
+	
+	control_pos[TelemetryPanel] = {
+		"show": 0,
+		"hide": TelemetryMargin.size.x
 	}
 		
 	# for eelements in the top right
@@ -207,8 +221,10 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel]: 
+
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel]: 
 		node.position.x = control_pos[node].hide
+		node.hide()
 	
 	# hide by default
 	NewMessageBtn.is_disabled = true
@@ -266,7 +282,22 @@ func start() -> void:
 		
 		GameplayNode.show_marked_objectives = true
 		GameplayNode.show_timeline = true
-		reveal_action_label(true,false)		
+		reveal_action_label(true, false)
+		
+	TopographyControls.onAction = func() -> void:
+		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
+		SUBSCRIBE.camera_settings = camera_settings
+		TransistionScreen.start(0.3, true)		
+		reveal_topography(false)
+		# end topology, start engineering
+		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
+		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
+		current_mode = MODE.ENGINEERING
+		reveal_engineering(true)
+		# start and reveal
+		EngineeringComponent.start()
+		EngineeringControls.reveal(true)		
+		TopographyControls.reveal(false)
 		
 	EngineeringBtn.onClick = func() -> void:
 		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
@@ -279,9 +310,25 @@ func start() -> void:
 		EngineeringComponent.start()
 		EngineeringControls.reveal(true)
 		
+	EngineeringControls.onAction = func() -> void:		
+		reveal_engineering(false)
+		EngineeringComponent.end()
+		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
+		TransistionScreen.start(0.3, true)				
+		EngineeringControls.reveal(false)
+		# go to topology
+		current_mode = MODE.TOPOGRAPHY
+		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
+		SUBSCRIBE.camera_settings = camera_settings
+		TransistionScreen.start(0.3, true)
+		reveal_topography(true)		
+		TopographyControls.reveal(true)
+		GameplayNode.restore_player_hud()
+		
 	EngineeringControls.onBack = func() -> void:
 		reveal_engineering(false)
 		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
+		EngineeringComponent.end()
 		await EngineeringControls.reveal(false)
 		lock_actions(false)
 		current_mode = MODE.NONE
@@ -303,19 +350,17 @@ func start() -> void:
 	WingInfoBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.INFO	
-
-	#BaseManagementBtn.onClick = func() -> void:			
-		#BaseRenderNode.set_base_zoom(1)
-		#current_mode = MODE.BASE_MANAGEMENT
-		#reveal_base_summary(false)
-		#await lock_actions(true)
-		#reveal_base_management(true)
-		#TopographyControls.reveal(true)
-	#
-	TopographyControls.onAction = func() -> void:
-		pass
-		# change mode and controls
-		# does nothing right now...
+		
+	TelemetryBtn.onClick = func() -> void:
+		await lock_actions(true)
+		await TelemetryControls.reveal(true)
+		current_mode = MODE.TELEMETRY
+	
+	TelemetryControls.onBack = func() -> void:
+		reveal_telemetry(false)
+		reveal_summarycard(false)
+		await TelemetryControls.reveal(false)
+		current_mode = MODE.NONE
 
 	SettingsBtn.onClick = func() -> void:
 		set_backdrop_state(true)
@@ -699,6 +744,7 @@ func show_program_list() -> void:
 	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
+	ActiveMenuNode.render_on_right = true
 	
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate()
@@ -922,6 +968,20 @@ func show_debug() -> void:
 		{
 			"title": "EVENTS",
 			"items": [
+				{
+					"title": "FORCE TELEMTRY EVENT IN ROOM",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "For a rooms event to trigger and show up for Telemetry."
+					},
+					"action": func() -> void:
+						print("add check to get room events and conditions")
+						GAME_UTIL.add_room_event(EVT.TYPE.HAPPY_HOUR, current_location)
+						print("event added: ", EVT.TYPE.HAPPY_HOUR),
+#						pass
+				},				
 				{
 					"title": "HAPPY HOUR",
 					"icon": SVGS.TYPE.CONVERSATION,
@@ -1311,11 +1371,9 @@ func check_btn_states() -> void:
 	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)		
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
 	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
-	
 	var is_powered:bool = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.energy > 1
-	#var is_ventilated:bool = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.ventilation > 1
-	#var is_overheated:bool = false #room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.heating == 0	
-	
+	var room_base_state:Dictionary = base_states.room[U.location_to_designation(current_location)]
+
 	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
 	var is_room_empty:bool = room_extract.room.is_empty()
 	var is_scp_empty:bool = room_extract.scp.is_empty()
@@ -1449,6 +1507,34 @@ func check_btn_states() -> void:
 			current_mode = MODE.ACTIVE_MENU_OPEN
 			await show_program_list()
 			current_mode = MODE.NONE
+		MODE.TELEMETRY:
+			TelemetryControls.disable_active_btn = room_base_state.events_pending.is_empty()
+			TelemetryControls.disable_c_btn = room_base_state.events_pending.is_empty()
+			
+			TelemetryControls.onAction = func() -> void:
+				TelemetryControls.reveal(false)
+				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				
+				# get triggerable event
+				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
+				# remove from base_state
+				GAME_UTIL.remove_room_event_at_index(0)
+				#trigger event
+				await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+					EVT.TYPE.HAPPY_HOUR, 
+						{
+							"onSelection": func(selection:Dictionary) -> void:
+								print("selection: ", selection),
+						}
+					)
+				])
+				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				TelemetryControls.reveal(true)
+				
+			
+			TelemetryControls.onCBtn = func() -> void:
+				print("check for next anamolly")
+			
 		# -----------	
 		MODE.BUILD:	
 			DesignControls.a_btn_title = ("SELECT FACILITY" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
@@ -1534,19 +1620,29 @@ func reveal_action_controls(state:bool, duration:float = 0.2) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0.2) -> void:
+	if state:
+		ModulesPanel.show()
+		SummaryPanel.show()
+	
 	if show_modules:
 		U.tween_node_property(ModulesPanel, "position:x", control_pos[ModulesPanel].show if state else control_pos[ModulesPanel].hide, duration)
 	else:
 		ModulesPanel.position.x = control_pos[ModulesPanel].hide
 		
 	await U.tween_node_property(SummaryPanel, "position:x", control_pos[SummaryPanel].show if state else control_pos[SummaryPanel].hide, duration)
+	
+	if !state:
+		ModulesPanel.hide()
+		SummaryPanel.hide()	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
+	
 	if state:
 		EngineeringPanel.show()
+		
 		
 	await U.tween_node_property(EngineeringPanel, "position:x", control_pos[EngineeringPanel].show if state else control_pos[EngineeringPanel].hide, duration)
 	
@@ -1560,11 +1656,37 @@ func reveal_topography(state:bool, duration:float = 0.3) -> void:
 	if state:
 		TopographyPanel.show()
 	
+	if !state:	
+		await TopographyComponent.end()
+	
 	await U.tween_node_property(TopographyPanel, "position:x", control_pos[TopographyPanel].show if state else control_pos[TopographyPanel].hide, duration)
 	
+	if state:
+		await TopographyComponent.start()
+	
 	if !state:
-		TopographyPanel.hide()
+		TopographyPanel.hide()		
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func reveal_telemetry(state:bool, duration:float = 0.3) -> void:
+	if !is_node_ready():return
+	if state:
+		TelemetryPanel.show()
+	
+	if !state:	
+		await TelemetryComponent.end()
+	
+	await U.tween_node_property(TelemetryPanel, "position:x", control_pos[TelemetryPanel].show if state else control_pos[TelemetryPanel].hide, duration)
+	
+	if state:
+		await TelemetryComponent.start()
+	
+	if !state:
+		TelemetryPanel.hide()		
+# --------------------------------------------------------------------------------------------------		
+
+
 
 # --------------------------------------------------------------------------------------------------		
 var previous_lock_states:Dictionary = {}
@@ -1642,10 +1764,19 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			MODE.ENGINEERING:
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
 				reveal_action_label(true, 0.4, "ENGINEERING")
+			# -------------
+			MODE.TELEMETRY:
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				reveal_action_label(true, 0.4, "TELEMETRY")
+				reveal_summarycard(true, false)
+				reveal_telemetry(true)
+			# -------------
 			MODE.TOPOGRAPHY:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "TOPOLOGY")		
+				reveal_action_label(true, 0.4, "HEALTH AND WELFARE")		
 			# --------------
 			MODE.BUILD:
 				WingRenderNode.set_to_build_mode(true)
@@ -1658,7 +1789,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				DesignControls.reveal(true)			
 			# --------------
 			MODE.COMMANDS:
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				#WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
@@ -1705,6 +1836,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.dec_ring(false)
+		# ----------------------------
 		MODE.COMMANDS:
 			match key:
 				"W":
@@ -1721,6 +1853,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					
 			var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 			WingRenderNode.highlight_rooms = [current_location.room]
+		# ----------------------------
 		MODE.BUILD:
 			match key:
 				# ----------------------------
@@ -1735,6 +1868,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.room_left(true)
+		# ----------------------------
 		MODE.TOPOGRAPHY:
 			match key:
 				# ----------------------------
@@ -1749,3 +1883,17 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.dec_ring(false)
+		# ----------------------------
+		MODE.TELEMETRY:
+			match key:
+				"W":
+					U.room_up(true, true)
+				# ----------------------------
+				"S":
+					U.room_down(true, true)
+				# ----------------------------
+				"D":
+					U.room_right(true, true)
+				# ----------------------------
+				"A":
+					U.room_left(true, true)

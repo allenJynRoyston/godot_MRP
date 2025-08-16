@@ -3,13 +3,13 @@ extends Control
 @onready var LocationPanel:PanelContainer = $LocationPanel
 @onready var LocationMargin:MarginContainer = $LocationPanel/MarginContainer
 
-@onready var LocationFloor:VBoxContainer = $LocationPanel/MarginContainer/Location/Floor
-@onready var LocationWing:VBoxContainer = $LocationPanel/MarginContainer/Location/Wing
-@onready var LocationRoom:VBoxContainer = $LocationPanel/MarginContainer/Location/Room
+@onready var LocationFloor:VBoxContainer = $LocationPanel/MarginContainer/VBoxContainer/Location/Floor
+@onready var LocationWing:VBoxContainer = $LocationPanel/MarginContainer/VBoxContainer/Location/Wing
+@onready var LocationRoom:VBoxContainer = $LocationPanel/MarginContainer/VBoxContainer/Location/Room
 
-@onready var LocationFloorLabel:Label = $LocationPanel/MarginContainer/Location/Floor/CenterLabel2
-@onready var LocationWingLabel:Label = $LocationPanel/MarginContainer/Location/Wing/CenterLabel2
-@onready var LocationRoomLabel:Label = $LocationPanel/MarginContainer/Location/Room/CenterLabel2
+@onready var LocationFloorLabel:Label = $LocationPanel/MarginContainer/VBoxContainer/Location/Floor/CenterLabel2
+@onready var LocationWingLabel:Label = $LocationPanel/MarginContainer/VBoxContainer/Location/Wing/CenterLabel2
+@onready var LocationRoomLabel:Label = $LocationPanel/MarginContainer/VBoxContainer/Location/Room/CenterLabel2
 
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {}
@@ -33,7 +33,6 @@ func _ready() -> void:
 		"hide": -LocationMargin.size.y
 	}
 	
-
 	reveal(false, true)
 # --------------------------------------------------------------------------------------------------
 
@@ -53,10 +52,10 @@ func reveal(state:bool, instant:bool = false) -> void:
 # -----------------------------------------------	
 func on_current_location_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
-	
 
 	# update location label
 	LocationFloorLabel.text = str(new_val.floor)
-	LocationWingLabel.text = str(new_val.ring)
+	LocationWingLabel.text =  U.ring_to_str(new_val.ring)
 	LocationRoomLabel.text = str(new_val.room)
+
 # -----------------------------------------------			

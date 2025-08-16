@@ -167,8 +167,8 @@ func on_purchased_facility_arr_update(new_val:Array) -> void:
 
 func on_use_location_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
-	LeftLabel.text = "WELCOME TO SECTOR %s%s" % [use_location.floor, use_location.ring]
-	RightLabel.text = "WELCOME TO SECTOR %s%s" % [use_location.floor, use_location.ring]
+	LeftLabel.text = "WELCOME TO SECTOR %s%s" % [use_location.floor, U.ring_to_str(use_location.ring)]
+	RightLabel.text = "WELCOME TO SECTOR %s%s" % [use_location.floor, U.ring_to_str(use_location.ring)]
 	
 	for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		room_assign_designation(i, use_location)
@@ -178,6 +178,8 @@ func on_use_location_update() -> void:
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	
+	previous_floor = -1 # required to update lighting
+	previous_ring = -1	
 	U.debounce(str(self, "_update_vars"), update_vars)
 	
 
@@ -207,10 +209,9 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				BaseLights.hide()
 				CautionLights.hide()
 				MeshSelector.show()
-
 				update_camera_size(230)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 75, -15), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 85, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_LEFT:
 				U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
@@ -223,17 +224,13 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			CAMERA.VIEWPOINT.DISTANCE:
 				Laser.show()
 				MeshSelector.show()
-				update_room_lighting()
-				
 				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 50, -15), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 80, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
 				MeshSelector.hide()
-				update_room_lighting()
-				
 				update_camera_size(180)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.2, 67, -15), 0.3, 0, Tween.TRANS_SINE)
@@ -241,15 +238,18 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_FAR:
 				Laser.show()
-				MeshSelector.show()
-				update_room_lighting()
+				MeshSelector.show()			
 				update_camera_size(200)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(5.5, 65, -15), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(6.7, 65, -15), 0.3, 0, Tween.TRANS_SINE)
+			CAMERA.VIEWPOINT.DRAMATIC_ZOOM:
+				await update_camera_size(350, 0.4)
+				await update_camera_size(20, 0.3)
+				
+		U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 
-
-func update_camera_size(size:int) -> void:
-	await U.tween_node_property(SceneCamera, "size", size, 0.3)	
+func update_camera_size(size:int, duration:float = 0.3) -> void:
+	await U.tween_node_property(SceneCamera, "size", size, duration, 0, Tween.TRANS_SINE)	
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -339,6 +339,7 @@ func update_engineering_stats(stat:Dictionary = engineering_stats) -> void:
 	
 	previous_floor = -1 # required to update correctly
 	previous_ring = -1
+
 	update_room_lighting()
 	update_mesh_values()
 # --------------------------------------------------------
@@ -356,11 +357,11 @@ func update_mesh_values() -> void:
 
 # --------------------------------------------------------
 func update_room_lighting() -> void:
-	print("update room lighting....")
+	#print("update room lighting....")
 	if room_config.is_empty() or use_location.is_empty() or previous_camera_view == CAMERA.VIEWPOINT.OVERHEAD:return
-	print(previous_floor, previous_ring)
+	#print(previous_floor, previous_ring)
 	if previous_floor != current_location.floor or previous_ring != current_location.ring:
-		print("now update lighting...")
+		#print("now update lighting...")
 		previous_floor = current_location.floor
 		previous_ring = current_location.ring
 		var monitor:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].monitor			

@@ -1,0 +1,287 @@
+[gd_scene load_steps=16 format=3 uid="uid://dxeregxb5my7c"]
+
+[ext_resource type="Script" uid="uid://0hk4xulkyr36" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/base_mangement_panel.gd" id="1_ctfup"]
+[ext_resource type="PackedScene" uid="uid://cea6twjuqri8r" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BaseManagementPanel/parts/BaseSection.tscn" id="2_ctfup"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="3_avmel"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_ki5i7"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_pbrbe"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="6_70f1f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbxtp"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_yr4tm"]
+font = ExtResource("5_pbrbe")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pk1a"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_bottom_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_avmel"]
+font = ExtResource("5_pbrbe")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ki5i7"]
+thickness = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_ctfup"]
+font = ExtResource("5_pbrbe")
+font_size = 48
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctfup"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_ki5i7"]
+font = ExtResource("3_avmel")
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.2)
+shadow_size = 0
+shadow_color = Color(1, 1, 1, 0.235294)
+
+[node name="BaseMangementComponent" type="PanelContainer"]
+clip_contents = true
+offset_right = 325.0
+offset_bottom = 218.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
+script = ExtResource("1_ctfup")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "POWER DISTRIBUTION "
+label_settings = SubResource("LabelSettings_yr4tm")
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pk1a")
+
+[node name="Control" type="Control" parent="VBoxContainer/Content"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = -10
+
+[node name="Heating" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ctfup")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Heating"
+color = Color(1, 0.272178, 0.404585, 1)
+values = [0, 1, 2, 3]
+
+[node name="Cooling" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ctfup")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Cooling"
+active_level = 3
+color = Color(0.491226, 0.660078, 1, 1)
+values = [0, 1, 2, 3]
+
+[node name="Ventilation" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ctfup")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Ventilation"
+color = Color(0.63377, 0.48969, 0.913972, 1)
+values = [0, 1, 2, 3]
+
+[node name="Security" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ctfup")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Security"
+color = Color(0, 0.596254, 0.381604, 1)
+values = [0, 1, 2, 3]
+
+[node name="Energy" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_ctfup")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "ENERGY"
+active_level = 4
+color = Color(0.864543, 0.586489, 0.281442, 1)
+values = [0, 5, 10, 15]
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_top = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FLOOR"
+label_settings = ExtResource("4_ki5i7")
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "WING"
+label_settings = ExtResource("4_ki5i7")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
+layout_mode = 2
+
+[node name="FloorLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "1"
+label_settings = SubResource("LabelSettings_avmel")
+horizontal_alignment = 1
+
+[node name="RingLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "A"
+label_settings = SubResource("LabelSettings_avmel")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ki5i7")
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "UPGRADE"
+label_settings = ExtResource("4_ki5i7")
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="SVGIcon" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_70f1f")]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+icon = 39
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(30, 30)
+
+[node name="CoreAmountLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "5"
+label_settings = SubResource("LabelSettings_ctfup")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4"]
+visible = false
+custom_minimum_size = Vector2(160, 70)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+color = Color(0, 0, 0, 0)
+
+[node name="Description" type="PanelContainer" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ctfup")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Description"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Description/MarginContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="VBoxContainer/Description/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Description goes here."
+label_settings = SubResource("LabelSettings_ki5i7")
+autowrap_mode = 3

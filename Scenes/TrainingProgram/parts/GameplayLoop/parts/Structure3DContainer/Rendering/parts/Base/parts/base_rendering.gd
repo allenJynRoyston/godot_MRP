@@ -55,8 +55,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	# move to floor
 	if previous_floor != current_location.floor:
 		previous_floor = current_location.floor
-		
-		custom_tween_range(Camera.position.y, -(current_location.floor * 35) - 15, 0.3, 
+		custom_tween_range(Camera.position.y, -(current_location.floor * 35) - 18, 0.3, 
 			func(val:float) -> void:
 				Camera.position.y = val
 		)
@@ -76,6 +75,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 		for ring_index in FloorNode.get_child_count():
 			var WingNode:Node3D = FloorNode.find_child( str("W", ring_index) )
 			WingNode.show_outershell = !(floor_index == current_location.floor and ring_index == current_location.ring)
+			WingNode.in_edit_mode = !WingNode.show_outershell
 				
 				
 # ------------------------------------------------

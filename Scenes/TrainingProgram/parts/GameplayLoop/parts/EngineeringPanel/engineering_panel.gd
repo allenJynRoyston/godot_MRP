@@ -61,11 +61,12 @@ func start() -> void:
 		node.make_selectable = component_index == index
 	
 func end() -> void:
+	is_active = false
 	for index in component_list.size():
 		var node:Control = component_list[index].node
 		node.make_selectable = false
 	reveal_description(false)
-	is_active = false
+	
 # ------------------------------------------
 
 # ------------------------------------------
@@ -147,6 +148,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var key:String = input_data.key
 	var power_distribution:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)].power_distribution
 	var prop_val:int = power_distribution[component_list[component_index].prop]
+	
+	print("chang val: is_active, ", is_active)
 
 	match key:
 		"W":

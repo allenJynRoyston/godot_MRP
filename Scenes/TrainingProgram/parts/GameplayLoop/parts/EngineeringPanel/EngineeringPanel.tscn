@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cwdbde0bi13fr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/RealityMonitor.tscn" id="6_ed7et"]
 [ext_resource type="PackedScene" uid="uid://dqn2ef77ux60p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/PollutionMonitor.tscn" id="6_mnkd6"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="7_n8h5w"]
+[ext_resource type="LabelSettings" uid="uid://34n116bw0xn5" path="res://Fonts/small_font_label_setting.tres" id="8_1jjk5"]
 [ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="8_u58ao"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="9_u58ao"]
 
@@ -39,14 +40,6 @@ shadow_offset = Vector2(2, 2)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pk1a"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_61y7a"]
-font = ExtResource("2_nely8")
-font_color = Color(0, 0, 0, 1)
-outline_size = 2
-outline_color = Color(0, 0, 0, 0.2)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ctfup"]
 font = ExtResource("3_jdo1u")
@@ -223,7 +216,7 @@ alignment = 1
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "ENERGY AVAILABLE"
-label_settings = SubResource("LabelSettings_61y7a")
+label_settings = ExtResource("8_1jjk5")
 horizontal_alignment = 2
 
 [node name="EnergyItem" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer" instance=ExtResource("8_u58ao")]

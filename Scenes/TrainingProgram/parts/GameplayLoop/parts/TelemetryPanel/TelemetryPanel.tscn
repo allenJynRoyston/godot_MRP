@@ -1,0 +1,172 @@
+[gd_scene load_steps=11 format=3 uid="uid://cgsv34nc422hv"]
+
+[ext_resource type="Script" uid="uid://onao3otd6rkg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/telemetry_panel.gd" id="1_bsouq"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_0vdmw"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_0x36u"]
+[ext_resource type="LabelSettings" uid="uid://c21auew2nnv72" path="res://Fonts/small_font_red_label_settings.tres" id="6_2uqqy"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="9_4bmg2"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="10_7nm7q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbxtp"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_yr4tm"]
+font = ExtResource("3_0x36u")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pk1a"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="TelemetryPanel" type="PanelContainer"]
+offset_right = 325.0
+offset_bottom = 218.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
+script = ExtResource("1_bsouq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "READINGS"
+label_settings = SubResource("LabelSettings_yr4tm")
+horizontal_alignment = 2
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pk1a")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "attach events to rooms themselves
+and give them a random chance
+and condition to pop off.  if it
+its true, add the event 
+to the room_config.room_data
+and a time limit.  you can trigger if 
+from this screen.  
+if it hits zero on the time limit
+it auto fires it off."
+label_settings = ExtResource("3_0vdmw")
+horizontal_alignment = 2
+
+[node name="Detected" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Detected"]
+layout_mode = 0
+offset_left = -282.0
+offset_top = 89.0
+offset_right = -124.0
+offset_bottom = 143.0
+theme_override_styles/panel = ExtResource("9_4bmg2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Detected/PanelContainer"]
+layout_mode = 2
+
+[node name="Header" type="PanelContainer" parent="Detected/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="Detected/PanelContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Detected/PanelContainer/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "???"
+label_settings = SubResource("LabelSettings_yr4tm")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Detected/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SVGIcon" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" instance=ExtResource("10_7nm7q")]
+visible = false
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+icon = 39
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(25, 25)
+
+[node name="Content" type="Label" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Event/Anamolly
+ Detected"
+label_settings = ExtResource("6_2uqqy")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="Detected/PanelContainer"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="Detected/PanelContainer/Control" instance=ExtResource("10_7nm7q")]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 61.0
+offset_right = 45.0
+offset_bottom = 81.0
+icon = 37
+icon_color = Color(1, 0.74902, 0.2, 1)

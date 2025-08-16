@@ -29,59 +29,63 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_top = 20
 
-[node name="Location" type="HBoxContainer" parent="LocationPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="LocationPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Location" type="HBoxContainer" parent="LocationPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="Floor" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+[node name="Floor" type="VBoxContainer" parent="LocationPanel/MarginContainer/VBoxContainer/Location"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Floor"]
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Floor"]
 layout_mode = 2
 text = "FLOOR"
 label_settings = ExtResource("2_j0hl6")
 horizontal_alignment = 1
 
-[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Floor"]
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Floor"]
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("3_j0hl6")
 horizontal_alignment = 1
 
-[node name="Wing" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+[node name="Wing" type="VBoxContainer" parent="LocationPanel/MarginContainer/VBoxContainer/Location"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Wing"]
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Wing"]
 layout_mode = 2
 text = "WING"
 label_settings = ExtResource("2_j0hl6")
 horizontal_alignment = 1
 
-[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Wing"]
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Wing"]
 layout_mode = 2
 text = "A"
 label_settings = ExtResource("3_j0hl6")
 horizontal_alignment = 1
 
-[node name="Room" type="VBoxContainer" parent="LocationPanel/MarginContainer/Location"]
+[node name="Room" type="VBoxContainer" parent="LocationPanel/MarginContainer/VBoxContainer/Location"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/Location/Room"]
+[node name="CenterLabel" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Room"]
 layout_mode = 2
 text = "ROOM"
 label_settings = ExtResource("2_j0hl6")
 horizontal_alignment = 1
 
-[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/Location/Room"]
+[node name="CenterLabel2" type="Label" parent="LocationPanel/MarginContainer/VBoxContainer/Location/Room"]
 layout_mode = 2
 text = "1"
 label_settings = ExtResource("3_j0hl6")

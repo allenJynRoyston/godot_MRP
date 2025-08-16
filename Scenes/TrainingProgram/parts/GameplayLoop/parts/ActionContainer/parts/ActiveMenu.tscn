@@ -71,7 +71,7 @@ theme_override_constants/margin_bottom = 0
 
 [node name="CardBody" parent="MenuControl/PanelContainer/MarginContainer" instance=ExtResource("3_hjr8x")]
 layout_mode = 2
-card_size = Vector2(250, 200)
+card_size = Vector2(290, 200)
 border_color = Color(0, 0, 0, 1)
 
 [node name="TextureRect" parent="MenuControl/PanelContainer/MarginContainer/CardBody" index="0"]

@@ -1480,3 +1480,16 @@ func get_list_of_programs(use_location:Dictionary = current_location, include_al
 	
 	return list
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+func add_room_event(event_ref:int, use_location:Dictionary = current_location) -> void:
+	base_states.room[U.location_to_designation(use_location)].events_pending.push_back(event_ref)
+	SUBSCRIBE.base_states = base_states
+# -----------------------------------------------------------------------------	
+
+# -----------------------------------------------------------------------------
+func remove_room_event_at_index(index:int, use_location:Dictionary = current_location) -> void:
+	base_states.room[U.location_to_designation(use_location)].events_pending.remove_at(index)
+	print(base_states.room[U.location_to_designation(use_location)])
+	SUBSCRIBE.base_states = base_states
+# -----------------------------------------------------------------------------	

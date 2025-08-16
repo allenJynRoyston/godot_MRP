@@ -430,3 +430,30 @@ func generate_flicker_pattern(count:int = 10) -> Array:
 			flickers.append(randf_range(0.05, 0.1))   # slightly slower
 	return flickers
 # ---------------------------------------------
+
+# ---------------------------------------------
+func ring_to_str(ring:int) -> String:
+	match ring:
+		0: 
+			return "A"
+		1:
+			return "B"
+		2:
+			return "C"
+		3:
+			return "D"
+		
+	return "?"
+
+func get_floor_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor]
+	
+func get_ring_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor].ring[use_location.ring]
+
+func get_room_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+# ---------------------------------------------

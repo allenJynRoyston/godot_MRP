@@ -131,8 +131,8 @@ func activate(new_list_size:int = 4) -> void:
 	await U.tick()
 	if render_on_right:
 		control_pos[MenuPanel] = {
-			"show": GBL.game_resolution.x - MenuMargin.size.x - 40, 
-			"hide": GBL.game_resolution.x - MenuMargin.size.x + MenuMargin.size.x
+			"show": GBL.game_resolution.x - MenuMargin.size.x, 
+			"hide": GBL.game_resolution.x + (MenuMargin.size.x * 2)
 		}
 	else:
 		control_pos[MenuPanel] = {

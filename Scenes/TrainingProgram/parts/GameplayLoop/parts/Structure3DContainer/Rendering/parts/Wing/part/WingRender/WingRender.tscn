@@ -124,7 +124,7 @@ density_texture = SubResource("NoiseTexture3D_tiptr")
 script = ExtResource("1_nn2y2")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0.272709, 67, -15)
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 6.7, 70, -15)
 doppler_tracking = 1
 projection = 1
 current = true
@@ -144,7 +144,7 @@ transform = Transform3D(0.707106, -3.20375e-07, 0.707107, -0.078526, 0.993815, 0
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
 
 [node name="MeshSelector" type="MeshInstance3D" parent="MeshRender"]
-transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -7.45058e-09, 0.999999, 7.45058e-09, 2.98023e-08, 0, 1, 0, -11, 0)
+transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 2.98023e-08, 0, 1, 0.139576, -12.7665, -0.13958)
 mesh = SubResource("ArrayMesh_yf1e1")
 surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
 
@@ -214,7 +214,7 @@ uppercase = true
 line_spacing = 20.0
 
 [node name="Rooms" type="Node3D" parent="MeshRender"]
-transform = Transform3D(1, 0, 8.9407e-08, 0, 1, -2.98023e-08, -8.9407e-08, 0, 1, 0.212, -15, -0.212)
+transform = Transform3D(1, 0, 1.19209e-07, -3.72529e-08, 1, 0, -8.9407e-08, 0, 1, 0.100086, -13.5837, -0.10009)
 
 [node name="R1" parent="MeshRender/Rooms" instance=ExtResource("5_yf1e1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -30)
@@ -324,7 +324,7 @@ spot_angle = 33.1
 spot_angle_attenuation = 0.707107
 
 [node name="FanLight" parent="MeshRender/Lighting" instance=ExtResource("7_fh3pe")]
-transform = Transform3D(0.700519, 0.647756, 0.299483, -0.647755, 0.401037, 0.647754, 0.299481, -0.647756, 0.70052, 60.8155, 11.6172, -67.9846)
+transform = Transform3D(0.501655, 0.561802, -0.657821, 0.803566, -0.0210231, 0.594847, 0.320355, -0.82701, -0.46199, 62.7594, 14.1459, -65.6411)
 light_color = Color(1, 0.590317, 0.485029, 1)
 godray_energy = 0.0
 spot_range = 30.0
@@ -400,16 +400,20 @@ disable_reverse_shadow = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="MeshRender/Lighting/BaseLights"]
 transform = Transform3D(0.887055, -0.419536, 0.192672, -0.0963486, 0.239919, 0.966, -0.451496, -0.875459, 0.1724, 32.1105, 35.0358, 37.096)
-light_energy = 0.75
+visible = false
+light_energy = 0.3
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
-light_specular = 11.975
+light_negative = true
+light_specular = 4.835
 directional_shadow_mode = 0
-directional_shadow_fade_start = 0.693
 sky_mode = 1
 
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="MeshRender/Lighting/BaseLights"]
-transform = Transform3D(0.554135, -0.628985, -0.545265, 0.766471, 0.129995, 0.628985, -0.32474, -0.766472, 0.554134, 32.1105, 35.0358, 37.096)
+[node name="RoomLight" type="DirectionalLight3D" parent="MeshRender/Lighting/BaseLights"]
+transform = Transform3D(0.0232248, -0.986421, 0.16258, 0.961635, 0.0665071, 0.266144, -0.273343, 0.150159, 0.950125, 32.1105, 35.0358, 37.096)
+light_color = Color(1, 0.862745, 0.839216, 1)
+light_energy = 0.3
+light_volumetric_fog_energy = 9.471
 light_specular = 11.975
 directional_shadow_mode = 0
 directional_shadow_fade_start = 0.693

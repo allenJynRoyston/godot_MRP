@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=27 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
@@ -7,19 +7,29 @@
 [ext_resource type="PackedScene" uid="uid://dxeregxb5my7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/EngineeringPanel.tscn" id="6_bk83u"]
 [ext_resource type="PackedScene" uid="uid://ck4ghs6psctsy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanel.tscn" id="7_xathl"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="8_bk83u"]
+[ext_resource type="PackedScene" uid="uid://cgsv34nc422hv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/TelemetryPanel.tscn" id="8_xathl"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="9_bk83u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_58xi4"]
-[ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="12_58xi4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvjm1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_58xi4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvn03"]
 bg_color = Color(0.05, 0.05, 0.05, 0)
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gjl"]
+bg_color = Color(1, 0.749, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_273dx"]
 bg_color = Color(1, 0.749, 0.2, 1)
@@ -46,18 +56,6 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nld38"]
-bg_color = Color(1, 0.749, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gjl"]
 bg_color = Color(1, 0.749, 0.2, 1)
 border_width_left = 2
 border_width_top = 2
@@ -105,6 +103,8 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvjm1"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bk83u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ah17n"]
@@ -113,20 +113,6 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
 bg_color = Color(0.89294, 1, 0.89294, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3de1l"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dgo3"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.337255, 0.27451, 1, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xathl"]
 
@@ -144,66 +130,6 @@ script = ExtResource("1_co4u3")
 z_as_relative = false
 layout_mode = 2
 color = Color(0.286684, 0.286684, 0.286684, 0.141176)
-
-[node name="ModulesAndPrograms" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="ModulesAndPrograms"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
-
-[node name="MarginContainer" type="MarginContainer" parent="ModulesAndPrograms/PanelContainer"]
-custom_minimum_size = Vector2(500, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 180
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-metadata/_edit_group_ = true
-
-[node name="ModulesCard" parent="ModulesAndPrograms/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-modules_only = true
-
-[node name="SummaryControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
-
-[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-metadata/_edit_group_ = true
-
-[node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
 
 [node name="RootControls" type="Control" parent="."]
 layout_mode = 2
@@ -262,6 +188,17 @@ vertical_alignment = 1
 [node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="TelemetryBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
+title = "TELEMETRY"
+assigned_key = "T"
+icon = 32
+is_disabled = false
+allow_hint = false
+
 [node name="EngineeringBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
@@ -310,21 +247,9 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
-title = "TOPOLOGY"
-assigned_key = "T"
+title = "HEALTH AND WELFARE"
+assigned_key = "H"
 icon = 70
-is_disabled = false
-allow_hint = false
-
-[node name="GotoGeneratorBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-visible = false
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
-title = "GENERATOR"
-assigned_key = "2"
-icon = 32
 is_disabled = false
 allow_hint = false
 
@@ -543,6 +468,36 @@ icon = 15
 is_disabled = false
 allow_hint = false
 
+[node name="SummaryControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
+
+[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+metadata/_edit_group_ = true
+
+[node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
 [node name="SummaryControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 intercept_click_event = true
@@ -579,12 +534,48 @@ hide_c_btn = false
 
 [node name="TopographyControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-hide_a_btn = true
+a_btn_title = "ENGINEERING"
+hide_c_btn = false
 
 [node name="EngineeringControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "UPDATE"
-hide_a_btn = true
+a_btn_title = "HEALTH AND WELFARE"
+
+[node name="TelemetryControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "INVESTIGATE"
+c_btn_title = "NEXT ANAMOLLY"
+hide_c_btn = false
+
+[node name="ModulesAndPrograms" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ModulesAndPrograms"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
+
+[node name="MarginContainer" type="MarginContainer" parent="ModulesAndPrograms/PanelContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 170
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+metadata/_edit_group_ = true
+
+[node name="ModulesCard" parent="ModulesAndPrograms/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+modules_only = true
 
 [node name="Engineering" type="Control" parent="."]
 layout_mode = 2
@@ -602,7 +593,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_bk83u")
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 200
+theme_override_constants/margin_top = 180
 theme_override_constants/margin_right = 20
 
 [node name="EngineeringComponent" parent="Engineering/PanelContainer/MarginContainer" instance=ExtResource("6_bk83u")]
@@ -625,13 +616,36 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
+theme_override_constants/margin_top = 70
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="TopographyComponent" parent="Topography/PanelContainer/MarginContainer" instance=ExtResource("7_xathl")]
 layout_mode = 2
 size_flags_vertical = 4
+
+[node name="Telemetry" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Telemetry"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
+
+[node name="MarginContainer" type="MarginContainer" parent="Telemetry/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="TelemetryComponent" parent="Telemetry/PanelContainer/MarginContainer" instance=ExtResource("8_xathl")]
+layout_mode = 2
 
 [node name="NotificationControls" type="Control" parent="."]
 visible = false
@@ -678,66 +692,6 @@ is_disabled = false
 visible = false
 layout_mode = 2
 
-[node name="FloorPreviewControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="FloorPreviewControl"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_3de1l")
-
-[node name="MarginContainer" type="MarginContainer" parent="FloorPreviewControl/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 100
-
-[node name="PanelContainer" type="PanelContainer" parent="FloorPreviewControl/PanelContainer/MarginContainer"]
-z_index = 1
-custom_minimum_size = Vector2(360, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_4dgo3")
-
-[node name="MarginContainer" type="MarginContainer" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-
-[node name="StatusLabel" type="Label" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "RING A "
-label_settings = ExtResource("2_i3yab")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="PreviewTextureRect" type="TextureRect" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 6
-
-[node name="Control" type="Control" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="IconBtn" parent="FloorPreviewControl/PanelContainer/MarginContainer/PanelContainer/Control" instance=ExtResource("12_58xi4")]
-layout_mode = 0
-offset_left = 321.0
-offset_top = 13.0
-offset_right = 346.0
-offset_bottom = 38.0
-icon = 49
-inactive_color = Color(1, 1, 1, 1)
-
 [node name="ActionLabelPanel" type="Control" parent="."]
 layout_mode = 2
 
@@ -753,7 +707,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_xathl")
 [node name="MarginContainer" type="MarginContainer" parent="ActionLabelPanel/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
+theme_override_constants/margin_top = 140
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
