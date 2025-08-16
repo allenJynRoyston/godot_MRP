@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=26 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
 [ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
@@ -9,13 +9,12 @@
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="7_td1l6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="8_oju27"]
-[ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="9_td1l6"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="10_3y2gk"]
 [ext_resource type="PackedScene" uid="uid://hmrs6dblpe7k" path="res://UI/ResourceRequiredFloatingPanel/ResourceRequiredFloatingPanel.tscn" id="11_fi0y4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="12_1e555"]
 [ext_resource type="PackedScene" uid="uid://txr323ki0puc" path="res://UI/ConsequenceFloatingPanel/ConsequenceFloatingPanel.tscn" id="13_ptgpd"]
 [ext_resource type="PackedScene" uid="uid://esr6voh1ktor" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/SuccessRoll.tscn" id="14_wycer"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="19_idm37"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5faq"]
 
@@ -42,6 +41,24 @@ shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ke4bq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ptgpd"]
+font = ExtResource("19_idm37")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wycer"]
+font = ExtResource("19_idm37")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_byy7q"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
@@ -223,7 +240,7 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
 text = "The quick brown fox jumps over the fence."
-label_settings = ExtResource("9_td1l6")
+label_settings = SubResource("LabelSettings_ptgpd")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
@@ -232,7 +249,7 @@ visible_characters_behavior = 1
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 5
-label_settings = ExtResource("10_3y2gk")
+label_settings = SubResource("LabelSettings_wycer")
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters_behavior = 1
@@ -302,7 +319,9 @@ layout_mode = 2
 [node name="BtnControls" parent="." instance=ExtResource("11_h7wp5")]
 layout_mode = 2
 offset = Vector2(10, 25)
+c_btn_title = "FORCE FAIL"
 c_btn_icon = 2
+hide_c_btn = false
 
 [node name="TransistionScreen" parent="." instance=ExtResource("12_1e555")]
 z_index = 1

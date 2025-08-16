@@ -31,8 +31,11 @@ enum TYPE {
 	
 	# -------------
 	HAPPY_HOUR, 
-	UNHAPPY_HOUR
+	UNHAPPY_HOUR,
 	# -------------
+	
+	# -------------
+	MYSTERY_MEAT,
 }
 
 enum CONSEQUENCE {

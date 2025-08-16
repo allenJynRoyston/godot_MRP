@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=12 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_4l8vf"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_8ufj8"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="4_4l8vf"]
 [ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="5_8ufj8"]
+[ext_resource type="LabelSettings" uid="uid://34n116bw0xn5" path="res://Fonts/small_font_label_setting.tres" id="6_8ufj8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_43xce"]
 
@@ -33,7 +34,7 @@ shadow_offset = Vector2(3, 3)
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fb51e"]
 
 [node name="OptionListItem" type="PanelContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(250, 0)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
@@ -75,11 +76,12 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
+[node name="LockContainer" type="MarginContainer" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = -2
 
-[node name="LockIcon" parent="VBoxContainer/Header/MarginContainer/HBoxContainer/MarginContainer2" instance=ExtResource("3_4l8vf")]
+[node name="LockIcon" parent="VBoxContainer/Header/MarginContainer/HBoxContainer/LockContainer" instance=ExtResource("3_4l8vf")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 icon = 48
@@ -110,7 +112,7 @@ theme_override_constants/separation = 20
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 0
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 30)
@@ -128,13 +130,12 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_fb51e")
 
-[node name="SubImageLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
-visible = false
+[node name="Description" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "CONSEQUENCES"
-label_settings = ExtResource("5_8ufj8")
+text = "Description"
+label_settings = ExtResource("6_8ufj8")
 vertical_alignment = 1
 autowrap_mode = 2

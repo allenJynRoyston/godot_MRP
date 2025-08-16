@@ -984,17 +984,17 @@ func show_debug() -> void:
 #						pass
 				},				
 				{
-					"title": "HAPPY HOUR",
+					"title": "MYSTERY_MEAT",
 					"icon": SVGS.TYPE.CONVERSATION,
 					"hint": {
 						"icon": SVGS.TYPE.CONVERSATION,
 						"title": "HINT",
-						"description": "Test for HAPPY HOUR event."
+						"description": "Test for MYSTERY_MEAT event."
 					},
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
 						await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
-							EVT.TYPE.HAPPY_HOUR, 
+							EVT.TYPE.MYSTERY_MEAT, 
 								{
 									"onSelection": func(selection:Dictionary) -> void:
 										# add buff, debuff

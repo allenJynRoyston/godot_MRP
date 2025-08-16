@@ -2,15 +2,18 @@ extends MouseInteractions
 
 @onready var HeaderPanel:PanelContainer = $VBoxContainer/Header
 @onready var ContentPanel:PanelContainer = $VBoxContainer/PanelContainer
-@onready var IconBtn:Control = $VBoxContainer/Header/MarginContainer/HBoxContainer/MarginContainer2/LockIcon
+@onready var LockIcon:Control = $VBoxContainer/Header/MarginContainer/HBoxContainer/LockContainer/LockIcon
 
 @onready var HeaderLabel:Label = $VBoxContainer/Header/MarginContainer/HBoxContainer/HeaderLabel
 @onready var TitleLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel
+@onready var DescriptionLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Description
+
 @onready var ImageRect:TextureRect = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/TextureRect
 @onready var SubImageLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/SubImageLabel
 
 @onready var content_stylebox_copy:StyleBoxFlat = ContentPanel.get("theme_override_styles/panel").duplicate()
 @onready var header_stylebox_copy:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
+@onready var title_label_setting:LabelSettings = TitleLabel.get("label_settings").duplicate()
 
 var index:int
 var enabled:bool = false 
@@ -52,6 +55,7 @@ func _ready() -> void:
 	on_data_update()
 	ContentPanel.set('theme_override_styles/panel', content_stylebox_copy)		
 	HeaderPanel.set("theme_override_styles/panel", header_stylebox_copy)
+	TitleLabel.set("label_settings", title_label_setting)
 	on_render_if_update.call_deferred()	
 	
 	hint_title = "HINT"
@@ -67,7 +71,7 @@ func start(delay:float = 0) -> void:
 
 # ----------------------	
 func fade_out(delay:float = 0) -> void:
-	U.tween_node_property(IconBtn, 'icon_color:a', 0, 0.3, delay)
+	U.tween_node_property(LockIcon, 'icon_color:a', 0, 0.3, delay)
 	await U.tween_node_property(self, 'modulate:a', 0, 0.3, delay)
 # ----------------------		
 
@@ -91,10 +95,33 @@ func update_node() -> void:
 	
 	# update header when selected
 	header_stylebox_copy.bg_color = COLORS.primary_black if is_available else COLORS.disabled_color
+	title_label_setting.font_color = Color.WHITE if !is_selected else Color.BLACK
 	
-	modulate.a = 1 if is_selected else 0.6
-	IconBtn.icon_color.a = 1 if is_selected else 0.6
-	IconBtn.hide() if is_available else IconBtn.show()
+	# modulate
+	modulate.a = 1 if is_selected else 0.9
+	
+	# lock icon
+	LockIcon.icon_color.a = 1 if is_selected else 0.9
+	LockIcon.hide() if is_available else LockIcon.show()
+	
+	# elements
+	if data.has("header"):
+		HeaderLabel.show()
+		HeaderLabel.text = data.header
+	else:
+		HeaderLabel.hide()
+
+	if data.has("title"):
+		TitleLabel.show()
+		TitleLabel.text = data.title
+	else:
+		TitleLabel.hide()
+	
+	if data.has("description"):
+		DescriptionLabel.show()
+		DescriptionLabel.text = data.description
+	else:
+		DescriptionLabel.hide()
 	
 	if hint_description == "":
 		if is_available:
@@ -107,20 +134,20 @@ func update_node() -> void:
 func on_render_if_update() -> void:
 	if !is_node_ready():return
 	
-	if render_if.is_empty() or is_paranoid:
-		is_available = true
-		HeaderLabel.text = "???"
-		return
-	
-	if "lockout" in render_if and render_if.lockout:
-		is_available = false
-		HeaderLabel.text = "UNAVAILABLE"
-		return
-		
-	is_available = render_if.is_available	 
-	HeaderLabel.text = "%s (%s)" % [render_if.property, render_if.current_amount]
-	TitleLabel.text = "SUFFERING FROM PARANOIA..." if is_paranoid else U.simulate_dyslexia(data.title) if apply_dyslexia else data.title
-# ----------------------
+	#if render_if.is_empty() or is_paranoid:
+		#is_available = true
+		#HeaderLabel.text = "???"
+		#return
+	#
+	#if "lockout" in render_if and render_if.lockout:
+		#is_available = false
+		#HeaderLabel.text = "UNAVAILABLE"
+		#return
+		#
+	#is_available = render_if.is_available	 
+	#HeaderLabel.text = "%s (%s)" % [render_if.property, render_if.current_amount]
+	#TitleLabel.text = "SUFFERING FROM PARANOIA..." if is_paranoid else U.simulate_dyslexia(data.title) if apply_dyslexia else data.title
+## ----------------------
 
 
 var time_accumulator := 0.0

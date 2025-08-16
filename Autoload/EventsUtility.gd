@@ -676,6 +676,93 @@ var HAPPY_HOUR:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+var MYSTERY_MEAT:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		var option_selected:Dictionary = {
+			"selected": null
+		}
+		var onSelected = func(selected) -> void:
+			option_selected.selected = selected.option.val
+
+		return [
+			# ---------
+			func() -> Dictionary:
+				return {
+					"header": "MYSTERY MEAT",
+					"img_src": "res://Media/images/redacted.png",
+					"text": [
+						"Analytics has noticed an uptick in meat consumption in this facility cafeteria.",
+						"Quantities ordered exceed projected dietary needs by 23%. Should we investigate?"
+					],
+					"options": [
+						# ----------------------------------------- MORALE
+						{
+							"include": true,
+							"header": "MORALE",
+							"title": "Boost Spirits",
+							"description": "Turn a blind eye; the staff deserve a little comfort food.",
+							"vibe_cost": {RESOURCE.METRICS.MORALE: 3},
+							"val": {
+								"response": "The meat remains on the menu. Staff morale improves."
+							},
+							"onSelected": onSelected
+						},
+						# ----------------------------------------- READINESS
+						{
+							"include": true,
+							"header": "READINESS",
+							"title": "Audit Supply",
+							"description": "Trace the supply chain. Ensure our logistics aren’t compromised.",
+							"vibe_cost": {RESOURCE.METRICS.READINESS: 3},
+							"val": {
+								"response": "A quick audit reveals the meat isn’t on any Foundation manifests. Everybody is real grossed out about it though."
+							},
+							"onSelected": onSelected
+						},
+						# ----------------------------------------- SAFETY
+						{
+							"include": true,
+							"header": "SAFETY",
+							"title": "Test Samples",
+							"description": "Pull samples and run biohazard screening.",
+							"vibe_cost": {RESOURCE.METRICS.SAFETY: 3},
+							"val": {
+								"response": "Laboratory analysis detects no known pathogens, but finds anomalous DNA sequences."
+							},
+							"onSelected": onSelected
+						},
+						# ----------------------------------------- ALT / WILD CARD
+						{
+							"include": true,
+							"header": "DIRECTIVE",
+							"title": "Shut It Down",
+							"description": "Shut it down until safety commission evaluates the facility.",
+							"val": {
+								"response": "Facility is shut down for 3 days."
+							},
+							"onSelected": onSelected
+						}
+					]
+				},
+			# ---------
+			func() -> Dictionary:
+				if "onSelection" in props:
+					props.onSelection.call(option_selected.selected)
+					
+				return {
+					"text": [
+						option_selected.selected.response
+					]
+				}	
+		],
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
 var UNHAPPY_HOUR:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
 		var option_selected:Dictionary = {
@@ -932,7 +1019,8 @@ var reference_data:Dictionary = {
 	
 	# ------------------
 	EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
-	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR
+	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR,
+	EVT.TYPE.MYSTERY_MEAT: MYSTERY_MEAT
 	# ------------------
 }
 
