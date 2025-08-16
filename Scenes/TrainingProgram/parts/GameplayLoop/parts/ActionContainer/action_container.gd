@@ -119,6 +119,7 @@ var current_mode:MODE = MODE.NONE :
 		on_current_mode_update()
 
 var selected_room:int = -1
+var telemetry_count:int = 0
 var list_of_available_rooms:Array = []
 
 var prev_draw_state:Dictionary	= {}
@@ -1344,6 +1345,10 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+	
+	if !is_node_ready():return
+	var list:Array = GAME_UTIL.get_pending_events_list()
+	TelemetryControls.c_btn_title = "NEXT ANAMOLLY (%s/%s)" % [telemetry_count + 1, list.size()]	
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
@@ -1509,7 +1514,8 @@ func check_btn_states() -> void:
 			current_mode = MODE.NONE
 		MODE.TELEMETRY:
 			TelemetryControls.disable_active_btn = room_base_state.events_pending.is_empty()
-			TelemetryControls.disable_c_btn = room_base_state.events_pending.is_empty()
+			TelemetryControls.hide_c_btn = GAME_UTIL.get_pending_events_list().is_empty()
+			
 			
 			TelemetryControls.onAction = func() -> void:
 				TelemetryControls.reveal(false)
@@ -1533,7 +1539,11 @@ func check_btn_states() -> void:
 				
 			
 			TelemetryControls.onCBtn = func() -> void:
-				print("check for next anamolly")
+				#current_location
+				var list:Array = GAME_UTIL.get_pending_events_list()
+				telemetry_count = U.min_max(telemetry_count + 1, 0, list.size() - 1, true)
+				var next_item:Dictionary = list[telemetry_count]
+				SUBSCRIBE.current_location = next_item.location
 			
 		# -----------	
 		MODE.BUILD:	
@@ -1722,6 +1732,16 @@ func lock_actions(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
+func on_base_states_update(new_val:Dictionary) -> void:
+	base_states = new_val
+	if base_states.is_empty():return
+	var pending_events_count:int = GAME_UTIL.get_pending_events_count()
+	
+	TelemetryBtn.is_flashing = pending_events_count > 0
+# --------------------------------------------------------------------------------------------------		
+	
+
+# --------------------------------------------------------------------------------------------------		
 var previous_mode:int = -1
 func on_current_mode_update(skip_animation:bool = false) -> void:
 	if !is_node_ready() or control_pos.is_empty():return	
@@ -1766,6 +1786,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_action_label(true, 0.4, "ENGINEERING")
 			# -------------
 			MODE.TELEMETRY:
+				telemetry_count = 0
+				
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)

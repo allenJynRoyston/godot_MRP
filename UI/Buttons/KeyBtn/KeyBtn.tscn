@@ -17,10 +17,10 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_753p1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nkjw7"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_p1ehi"]
+[sub_resource type="LabelSettings" id="LabelSettings_nf7q3"]
 font = ExtResource("6_nkjw7")
 font_size = 24
 font_color = Color(0, 0, 0, 1)
@@ -44,7 +44,7 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1ehi"]
 bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_yubgd"]
+[sub_resource type="LabelSettings" id="LabelSettings_753p1"]
 font = ExtResource("4_f1p3b")
 font_color = Color(1, 0.74902, 0.2, 1)
 shadow_color = Color(1, 0.746667, 0.2, 0.305882)
@@ -66,7 +66,7 @@ theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_753p1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_nkjw7")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
@@ -83,7 +83,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_vertical = 5
 text = "X"
-label_settings = SubResource("LabelSettings_p1ehi")
+label_settings = SubResource("LabelSettings_nf7q3")
 visible_characters = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -131,4 +131,4 @@ icon_color = Color(1, 0.74902, 0.2, 1)
 [node name="TitleHeader" type="Label" parent="VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "TITLE"
-label_settings = SubResource("LabelSettings_yubgd")
+label_settings = SubResource("LabelSettings_753p1")

@@ -1490,6 +1490,39 @@ func add_room_event(event_ref:int, use_location:Dictionary = current_location) -
 # -----------------------------------------------------------------------------
 func remove_room_event_at_index(index:int, use_location:Dictionary = current_location) -> void:
 	base_states.room[U.location_to_designation(use_location)].events_pending.remove_at(index)
-	print(base_states.room[U.location_to_designation(use_location)])
+	
 	SUBSCRIBE.base_states = base_states
 # -----------------------------------------------------------------------------	
+
+# -----------------------------------------------------------------------------	
+func get_pending_events_count() -> int:
+	if room_config.is_empty(): return -1
+	
+	var count:int = 0
+	for floor_index in room_config.floor.size():		
+		for ring_index in room_config.floor[floor_index].ring.size():
+			for room_index in room_config.floor[floor_index].ring[ring_index].room.size() :
+				var room_designation:String = str(floor_index, ring_index, room_index)
+				count += base_states.room[room_designation].events_pending.size()
+	
+	return count
+# -----------------------------------------------------------------------------	
+
+# -----------------------------------------------------------------------------	
+func get_pending_events_list() -> Array:
+	if room_config.is_empty():return []
+	
+	var list:Array = []
+	for floor_index in room_config.floor.size():		
+		for ring_index in room_config.floor[floor_index].ring.size():
+			for room_index in room_config.floor[floor_index].ring[ring_index].room.size() :
+				var room_designation:String = str(floor_index, ring_index, room_index)
+				for event_ref in base_states.room[room_designation].events_pending:
+					list.push_back({
+						"event_ref": event_ref, 
+						"location": {"floor": floor_index, "ring": ring_index, "room": room_index}
+					})
+	
+	return list
+# -----------------------------------------------------------------------------	
+	

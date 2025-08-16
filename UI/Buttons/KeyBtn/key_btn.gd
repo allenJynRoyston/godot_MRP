@@ -4,11 +4,19 @@ extends BtnBase
 @onready var RootPanel:PanelContainer = $"."
 @onready var ProgressBarPanel:ProgressBar = $VBoxContainer/PanelContainer2/ProgressBar
 
+@onready var HeaderPanel:PanelContainer = $VBoxContainer/PanelContainer
 @onready var TitleHeader:Label = $VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/TitleHeader
 @onready var KeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/KeyLabel
 @onready var SmallKeyLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/SmallKeyLabel
 @onready var SvgIcon:Control = $VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/SVGIcon
 
+@onready var root_style_original:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
+@onready var key_labe_label_original:LabelSettings = KeyLabel.get('label_settings').duplicate()
+@onready var small_key_label_original:LabelSettings = TitleHeader.get('label_settings').duplicate()
+
+@onready var root_stylebox_copy:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
+@onready var key_labe_label_setting:LabelSettings = KeyLabel.get('label_settings').duplicate()
+@onready var small_key_label_setting:LabelSettings = TitleHeader.get('label_settings').duplicate()
 
 @export var title:String = "" : 
 	set(val): 
@@ -30,7 +38,10 @@ extends BtnBase
 		primary_color = val
 		on_panel_color_update()		
 		
-@export var is_flashing:bool = false 
+@export var is_flashing:bool = false : 
+	set(val):
+		is_flashing = val
+		on_is_flashing_update()
 
 @export var hide_icon_panel:bool = false : 
 	set(val):
@@ -60,6 +71,10 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	super._ready()
+	HeaderPanel.set("theme_override_styles/panel", root_stylebox_copy)
+	KeyLabel.set("label_settings", key_labe_label_setting)
+	TitleHeader.set("label_settings", small_key_label_setting)
+	
 	if is_hoverable:
 		on_focus(false)
 
@@ -71,6 +86,7 @@ func _ready() -> void:
 	on_panel_color_update()
 	on_is_disabled_updated()
 	on_hide_icon_panel_update()
+	on_is_flashing_update()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -100,7 +116,16 @@ func on_assigned_key_update() -> void:
 
 func on_is_disabled_updated() -> void:
 	modulate.a = 0.5 if is_disabled else 1
-	
+
+func on_is_flashing_update() -> void:
+	if !is_node_ready():return	
+	if !is_flashing:
+		root_stylebox_copy.bg_color = root_style_original.bg_color
+		key_labe_label_setting.font_color = key_labe_label_original.font_color
+		small_key_label_setting.font_color = small_key_label_original.font_color
+		SvgIcon.icon_color = root_style_original.bg_color
+		
+
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
 	#var stylebox_copy = StyleBoxFlat.new()
@@ -115,7 +140,7 @@ func on_panel_color_update() -> void:
 	#stylebox_copy.border_width_right = 2
 	#stylebox_copy.border_width_top = 2
 	#stylebox_copy.border_color = Color.WHITE if is_focused else Color.BLACK
-		#
+		# g
 	#RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
 		
 
@@ -167,11 +192,14 @@ func _process(delta: float) -> void:
 			normalized_value = 1
 
 		ProgressBarPanel.value = normalized_value		
-		
 	if !is_flashing:return
+
 	time += delta
 	var value := (sin(time * speed) + 1.2) / 2.0  # Oscillates smoothly between 0 and 1
-	#var stylebox_copy = StyleBoxFlat.new()
-	#stylebox_copy.bg_color = Color(1 - value, 1, 1 - value)
-	#RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
+	root_stylebox_copy.bg_color = Color(1 - value, 1 - 1, 0.4)
+	
+	key_labe_label_setting.font_color = Color(value, value, value)
+	small_key_label_setting.font_color = Color(value, value, value)
+	SvgIcon.icon_color = Color(value, value, value)
+	
 # --------------------------------
