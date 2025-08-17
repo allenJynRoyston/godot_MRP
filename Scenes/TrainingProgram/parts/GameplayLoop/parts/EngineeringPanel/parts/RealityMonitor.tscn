@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwdbde0bi13fr"]
+[gd_scene load_steps=11 format=3 uid="uid://cwdbde0bi13fr"]
 
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="1_6jdmh"]
 [ext_resource type="Script" uid="uid://byslobcbsgmrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/reality_monitor.gd" id="1_x02v8"]
@@ -24,6 +24,14 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_7a63q"]
+font = ExtResource("1_6jdmh")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o303j"]
 font = ExtResource("5_7a63q")
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
@@ -92,8 +100,8 @@ color = Color(0.667801, 0.589689, 1, 1)
 [node name="ResultLabel" type="Label" parent="HBoxContainer/VBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-text = "NORMAL"
-label_settings = SubResource("LabelSettings_h27gk")
+text = "BASELINE"
+label_settings = SubResource("LabelSettings_7a63q")
 horizontal_alignment = 1
 
 [node name="Control" type="Control" parent="HBoxContainer"]
@@ -113,7 +121,7 @@ offset_left = -4.0
 offset_top = 4.0
 offset_right = 16.0
 offset_bottom = 24.0
-icon = 27
+icon = 32
 icon_color = Color(0, 0, 0, 1)
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/Control/Slider"]
@@ -134,4 +142,4 @@ theme_override_constants/margin_bottom = 6
 [node name="Label" type="Label" parent="HBoxContainer/Control/Slider/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_7a63q")
+label_settings = SubResource("LabelSettings_o303j")

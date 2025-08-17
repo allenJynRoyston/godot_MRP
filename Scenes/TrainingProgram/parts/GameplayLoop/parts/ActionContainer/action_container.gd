@@ -64,11 +64,9 @@ extends GameContainer
 @onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
 
 # SETTINGS
-@onready var SettingsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
 
 # GOTO PANEL
 @onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-
 @onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EngineeringBtn
 @onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FabricationBtn
 @onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ManagementBtn
@@ -77,12 +75,10 @@ extends GameContainer
 @onready var TelemetryBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TelemetryBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
 
-
-# WING ACTION PANELS
-@onready var WingActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/WingActions
-
-@onready var WingInfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/WingInfoBtn
-@onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/PlayerActions/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
+# 
+@onready var SettingsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
+@onready var InfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/InfoBtn
+@onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
 
 # FACILITY ACTION PANELS
 @onready var BaseActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions
@@ -358,7 +354,7 @@ func start() -> void:
 		await lock_actions(true)
 		current_mode = MODE.PROGRAMS
 
-	WingInfoBtn.onClick = func() -> void:
+	InfoBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.INFO	
 		
@@ -1668,6 +1664,8 @@ func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0
 func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
 	
+	reveal_action_label(state, 0.4, "ENGINEERING")
+	
 	if state:
 		EngineeringPanel.show()
 		
@@ -1681,6 +1679,9 @@ func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 func reveal_topography(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
+	
+	reveal_action_label(state, 0.4, "HEALTH AND WELFARE")			
+	
 	if state:
 		TopographyPanel.show()
 	
@@ -1699,6 +1700,9 @@ func reveal_topography(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 func reveal_telemetry(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
+	
+	reveal_action_label(state, 0.4, "TELEMETRY")
+	
 	if state:
 		TelemetryPanel.show()
 	
@@ -1801,21 +1805,19 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			# --------------
 			MODE.ENGINEERING:
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
-				reveal_action_label(true, 0.4, "ENGINEERING")
+				
 			# -------------
 			MODE.TELEMETRY:
 				telemetry_count = 0
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_action_label(true, 0.4, "TELEMETRY")
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)				
 				reveal_summarycard(true, false)
 				reveal_telemetry(true)
 			# -------------
 			MODE.TOPOGRAPHY:
 				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "HEALTH AND WELFARE")		
+				GameplayNode.show_timeline = false					
 			# --------------
 			MODE.BUILD:
 				WingRenderNode.set_to_build_mode(true)
@@ -1824,7 +1826,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
-				reveal_action_label(true, 0.4, "FABRICATION")				
+				reveal_action_label(true, 0.4, "FABRICATION")
 				DesignControls.reveal(true)			
 			# --------------
 			MODE.COMMANDS:

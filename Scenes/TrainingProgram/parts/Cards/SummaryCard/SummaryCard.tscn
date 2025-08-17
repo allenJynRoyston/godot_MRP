@@ -218,7 +218,7 @@ alignment = 1
 
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 layout_mode = 2
-icon = 31
+icon = 36
 icon_color = Color(0, 0, 0, 1)
 
 [node name="ConstructionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer"]
@@ -247,7 +247,7 @@ alignment = 1
 
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 layout_mode = 2
-icon = 32
+icon = 37
 icon_color = Color(0, 0, 0, 1)
 
 [node name="EnergyCostLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer"]

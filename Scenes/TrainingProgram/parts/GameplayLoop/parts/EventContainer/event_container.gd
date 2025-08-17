@@ -330,48 +330,33 @@ func on_current_instruction_update() -> void:
 	BtnControls.itemlist = []
 	BtnControls.onAction = func() -> void:pass			
 	
+	print(current_instruction)
+	
 	# -----------------------------------
-	if "title" in current_instruction:
-		VHSLabel.title = "%s" % [current_instruction.title]
+	if current_instruction.has("header"):
+		VHSLabel.title = "%s" % [current_instruction.header]
 		VHSLabel.show()
 		
-	if "subtitle" in current_instruction:
-		ImageSubTitle.text = "%s" % [current_instruction.subtitle]		
+	if current_instruction.has("subheader"):
+		ImageSubTitle.text = "%s" % [current_instruction.subheader]		
 
 	if "img_src" in current_instruction:	
 		if ImageTextureRect.texture != CACHE.fetch_image(current_instruction.img_src):
 			ImageTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
 			reveal_outputtexture(true, 0.3)
-		
-	#if "scp_ref" in current_instruction:
-		#RoomDetails.scp_ref = current_instruction.scp_ref
-		#RoomDetails.show_scp_card = true
-		#RoomDetails.show_room_card = false
-		#RoomDetails.show_researcher_card = false
-		#await U.set_timeout(0.3)
-		#RoomDetails.reveal(true)
-		#
-		
-		
-	#if "selected_staff" in current_instruction:
-		#if ResearcherCard.uid != current_instruction.selected_staff.uid:
-			#ResearcherCard.uid = current_instruction.selected_staff.uid
-			#reveal_researcher(true)
-			#await U.set_timeout(1.5)
-			#ResearcherCard.flip = true
 
 	if "set_return_val" in current_instruction:
 		event_output = current_instruction.set_return_val.call()	
 	# -----------------------------------
 
 	# -----------------------------------
-	if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
-		reveal_researcher(false)
-		await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-		await SuccessRoll.use(current_instruction.is_success if !use_force_results else force_is_success, 1.5)
-		await BtnControls.reveal(true)
-		#if ResearcherCard.uid != null:
-			#reveal_researcher(true)
+	#if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
+		#reveal_researcher(false)
+		#await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
+		#await SuccessRoll.use(current_instruction.is_success if !use_force_results else force_is_success, 1.5)
+		#await BtnControls.reveal(true)
+		##if ResearcherCard.uid != null:
+			##reveal_researcher(true)
 	# -----------------------------------
 
 	# -----------------------------------

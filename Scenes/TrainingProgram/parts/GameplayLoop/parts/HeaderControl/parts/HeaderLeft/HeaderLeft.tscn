@@ -41,7 +41,6 @@ theme_override_constants/separation = 10
 
 [node name="Economy" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_0reg5")]
 layout_mode = 2
-header = "ECONOMY"
 
 [node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_0reg5")]
 layout_mode = 2

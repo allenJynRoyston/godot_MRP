@@ -10,63 +10,65 @@ extends PanelContainer
 @onready var EcoResearch:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/Research
 @onready var EcoCore:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/Core
 
-#@onready var IncomeMoney:Control = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/IncomeMoney
-#@onready var IncomeResearch:Control = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/IncomeResearch
-#@onready var IncomeMaterial:Control = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/IncomeMaterial
-#@onready var IncomeCore:Control = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2/IncomeCore
-#
 @onready var header_stylebox_copy:StyleBoxFlat = Header.get('theme_override_styles/panel').duplicate() 
 # --------------------------------------------
 
 # --------------------------------------------
-@export var header:String  = "" : 
+var header:String  = "" : 
 	set(val):
 		header = val
 		on_header_update()
 		
-@export var money_val:int : 
+var money_val:int : 
 	set(val):
 		money_val = val
 		on_money_val_update()
-@export var research_val:int: 
+var research_val:int: 
 	set(val):
 		research_val = val
 		on_research_val_update()
-@export var material_val:int: 
+var material_val:int: 
 	set(val):
 		material_val = val
 		on_material_val_update()
-@export var core_val:int: 
+var core_val:int: 
 	set(val):
 		core_val = val
 		on_core_val_update()
 
-@export var money_income:int: 
+var money_income:int: 
 	set(val):
 		money_income = val
 		on_money_income_update()
-@export var researcher_income:int: 
+var researcher_income:int: 
 	set(val):
 		researcher_income = val
 		on_researcher_income_update()
-@export var material_income:int: 
+var material_income:int: 
 	set(val):
 		material_income = val
 		on_material_income_update()
-@export var core_income:int: 
+var core_income:int: 
 	set(val):
 		core_income = val
 		on_core_income_update()
 
-const tutorial_notes:Array = [ "I can't let all these values hit 0 or I lose the game."]
-# --------------------------------------------
+var resources_data:Dictionary
+var room_config:Dictionary
+var current_location:Dictionary
 
-# --------------------------------------------
+const tutorial_notes:Array = [ "I can't let all these values hit 0 or I lose the game."]
+
+# -----------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_process(self)
+	SUBSCRIBE.subscribe_to_resources_data(self)
 	
+
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
+	SUBSCRIBE.unsubscribe_to_resources_data(self)
+
 	
 func _notification(what):
 	match what:
@@ -129,6 +131,22 @@ func on_core_income_update() -> void:
 	if !is_node_ready():return	
 	EcoCore.bonus_amount = core_income
 # --------------------------------------------
+
+# -----------------------------------------------	
+func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
+	resources_data = new_val	
+	U.debounce(str(self, "_update_node"), update_node)
+	
+# -----------------------------------------------
+func update_node() -> void:
+	if !is_node_ready() or resources_data.is_empty():return
+
+	money_val = resources_data[RESOURCE.CURRENCY.MONEY].amount
+	research_val = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+	material_val = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
+	core_val = resources_data[RESOURCE.CURRENCY.CORE].amount	
+# -----------------------------------------------
+
 
 # -----------------------------------------------
 func on_process_update(delta: float, time_passed:float) -> void:

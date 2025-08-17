@@ -1,10 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://diewdd1a4yfp1"]
+[gd_scene load_steps=13 format=3 uid="uid://diewdd1a4yfp1"]
 
 [ext_resource type="Script" uid="uid://bt4fuj4j35pdi" path="res://Components/BtnControls/btn_controls.gd" id="1_42gfu"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="2_re623"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_dkurb"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="3_ka7tl"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="4_dkurb"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="4_j6bi6"]
 [ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="6_0q36v"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ka7tl"]
@@ -51,6 +50,20 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iae0a"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6pxk"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
 
 [node name="BtnControls" type="Control"]
 layout_mode = 3
@@ -130,13 +143,13 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "NEXT"
 assigned_key = "E"
-icon = 27
+icon = 32
 allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControlPanel/BtnMarginContainer"]
 layout_mode = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="BtnControlPanel/BtnMarginContainer/Control"]
+[node name="HintContainer" type="CenterContainer" parent="BtnControlPanel/BtnMarginContainer/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -144,36 +157,49 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HintContainer" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_iae0a")
+
+[node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HintTitle" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "HINT"
+label_settings = ExtResource("3_ka7tl")
+
+[node name="Content" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer"]
 custom_minimum_size = Vector2(600, 20)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = ExtResource("3_dkurb")
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6pxk")
 
-[node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = -12
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = -4
 
-[node name="HintTitle" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "HINT"
-label_settings = ExtResource("4_j6bi6")
-vertical_alignment = 1
-uppercase = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HintIcon" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_dkurb")]
+[node name="HintIcon" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_dkurb")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 icon = 23
@@ -181,7 +207,7 @@ static_color = Color(0, 0, 0, 1)
 is_hoverable = false
 allow_hint = false
 
-[node name="HintDescription" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HintDescription" type="Label" parent="BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Hint goes here."
 label_settings = ExtResource("6_0q36v")

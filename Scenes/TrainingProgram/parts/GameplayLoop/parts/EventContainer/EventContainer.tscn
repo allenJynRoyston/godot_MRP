@@ -135,15 +135,18 @@ theme_override_constants/separation = 5
 [node name="VHSLabel" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer" instance=ExtResource("5_n5dpn")]
 layout_mode = 2
 size_flags_horizontal = 0
-title = "TITLE GOES HERE"
+title = "asd"
 icon = 16
 
 [node name="Subtitle" type="Label" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "SUBTITLE
 "
 label_settings = ExtResource("7_td1l6")
+autowrap_mode = 3
 
 [node name="ContentControl" type="Control" parent="."]
 layout_mode = 2
@@ -189,7 +192,7 @@ theme_override_constants/margin_bottom = 10
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/Header/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "event name"
+text = "SITE DIRECTOR..."
 label_settings = ExtResource("7_td1l6")
 
 [node name="PanelContainer" type="PanelContainer" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]

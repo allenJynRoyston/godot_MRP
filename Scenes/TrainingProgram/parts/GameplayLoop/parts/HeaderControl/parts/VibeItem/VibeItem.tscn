@@ -6,14 +6,14 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_24nkd"]
+[sub_resource type="LabelSettings" id="LabelSettings_pxje0"]
 font = ExtResource("2_pxje0")
 outline_size = 2
 outline_color = Color(1, 1, 1, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="LabelSettings" id="LabelSettings_cyg4w"]
+[sub_resource type="LabelSettings" id="LabelSettings_24nkd"]
 font = ExtResource("3_pxje0")
 outline_color = Color(1, 1, 1, 0.2)
 
@@ -23,6 +23,7 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_7egax")
 title = "MORALE"
+big_numbers = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -40,11 +41,11 @@ alignment = 1
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "MORALE"
-label_settings = SubResource("LabelSettings_24nkd")
+label_settings = SubResource("LabelSettings_pxje0")
 horizontal_alignment = 1
 
 [node name="Value" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "0"
-label_settings = SubResource("LabelSettings_cyg4w")
+label_settings = SubResource("LabelSettings_24nkd")
 horizontal_alignment = 1

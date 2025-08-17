@@ -185,6 +185,17 @@ func fetch_svg(key:SVGS.TYPE) -> CompressedTexture2D:
 		SVGS.TYPE.OS_CURRENCY:
 			texture = load("res://SVGs/hack_currency.svg")
 			
+		SVGS.TYPE.LOW_TEMP:
+			texture = load("res://SVGs/temperature-frigid-svgrepo-com.svg")
+		SVGS.TYPE.HIGH_TEMP:
+			texture = load("res://SVGs/temperature-hot-svgrepo-com.svg")
+		SVGS.TYPE.SANITY:
+			texture = load("res://SVGs/face-melt-svgrepo-com.svg")
+		SVGS.TYPE.BATTERY_NONE:
+			texture = load("res://SVGs/battery-free-material-svgrepo-com.svg")	
+		SVGS.TYPE.BATTERY_LOW:
+			texture = load("res://SVGs/battery-half-svgrepo-com.svg")
+			
 	svg_cache.push_back({
 		"key": key, 
 		"texture": texture

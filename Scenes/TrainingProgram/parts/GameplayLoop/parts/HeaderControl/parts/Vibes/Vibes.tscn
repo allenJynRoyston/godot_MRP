@@ -21,7 +21,6 @@ corner_radius_bottom_left = 5
 custom_minimum_size = Vector2(0, 60)
 theme_override_styles/panel = ExtResource("1_xopp3")
 script = ExtResource("2_5elrf")
-morale_tag_val = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 visible = false
@@ -58,6 +57,7 @@ alignment = 1
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+big_numbers = false
 
 [node name="Safety" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
@@ -65,6 +65,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 metric = 1
 title = "SAFETY"
+big_numbers = false
 
 [node name="Readiness" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
@@ -72,6 +73,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 metric = 2
 title = "READINESS"
+big_numbers = false
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -134,20 +136,26 @@ alignment = 1
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+value = 1
 invert_color = true
+big_numbers = true
 
 [node name="Safety" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 metric = 1
+value = 3
 title = "SAFETY"
 invert_color = true
+big_numbers = true
 
 [node name="Readiness" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 metric = 2
+value = 2
 title = "READINESS"
 invert_color = true
+big_numbers = true

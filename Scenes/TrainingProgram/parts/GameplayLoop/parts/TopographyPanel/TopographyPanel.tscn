@@ -45,8 +45,9 @@ theme_override_constants/separation = 10
 
 [node name="BackIcon" parent="VBoxContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 layout_mode = 2
-icon = 28
+icon = 32
 icon_color = Color(1, 1, 1, 1)
+flip_h = true
 
 [node name="Tabs" type="HBoxContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -75,7 +76,7 @@ inactive_str = "D"
 
 [node name="NextIcon" parent="VBoxContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 layout_mode = 2
-icon = 27
+icon = 32
 icon_color = Color(1, 1, 1, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
@@ -83,7 +84,7 @@ layout_mode = 2
 theme_override_constants/margin_top = 5
 
 [node name="ContentList" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(525, 0)
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -120,10 +121,10 @@ layout_mode = 2
 [node name="PollutionWarning" type="Control" parent="Warnings"]
 layout_mode = 2
 anchors_preset = 0
-offset_left = -85.0
-offset_top = 32.0
-offset_right = 421.0
-offset_bottom = 475.0
+offset_left = -20.0
+offset_top = 24.0
+offset_right = 486.0
+offset_bottom = 467.0
 
 [node name="PanelContainer" type="PanelContainer" parent="Warnings/PollutionWarning"]
 layout_mode = 0
@@ -178,7 +179,7 @@ alignment = 1
 [node name="SVGIcon" parent="Warnings/PollutionWarning/PanelContainer/VBoxContainer/Status/MarginContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 43
+icon = 20
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(30, 30)
 
@@ -197,16 +198,16 @@ offset_left = 86.0
 offset_top = 68.0
 offset_right = 106.0
 offset_bottom = 88.0
-icon = 37
+icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="TempWarning" type="Control" parent="Warnings"]
 layout_mode = 2
 anchors_preset = 0
-offset_left = -85.0
-offset_top = 32.0
-offset_right = 421.0
-offset_bottom = 475.0
+offset_left = -20.0
+offset_top = 24.0
+offset_right = 486.0
+offset_bottom = 467.0
 
 [node name="PanelContainer" type="PanelContainer" parent="Warnings/TempWarning"]
 layout_mode = 0
@@ -261,7 +262,7 @@ alignment = 1
 [node name="SVGIcon" parent="Warnings/TempWarning/PanelContainer/VBoxContainer/Status/MarginContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 43
+icon = 20
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(30, 30)
 
@@ -280,16 +281,16 @@ offset_left = 144.0
 offset_top = 43.0
 offset_right = 164.0
 offset_bottom = 63.0
-icon = 10
+icon = 32
 icon_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="PowerWarning" type="Control" parent="Warnings"]
 layout_mode = 2
 anchors_preset = 0
-offset_left = -85.0
-offset_top = 32.0
-offset_right = 421.0
-offset_bottom = 475.0
+offset_left = -20.0
+offset_top = 24.0
+offset_right = 486.0
+offset_bottom = 467.0
 
 [node name="PanelContainer" type="PanelContainer" parent="Warnings/PowerWarning"]
 layout_mode = 0
@@ -344,7 +345,7 @@ alignment = 1
 [node name="SVGIcon" parent="Warnings/PowerWarning/PanelContainer/VBoxContainer/Status/MarginContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 43
+icon = 20
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(30, 30)
 
@@ -363,16 +364,16 @@ offset_left = 10.0
 offset_top = 68.0
 offset_right = 30.0
 offset_bottom = 88.0
-icon = 37
+icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)
 
 [node name="RealityWarning" type="Control" parent="Warnings"]
 layout_mode = 2
 anchors_preset = 0
-offset_left = -85.0
-offset_top = 32.0
-offset_right = 421.0
-offset_bottom = 475.0
+offset_left = -20.0
+offset_top = 24.0
+offset_right = 486.0
+offset_bottom = 467.0
 
 [node name="PanelContainer" type="PanelContainer" parent="Warnings/RealityWarning"]
 layout_mode = 0
@@ -427,7 +428,7 @@ alignment = 1
 [node name="SVGIcon" parent="Warnings/RealityWarning/PanelContainer/VBoxContainer/Status/MarginContainer/HBoxContainer" instance=ExtResource("6_hdba2")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 43
+icon = 20
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(30, 30)
 
@@ -446,6 +447,6 @@ offset_left = -12.0
 offset_top = 43.0
 offset_right = 8.0
 offset_bottom = 63.0
-icon = 27
+icon = 32
 icon_color = Color(1, 0.74902, 0.2, 1)
 flip_h = true

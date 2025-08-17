@@ -222,7 +222,7 @@ horizontal_alignment = 2
 [node name="EnergyItem" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer" instance=ExtResource("8_u58ao")]
 layout_mode = 2
 horizontal_mode = true
-icon = 32
+icon = 37
 amount = 1
 max_amount = 10
 icon_size = Vector2(20, 20)
@@ -272,7 +272,7 @@ theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="LessBtn" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_n8h5w")]
@@ -288,7 +288,7 @@ theme_override_constants/separation = 5
 [node name="SVGIcon" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" instance=ExtResource("7_n8h5w")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-icon = 39
+icon = 44
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(25, 25)
 
@@ -309,10 +309,12 @@ icon_color = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="SVGIcon" parent="Upgrade/PanelContainer/Control" instance=ExtResource("7_n8h5w")]
+custom_minimum_size = Vector2(10, 20)
 layout_mode = 0
-offset_left = 20.0
-offset_top = 80.0
-offset_right = 40.0
-offset_bottom = 100.0
-icon = 37
+offset_left = 22.0
+offset_top = 81.0
+offset_right = 32.0
+offset_bottom = 101.0
+icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)
+icon_size = Vector2(10, 20)

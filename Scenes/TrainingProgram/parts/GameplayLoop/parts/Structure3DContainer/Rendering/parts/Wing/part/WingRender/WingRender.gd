@@ -222,7 +222,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				MeshSelector.show()
 				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 80, -15), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 90, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
@@ -238,6 +238,8 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				update_camera_size(200)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(6.7, 65, -15), 0.3, 0, Tween.TRANS_SINE)
+				
+			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.DRAMATIC_ZOOM:
 				await update_camera_size(350, 0.4)
 				await update_camera_size(40, 0.3)

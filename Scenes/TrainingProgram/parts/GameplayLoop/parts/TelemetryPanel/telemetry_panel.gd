@@ -21,6 +21,7 @@ extends SubscribeWrapper
 var modulate_tween:Tween
 var position_tween:Tween
 var is_active:bool = false
+var has_event:bool = false
 
 # ------------------------------------------
 func _init() -> void:
@@ -69,8 +70,7 @@ func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or !is_active:return
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)
 	var room_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * GBL.game_resolution 
-	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state(current_location)
-	var has_event:bool =  !room_base_states.events_pending.is_empty()
+	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state(current_location)	
 	var has_room:bool = !room_level_config.room_data.is_empty()
 	var is_activated:bool = room_level_config.is_activated
 	var damage_val:int = room_level_config.damage_val
@@ -79,6 +79,9 @@ func update_node() -> void:
 	var energy_used:int = room_level_config.energy_used
 	var effect:Dictionary = room_level_config.room_data.details.effect if has_room else {}
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction(current_location)
+	
+	# set flag
+	has_event = !room_base_states.events_pending.is_empty()
 	
 	# show correct content
 	Empty.show() if !has_room else Empty.hide()
@@ -141,14 +144,17 @@ func update_node() -> void:
 	# animate 
 	for tween in [modulate_tween, position_tween]:
 		if tween != null and tween.is_running():
-			tween.stop()	
+			tween.stop()
+			
 	DetectedPanel.modulate.a = 0
 	DetectedPanel.global_position = room_pos - Vector2(0, 120 if has_room else 80)
 	
 	if has_event:		
 		U.debounce(str(self, "_show_warning"), show_warning, 0.3)
+	
 		
 func show_warning() -> void:
+	if !has_event:return
 	modulate_tween = create_tween()
 	position_tween = create_tween()
 	

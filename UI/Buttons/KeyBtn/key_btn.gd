@@ -47,6 +47,11 @@ extends BtnBase
 	set(val):
 		hide_icon_panel = val
 		on_hide_icon_panel_update()
+		
+@export var hidden_but_usable:bool = false : 
+	set(val):
+		hidden_but_usable = val
+		on_hidden_but_usable_update()
 
 var stylebox_copy:StyleBoxFlat
 var is_pressed:bool = false
@@ -75,8 +80,9 @@ func _ready() -> void:
 	KeyLabel.set("label_settings", key_labe_label_setting)
 	TitleHeader.set("label_settings", small_key_label_setting)
 	
-	if is_hoverable:
-		on_focus(false)
+	#if is_hoverable:
+		#on_focus(false)
+	on_hidden_but_usable_update()
 
 	on_icon_update()
 	on_title_update()
@@ -87,20 +93,25 @@ func _ready() -> void:
 	on_is_disabled_updated()
 	on_hide_icon_panel_update()
 	on_is_flashing_update()
+	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func update_color(new_color:Color) -> void:
 	if !is_node_ready():return
 
-func on_focus(state:bool = is_focused) -> void:
-	if !is_disabled:	
-		super.on_focus(state)
-		on_panel_color_update()
+#func on_focus(state:bool = is_focused) -> void:
+	#if !is_disabled:	
+		#super.on_focus(state)
+		#on_panel_color_update()
+	#
+#func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
+	#if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
+	#super.on_mouse_click(node, btn, on_hover)
 	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or !is_hoverable or is_disabled:return
-	super.on_mouse_click(node, btn, on_hover)
+func on_hidden_but_usable_update() -> void:
+	if !is_node_ready():return
+	self.modulate.a = 0 if hidden_but_usable else 1
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -128,21 +139,6 @@ func on_is_flashing_update() -> void:
 
 func on_panel_color_update() -> void:
 	if !is_node_ready():return
-	#var stylebox_copy = StyleBoxFlat.new()
-	#stylebox_copy.bg_color = primary_color
-	#stylebox_copy.corner_radius_bottom_left = 5
-	#stylebox_copy.corner_radius_bottom_right = 5
-	#stylebox_copy.corner_radius_top_left = 5
-	#stylebox_copy.corner_radius_top_right = 5
-	#
-	#stylebox_copy.border_width_bottom = 2
-	#stylebox_copy.border_width_left = 2
-	#stylebox_copy.border_width_right = 2
-	#stylebox_copy.border_width_top = 2
-	#stylebox_copy.border_color = Color.WHITE if is_focused else Color.BLACK
-		# g
-	#RootPanel.add_theme_stylebox_override("panel", stylebox_copy)
-		
 
 func on_title_update() -> void:
 	if !is_node_ready():return
@@ -201,5 +197,4 @@ func _process(delta: float) -> void:
 	key_labe_label_setting.font_color = Color(value, value, value)
 	small_key_label_setting.font_color = Color(value, value, value)
 	SvgIcon.icon_color = Color(value, value, value)
-	
 # --------------------------------

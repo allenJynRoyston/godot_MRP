@@ -48,14 +48,18 @@ extends PanelContainer
 	set(val):
 		dclass_max_count = val
 		on_dclass_update()
+
+var room_config:Dictionary
 # ----------------------------------------------
 
 # ----------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_process(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _notification(what):
 	match what:
@@ -94,6 +98,26 @@ func on_dclass_update() -> void:
 	if !is_node_ready():return	
 	DClass.value = dclass_count
 	DClass.max_val = dclass_max_count	
+# ----------------------------------------------
+
+# ----------------------------------------------
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val	
+	U.debounce(str(self, "_update_node"), update_node)
+# ----------------------------------------------
+
+# ----------------------------------------------
+func update_node() -> void:
+	if room_config.is_empty() or !is_node_ready():return
+	admin_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.ADMIN)
+	researcher_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
+	security_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.SECURITY)
+	dclass_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.DCLASS)
+	
+	admin_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.ADMIN)
+	researcher_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
+	security_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.SECURITY)
+	dclass_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.DCLASS)	
 # ----------------------------------------------
 
 # -----------------------------------------------

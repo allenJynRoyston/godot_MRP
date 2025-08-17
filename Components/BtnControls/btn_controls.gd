@@ -8,10 +8,10 @@ extends Control
 @onready var BBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/LeftSideBtnList/BBtn
 @onready var CBtn:BtnBase = $BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList/CBtn
 
-@onready var HintContainer:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer
-@onready var HintTitle:Label = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HintTitle
-@onready var HintDescription:Label = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintDescription
-@onready var HintIcon:Control = $BtnControlPanel/BtnMarginContainer/Control/CenterContainer/HintContainer/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
+@onready var HintContainer:Control = $BtnControlPanel/BtnMarginContainer/Control/HintContainer
+@onready var HintTitle:Label = $BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Header/MarginContainer/HintTitle
+@onready var HintDescription:Label = $BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer/HintDescription
+@onready var HintIcon:Control = $BtnControlPanel/BtnMarginContainer/Control/HintContainer/VBoxContainer/Content/MarginContainer/VBoxContainer/HBoxContainer/HintIcon
 
 @export_category("DEBUG")
 @export var debug:bool = false

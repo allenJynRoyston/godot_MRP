@@ -684,16 +684,18 @@ var MYSTERY_MEAT:Dictionary = {
 		}
 		var onSelected = func(selected) -> void:
 			option_selected.selected = selected.option.val
+			
+		print(props)
 
 		return [
 			# ---------
 			func() -> Dictionary:
 				return {
 					"header": "MYSTERY MEAT",
+					"subheader": "Who doesn't like a little mystery.",
 					"img_src": "res://Media/images/redacted.png",
 					"text": [
-						"Analytics has noticed an uptick in meat consumption in this facility cafeteria.",
-						"Quantities ordered exceed projected dietary needs by 23%. Should we investigate?"
+						"Analytics has noticed an uptick in meat consumption in this facility cafeteria. Quantities ordered exceed projected dietary needs by 23%. Should we investigate?",
 					],
 					"options": [
 						# ----------------------------------------- MORALE
@@ -702,7 +704,22 @@ var MYSTERY_MEAT:Dictionary = {
 							"header": "MORALE",
 							"title": "Boost Spirits",
 							"description": "Turn a blind eye; the staff deserve a little comfort food.",
-							"vibe_cost": {RESOURCE.METRICS.MORALE: 3},
+							"cost": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
+							"reward": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
 							"val": {
 								"response": "The meat remains on the menu. Staff morale improves."
 							},
@@ -714,7 +731,22 @@ var MYSTERY_MEAT:Dictionary = {
 							"header": "READINESS",
 							"title": "Audit Supply",
 							"description": "Trace the supply chain. Ensure our logistics aren’t compromised.",
-							"vibe_cost": {RESOURCE.METRICS.READINESS: 3},
+							"cost": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
+							"reward": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
 							"val": {
 								"response": "A quick audit reveals the meat isn’t on any Foundation manifests. Everybody is real grossed out about it though."
 							},
@@ -726,7 +758,22 @@ var MYSTERY_MEAT:Dictionary = {
 							"header": "SAFETY",
 							"title": "Test Samples",
 							"description": "Pull samples and run biohazard screening.",
-							"vibe_cost": {RESOURCE.METRICS.SAFETY: 3},
+							"cost": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
+							"reward": {
+								"currency": {
+									
+								},
+								"metrics": {
+									
+								},
+							},
 							"val": {
 								"response": "Laboratory analysis detects no known pathogens, but finds anomalous DNA sequences."
 							},
@@ -739,7 +786,9 @@ var MYSTERY_MEAT:Dictionary = {
 							"title": "Shut It Down",
 							"description": "Shut it down until safety commission evaluates the facility.",
 							"val": {
-								"response": "Facility is shut down for 3 days."
+								"response": "Facility is shut down for 3 days.",
+								"effect": func() -> void:
+									pass,
 							},
 							"onSelected": onSelected
 						}

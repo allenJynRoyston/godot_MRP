@@ -4,24 +4,31 @@ extends PanelContainer
 @onready var Header:PanelContainer = $VBoxContainer/Header
 @onready var header_stylebox_copy:StyleBoxFlat = Header.get('theme_override_styles/panel').duplicate()
 
-@export var amount:int : 
+var amount:int : 
 	set(val):
 		amount = val
 		on_amount_update()
 		
-@export var max_amount:int : 
+var max_amount:int : 
 	set(val):
 		max_amount = val
 		on_max_amount_update()
 		
-@export var flashing:bool = false
+var flashing:bool = false
 
-# --------------------------------------------------------------------------------------------------
-func _init() -> void:	
+var room_config:Dictionary
+var current_location:Dictionary
+
+# -----------------------------------------------
+func _init() -> void:
 	GBL.subscribe_to_process(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_current_location(self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_current_location(self)	
 
 func _notification(what):
 	match what:
@@ -43,6 +50,23 @@ func on_amount_update() -> void:
 # ----------------------------------------------			
 func on_max_amount_update() -> void: 
 	Energy.max_amount = max_amount
+# -----------------------------------------------			
+
+# -----------------------------------------------			
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val	
+	U.debounce(str(self, "_update_node"), update_node)
+
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
+	U.debounce(str(self, "_update_node"), update_node)
+	
+func update_node() -> void:
+	if !is_node_ready() or current_location.is_empty() or room_config.is_empty():return
+	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config()
+	amount = ring_level_config.energy.available - ring_level_config.energy.used
+	max_amount = ring_level_config.energy.available
+	flashing = amount == 0	
 # -----------------------------------------------			
 
 # -----------------------------------------------

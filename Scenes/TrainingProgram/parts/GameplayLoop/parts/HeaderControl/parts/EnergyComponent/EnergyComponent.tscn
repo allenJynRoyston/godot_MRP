@@ -61,7 +61,7 @@ alignment = 1
 
 [node name="Energy" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("2_8euxf")]
 layout_mode = 2
-icon = 32
+icon = 37
 amount = 1
 max_amount = 10
 icon_size = Vector2(20, 20)

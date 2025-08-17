@@ -54,25 +54,25 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 15
 alignment = 1
 
 [node name="Money" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
-icon = 31
+icon = 36
 burn_val = "00"
 
 [node name="Research" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
-icon = 44
+icon = 49
 burn_val = "00"
 
 [node name="Material" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
-icon = 40
+icon = 45
 burn_val = "00"
 
 [node name="Core" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
-icon = 39
+icon = 44
 burn_val = "00"

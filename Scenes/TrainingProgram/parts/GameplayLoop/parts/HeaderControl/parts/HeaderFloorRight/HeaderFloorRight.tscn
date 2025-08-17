@@ -48,10 +48,7 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="WarningComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("2_nx5nd")]
-visible = false
 layout_mode = 2
 
 [node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Right" instance=ExtResource("2_2lin6")]
 layout_mode = 2
-header = "VIBES"
-morale_tag_val = 0
