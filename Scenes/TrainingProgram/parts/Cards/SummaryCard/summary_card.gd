@@ -1,15 +1,20 @@
 extends PanelContainer
 
 # INFOCONTAINER
+@onready var CardMargin:MarginContainer = $MarginContainer
 @onready var InfoContainer:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 @onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
-@onready var EnergyCostLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/LevelAndEnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
 
 # cost
 @onready var ConstructionCostPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel
+@onready var TempIcon:Control = $Control/SidePanel/TempPanel/MarginContainer/HBoxContainer/TempIcon
+@onready var TempLabel:Label = $Control/SidePanel/TempPanel/MarginContainer/HBoxContainer/TempLabel
+@onready var PollutionLabel:Label = $Control/SidePanel/PollutionPanel/MarginContainer/HBoxContainer/PollutionLabel
+@onready var EnergyCostLabel:Label = $Control/SidePanel/LevelAndEnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
+@onready var SidePanel:VBoxContainer = $Control/SidePanel
 
 # status
 @onready var StatusOverlay:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay
@@ -330,6 +335,11 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
 	ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
 	
+	# environmental
+	PollutionLabel.text = str(room_details.details.environmental.pollution)
+	TempLabel.text = str(room_details.details.environmental.temp)
+	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP
+	
 	# under construction
 	if is_under_construction:
 		StatusLabel.text = "UNDER CONSTRUCTION"
@@ -371,6 +381,7 @@ func get_starting_btn_index() -> int:
 # ------------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	if !is_node_ready():return
+	SidePanel.position.x = CardMargin.size.x - 5
 	#CardBodySubviewport.size = CardControlBody.size
 # ------------------------------------------------------------------------------
 	

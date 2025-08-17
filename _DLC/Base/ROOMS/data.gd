@@ -31,6 +31,10 @@ var DEBUG_ROOM:Dictionary = {
 		RESOURCE.METRICS.SAFETY: 0,
 		RESOURCE.METRICS.READINESS: 1
 	},	
+	"environmental":{
+		"temp": 1,
+		"pollution": 1
+	},	
 	# ------------------------------------------
 	
 	# ------------------------------------------
