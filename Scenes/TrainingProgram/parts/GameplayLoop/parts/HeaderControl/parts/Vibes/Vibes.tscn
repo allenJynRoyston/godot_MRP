@@ -1,10 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6ltnlpexqlq8"]
+[gd_scene load_steps=7 format=3 uid="uid://b6ltnlpexqlq8"]
 
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="1_xopp3"]
 [ext_resource type="Script" uid="uid://s27taeqpnbaa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/vibes.gd" id="2_5elrf"]
-[ext_resource type="LabelSettings" uid="uid://c6jfb8gq36fsd" path="res://Fonts/font_1_black_inverse.tres" id="3_jnnei"]
 [ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="4_r28sf"]
-[ext_resource type="PackedScene" uid="uid://cv1ha0twon7kt" path="res://UI/WindowUI/Header/parts/DiffTag.tscn" id="5_iv4lo"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_5elrf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jnnei"]
@@ -21,80 +19,6 @@ corner_radius_bottom_left = 5
 custom_minimum_size = Vector2(0, 60)
 theme_override_styles/panel = ExtResource("1_xopp3")
 script = ExtResource("2_5elrf")
-
-[node name="MarginContainer" type="MarginContainer" parent="."]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = -15
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-label_settings = ExtResource("3_jnnei")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 3
-theme_override_constants/margin_bottom = -7
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer2"]
-layout_mode = 2
-theme_override_constants/separation = -3
-alignment = 1
-
-[node name="Morale" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("4_r28sf")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-big_numbers = false
-
-[node name="Safety" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("4_r28sf")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-metric = 1
-title = "SAFETY"
-big_numbers = false
-
-[node name="Readiness" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("4_r28sf")]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-metric = 2
-title = "READINESS"
-big_numbers = false
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -3
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = -30
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="MoraleTag" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_iv4lo")]
-layout_mode = 2
-
-[node name="SafetyTag" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_iv4lo")]
-layout_mode = 2
-
-[node name="ReadinessTag" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource("5_iv4lo")]
-layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

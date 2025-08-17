@@ -85,6 +85,7 @@ var initial_values:Dictionary = {
 			RESOURCE.CURRENCY.SCIENCE: starting_data.diff[RESOURCE.CURRENCY.MATERIAL],
 			RESOURCE.CURRENCY.CORE: starting_data.diff[RESOURCE.CURRENCY.CORE],
 		},
+	# ----------------------------------
 	"resources_data": func() -> Dictionary:
 		return { 
 			RESOURCE.CURRENCY.MONEY: {
@@ -207,6 +208,11 @@ var initial_values:Dictionary = {
 
 		
 		return {
+			"metrics": {
+				RESOURCE.METRICS.MORALE: 6,
+				RESOURCE.METRICS.SAFETY: 6,
+				RESOURCE.METRICS.READINESS: 6
+			},
 			"base": {
 				"onsite_nuke": {
 					"triggered": false

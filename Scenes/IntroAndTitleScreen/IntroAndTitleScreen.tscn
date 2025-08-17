@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://c31lvealkmfn5" path="res://Media/images/logos/godot_logo.png" id="3_bp17p"]
 [ext_resource type="PackedScene" uid="uid://c5ld7n1ycuql2" path="res://UI/Buttons/IconBtn/IconBtn.tscn" id="3_cetvo"]
 [ext_resource type="PackedScene" uid="uid://27mgphkrarqr" path="res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn" id="3_pusk1"]
-[ext_resource type="Texture2D" uid="uid://ctxpqywam2krt" path="res://Media/images/logos/game_logo.png" id="3_yi28m"]
 [ext_resource type="PackedScene" uid="uid://d26ruk5g28ttk" path="res://Scenes/IntroSplash/IntroSplash.tscn" id="4_6bd6i"]
 [ext_resource type="PackedScene" uid="uid://bso3mupgofbc6" path="res://Scenes3D/OutsideRender/OutsideRender.tscn" id="4_bxtjv"]
 [ext_resource type="Material" uid="uid://dyubl3vmiwyfo" path="res://CanvasShader/Snow/Snow.tres" id="4_ryx00"]
+[ext_resource type="Texture2D" uid="uid://6dmrbysykwpp" path="res://Media/studio_logo.png" id="4_yi28m"]
 [ext_resource type="Texture2D" uid="uid://bp651l44hgd0s" path="res://Media/images/SCP-logo.png" id="5_5hhmy"]
 [ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_yi28m"]
 [ext_resource type="LabelSettings" uid="uid://chq5rx4ad5jlu" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MetricsContainer/parts/label_medium.tres" id="9_bxtjv"]
@@ -97,7 +97,7 @@ offset_top = -250.0
 offset_right = 250.0
 offset_bottom = 250.0
 pivot_offset = Vector2(250, 250)
-texture = ExtResource("3_yi28m")
+texture = ExtResource("4_yi28m")
 expand_mode = 1
 stretch_mode = 5
 
