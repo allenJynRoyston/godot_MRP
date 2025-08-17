@@ -148,7 +148,6 @@ func index_to_room_lookup(val:int) -> int:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	if !is_node_ready() or current_location.is_empty():return
@@ -174,7 +173,6 @@ func on_use_location_update() -> void:
 		room_assign_designation(i, use_location)
 	U.debounce(str(self, "_update_vars"), update_vars)
 
-
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	if !is_node_ready() or room_config.is_empty():return	
@@ -182,8 +180,6 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	previous_ring = -1	
 	U.debounce(str(self, "_update_vars"), update_vars)
 	
-
-
 func on_base_states_update(new_base_state:Dictionary) -> void:
 	if !is_node_ready() or new_base_state.is_empty():return
 	if previous_nuke_state != new_base_state.base.onsite_nuke.triggered:
@@ -244,7 +240,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				await U.tween_node_property(SceneCamera, "position", Vector3(6.7, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			CAMERA.VIEWPOINT.DRAMATIC_ZOOM:
 				await update_camera_size(350, 0.4)
-				await update_camera_size(20, 0.3)
+				await update_camera_size(40, 0.3)
 				
 		U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 

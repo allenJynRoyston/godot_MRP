@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cgsv34nc422hv"]
+[gd_scene load_steps=12 format=3 uid="uid://cgsv34nc422hv"]
 
 [ext_resource type="Script" uid="uid://onao3otd6rkg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/telemetry_panel.gd" id="1_bsouq"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_0vdmw"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_0x36u"]
+[ext_resource type="LabelSettings" uid="uid://34n116bw0xn5" path="res://Fonts/small_font_label_setting.tres" id="4_56xfk"]
 [ext_resource type="LabelSettings" uid="uid://c21auew2nnv72" path="res://Fonts/small_font_red_label_settings.tres" id="6_2uqqy"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="9_4bmg2"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="10_7nm7q"]
@@ -22,7 +23,7 @@ shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pk1a"]
 bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_left = 5
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
@@ -33,13 +34,15 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
 script = ExtResource("1_bsouq")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 8
 theme_override_constants/separation = 0
 alignment = 2
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
@@ -55,14 +58,12 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/Header/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "READINGS"
+text = "FACILITY"
 label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 2
 
 [node name="Content" type="PanelContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_horizontal = 8
 size_flags_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5pk1a")
 
@@ -75,74 +76,168 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
+[node name="Status" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Status"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "attach events to rooms themselves
-and give them a random chance
-and condition to pop off.  if it
-its true, add the event 
-to the room_config.room_data
-and a time limit.  you can trigger if 
-from this screen.  
-if it hits zero on the time limit
-it auto fires it off."
+text = "STATUS:"
 label_settings = ExtResource("3_0vdmw")
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Status"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "status_val"
+label_settings = ExtResource("4_56xfk")
 horizontal_alignment = 2
 
-[node name="Detected" type="Control" parent="."]
+[node name="Damage" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="Detected"]
-layout_mode = 0
-offset_left = -282.0
-offset_top = 89.0
-offset_right = -124.0
-offset_bottom = 143.0
-theme_override_styles/panel = ExtResource("9_4bmg2")
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "DAMAGE:"
+label_settings = ExtResource("3_0vdmw")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Detected/PanelContainer"]
+[node name="DamageLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "damage_val"
+label_settings = ExtResource("4_56xfk")
+horizontal_alignment = 2
+
+[node name="Production" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="Header" type="PanelContainer" parent="Detected/PanelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Production"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "CURRENCY:"
+label_settings = ExtResource("3_0vdmw")
 
-[node name="MarginContainer" type="MarginContainer" parent="Detected/PanelContainer/VBoxContainer/Header"]
+[node name="ProductionList" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Production"]
+layout_mode = 2
+
+[node name="Vibes" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Vibes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "VIBE:"
+label_settings = ExtResource("3_0vdmw")
+
+[node name="VibeList" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Vibes"]
+layout_mode = 2
+
+[node name="Effect" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Effect"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "EFFECT:"
+label_settings = ExtResource("3_0vdmw")
+
+[node name="EffectLabel" type="Label" parent="VBoxContainer/Content/MarginContainer/VBoxContainer2/Effect"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "effect_str"
+label_settings = ExtResource("4_56xfk")
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="Empty" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5pk1a")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Empty"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="Detected/PanelContainer/VBoxContainer/Header/MarginContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Empty/MarginContainer"]
+layout_mode = 2
+
+[node name="Status" type="HBoxContainer" parent="VBoxContainer/Empty/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Empty/MarginContainer/VBoxContainer2/Status"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "???"
+text = "STATUS:"
+label_settings = ExtResource("3_0vdmw")
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer/Empty/MarginContainer/VBoxContainer2/Status"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Available slot"
+label_settings = ExtResource("4_56xfk")
+horizontal_alignment = 2
+
+[node name="Detected" type="Control" parent="."]
+layout_mode = 2
+
+[node name="DetectedPanel" type="PanelContainer" parent="Detected"]
+layout_mode = 0
+offset_left = -244.0
+offset_top = 129.0
+offset_right = -86.0
+offset_bottom = 198.0
+theme_override_styles/panel = ExtResource("9_4bmg2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Detected/DetectedPanel"]
+layout_mode = 2
+
+[node name="Header" type="PanelContainer" parent="Detected/DetectedPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="Detected/DetectedPanel/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Detected/DetectedPanel/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCANNING"
 label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Detected/PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Detected/DetectedPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Detected/DetectedPanel/VBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Detected/DetectedPanel/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Detected/DetectedPanel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="SVGIcon" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" instance=ExtResource("10_7nm7q")]
+[node name="SVGIcon" parent="Detected/DetectedPanel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" instance=ExtResource("10_7nm7q")]
 visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
@@ -150,23 +245,22 @@ icon = 39
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(25, 25)
 
-[node name="Content" type="Label" parent="Detected/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+[node name="Content" type="Label" parent="Detected/DetectedPanel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Event/Anamolly
- Detected"
+text = "Anamolly Detected"
 label_settings = ExtResource("6_2uqqy")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Control" type="Control" parent="Detected/PanelContainer"]
+[node name="Control" type="Control" parent="Detected/DetectedPanel"]
 layout_mode = 2
 
-[node name="SVGIcon" parent="Detected/PanelContainer/Control" instance=ExtResource("10_7nm7q")]
+[node name="SVGIcon" parent="Detected/DetectedPanel/Control" instance=ExtResource("10_7nm7q")]
 layout_mode = 0
-offset_left = 25.0
+offset_left = 14.0
 offset_top = 61.0
-offset_right = 45.0
+offset_right = 34.0
 offset_bottom = 81.0
 icon = 37
 icon_color = Color(1, 0.74902, 0.2, 1)

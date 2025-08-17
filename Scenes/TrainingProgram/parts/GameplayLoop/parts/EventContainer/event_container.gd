@@ -211,11 +211,9 @@ func end() -> void:
 	# RoomDetails.reveal(false)	
 	
 	reveal_researcher(false)
-	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
-	
+	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
+	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.4 )
 	await TransitionScreen.end()
-	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.7 )
-	await U.set_timeout(0.3)
 	user_response.emit(event_output)
 	queue_free()
 # --------------------------------------------------------------------------------------------------		

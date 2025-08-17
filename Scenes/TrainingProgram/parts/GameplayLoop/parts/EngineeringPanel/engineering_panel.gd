@@ -149,8 +149,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var power_distribution:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)].power_distribution
 	var prop_val:int = power_distribution[component_list[component_index].prop]
 	
-	print("chang val: is_active, ", is_active)
-
 	match key:
 		"W":
 			component_index = U.min_max( component_index - 1, 0, component_list.size() - 1, true )
@@ -172,6 +170,4 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				
 				SUBSCRIBE.base_states = base_states
 				SUBSCRIBE.resources_data = resources_data
-		
-
 # ------------------------------------------	

@@ -300,6 +300,16 @@ func start() -> void:
 		EngineeringControls.reveal(true)		
 		TopographyControls.reveal(false)
 		
+	TopographyControls.onCBtn = func() -> void:
+		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
+		SUBSCRIBE.camera_settings = camera_settings
+		TransistionScreen.start(0.3, true)		
+		reveal_topography(false)
+		await TopographyControls.reveal(false)
+		# end topology, start engineering
+		TelemetryControls.reveal(true)
+		current_mode = MODE.TELEMETRY
+		
 	EngineeringBtn.onClick = func() -> void:
 		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
 		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
@@ -1348,7 +1358,7 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 	if !is_node_ready():return
 	var list:Array = GAME_UTIL.get_pending_events_list()
-	TelemetryControls.c_btn_title = "NEXT ANAMOLLY (%s/%s)" % [telemetry_count + 1, list.size()]	
+	TelemetryControls.c_btn_title = "GO TO ANAMOLLY (%s/%s)" % [telemetry_count + 1, list.size()] if telemetry_count > 1 else "GO TO ANAMOLLY"
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
@@ -1516,10 +1526,14 @@ func check_btn_states() -> void:
 			TelemetryControls.disable_active_btn = room_base_state.events_pending.is_empty()
 			TelemetryControls.hide_c_btn = GAME_UTIL.get_pending_events_list().is_empty()
 			
-			
-			TelemetryControls.onAction = func() -> void:
+			TelemetryControls.onAction = func() -> void:				
 				TelemetryControls.reveal(false)
+				reveal_action_label(false)
+				reveal_summarycard(false)
+				reveal_telemetry(false)
+				TransistionScreen.start(0.5, true)
 				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				
 				
 				# get triggerable event
 				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
@@ -1534,8 +1548,12 @@ func check_btn_states() -> void:
 						}
 					)
 				])
-				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				TelemetryControls.reveal(true)
+				reveal_telemetry(true)
+				reveal_summarycard(true, false)
+				reveal_action_label(true, 0.4, "TELEMETRY")
+				await TransistionScreen.start(0.5, true)
 				
 			
 			TelemetryControls.onCBtn = func() -> void:
@@ -1787,7 +1805,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			# -------------
 			MODE.TELEMETRY:
 				telemetry_count = 0
-				
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)

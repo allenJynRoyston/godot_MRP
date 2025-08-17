@@ -60,7 +60,7 @@ outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_byy7q"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptgpd"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="EventContainer" type="PanelContainer"]
@@ -265,7 +265,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_byy7q")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ptgpd")
 
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

@@ -1526,3 +1526,28 @@ func get_pending_events_list() -> Array:
 	return list
 # -----------------------------------------------------------------------------	
 	
+# -----------------------------------------------------------------------------	
+func get_floor_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor]
+	
+func get_ring_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor].ring[use_location.ring]
+
+func get_room_level_config(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or room_config.is_empty(): return {}
+	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	
+func get_room_base_state(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or base_states.is_empty(): return {}
+	return base_states.room[str(use_location.floor, use_location.ring, use_location.room)]	
+	
+func get_ring_base_state(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or base_states.is_empty(): return {}
+	return base_states.ring[str(use_location.floor, use_location.ring)]		
+	
+func get_floor_base_state(use_location:Dictionary = current_location) -> Dictionary:
+	if current_location.is_empty() or base_states.is_empty(): return {}
+	return base_states.ring[str(use_location.floor)]			
+# -----------------------------------------------------------------------------		

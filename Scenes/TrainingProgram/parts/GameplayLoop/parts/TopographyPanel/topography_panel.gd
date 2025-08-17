@@ -110,7 +110,7 @@ func update_warning_node(ParentNode:Control, icon:SVGS.TYPE, str:String) -> void
 # --------------------------------------------------------------------------------------------------		
 func update_node() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty(): return
-	var ring_level_config:Dictionary = U.get_ring_level_config(current_location)
+	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config(current_location)
 	var monitor:Dictionary = ring_level_config.monitor
 
 	TempWarning.show() if absi(monitor.temp) >= 2 else TempWarning.hide()
@@ -135,7 +135,7 @@ func update_node() -> void:
 	# assign room data
 	for index in ContentList.get_child_count():
 		var ContentNode:Control = ContentList.get_child(index)
-		var room_level_config:Dictionary = U.get_room_level_config({"floor": current_location.floor, "ring": current_location.ring, "room": index}) 
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config({"floor": current_location.floor, "ring": current_location.ring, "room": index}) 
 		ContentNode.room_level_config = room_level_config
 # --------------------------------------------------------------------------------------------------		
 	

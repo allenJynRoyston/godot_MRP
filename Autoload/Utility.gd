@@ -444,16 +444,4 @@ func ring_to_str(ring:int) -> String:
 			return "D"
 		
 	return "?"
-
-func get_floor_level_config(use_location:Dictionary = current_location) -> Dictionary:
-	if current_location.is_empty() or room_config.is_empty(): return {}
-	return room_config.floor[use_location.floor]
-	
-func get_ring_level_config(use_location:Dictionary = current_location) -> Dictionary:
-	if current_location.is_empty() or room_config.is_empty(): return {}
-	return room_config.floor[use_location.floor].ring[use_location.ring]
-
-func get_room_level_config(use_location:Dictionary = current_location) -> Dictionary:
-	if current_location.is_empty() or room_config.is_empty(): return {}
-	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 # ---------------------------------------------
