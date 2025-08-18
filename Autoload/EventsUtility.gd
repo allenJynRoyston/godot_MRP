@@ -151,9 +151,9 @@ var TEST_EVENT_B:Dictionary = {
 						"metrics": {
 							RESOURCE.METRICS.MORALE: 10
 						},
-						"currency": {
-							RESOURCE.CURRENCY.MONEY: 10
-						}
+						#"currency": {
+							#RESOURCE.CURRENCY.MONEY: 10
+						#}
 					},
 					"outcomes": {
 						"list": [

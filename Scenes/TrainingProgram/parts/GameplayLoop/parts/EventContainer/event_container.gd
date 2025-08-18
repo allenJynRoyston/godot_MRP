@@ -6,6 +6,11 @@ extends GameContainer
 @onready var SuccessRoll:Control = $SuccessRoll
 #@onready var RoomDetails:Control = $RoomDetails
 
+@onready var ResourcePanel:PanelContainer = $ResourceContainer/PanelContainer
+@onready var ResourceMargin:MarginContainer = $ResourceContainer/PanelContainer/MarginContainer
+@onready var Vibes:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Vibes
+@onready var Economy:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Economy
+
 @onready var BGOutputTexture:TextureRect = $BGContainer/BGOutputTexture
 @onready var ImageBG:TextureRect = $BGContainer/SubViewport/ImageBgTextureRect
 @onready var image_bg_material_copy:ShaderMaterial = ImageBG.material.duplicate()
@@ -26,6 +31,9 @@ extends GameContainer
 
 @onready var OptionsContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
 @onready var OptionsContainerList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionsContainerList
+
+
+
 # @onready var NoteContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 enum MODE {HIDE, ACTIVE}
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
@@ -99,9 +107,15 @@ func activate() -> void:
 		"show": 0,
 		"hide": -HeaderMargin.size.x
 	}
+	
+	control_pos[ResourcePanel] = {
+		"show": 0,
+		"hide": ResourceMargin.size.x
+	}
 
 	ContentPanel.position.y = control_pos[ContentPanel].hide	
 	HeaderPanel.position.x = control_pos[HeaderPanel].hide
+	ResourcePanel.position.x = control_pos[ResourcePanel].hide
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
@@ -109,6 +123,7 @@ func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
 	reveal_outputtexture(false, 0.0)	
+	
 	
 	BGOutputTexture.hide()
 	
@@ -171,13 +186,23 @@ func reveal_header(state:bool, duration:float = 0.3) -> void:
 	if state:
 		HeaderPanel.show()
 	
-	print("reveal_header: ", state)
 	await U.tween_node_property(HeaderPanel, "position:x", control_pos[HeaderPanel].show if state else control_pos[HeaderPanel].hide, duration )
 	
 	if !state:
 		HeaderPanel.hide()
 # --------------------------------------------------------------------------------------------------		
 
+# --------------------------------------------------------------------------------------------------		
+func reveal_resources(state:bool, duration:float = 0.3) -> void:
+	if state:
+		ResourcePanel.show()
+		
+	await U.tween_node_property(ResourcePanel, "position:x", control_pos[ResourcePanel].show if state else control_pos[ResourcePanel].hide, duration )
+	
+	if !state:
+		ResourcePanel.hide()
+# --------------------------------------------------------------------------------------------------		
+		
 # --------------------------------------------------------------------------------------------------		
 func reveal_outputtexture(state:bool, duration:float) -> void:
 	var start_val:float = 0 if state else 1.0
@@ -365,37 +390,54 @@ func on_current_instruction_update() -> void:
 			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
 			var hint_description:String = option.hint_description if option.has("hint_description") else ""
 			
+			new_node.can_afford = true
 			new_node.index = index
 			new_node.hint_description = hint_description
 			new_node.data = option
-			new_node.base_states = base_states
-			new_node.resources_data = resources_data
 			new_node.is_selected = option_selected_index == index
 
 			OptionsContainerList.add_child(new_node)
 		
-		# fade in options
-		#for index in OptionsContainerList.get_child_count():
-			#var option:Control = OptionsContainerList.get_child(index)
-			#option.start()
 		
-		await U.tick()
-		# add BtnControl funcs
-		BtnControls.item_index = 0		
-		BtnControls.itemlist = OptionsContainerList.get_children()
-		BtnControls.directional_pref = "LR"
+		BtnControls.onAction = func() -> void:
+			on_option_select(options[option_selected_index])
+	
 		BtnControls.onUpdate = func(_node:Control) -> void:
+			print(_node)
 			for index in OptionsContainerList.get_child_count():
 				var node:Control = OptionsContainerList.get_child(index)
 				node.is_selected = node == _node	
 				if node == _node:
-					print(options[index])
+					var option:Dictionary = options[index]
+					reveal_resources(option.has("cost"), 0.3 if option.has("cost") else 0)
+					
+					if option.has("cost"):
+						if option.cost.has("currency"):
+							Economy.show()
+							for ref in option.cost.currency:
+								var amount:int = option.cost.currency[ref]
+								# ADD DIFF COMPONENT
+						else:
+							Economy.hide()
+						
+						if option.cost.has("metrics"):
+							Vibes.show()
+							for ref in option.cost.metrics:
+								var amount:int = option.cost.metrics[ref]
+						else:
+							Vibes.hide()
+					
 					# assign
 					SelectedNode = node
 					option_selected_index = index
 					BtnControls.disable_active_btn = !node.is_selectable
 					
-		
+				
+		# add BtnControl funcs
+		BtnControls.itemlist = OptionsContainerList.get_children()
+		BtnControls.directional_pref = "LR"
+		BtnControls.item_index = 0		
+
 		update_next_btn(true)
 		return
 	# -----------------------------------
@@ -414,30 +456,30 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-#func on_option_select(option:Dictionary) -> void:	
-	#await BtnControls.reveal(false)
-	#
-	#update_next_btn(false)	
-	#
-	#SuccessRoll.set_title(option.title)
-	#
-	#for index in OptionsContainerList.get_child_count():
-		#var node:Control = OptionsContainerList.get_child(index)
-		#node.fade_out(0 if node != SelectedNode else 1.0) 
-	#
-	#await U.set_timeout(1.0)
-#
-	#if "onSelected" in option:
-		#if use_force_results and option.has('success_rate'):
-			#option.success_rate = 100 if force_is_success else 0
-		#
-		#option.onSelected.call({
-			#"index": option_selected_index, 
-			#"option": option
-		#})
-		#
-	## goto next instruction
-	#next_instruction(true)
+func on_option_select(option:Dictionary) -> void:	
+	await BtnControls.reveal(false)
+	
+	update_next_btn(false)	
+	
+	SuccessRoll.set_title(option.title)
+	
+	for index in OptionsContainerList.get_child_count():
+		var node:Control = OptionsContainerList.get_child(index)
+		node.fade_out(0 if node != SelectedNode else 1.0) 
+	
+	await U.set_timeout(1.0)
+
+	if "onSelected" in option:
+		if use_force_results and option.has('success_rate'):
+			option.success_rate = 100 if force_is_success else 0
+		
+		option.onSelected.call({
+			"index": option_selected_index, 
+			"option": option
+		})
+		
+	# goto next instruction
+	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------	

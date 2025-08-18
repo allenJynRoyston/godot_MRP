@@ -26,6 +26,7 @@ const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/
 var index:int
 var enabled:bool = false 
 var is_selectable:bool = true
+var can_afford:bool = true
 
 var is_available:bool = true : 
 	set(val):
@@ -41,9 +42,6 @@ var data:Dictionary = {} :
 	set(val):
 		data = val
 		on_data_update()
-
-var resources_data:Dictionary
-var base_states:Dictionary
 
 # ----------------------
 func _init() -> void:
@@ -90,7 +88,6 @@ func on_is_selected_update() -> void:
 var built_once:bool = false
 func update_node(rebuild_list:bool = true) -> void:
 	if !is_node_ready() or data.is_empty():return
-	var can_afford:bool = true
 	
 	# elements
 	if data.has("header"):
@@ -141,7 +138,6 @@ func update_node(rebuild_list:bool = true) -> void:
 				CostHBox.add_child(new_node)
 
 		built_once = true
-		can_afford = false
 	else:
 		Costs.hide()
 		
