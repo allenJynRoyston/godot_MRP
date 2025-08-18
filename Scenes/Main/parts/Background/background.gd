@@ -13,10 +13,10 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	await U.tick()
-	MusicShaderTexture.material = shader_material
 	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings	
+	
+	MusicShaderTexture.material = shader_material
 	show() if os_settings.audio_visulizer_in_background else hide()	
-
 
 func on_audio_data_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return

@@ -12,8 +12,9 @@ func _ready() -> void:
 
 func start(fast_load:bool) -> void:	
 	LoadingComponent.loading_text = str(details.title).to_upper()
+	
 	await LoadingComponent.start(fast_load)
-	await TransitionScreen.start(0.7, true)
+	await TransitionScreen.start(0.1 if fast_load else 0.7, true)
 
 	# start app
 	TrainingProgram.show()	

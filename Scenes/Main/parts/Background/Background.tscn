@@ -42,6 +42,7 @@ size_flags_vertical = 3
 texture = SubResource("NoiseTexture2D_6cd5x")
 
 [node name="SubViewport2" type="SubViewport" parent="."]
+size = Vector2i(640, 480)
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport2"]
 offset_right = 40.0

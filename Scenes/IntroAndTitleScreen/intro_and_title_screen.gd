@@ -99,15 +99,14 @@ func on_current_mode_update() -> void:
 		MODE.START:	
 			U.tween_node_property(self, 'modulate', Color(1, 1, 1, 1))
 			current_mode = MODE.TITLESPLASH			
-		MODE.TITLESPLASH:	
-			if !DEBUG.get_val(DEBUG.SKIP_SPLASH):
-				TitleSplash.start()
-				await TitleSplash.on_complete	
-				TransitionScreen.start(2.0, true)
-				
-				OS_AUDIO.play(OS_AUDIO.TRACK.INTRO, OS_AUDIO.CHANNEL.MAIN)
+		MODE.TITLESPLASH:				
+			TitleSplash.start()
+			await TitleSplash.on_complete	
+			TransitionScreen.start(2.0, true)
+			
+			OS_AUDIO.play(OS_AUDIO.TRACK.INTRO, OS_AUDIO.CHANNEL.MAIN)
 
-				await U.set_timeout(3.0)	
+			await U.set_timeout(3.0)	
 			current_mode = MODE.DISPLAY_LOGO	
 		# ---------
 		MODE.DISPLAY_LOGO:

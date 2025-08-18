@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=23 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
@@ -13,10 +13,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_58xi4"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvn03"]
-bg_color = Color(0.05, 0.05, 0.05, 0)
-border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2gjl"]
 bg_color = Color(1, 0.749, 0.2, 1)
@@ -78,16 +74,16 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
+bg_color = Color(0.89294, 1, 0.89294, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvjm1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bk83u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ah17n"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_se8j2"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3de1l"]
-bg_color = Color(0.89294, 1, 0.89294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xathl"]
 
@@ -132,29 +128,9 @@ layout_mode = 2
 [node name="Left" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 20
-
-[node name="GotoBtnPanel" type="PanelContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left"]
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_hvn03")
-
-[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer"]
-layout_mode = 2
 theme_override_constants/separation = 5
-alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="TelemetryBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="TelemetryBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -165,7 +141,7 @@ icon = 47
 is_disabled = false
 allow_hint = false
 
-[node name="EngineeringBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="EngineeringBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -176,7 +152,7 @@ icon = 46
 is_disabled = false
 allow_hint = false
 
-[node name="FabricationBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="FabricationBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -186,7 +162,7 @@ assigned_key = "F"
 is_disabled = false
 allow_hint = false
 
-[node name="ManagementBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="ManagementBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -197,7 +173,7 @@ icon = 30
 is_disabled = false
 allow_hint = false
 
-[node name="OperationsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="OperationsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -208,7 +184,7 @@ icon = 6
 is_disabled = false
 allow_hint = false
 
-[node name="TopLevelBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="HealthBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -219,8 +195,8 @@ icon = 39
 is_disabled = false
 allow_hint = false
 
-[node name="DebugBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 0)
+[node name="DebugBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
@@ -235,24 +211,9 @@ allow_hint = false
 custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 size_flags_vertical = 8
-theme_override_constants/separation = 20
-
-[node name="MarginContainer" type="MarginContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -10
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer"]
-layout_mode = 2
 theme_override_constants/separation = 5
-alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="SettingsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="SettingsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -263,7 +224,7 @@ icon = 15
 is_disabled = false
 allow_hint = false
 
-[node name="InfoBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="InfoBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -274,7 +235,7 @@ icon = 23
 is_disabled = false
 allow_hint = false
 
-[node name="EndTurnBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+[node name="EndTurnBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -284,36 +245,6 @@ assigned_key = "ENTER"
 icon = 32
 is_disabled = false
 allow_hint = false
-
-[node name="SummaryControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="SummaryControl"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
-
-[node name="MarginContainer" type="MarginContainer" parent="SummaryControl/PanelContainer"]
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 150
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-metadata/_edit_group_ = true
-
-[node name="SummaryCard" parent="SummaryControl/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
 
 [node name="SummaryControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
@@ -364,6 +295,76 @@ layout_mode = 2
 a_btn_title = "INVESTIGATE"
 c_btn_title = "NEXT ANAMOLLY"
 hide_c_btn = false
+
+[node name="NotificationControls" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="NotificationControls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_se8j2")
+
+[node name="MarginContainer" type="MarginContainer" parent="NotificationControls/PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NotificationControls/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NotificationControls/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="NewMessageBtn" parent="NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_3de1l")
+title = ""
+assigned_key = "m"
+icon = 5
+primary_color = Color(0.177067, 0.817889, 0.923605, 1)
+is_flashing = true
+is_disabled = false
+
+[node name="Summary" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Summary"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tvjm1")
+
+[node name="MarginContainer" type="MarginContainer" parent="Summary/PanelContainer"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+metadata/_edit_group_ = true
+
+[node name="SummaryCard" parent="Summary/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="ModulesAndPrograms" type="Control" parent="."]
 layout_mode = 2
@@ -465,49 +466,7 @@ theme_override_constants/margin_bottom = 20
 [node name="TelemetryComponent" parent="Telemetry/PanelContainer/MarginContainer" instance=ExtResource("8_xathl")]
 layout_mode = 2
 
-[node name="NotificationControls" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="NotificationControls"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_se8j2")
-
-[node name="MarginContainer" type="MarginContainer" parent="NotificationControls/PanelContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 100
-
-[node name="VBoxContainer" type="VBoxContainer" parent="NotificationControls/PanelContainer/MarginContainer"]
-layout_mode = 2
-alignment = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="NotificationControls/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 2
-
-[node name="NewMessageBtn" parent="NotificationControls/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_3de1l")
-title = ""
-assigned_key = "m"
-icon = 5
-primary_color = Color(0.177067, 0.817889, 0.923605, 1)
-is_flashing = true
-is_disabled = false
-
 [node name="NameControl" type="Control" parent="."]
-visible = false
 layout_mode = 2
 
 [node name="ActionLabelPanel" type="Control" parent="."]

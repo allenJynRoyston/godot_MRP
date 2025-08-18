@@ -28,9 +28,9 @@ extends GameContainer
 
 #  ---------------------------------------
 # SUMMARY
-@onready var SummaryPanel:PanelContainer = $SummaryControl/PanelContainer
-@onready var SummaryPanelMargin:MarginContainer = $SummaryControl/PanelContainer/MarginContainer
-@onready var SummaryCard:PanelContainer = $SummaryControl/PanelContainer/MarginContainer/SummaryCard
+@onready var SummaryPanel:PanelContainer = $Summary/PanelContainer
+@onready var SummaryPanelMargin:MarginContainer = $Summary/PanelContainer/MarginContainer
+@onready var SummaryCard:PanelContainer = $Summary/PanelContainer/MarginContainer/SummaryCard
 
 # MODULES
 @onready var ModulesPanel:PanelContainer = $ModulesAndPrograms/PanelContainer
@@ -54,7 +54,6 @@ extends GameContainer
 #  ---------------------------------------
 # STATIC CONTROLS 
 # GOTO PANEL
-@onready var RootControls:Control = $RootControls
 @onready var WingRootPanel:PanelContainer = $RootControls/PanelContainer
 @onready var WingRootMargin:MarginContainer = $RootControls/PanelContainer/MarginContainer
 
@@ -63,30 +62,19 @@ extends GameContainer
 @onready var ActionMargin:MarginContainer = $ActionLabelPanel/PanelContainer/MarginContainer
 @onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
 
-# SETTINGS
+# LEFT SIDE
+@onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/EngineeringBtn
+@onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/FabricationBtn
+@onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/ManagementBtn
+@onready var OperationsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/OperationsBtn
+@onready var HealthBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/HealthBtn
+@onready var TelemetryBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/TelemetryBtn
+@onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/DebugBtn
 
-# GOTO PANEL
-@onready var GotoBtnPanel:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel
-@onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/EngineeringBtn
-@onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/FabricationBtn
-@onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/ManagementBtn
-@onready var OperationsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/OperationsBtn
-@onready var TopLevelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TopLevelBtn
-@onready var TelemetryBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/TelemetryBtn
-@onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/GotoBtnPanel/MarginContainer/VBoxContainer/HBoxContainer/DebugBtn
-
-# 
-@onready var SettingsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/SettingsBtn
-@onready var InfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/InfoBtn
-@onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/MarginContainer/VBoxContainer/HBoxContainer/EndTurnBtn
-
-# FACILITY ACTION PANELS
-@onready var BaseActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions
-@onready var BaseManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/BaseActions/MarginContainer/VBoxContainer/HBoxContainer/BaseManagementBtn
-
-# GENERATION ACTION PANEL
-#@onready var GeneratorActions:PanelContainer = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions
-#@onready var GenActionBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer/Center/GeneratorActions/MarginContainer/VBoxContainer/HBoxContainer/GenActionBtn
+# RIGHT SIDE
+@onready var SettingsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/SettingsBtn
+@onready var InfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/InfoBtn
+@onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/EndTurnBtn
 #  ---------------------------------------
 
 enum MODE { 
@@ -95,7 +83,7 @@ enum MODE {
 	SUMMARY_CARD,
 	BASE_MANAGEMENT,
 	ENGINEERING,
-	TOPOGRAPHY,
+	HEALTH,
 	TELEMETRY,
 	INFO,
 	ABILITY,
@@ -258,9 +246,9 @@ func start() -> void:
 	# -------------------------------------
 
 	# -------------------------------------
-	TopLevelBtn.onClick = func() -> void:
+	HealthBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.TOPOGRAPHY
+		current_mode = MODE.HEALTH
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
@@ -324,7 +312,7 @@ func start() -> void:
 		TransistionScreen.start(0.3, true)				
 		EngineeringControls.reveal(false)
 		# go to topology
-		current_mode = MODE.TOPOGRAPHY
+		current_mode = MODE.HEALTH
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
@@ -858,6 +846,103 @@ func show_debug() -> void:
 	
 	var options:Array = [
 		{
+			"title": "EVENTS",
+			"items": [
+				{
+					"title": "FORCE TELEMTRY EVENT IN ROOM",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "For a rooms event to trigger and show up for Telemetry."
+					},
+					"action": func() -> void:
+						print("add check to get room events and conditions")
+						GAME_UTIL.add_room_event(EVT.TYPE.HAPPY_HOUR, current_location)
+						print("event added: ", EVT.TYPE.HAPPY_HOUR),
+#						pass
+				},	
+				{
+					"title": "TEST EVENT A",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for TEST_EVENT_A event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.TEST_EVENT_A)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "TEST EVENT B",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for TEST_EVENT_B event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.TEST_EVENT_B)
+						ActiveMenuNode.unlock(),
+				},												
+				{
+					"title": "HAPPY HOUR",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for HAPPY_HOUR event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.HAPPY_HOUR)
+						ActiveMenuNode.unlock(),
+				},				
+				{
+					"title": "MYSTERY MEAT 1",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for MYSTERY_MEAT event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.MYSTERY_MEAT_1)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "MYSTERY MEAT 2",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for MYSTERY_MEAT event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.MYSTERY_MEAT_2)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "MYSTERY MEAT 3",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for MYSTERY_MEAT event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.MYSTERY_MEAT_3)
+						ActiveMenuNode.unlock(),
+				},				
+			]
+		},				
+		{
 			"title": "BASE STATES",
 			"items": [
 				#{
@@ -972,47 +1057,6 @@ func show_debug() -> void:
 				},				
 			],
 		},
-		{
-			"title": "EVENTS",
-			"items": [
-				{
-					"title": "FORCE TELEMTRY EVENT IN ROOM",
-					"icon": SVGS.TYPE.CONVERSATION,
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "HINT",
-						"description": "For a rooms event to trigger and show up for Telemetry."
-					},
-					"action": func() -> void:
-						print("add check to get room events and conditions")
-						GAME_UTIL.add_room_event(EVT.TYPE.HAPPY_HOUR, current_location)
-						print("event added: ", EVT.TYPE.HAPPY_HOUR),
-#						pass
-				},				
-				{
-					"title": "MYSTERY_MEAT",
-					"icon": SVGS.TYPE.CONVERSATION,
-					"hint": {
-						"icon": SVGS.TYPE.CONVERSATION,
-						"title": "HINT",
-						"description": "Test for MYSTERY_MEAT event."
-					},
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-						await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
-							EVT.TYPE.MYSTERY_MEAT, 
-								{
-									"onSelection": func(selection:Dictionary) -> void:
-										# add buff, debuff
-										print("todo: ADD BUFF OR DEBUFF depending on option")
-										print(selection),
-								}
-							)
-						])
-						ActiveMenuNode.unlock(),
-				},
-			]
-		},		
 		{
 			"title": "SCP EVENTS",
 			"items": [
@@ -1815,7 +1859,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_summarycard(true, false)
 				reveal_telemetry(true)
 			# -------------
-			MODE.TOPOGRAPHY:
+			MODE.HEALTH:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false					
 			# --------------
@@ -1910,7 +1954,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"A":
 					U.room_left(true)
 		# ----------------------------
-		MODE.TOPOGRAPHY:
+		MODE.HEALTH:
 			match key:
 				# ----------------------------
 				"W":

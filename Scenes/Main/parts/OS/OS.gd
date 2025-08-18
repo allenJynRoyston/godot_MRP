@@ -512,20 +512,20 @@ func start() -> void:
 		add_child(LoginNode)
 		await LoginNode.start()
 		
+	if skip_to_game:
+		freeze_inputs = false
+		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)
+		open_app(app.details)
+			
+		
 	await render_desktop_icons()	
 	Taskbar.activate()
 	HeaderControls.show()
-	
-		
-	if skip_to_game:
-		var app:Dictionary = find_in_app_list(APPS.SITE_DIRECTOR_TRAINING_PROGRAM)
-		open_app(app.details)
-	
+
 	await reveal_logo(true, 0.5)
 	
-	if os_settings.play_music_on_boot:
+	if os_settings.play_music_on_boot and !skip_to_game:
 		OS_AUDIO.play(OS_AUDIO.TRACK.OS_TRACK_ONE, OS_AUDIO.CHANNEL.MAIN)
-	
 
 	reveal_logo(false, 3.0)
 		

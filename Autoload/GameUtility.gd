@@ -513,6 +513,30 @@ func open_objectives() -> void:
 	#await GameplayNode.on_store_purchase_complete	
 ## ---------------------
 
+## ---------------------
+func run_event(event_ref:EVT.TYPE) -> void:
+	if event_ref not in base_states.event_record:
+		base_states.event_record[event_ref] = {
+			"count": 0,
+			"outcome_type": [],
+			"outcome_results": []
+		}
+	base_states.event_record[event_ref].count += 1
+	
+	await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+		event_ref, 
+			{
+				"onSelection": func(selection:Dictionary) -> void:
+					# record story "type" I.E. good/bad/neutral
+					base_states.event_record[event_ref].outcome_type.push_back(selection.type)
+					# record their selection
+					base_states.event_record[event_ref].outcome_results.push_back(selection.outcome_index)
+					SUBSCRIBE.base_states = base_states,
+			}
+		)
+	])
+## ---------------------
+
 # ---------------------
 func trigger_event(event_data:Array) -> Dictionary:
 	disable_taskbar(true)

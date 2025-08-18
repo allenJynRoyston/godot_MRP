@@ -1,14 +1,17 @@
-[gd_scene load_steps=26 format=3 uid="uid://dqxnw3r7jjl1s"]
+[gd_scene load_steps=32 format=3 uid="uid://dqxnw3r7jjl1s"]
 
 [ext_resource type="Script" uid="uid://d14ehnxlj0jud" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/event_container.gd" id="1_vx21a"]
-[ext_resource type="Material" uid="uid://b8dnd3shagyfh" path="res://CanvasShader/CornerVoid/CornerVoid.tres" id="2_h7wp5"]
 [ext_resource type="Material" uid="uid://bvao31du74g1" path="res://Shader/HorizontalInterupt/HorizontalInterupt.tres" id="3_fi0y4"]
-[ext_resource type="Material" uid="uid://yyon0s8snla2" path="res://Shader/CurveTextureRect.tres" id="3_v6l8k"]
+[ext_resource type="Shader" uid="uid://dos1dq4kwbjf6" path="res://Shader/CheckboardPattern.gdshader" id="3_ptgpd"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="4_wycer"]
 [ext_resource type="LabelSettings" uid="uid://nrxe2mbka1e4" path="res://Fonts/game/label_small_thick.tres" id="5_amr3s"]
 [ext_resource type="PackedScene" uid="uid://ciioh1kbjafri" path="res://UI/VHSLabel/VHSLabel.tscn" id="5_n5dpn"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="6_byy7q"]
+[ext_resource type="PackedScene" uid="uid://gh5hfdolakbr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/Economy.tscn" id="7_n5dpn"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="7_td1l6"]
 [ext_resource type="PackedScene" uid="uid://b8hw5jenpkiw8" path="res://UI/Buttons/TextBtn/TextBtn.tscn" id="7_xorcm"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="8_oju27"]
+[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="8_td1l6"]
 [ext_resource type="PackedScene" uid="uid://hmrs6dblpe7k" path="res://UI/ResourceRequiredFloatingPanel/ResourceRequiredFloatingPanel.tscn" id="11_fi0y4"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="11_h7wp5"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="12_1e555"]
@@ -18,10 +21,23 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5faq"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_ptgpd"]
+viewport_path = NodePath("BGContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wycer"]
+shader = ExtResource("3_ptgpd")
+shader_parameter/color1 = Color(0.164706, 0.745098, 0.380392, 0.509804)
+shader_parameter/color2 = Color(0, 0, 0, 0.756863)
+shader_parameter/size = 20.0
+shader_parameter/speed_x = 0.5
+shader_parameter/speed_y = 0.5
+shader_parameter/rotation_speed = 0.1
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wycer"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rgg1a"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_h7wp5"]
-viewport_path = NodePath("ImageControl/PanelContainer/MarginContainer/SubViewport")
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ptgpd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1e555"]
 
@@ -60,7 +76,7 @@ outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ptgpd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dpn"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="EventContainer" type="PanelContainer"]
@@ -72,16 +88,41 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_t5faq")
 script = ExtResource("1_vx21a")
 
-[node name="ColorRectBG" type="ColorRect" parent="."]
+[node name="BGContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="BGOutputTexture" type="TextureRect" parent="BGContainer"]
 visible = false
-material = ExtResource("2_h7wp5")
+modulate = Color(1, 1, 1, 0.835294)
+z_as_relative = false
+material = ExtResource("3_fi0y4")
 layout_mode = 2
-color = Color(0, 0, 0, 1)
+size_flags_vertical = 3
+texture = SubResource("ViewportTexture_ptgpd")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="ImageControl" type="Control" parent="."]
+[node name="SubViewport" type="SubViewport" parent="BGContainer"]
+disable_3d = true
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(640, 480)
+
+[node name="ImageBgTextureRect" type="TextureRect" parent="BGContainer/SubViewport"]
+material = SubResource("ShaderMaterial_wycer")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("PlaceholderTexture2D_wycer")
+
+[node name="HeaderControl" type="Control" parent="."]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="ImageControl"]
+[node name="PanelContainer" type="PanelContainer" parent="HeaderControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -92,61 +133,90 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rgg1a")
 
-[node name="MarginContainer" type="MarginContainer" parent="ImageControl/PanelContainer"]
-custom_minimum_size = Vector2(800, 0)
+[node name="MarginContainer" type="MarginContainer" parent="HeaderControl/PanelContainer"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
 
-[node name="OutputTexture" type="TextureRect" parent="ImageControl/PanelContainer/MarginContainer"]
-modulate = Color(1, 1, 1, 0.835294)
-material = ExtResource("3_fi0y4")
+[node name="PanelContainer" type="PanelContainer" parent="HeaderControl/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 3
-texture = SubResource("ViewportTexture_h7wp5")
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("4_wycer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="HeaderTitle" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer" instance=ExtResource("5_n5dpn")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Event name goes here"
+icon = 16
+
+[node name="MarginContainer2" type="MarginContainer" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HeaderSubTitle" type="Label" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Subtitle for event goes here..."
+label_settings = ExtResource("6_byy7q")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HeaderTextureRect" type="TextureRect" parent="HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_ptgpd")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="SubViewport" type="SubViewport" parent="ImageControl/PanelContainer/MarginContainer"]
-transparent_bg = true
-size = Vector2i(800, 640)
+[node name="ResourceContainer" type="Control" parent="."]
+layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="ImageControl/PanelContainer/MarginContainer/SubViewport"]
-material = ExtResource("3_v6l8k")
+[node name="PanelContainer" type="PanelContainer" parent="ResourceContainer"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rgg1a")
 
-[node name="MarginContainer2" type="MarginContainer" parent="ImageControl/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ResourceContainer/PanelContainer"]
 layout_mode = 2
+size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ImageControl/PanelContainer/MarginContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ResourceContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="VHSLabel" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer" instance=ExtResource("5_n5dpn")]
-layout_mode = 2
-size_flags_horizontal = 0
-title = "asd"
-icon = 16
-
-[node name="Subtitle" type="Label" parent="ImageControl/PanelContainer/MarginContainer2/VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 0
-text = "SUBTITLE
-"
-label_settings = ExtResource("7_td1l6")
-autowrap_mode = 3
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Economy" parent="ResourceContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("7_n5dpn")]
+visible = false
+layout_mode = 2
+
+[node name="Vibes" parent="ResourceContainer/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("8_td1l6")]
+layout_mode = 2
 
 [node name="ContentControl" type="Control" parent="."]
 layout_mode = 2
@@ -164,7 +234,8 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_1e555")
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 130
+metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentControl/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -268,7 +339,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_ptgpd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_n5dpn")
 
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

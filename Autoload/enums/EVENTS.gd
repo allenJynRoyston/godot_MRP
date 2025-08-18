@@ -1,6 +1,7 @@
 extends Node
 
 enum TYPE {
+	TEST_EVENT_A, TEST_EVENT_B,
 	# -------------
 	GAME_OVER,
 	# -------------
@@ -35,8 +36,10 @@ enum TYPE {
 	# -------------
 	
 	# -------------
-	MYSTERY_MEAT,
+	MYSTERY_MEAT_1, MYSTERY_MEAT_2, MYSTERY_MEAT_3,
 }
+
+enum OUTCOME {GOOD, BAD, NEUTRAL}
 
 enum CONSEQUENCE {
 	END,

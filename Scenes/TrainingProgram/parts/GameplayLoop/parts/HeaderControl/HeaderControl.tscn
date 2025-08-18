@@ -35,4 +35,5 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HeaderFloorRight" parent="." instance=ExtResource("7_1k2sh")]
+visible = false
 layout_mode = 2

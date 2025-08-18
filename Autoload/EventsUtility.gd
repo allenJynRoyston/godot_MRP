@@ -1,6 +1,570 @@
 @tool
 extends SubscribeWrapper
 
+# ------------------------------------------------------------------------ support func and vars
+var option_selected:Dictionary = {
+	"selected": null
+}
+
+func onSelected(selected:Dictionary) -> void:
+	if selected.option.has("outcomes"):
+		var outcome_dict:Dictionary
+		var total_chance:int = 0
+		for item in selected.option.outcomes.list:
+			outcome_dict[total_chance + item.chance] = item
+			total_chance += item.chance
+		var roll:int = randi() % total_chance
+		var outcome:Dictionary
+		var outcome_index:int = 0
+		for val in outcome_dict:		
+			if roll <= int(val):
+				outcome = outcome_dict[val]
+				break
+			else:
+				outcome_index += 1
+				
+		# assign to option selected
+		option_selected.selected = {
+			# return selected index
+			"type": selected.option.type,
+			"outcome_index": outcome_index,
+			"outcome": outcome
+		}
+		
+func build_event_content(props:Dictionary, content:Dictionary) -> Array:
+		return [
+			# ---------
+			func() -> Dictionary:
+				return content,
+			# ---------
+			func() -> Dictionary:
+				return {
+					"text": option_selected.selected.outcome.response
+				},
+			# ---------
+			func() -> Dictionary:
+				# send result to prop
+				if props.has("onSelection"):
+					props.onSelection.call(option_selected.selected)
+				
+				# call effect function
+				if option_selected.selected.outcome.has("effect"):
+					await option_selected.selected.outcome.effect.call()
+				
+				return {
+					"end": true
+				}
+		]
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
+var TEST_EVENT_A:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "TEST EVENT A",
+			"subheader": "Subheader goes here",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Test event A text goes here."],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 1",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+							},
+							{
+								"chance": 50,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
+							}							
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 2",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+							},
+							{
+								"chance": 50,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
+							}							
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var TEST_EVENT_B:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "TEST EVENT B",
+			"subheader": "Subheader goes here",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Test event B text goes here."],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 1",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"cost": {
+						"metrics": {
+							RESOURCE.METRICS.MORALE: 10
+						},
+						"currency": {
+							RESOURCE.CURRENCY.MONEY: 10
+						}
+					},
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 2",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+								"effect": func() -> void:
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
+							}							
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
+var MYSTERY_MEAT_1:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "MYSTERY MEAT 1",
+			"subheader": "Who doesn't like a little mystery?",
+			"img_src": "res://Media/images/redacted.png",
+			"text": [
+				"Analytics has noticed an uptick in meat consumption in this particular facility. Quantities ordered exceed projected dietary needs by 23%. It's not immediately clear that there is an issue, but maybe it's worth investigating. How do we proceed?"
+			],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "INTERVENE",
+					"title": "Investigate the Mystery Meat",
+					"description": "Something feels off. Investigate the meat and its sources...",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Minor irregularities surface in the supply chain. Correcting them strains resources, and some staff seem unsettled, though they cannot explain why."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
+									SUBSCRIBE.base_states = base_states,
+							},
+							{
+								"chance": 1,
+								"response": [
+									"You track the orders carefully but find no concrete anomaly. Still, there is an indefinable unease among staff that resists explanation."
+								],
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				# ----------------------------------------- GOOD
+				{
+					"header": "REPLACE",
+					"title": "Switch to Plant-Based",
+					"description": "Remove the meat from the menu and replace it with vegetables.",
+					"type": EVT.OUTCOME.GOOD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Initial resistance fades as staff adapt to the vegetable menu. The unexplained enthusiasm around the meat vanishes, but so does a certain energy in the facility."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
+									SUBSCRIBE.base_states = base_states,
+							},
+							{
+								"chance": 1,
+								"response": [
+									"Some staff complain of cravings and unease following the switch. While no overt anomaly manifests, the sense of absence is difficult to ignore."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
+									SUBSCRIBE.base_states = base_states,
+							},
+						]
+					},
+					"onSelected": onSelected
+				},				
+				# -----------------------------------------
+				# ----------------------------------------- BAD
+				{
+					"header": "DO NOTHING",
+					"title": "Just don’t think about it",
+					"description": "Turn a blind eye. The staff deserve a little comfort food.",
+					"type": EVT.OUTCOME.BAD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Staff morale improves after the meals, though their enthusiasm feels oddly intense. You make a note to keep watch."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] += 1
+									SUBSCRIBE.base_states = base_states
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: -1} ),
+							},
+							{
+								"chance": 1,
+								"response": [
+									"Meat consumption rates spike, driving up operational costs. Several requisition logs contain inconsistencies that can’t be fully explained."
+								],
+								"effect": func() -> void:
+									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 1
+									SUBSCRIBE.resources_data = resources_data
+									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: -1} ),
+							},
+						],
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var MYSTERY_MEAT_2:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "MYSTERY MEAT 2",
+			"subheader": "Something doesn’t add Up (except the meat).",
+			"img_src": "res://Media/images/redacted.png",
+			"text": [
+				"Despite earlier concerns, meat continues to be delivered and consumed at an unusual rate. Staff enthusiasm remains high, though some behavioral shifts have been noted: longer meal breaks, increased requests for night shifts near the cafeteria, and several requisition forms with signatures that do not match official records."
+			],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "AUDIT",
+					"title": "Launch a full investigation",
+					"description": "Trace the supply chain, interview staff, and cross-check signatures.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"The audit uncovers no registered supplier matching the meat’s origin. Several interviewed staff recall events you did not record authorizing. Their accounts differ in subtle but consistent ways."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.READINESS] += 1
+									SUBSCRIBE.base_states = base_states,
+							},
+							{
+								"chance": 1,
+								"response": [
+									"Cross-checking logistics burns time and resources. The findings are inconclusive, but multiple employees display unusual reluctance to discuss their dining habits."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
+									SUBSCRIBE.base_states = base_states,
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				# ----------------------------------------- GOOD
+				{
+					"header": "RESEARCH",
+					"title": "Restrict meat to limited groups",
+					"description": "Continue service, but under controlled and monitored conditions.",
+					"type": EVT.OUTCOME.GOOD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"With meat service restricted, affected staff show mild agitation but eventually comply. Surveillance notes subtle differences in behavior between those who continue eating the meat and those who abstain."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.SAFETY] += 1
+									SUBSCRIBE.base_states = base_states,
+							},
+							{
+								"chance": 1,
+								"response": [
+									"Attempts to isolate distribution generate pushback. Some staff insist they were authorized to receive extra servings, though no such orders exist in your system."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
+									SUBSCRIBE.base_states = base_states,
+							},
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				# ----------------------------------------- BAD
+				{
+					"header": "INDULGE",
+					"title": "Encourage the meals",
+					"description": "If the staff are happy, let them have what they want.",
+					"type": EVT.OUTCOME.BAD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Morale rises significantly, with staff displaying heightened cooperation and energy. Still, several personnel reports contain inconsistencies regarding memory of events during mealtimes."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] += 2
+									SUBSCRIBE.base_states = base_states,
+							},
+							{
+								"chance": 1,
+								"response": [
+									"Operational costs escalate as meat shipments triple. A review of invoices reveals faintly distorted seals from suppliers—unlike any registered vendor."
+								],
+								"effect": func() -> void:
+									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 2
+									SUBSCRIBE.resources_data = resources_data,
+							},
+						],
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var MYSTERY_MEAT_3:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "MYSTERY MEAT 3",
+			"subheader": "Appetite for catastrophe.",
+			"img_src": "res://Media/images/redacted.png",
+			"text": [
+				"Consumption has spiked beyond all projections. Staff display erratic behavior, including aggression, fixation on meal schedules, and disturbing reports of 'hearing the meat call to them.' Several individuals have attempted to hoard rations. This is no longer a statistical oddity: it’s a crisis."
+			],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "INTERVENE",
+					"title": "Contain the Outbreak",
+					"description": "Quarantine affected staff and restrict meat distribution.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Quarantine succeeds, but not before multiple staff members are lost to violent outbursts. Remaining personnel are shaken by the containment measures, but the spread of the anomaly slows."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
+									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 5
+									SUBSCRIBE.base_states = base_states
+									SUBSCRIBE.resources_data = resources_data,
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+
+				# ----------------------------------------- GOOD
+				{
+					"header": "REPLACE",
+					"title": "Purge the Meat Supply",
+					"description": "Destroy all contaminated stock and transition to emergency rations.",
+					"type": EVT.OUTCOME.GOOD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"All meat is incinerated under strict supervision. Withdrawal symptoms ripple through the facility: tremors, hallucinations, and mass unrest. Several staff must be sedated, but eventually the anomaly recedes."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 7
+									base_states.metrics[RESOURCE.METRICS.SAFETY] += 2
+									SUBSCRIBE.base_states = base_states,
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+				
+				# ----------------------------------------- BAD
+				{
+					"header": "DO NOTHING",
+					"title": "Maintain Operations",
+					"description": "Ignore the warning signs. Staff insist they're fine.",
+					"type": EVT.OUTCOME.BAD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Staff behavior spirals into chaos. Work grinds to a halt as fights break out over rations. Security is forced to intervene, but several personnel are injured before order is restored."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
+									base_states.metrics[RESOURCE.METRICS.READINESS] -= 5
+									SUBSCRIBE.base_states = base_states,
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+
+
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
+var HAPPY_HOUR:Dictionary = {
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "Happy Hour",
+			"subheader": "It's 5 o'clock somewhere",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["HAPPY HOUR"],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "INTERVENE",
+					"title": "Contain the Outbreak",
+					"description": "Quarantine affected staff and restrict meat distribution.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,
+								"response": [
+									"Quarantine succeeds, but not before multiple staff members are lost to violent outbursts. Remaining personnel are shaken by the containment measures, but the spread of the anomaly slows."
+								],
+								"effect": func() -> void:
+									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
+									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 5
+									SUBSCRIBE.base_states = base_states
+									SUBSCRIBE.resources_data = resources_data,
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+
+
+
 # ------------------------------------------------------------------------
 var GAME_OVER:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
@@ -612,203 +1176,7 @@ var PROMOTE_RESEARCHER:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------
-var HAPPY_HOUR:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"selected": null
-		}
-		var onSelected = func(selected) -> void:
-			option_selected.selected = selected.option.val
-		
 
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "HAPPY HOUR EVENT",
-					"img_src": "res://Media/images/redacted.png",
-					"text": ["HAPPY HOUR"],
-					#"portrait": {
-						#"title": props.researcher.name,
-						#"img_src": props.researcher.img_src
-					#},
-					"options": [
-						# ----------------------------------------- NON-RESPONSE
-						{
-							"include": true,
-							"title": "OPTION A.",
-							"val": {
-								"response": "RESPONSE A HERE",
-							},
-							"onSelected": onSelected
-						},
-						{
-							"include": true,
-							"title": "OPTION B.",
-							"val": {
-								"response": "RESPONSE B HERE",
-							},
-							"onSelected": onSelected
-						},
-						{
-							"include": true,
-							"title": "OPTION C.",
-							"val": {
-								"response": "RESPONSE C HERE",
-							},
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				if "onSelection" in props:
-					props.onSelection.call(option_selected.selected)
-					
-				return {
-					"text": [
-						option_selected.selected.response
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-# ------------------------------------------------------------------------
-var MYSTERY_MEAT:Dictionary = {
-	"event_instructions": func(props:Dictionary) -> Array:
-		var option_selected:Dictionary = {
-			"selected": null
-		}
-		var onSelected = func(selected) -> void:
-			option_selected.selected = selected.option.val
-			
-		print(props)
-
-		return [
-			# ---------
-			func() -> Dictionary:
-				return {
-					"header": "MYSTERY MEAT",
-					"subheader": "Who doesn't like a little mystery.",
-					"img_src": "res://Media/images/redacted.png",
-					"text": [
-						"Analytics has noticed an uptick in meat consumption in this facility cafeteria. Quantities ordered exceed projected dietary needs by 23%. Should we investigate?",
-					],
-					"options": [
-						# ----------------------------------------- MORALE
-						{
-							"include": true,
-							"header": "MORALE",
-							"title": "Boost Spirits",
-							"description": "Turn a blind eye; the staff deserve a little comfort food.",
-							"cost": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"reward": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"val": {
-								"response": "The meat remains on the menu. Staff morale improves."
-							},
-							"onSelected": onSelected
-						},
-						# ----------------------------------------- READINESS
-						{
-							"include": true,
-							"header": "READINESS",
-							"title": "Audit Supply",
-							"description": "Trace the supply chain. Ensure our logistics aren’t compromised.",
-							"cost": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"reward": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"val": {
-								"response": "A quick audit reveals the meat isn’t on any Foundation manifests. Everybody is real grossed out about it though."
-							},
-							"onSelected": onSelected
-						},
-						# ----------------------------------------- SAFETY
-						{
-							"include": true,
-							"header": "SAFETY",
-							"title": "Test Samples",
-							"description": "Pull samples and run biohazard screening.",
-							"cost": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"reward": {
-								"currency": {
-									
-								},
-								"metrics": {
-									
-								},
-							},
-							"val": {
-								"response": "Laboratory analysis detects no known pathogens, but finds anomalous DNA sequences."
-							},
-							"onSelected": onSelected
-						},
-						# ----------------------------------------- ALT / WILD CARD
-						{
-							"include": true,
-							"header": "DIRECTIVE",
-							"title": "Shut It Down",
-							"description": "Shut it down until safety commission evaluates the facility.",
-							"val": {
-								"response": "Facility is shut down for 3 days.",
-								"effect": func() -> void:
-									pass,
-							},
-							"onSelected": onSelected
-						}
-					]
-				},
-			# ---------
-			func() -> Dictionary:
-				if "onSelection" in props:
-					props.onSelection.call(option_selected.selected)
-					
-				return {
-					"text": [
-						option_selected.selected.response
-					]
-				}	
-		],
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------
@@ -1041,6 +1409,9 @@ var SCP_CONTAINMENT_AWARD_EVENT:Dictionary = {
 
 
 var reference_data:Dictionary = {
+	EVT.TYPE.TEST_EVENT_A: TEST_EVENT_A,
+	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
+	
 	# ------------------
 	EVT.TYPE.GAME_OVER: GAME_OVER,
 	# ------------------
@@ -1069,9 +1440,12 @@ var reference_data:Dictionary = {
 	# ------------------
 	EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
 	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR,
-	EVT.TYPE.MYSTERY_MEAT: MYSTERY_MEAT
+	EVT.TYPE.MYSTERY_MEAT_1: MYSTERY_MEAT_1,
+	EVT.TYPE.MYSTERY_MEAT_2: MYSTERY_MEAT_2,
+	EVT.TYPE.MYSTERY_MEAT_3: MYSTERY_MEAT_3
 	# ------------------
 }
+
 
 
 
@@ -1094,35 +1468,6 @@ func create_sequence(option_selected:Dictionary) -> Dictionary:
 		if "effect" in option_selected.val.option:
 			var effect:Dictionary = option_selected.val.option.effect	.call(is_success)
 			
-			#if "consequence" in effect:			
-				#for consequence in effect.consequence:
-					#result_text = effect.story
-					#
-					#match consequence:
-						## -----------------
-						#EVT.CONSEQUENCE.END:
-							#end = true
-						## -----------------	
-						#EVT.CONSEQUENCE.HP_HURT:
-							#if !selected_staff.is_empty():
-								#var health_remaining:int = selected_staff.health.current - 1
-								#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-								#if health_remaining <= 0:
-									#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_KIA) ] )
-							#else:
-								#result_text.push_back(("But no one was around..."))
-						#EVT.CONSEQUENCE.SP_HURT:
-							#if !selected_staff.is_empty():
-								#var sanity_remaining:int = selected_staff.sanity.current - 1
-								#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(consequence)] )
-								#if sanity_remaining <= 0:
-									#result_text.push_back("%s %s" % [selected_staff.name, EVT.get_consequence_str(EVT.CONSEQUENCE.CHANGE_STATUS_TO_INSANE) ] )
-							#else:
-								#result_text.push_back(("But no one was around..."))
-						## -----------------	
-						#_:
-							#if !selected_staff.is_empty():
-								#result_text.push_back("%s %s" % [selected_staff.name, EVT.CONSEQUENCE_STR[consequence]])
 
 	return {
 		"end": end,

@@ -213,6 +213,9 @@ var initial_values:Dictionary = {
 				RESOURCE.METRICS.SAFETY: 6,
 				RESOURCE.METRICS.READINESS: 6
 			},
+			"event_record": {
+				# record events and their outcomes
+			},
 			"base": {
 				"onsite_nuke": {
 					"triggered": false
@@ -432,7 +435,7 @@ func start_new_game() -> void:
 	var skip_progress_screen:bool = DEBUG.get_val(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS)	
 	var is_new_game:bool = GBL.loaded_gameplay_data.is_empty()
 	var duration:float = 0.02 if skip_progress_screen else 0.5
-	
+
 	# skip_progress_screen assign set to true after the first load screen
 	DEBUG.assign(DEBUG.GAMEPLAY_SKIP_SETUP_PROGRSS, true)	
 
@@ -530,7 +533,6 @@ func start_new_game() -> void:
 	# start game music
 	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_ONE)
 		
-
 	# then build marked objectives
 	GAME_UTIL.mark_current_objectives()
 	
@@ -547,8 +549,6 @@ func start_new_game() -> void:
 		GBL.update_and_save_user_profile()			
 	
 	current_phase = PHASE.STARTUP
-
-	
 #endregion
 # ------------------------------------------------------------------------------
 
@@ -1390,8 +1390,8 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			
 			# TODO: swap 0 for heat, pollution, reality generated from room
 			ring_level_config.monitor.temp =  U.min_max(0 + (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
-			ring_level_config.monitor.reality = U.min_max(3 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
-			ring_level_config.monitor.pollution = U.min_max(3 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
+			ring_level_config.monitor.reality = U.min_max(0 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
+			ring_level_config.monitor.pollution = U.min_max(0 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
