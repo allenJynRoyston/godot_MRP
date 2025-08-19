@@ -60,26 +60,32 @@ alignment = 1
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
 value = 1
 invert_color = true
 big_numbers = true
+offset_amount = 0
 
 [node name="Safety" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
 metric = 1
 value = 3
 title = "SAFETY"
 invert_color = true
 big_numbers = true
+offset_amount = 0
 
 [node name="Readiness" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
 metric = 2
 value = 2
 title = "READINESS"
 invert_color = true
 big_numbers = true
+offset_amount = 0

@@ -149,11 +149,15 @@ var TEST_EVENT_B:Dictionary = {
 					"type": EVT.OUTCOME.NEUTRAL,
 					"cost": {
 						"metrics": {
-							RESOURCE.METRICS.MORALE: 10
+							RESOURCE.METRICS.MORALE: -5,
+							RESOURCE.METRICS.SAFETY: 2
 						},
-						#"currency": {
-							#RESOURCE.CURRENCY.MONEY: 10
-						#}
+						"currency": {
+							RESOURCE.CURRENCY.MONEY: 10,
+							RESOURCE.CURRENCY.SCIENCE: -5,
+							RESOURCE.CURRENCY.MATERIAL: 5,
+							RESOURCE.CURRENCY.CORE: -2
+						}
 					},
 					"outcomes": {
 						"list": [
@@ -544,12 +548,7 @@ var HAPPY_HOUR:Dictionary = {
 								"chance": 1,
 								"response": [
 									"Quarantine succeeds, but not before multiple staff members are lost to violent outbursts. Remaining personnel are shaken by the containment measures, but the spread of the anomaly slows."
-								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
-									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 5
-									SUBSCRIBE.base_states = base_states
-									SUBSCRIBE.resources_data = resources_data,
+								]
 							}
 						]
 					},

@@ -52,6 +52,26 @@ var core_income:int:
 	set(val):
 		core_income = val
 		on_core_income_update()
+		
+@export var money_offset:int = 0: 
+	set(val):
+		money_offset = val
+		on_money_offset_update()
+		
+@export var research_offset:int = 0: 
+	set(val):
+		research_offset = val
+		on_research_offset_update()
+
+@export var material_offset:int = 0: 
+	set(val):
+		material_offset = val
+		on_material_offset_update()
+		
+@export var core_offset:int = 0: 
+	set(val):
+		core_offset = val
+		on_core_offset_update()
 
 var resources_data:Dictionary
 var room_config:Dictionary
@@ -92,6 +112,11 @@ func _ready() -> void:
 	on_researcher_income_update()
 	on_material_income_update()
 	on_core_income_update()
+	
+	on_money_offset_update()
+	on_research_offset_update()
+	on_material_offset_update()
+	on_core_offset_update()
 # --------------------------------------------
 
 # --------------------------------------------
@@ -130,6 +155,22 @@ func on_material_income_update() -> void:
 func on_core_income_update() -> void:
 	if !is_node_ready():return	
 	EcoCore.bonus_amount = core_income
+	
+func on_money_offset_update() -> void:
+	if !is_node_ready():return	
+	EcoMoney.offset_amount = money_offset
+	
+func on_research_offset_update() -> void:
+	if !is_node_ready():return	
+	EcoResearch.offset_amount = research_offset	
+	
+func on_material_offset_update() -> void:
+	if !is_node_ready():return	
+	EcoMaterial.offset_amount = material_offset		
+	
+func on_core_offset_update() -> void:
+	if !is_node_ready():return	
+	EcoCore.offset_amount = core_offset			
 # --------------------------------------------
 
 # -----------------------------------------------	

@@ -59,20 +59,28 @@ alignment = 1
 
 [node name="Money" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
+size_flags_vertical = 0
 icon = 36
+offset_amount = 0
 burn_val = "00"
 
 [node name="Research" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
+size_flags_vertical = 0
 icon = 49
+offset_amount = 0
 burn_val = "00"
 
 [node name="Material" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
+size_flags_vertical = 0
 icon = 45
+offset_amount = 0
 burn_val = "00"
 
 [node name="Core" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
+size_flags_vertical = 0
 icon = 44
+offset_amount = 0
 burn_val = "00"

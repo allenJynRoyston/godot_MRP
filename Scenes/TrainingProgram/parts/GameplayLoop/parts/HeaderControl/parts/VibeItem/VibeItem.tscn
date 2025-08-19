@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bqrsajf65ravg"]
+[gd_scene load_steps=9 format=3 uid="uid://bqrsajf65ravg"]
 
 [ext_resource type="Script" uid="uid://d2lwr0dms23ca" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/vibe_item.gd" id="1_7egax"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="2_pxje0"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_pxje0"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_24nkd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7ffi"]
 
@@ -17,13 +18,18 @@ shadow_color = Color(0, 0, 0, 0.235294)
 font = ExtResource("3_pxje0")
 outline_color = Color(1, 1, 1, 0.2)
 
+[sub_resource type="LabelSettings" id="LabelSettings_cyg4w"]
+font = ExtResource("3_pxje0")
+font_size = 20
+font_color = Color(0.05, 0.05, 0.05, 1)
+
 [node name="PanelContainer" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_7egax")
 title = "MORALE"
-big_numbers = null
+offset_amount = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -49,3 +55,23 @@ layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_24nkd")
 horizontal_alignment = 1
+
+[node name="Offset" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/Offset"]
+layout_mode = 2
+theme_override_constants/margin_right = 4
+
+[node name="OffsetIcon" parent="MarginContainer/VBoxContainer/Offset/MarginContainer2" instance=ExtResource("4_24nkd")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 42
+icon_size = Vector2(15, 15)
+
+[node name="AmountLabel" type="Label" parent="MarginContainer/VBoxContainer/Offset"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_cyg4w")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -5,6 +5,21 @@ extends PanelContainer
 @onready var Safety:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/Safety
 @onready var Readiness:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/Readiness
 
+@export var offset_morale:int = 0 : 
+	set(val):
+		offset_morale = val
+		update_node()
+
+@export var offset_safety:int = 0 : 
+	set(val):
+		offset_safety = val
+		update_node()
+		
+@export var offset_readiness:int = 0 : 
+	set(val):
+		offset_readiness = val	
+		update_node()
+
 var base_states:Dictionary
 # --------------------------------------------
 
@@ -34,4 +49,8 @@ func update_node() -> void:
 	Morale.value = metrics[RESOURCE.METRICS.MORALE]
 	Safety.value = metrics[RESOURCE.METRICS.SAFETY]
 	Readiness.value = metrics[RESOURCE.METRICS.READINESS]
+	
+	Morale.offset_amount = offset_morale
+	Safety.offset_amount = offset_safety
+	Readiness.offset_amount = offset_readiness
 # --------------------------------------------	

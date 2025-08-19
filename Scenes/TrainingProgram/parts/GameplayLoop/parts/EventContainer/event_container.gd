@@ -4,6 +4,7 @@ extends GameContainer
 @onready var BtnControls:Control = $BtnControls
 @onready var TransitionScreen:Control = $TransistionScreen
 @onready var SuccessRoll:Control = $SuccessRoll
+@onready var OptionItemTransitionControl:Control = $OptionItemTransitionControl
 #@onready var RoomDetails:Control = $RoomDetails
 
 @onready var ResourcePanel:PanelContainer = $ResourceContainer/PanelContainer
@@ -11,7 +12,7 @@ extends GameContainer
 @onready var Vibes:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Vibes
 @onready var Economy:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Economy
 
-@onready var BGOutputTexture:TextureRect = $BGContainer/BGOutputTexture
+@onready var BGOutputTexture:PanelContainer = $BGContainer
 @onready var ImageBG:TextureRect = $BGContainer/SubViewport/ImageBgTextureRect
 @onready var image_bg_material_copy:ShaderMaterial = ImageBG.material.duplicate()
 
@@ -30,7 +31,7 @@ extends GameContainer
 @onready var BodyLabelTop:Label = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BodyContainer/HBoxContainer/PanelContainer/BodyLabelTop
 
 @onready var OptionsContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
-@onready var OptionsContainerList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/OptionsContainerList
+@onready var OptionsContainerList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/OptionsContainerList
 
 
 
@@ -72,6 +73,7 @@ var apply_dyslexia_to_content:bool = false
 # debugging
 var use_force_results:bool = false
 var force_is_success:bool = false
+var has_started:bool = false
 
 signal text_phase_complete
 
@@ -99,7 +101,7 @@ func activate() -> void:
 	# center elements
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"present": 130,
+		"present": 100,
 		"hide": -ContentMargin.size.y
 	}
 	
@@ -122,8 +124,6 @@ func activate() -> void:
 func reset() -> void:
 	if !is_node_ready():return
 	update_next_btn(false)
-	reveal_outputtexture(false, 0.0)	
-	
 	
 	BGOutputTexture.hide()
 	
@@ -151,17 +151,29 @@ func reset_content_nodes() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func start(new_event_data:Array) -> void:
-	GameplayNode.show_only([])
-	TransitionScreen.start()	
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 1))
-	await BtnControls.reveal(true)
-	
+func start(new_event_data:Array) -> void:	
+	# show
+	BGOutputTexture.show()
+	modulate.a = 1
+		
+	# fade in bg
+	var current_color1:Color = image_bg_material_copy.get_shader_parameter("color1")
+	var current_color2:Color = image_bg_material_copy.get_shader_parameter("color2")	
+	U.tween_range(0, 0.7, 0.5, func(new_val:float):
+		current_color1.a = new_val
+		current_color2.a = new_val
+		image_bg_material_copy.set_shader_parameter("color1", current_color1)
+		image_bg_material_copy.set_shader_parameter("color2", current_color2)			
+	).finished
+
+	# transition in
 	BtnControls.disable_back_btn = true
 	BtnControls.onBack = func() -> void:pass
-	BtnControls.onAction = func() -> void:pass
+	BtnControls.onAction = func() -> void:pass	
+	BtnControls.reveal(true)
+	await TransitionScreen.start(1.0)	
 	
-	
+	# set event data and continue	
 	event_data = new_event_data
 
 	if event_data.size() > 0:
@@ -172,11 +184,10 @@ func start(new_event_data:Array) -> void:
 
 # --------------------------------------------------------------------------------------------------		
 func end() -> void:
-	GameplayNode.restore_player_hud()
 	BtnControls.reveal(false)	
-	U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide, 0.7	 )
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.4 )
-	await TransitionScreen.end()
+	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide )	
+	await TransitionScreen.end( 0.5 )
+	
 	user_response.emit(event_output)
 	queue_free()
 # --------------------------------------------------------------------------------------------------		
@@ -204,24 +215,24 @@ func reveal_resources(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 		
 # --------------------------------------------------------------------------------------------------		
-func reveal_outputtexture(state:bool, duration:float) -> void:
-	var start_val:float = 0 if state else 1.0
-	var end_val:float = 0.95 if state else 0
-	
-	if state:
-		BGOutputTexture.show()
-	
-	if duration == 0:
-		image_bg_material_copy.set_shader_parameter("opacity", end_val)
-		await U.tick()
-	else:
-		image_bg_material_copy.set_shader_parameter("opacity", start_val)
-		await U.tween_range(start_val, end_val, duration, func(val:float) -> void:
-			image_bg_material_copy.set_shader_parameter("opacity", val)
-		).finished
-		
-	if !state:
-		BGOutputTexture.hide()
+#func reveal_outputtexture(state:bool, duration:float) -> void:
+	#var start_val:float = 0 if state else 1.0
+	#var end_val:float = 0.95 if state else 0
+	#
+	#if state:
+		#BGOutputTexture.show()
+	#
+	#if duration == 0:
+		#image_bg_material_copy.set_shader_parameter("opacity", end_val)
+		#await U.tick()
+	#else:
+		#image_bg_material_copy.set_shader_parameter("opacity", start_val)
+		#await U.tween_range(start_val, end_val, duration, func(val:float) -> void:
+			#image_bg_material_copy.set_shader_parameter("opacity", val)
+		#).finished
+		#
+	#if !state:
+		#BGOutputTexture.hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -327,22 +338,12 @@ func on_current_instruction_update() -> void:
 		HeaderTextureRect.show()
 		if HeaderTextureRect.texture != CACHE.fetch_image(current_instruction.img_src):
 			HeaderTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
-		reveal_outputtexture(true, 0.3)
+		#reveal_outputtexture(true, 0.3)
 	else:
 		HeaderTextureRect.hide()
 
 	if current_instruction.has("set_return_val"):
 		event_output = current_instruction.set_return_val.call()	
-	# -----------------------------------
-
-	# -----------------------------------
-	#if "use_success_roll" in current_instruction and current_instruction.use_success_roll:
-		#reveal_researcher(false)
-		#await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-		#await SuccessRoll.use(current_instruction.is_success if !use_force_results else force_is_success, 1.5)
-		#await BtnControls.reveal(true)
-		##if ResearcherCard.uid != null:
-			##reveal_researcher(true)
 	# -----------------------------------
 
 	# -----------------------------------
@@ -389,21 +390,17 @@ func on_current_instruction_update() -> void:
 			var new_node:Control = OptionListItem.instantiate()
 			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
 			var hint_description:String = option.hint_description if option.has("hint_description") else ""
-			
 			new_node.can_afford = true
 			new_node.index = index
 			new_node.hint_description = hint_description
 			new_node.data = option
 			new_node.is_selected = option_selected_index == index
-
 			OptionsContainerList.add_child(new_node)
-		
 		
 		BtnControls.onAction = func() -> void:
 			on_option_select(options[option_selected_index])
 	
 		BtnControls.onUpdate = func(_node:Control) -> void:
-			print(_node)
 			for index in OptionsContainerList.get_child_count():
 				var node:Control = OptionsContainerList.get_child(index)
 				node.is_selected = node == _node	
@@ -416,7 +413,15 @@ func on_current_instruction_update() -> void:
 							Economy.show()
 							for ref in option.cost.currency:
 								var amount:int = option.cost.currency[ref]
-								# ADD DIFF COMPONENT
+								match ref:
+									RESOURCE.CURRENCY.MONEY:
+										Economy.money_offset = amount
+									RESOURCE.CURRENCY.SCIENCE:
+										Economy.research_offset = amount
+									RESOURCE.CURRENCY.MATERIAL:
+										Economy.material_offset = amount
+									RESOURCE.CURRENCY.CORE:
+										Economy.core_offset = amount
 						else:
 							Economy.hide()
 						
@@ -424,6 +429,14 @@ func on_current_instruction_update() -> void:
 							Vibes.show()
 							for ref in option.cost.metrics:
 								var amount:int = option.cost.metrics[ref]
+								match ref:
+									RESOURCE.METRICS.MORALE:
+										Vibes.offset_morale = amount
+									RESOURCE.METRICS.SAFETY:
+										Vibes.offset_safety = amount
+									RESOURCE.METRICS.READINESS:
+										Vibes.offset_readiness = amount
+										
 						else:
 							Vibes.hide()
 					
@@ -456,29 +469,46 @@ func on_current_instruction_update() -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func on_option_select(option:Dictionary) -> void:	
+func on_option_select(option:Dictionary) -> void:		
 	await BtnControls.reveal(false)
 	
+	# update
 	update_next_btn(false)	
 	
-	SuccessRoll.set_title(option.title)
-	
+	# fade out
 	for index in OptionsContainerList.get_child_count():
 		var node:Control = OptionsContainerList.get_child(index)
-		node.fade_out(0 if node != SelectedNode else 1.0) 
+		node.fade_out() 
 	
-	await U.set_timeout(1.0)
-
-	if "onSelected" in option:
-		if use_force_results and option.has('success_rate'):
-			option.success_rate = 100 if force_is_success else 0
-		
+	# call onSelected
+	if option.has("onSelected"):
 		option.onSelected.call({
 			"index": option_selected_index, 
 			"option": option
 		})
 		
-	# goto next instruction
+	# remove element from tree and place it where it can be transisitioned
+	var SelectNodeCopy:Control = SelectedNode.duplicate()
+	var node_pos:Vector2 = SelectedNode.global_position
+	OptionItemTransitionControl.add_child(SelectNodeCopy)
+	SelectNodeCopy.global_position = node_pos	
+	
+	# center selected
+	var center_x:float = (GBL.game_resolution.x - SelectNodeCopy.size.x) / 2
+	await U.tween_node_property(SelectNodeCopy, "global_position:x", center_x, 0.7, 0, Tween.TRANS_SINE)
+	await U.set_timeout(1.0)
+	
+	# fade it out	
+	reveal_resources(false)	
+	await SelectNodeCopy.fade_out()		
+	
+	# clear all nodes
+	for index in OptionsContainerList.get_child_count():
+		var node:Control = OptionsContainerList.get_child(index)	
+		node.queue_free()
+	SelectNodeCopy.queue_free()
+	
+	# goto next
 	next_instruction(true)
 # --------------------------------------------------------------------------------------------------		
 
@@ -516,16 +546,9 @@ func _process(delta: float) -> void:
 	time += delta
 	var t:float = 0.5 + 0.5 * sin(time * 0.05 * TAU)
 	var hue:float = fmod(time * 0.05, 1.0)  # 0.1 = speed of color change
-	var current_color1:Color = Color.from_hsv(hue, 1.0, 1.0)  # Full saturation and value
-	current_color1.a = 0.5
+	var current_color1:Color = Color.from_hsv(hue, 1.0, 0.5)  # Full saturation and value
+	var current_color2:Color = Color.from_hsv(hue / 2.0, 0.5, 0.5)  # Full saturation and value
 
-	#if time >= trigger_time:
-		#time = 0.0
-		#trigger_time = randf_range(0.5, 1.0)
-		#
-		#BodyLabelBtm.text = U.simulate_dyslexia(current_text)
-		#BodyLabelTop.text = U.simulate_dyslexia(current_text)
-		
 	rotation_accum += rotation_speed * delta * 0.01
 
 	# Keep angle bounded (not required but keeps numbers small)
@@ -535,7 +558,9 @@ func _process(delta: float) -> void:
 	var sx:float = sin((time / 1000) * TAU * x_frequency) * x_amplitude
 	var sy:float = sin((time / 1000) * TAU * y_frequency) * y_amplitude
 	var current_size:float = lerp(10, 60, t * 0.5)
+
 	image_bg_material_copy.set_shader_parameter("color1", current_color1)
+	image_bg_material_copy.set_shader_parameter("color2", current_color2)
 	image_bg_material_copy.set_shader_parameter("speed_x", sx * 0.2)
 	image_bg_material_copy.set_shader_parameter("speed_y", sy * 0.2)
 	image_bg_material_copy.set_shader_parameter("rotation", rotation_accum)

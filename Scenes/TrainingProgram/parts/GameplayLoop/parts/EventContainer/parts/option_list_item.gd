@@ -1,27 +1,35 @@
+@tool
 extends MouseInteractions
 
-@onready var HeaderPanel:PanelContainer = $VBoxContainer/Header
-@onready var ContentPanel:PanelContainer = $VBoxContainer/PanelContainer
+@onready var RootTextureRect:TextureRect  = $"."
+@onready var Subviewport:SubViewport = $SubViewport
+@onready var MainPanel:PanelContainer = $SubViewport/PanelContainer
 
-@onready var HeaderLabel:Label = $VBoxContainer/Header/MarginContainer/HBoxContainer/HeaderLabel
-@onready var LockIcon:Control = $VBoxContainer/Header/MarginContainer/HBoxContainer/LockContainer/LockIcon
-@onready var SelectedIcon:Control = $VBoxContainer/Header/MarginContainer/HBoxContainer/SelectedIcon
+@onready var HeaderPanel:PanelContainer = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/Header
+@onready var ContentPanel:PanelContainer = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer
 
-@onready var TitleLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
-@onready var DescriptionLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Description
-@onready var OutcomeLabel:Label = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/OutcomeLabel
-@onready var ImageRect:TextureRect = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TextureRect
+@onready var HeaderLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/Header/MarginContainer/HBoxContainer/HeaderLabel
+@onready var LockIcon:Control = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/Header/MarginContainer/HBoxContainer/LockContainer/LockIcon
+@onready var SelectedIcon:Control = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/Header/MarginContainer/HBoxContainer/SelectedIcon
 
-@onready var Costs:VBoxContainer = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Costs
-@onready var CostHBox:HBoxContainer = $VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Costs/CostHBox
+@onready var TitleLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
+@onready var DescriptionLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Description
+@onready var OutcomeLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/OutcomeLabel
+
+@onready var CostPanel:PanelContainer = $SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer
+@onready var Costs:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Cost
+@onready var CostList:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer/MarginContainer/CostList
 
 @onready var content_stylebox_copy:StyleBoxFlat = ContentPanel.get("theme_override_styles/panel").duplicate()
 @onready var header_stylebox_copy:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
+@onready var cost_stylebox_copy:StyleBoxFlat = CostPanel.get("theme_override_styles/panel").duplicate()
+
 @onready var title_label_setting:LabelSettings = TitleLabel.get("label_settings").duplicate()
 @onready var outcome_label_setting:LabelSettings = OutcomeLabel.get("label_settings").duplicate()
+@onready var cost_item_label_setting:LabelSettings = TitleLabel.get("label_settings").duplicate()
 
-const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
-const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn")
+@onready var root_texture_material:ShaderMaterial = RootTextureRect.material.duplicate()
+
 
 var index:int
 var enabled:bool = false 
@@ -53,10 +61,12 @@ func _ready() -> void:
 	on_data_update()
 	ContentPanel.set('theme_override_styles/panel', content_stylebox_copy)		
 	HeaderPanel.set("theme_override_styles/panel", header_stylebox_copy)
+	CostPanel.set("theme_override_styles/panel", cost_stylebox_copy)
 	TitleLabel.set("label_settings", title_label_setting)
 	OutcomeLabel.set("label_settings", outcome_label_setting)
+	RootTextureRect.material = root_texture_material
 	
-	for node in CostHBox.get_children():
+	for node in CostList.get_children():
 		node.queue_free()
 	
 	hint_title = "HINT"
@@ -69,8 +79,10 @@ func start(delay:float = 0) -> void:
 
 # ----------------------	
 func fade_out(delay:float = 0) -> void:
-	U.tween_node_property(LockIcon, 'icon_color:a', 0, 0.3, delay)
-	await U.tween_node_property(self, 'modulate:a', 0, 0.3, delay)
+	await U.set_timeout(delay)
+	await U.tween_range(0, 1, 0.5, func(val:float) -> void:
+		root_texture_material.set_shader_parameter("transition", val)	
+	).finished
 # ----------------------		
 
 # ----------------------	
@@ -116,26 +128,27 @@ func update_node(rebuild_list:bool = true) -> void:
 		
 	if data.has("cost"):
 		Costs.show()	
-				
 		if data.cost.has("currency") and !built_once:
 			for ref in data.cost.currency:
 				var amount:int = data.cost.currency[ref]
-				var new_node:Control = EconItemPreload.instantiate()
+				var new_node:Control = Label.new()
 				var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
-				new_node.icon = resource_data.icon
-				new_node.amount = amount
-				new_node.horizontal_mode = false
-				new_node.burn_val = ""
-				CostHBox.add_child(new_node)		
+				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
+				label_setting.font_color = COLORS.disabled_color if amount < 0 else Color.DARK_GREEN
+				new_node.label_settings = label_setting				
+				new_node.text = "%s%s %s" % ["+" if amount >= 0 else "", amount, resource_data.name]
+				CostList.add_child(new_node)		
 		
 		if data.cost.has("metrics") and !built_once:
 			for ref in data.cost.metrics:
 				var amount:int = data.cost.metrics[ref]
-				var new_node:Control = VibeItemPreload.instantiate()
-				new_node.metric = ref
-				new_node.value = amount
-				new_node.invert_color = true
-				CostHBox.add_child(new_node)
+				var new_node:Control = Label.new()
+				var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
+				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
+				new_node.label_settings = label_setting	
+				label_setting.font_color = COLORS.disabled_color if amount < 0 else Color.DARK_GREEN
+				new_node.text = "%s%s %s" % ["+" if amount >= 0 else "", amount, resource_data.name]
+				CostList.add_child(new_node)
 
 		built_once = true
 	else:
@@ -143,6 +156,7 @@ func update_node(rebuild_list:bool = true) -> void:
 		
 	# update content stylebox
 	content_stylebox_copy.bg_color = Color.DARK_GRAY if !is_selected else COLORS.primary_color 
+	cost_stylebox_copy.bg_color = Color.DARK_GRAY if !is_selected else COLORS.primary_color 
 	
 	# update header when selected
 	header_stylebox_copy.bg_color = COLORS.primary_black if is_available and can_afford else COLORS.disabled_color
@@ -165,14 +179,7 @@ func update_node(rebuild_list:bool = true) -> void:
 # ----------------------	
 
 # ----------------------	
-#var time_accumulator := 0.0
-#var trigger_time := randf_range(0.5, 1.0)
-#func _process(delta: float) -> void:
-	#if !is_node_ready() or !apply_dyslexia:return
-	#time_accumulator += delta
-#
-	#if time_accumulator >= trigger_time:
-		#time_accumulator = 0.0
-		#trigger_time = randf_range(0.5, 1.0)
-		#on_data_update()
+func _process(delta: float) -> void:
+	if !is_node_ready():return
+	Subviewport.size = MainPanel.size
 # ----------------------	

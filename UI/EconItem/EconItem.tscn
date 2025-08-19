@@ -29,6 +29,7 @@ offset_right = 64.0
 offset_bottom = 25.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_vwlts")
 script = ExtResource("1_g1x1t")
+offset_amount = null
 icon_size = Vector2(25, 25)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -65,14 +66,32 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="BonusAmountLabel" type="Label" parent="VBoxContainer/PanelContainer/Control"]
+visible = false
 layout_mode = 2
 offset_left = -5.0
 offset_top = 18.0
 offset_right = 25.0
 offset_bottom = 32.0
-text = "+10"
+text = "0"
 label_settings = SubResource("LabelSettings_as5qf")
 horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Offset" type="VBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="OffsetIcon" parent="VBoxContainer/Offset" instance=ExtResource("2_as5qf")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 42
+icon_size = Vector2(15, 15)
+
+[node name="AmountLabel" type="Label" parent="VBoxContainer/Offset"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_g1x1t")
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -111,7 +130,7 @@ vertical_alignment = 1
 [node name="BonusAmountLabel" type="Label" parent="HBoxContainer/PanelContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
-text = "-0"
+text = "0"
 label_settings = SubResource("LabelSettings_g1x1t")
 horizontal_alignment = 2
 vertical_alignment = 1

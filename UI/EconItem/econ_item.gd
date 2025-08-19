@@ -15,8 +15,14 @@ extends PanelContainer
 @onready var HBonusAmountLabel:Label = $HBoxContainer/PanelContainer/HBoxContainer/BonusAmountLabel
 @onready var HBurnLabel:Label = $HBoxContainer/PanelContainer/BurnLabel
 
+@onready var Offset:VBoxContainer = $VBoxContainer/Offset
+@onready var OffsetIcon:Control = $VBoxContainer/Offset/OffsetIcon
+@onready var OffsetAmountLabel:Label = $VBoxContainer/Offset/AmountLabel
+
 @onready var primary_color:Color = COLORS.primary_black  
 @onready var negative_color:Color = COLORS.disabled_color  
+
+@onready var offset_amount_label_setting:LabelSettings = OffsetAmountLabel.get("label_settings").duplicate()
 		
 @export var horizontal_mode:bool = false : 
 	set(val):
@@ -42,6 +48,12 @@ extends PanelContainer
 	set(val):
 		bonus_amount = val
 		on_bonus_amount_update()		
+		
+@export var offset_amount:int = 0: 
+	set(val):
+		offset_amount = val
+		on_offset_amount_update()
+		
 					
 @export var burn_val:String = "" : 
 	set(val):
@@ -63,8 +75,11 @@ extends PanelContainer
 		invert_colors = val
 		on_invert_colors_update()
 
+
 # --------------------------------------
 func _ready() -> void:
+	OffsetAmountLabel.set("label_settings", offset_amount_label_setting)
+		
 	on_update_amount()
 	on_is_negative_update()
 	on_icon_size_update()
@@ -74,6 +89,8 @@ func _ready() -> void:
 	on_invert_colors_update()
 	on_horizontal_mode_update()
 	on_bonus_amount_update()
+	
+	on_offset_amount_update()
 
 func on_horizontal_mode_update() -> void:
 	if !is_node_ready():return
@@ -106,7 +123,10 @@ func on_bonus_amount_update() -> void:
 	bonus_amount_label_settings_copy.font_color = negative_color if bonus_amount < 0 else Color.WHITE
 	VBonusAmountLabel.label_settings = bonus_amount_label_settings_copy
 	
-
+func on_offset_amount_update() -> void:
+	if !is_node_ready():return
+	U.debounce( str(self, "_update_all"), update)
+	
 func on_invert_colors_update() -> void:
 	if !is_node_ready():return
 	U.debounce( str(self, "_update_all"), update)
@@ -137,4 +157,9 @@ func update() -> void:
 	
 	VAmountLabel.label_settings = label_settings_copy	
 	VAmountLabel.text = str(amount) if max_amount < 0 else str(amount, "/", max_amount)
+	
+	Offset.hide() if offset_amount == 0 else Offset.show()	
+	OffsetAmountLabel.text = str( amount + offset_amount )
+	OffsetIcon.icon_color = Color.DARK_GREEN if (amount + offset_amount) > amount else Color.RED
+	offset_amount_label_setting.font_color = OffsetIcon.icon_color
 # --------------------------------------
