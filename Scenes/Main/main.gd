@@ -612,7 +612,7 @@ func on_current_layer_update() -> void:
 func update_and_save_user_profile(user_profile_data:Dictionary) -> void:
 	# save file...
 	FS.save_file(FS.FILE.USER_PROFILE, user_profile_data)	
-	# then push to global space
+	# then push to global spacespace
 	GBL.active_user_profile = user_profile_data		
 # -----------------------------------		
 

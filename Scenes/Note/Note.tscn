@@ -8,8 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cl3tx3ln0xeju" path="res://Scenes/Note/parts/NoteBtn.tscn" id="6_inb6f"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="6_qsuu7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8pka"]
-bg_color = Color(0.07, 0.07, 0.07, 0)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b8pka"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_inb6f"]
 shader = ExtResource("2_qsuu7")
@@ -171,7 +170,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_b8pka")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_b8pka")
 script = ExtResource("1_urdro")
 
 [node name="SubViewport" type="SubViewport" parent="."]

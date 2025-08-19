@@ -281,7 +281,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 						get_background()
 						note_copy = notes.duplicate()
 						await reveal_snapshot(true)
-						await reveal_tabs(true)
+						reveal_preview(true)
+						open_notes()
 						onOpen.call()
 		# -------------------
 		STATE.TAB_SELECT:
