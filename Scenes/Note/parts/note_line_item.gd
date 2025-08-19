@@ -7,7 +7,6 @@ extends Control
 
 var label_settings_copy:LabelSettings 
 
-
 var content:String = "" : 
 	set(val):
 		content = val

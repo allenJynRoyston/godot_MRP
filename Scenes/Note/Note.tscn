@@ -1,12 +1,15 @@
-[gd_scene load_steps=29 format=3 uid="uid://dww60raoe5gef"]
+[gd_scene load_steps=34 format=3 uid="uid://dww60raoe5gef"]
 
 [ext_resource type="Script" uid="uid://bl35n2knhxeuu" path="res://Scenes/Note/note.gd" id="1_urdro"]
 [ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="2_2m4no"]
-[ext_resource type="Shader" path="res://Shader/Sephia/sephia.gdshader" id="2_qsuu7"]
+[ext_resource type="Shader" uid="uid://dmludjy5n4ygv" path="res://Shader/Sephia/sephia.gdshader" id="2_qsuu7"]
 [ext_resource type="Material" uid="uid://bvdd6vxb6n8tc" path="res://Shader/BlackAndWhite/template.tres" id="3_inb6f"]
 [ext_resource type="PackedScene" uid="uid://oo1kro8cfwvg" path="res://Scenes/Note/parts/NoteTab.tscn" id="4_inb6f"]
 [ext_resource type="PackedScene" uid="uid://cl3tx3ln0xeju" path="res://Scenes/Note/parts/NoteBtn.tscn" id="6_inb6f"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="6_qsuu7"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="7_ief6q"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="8_b8pka"]
+[ext_resource type="PackedScene" uid="uid://nkqud1uuvula" path="res://Scenes/Note/parts/NoteLineItem.tscn" id="8_x4oev"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b8pka"]
 
@@ -91,6 +94,13 @@ shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inb6f"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8pka"]
+bg_color = Color(0, 0.392157, 0, 0.9)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 1
+shadow_offset = Vector2(5, 5)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mny5u"]
 bg_color = Color(0, 0.392157, 0, 0.9)
 corner_radius_bottom_right = 10
@@ -105,15 +115,25 @@ corner_radius_bottom_left = 10
 shadow_size = 1
 shadow_offset = Vector2(5, 5)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_owv3x"]
-bg_color = Color(0, 0.392157, 0, 0.9)
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_size = 1
-shadow_offset = Vector2(5, 5)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qsuu7"]
 bg_color = Color(0, 0, 0, 0.388235)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mny5u"]
+font = ExtResource("6_qsuu7")
+font_color = Color(0, 0.964706, 0.278431, 1)
+outline_size = 2
+outline_color = Color(0.19, 0.19, 0.19, 0.376471)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qcla4"]
+font = ExtResource("6_qsuu7")
+font_size = 24
+font_color = Color(0.91, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0.96, 0, 0, 0.419608)
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.380392)
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ief6q"]
 bg_color = Color(0.18, 0.18, 0.18, 0)
@@ -267,17 +287,17 @@ size_flags_horizontal = 3
 
 [node name="NoteTab" parent="TabControl/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_inb6f")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_mny5u")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b8pka")
 tab_title = "NOTES"
 
 [node name="UnusedTab" parent="TabControl/PanelContainer/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("4_inb6f")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ei6v4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mny5u")
 tab_title = "???"
 
 [node name="CloseTab" parent="TabControl/PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_inb6f")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_owv3x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ei6v4")
 tab_title = "CLOSE"
 
 [node name="PreviewControl" type="Control" parent="."]
@@ -297,6 +317,129 @@ layout_mode = 2
 
 [node name="Control" type="Control" parent="PreviewControl/PanelContainer/MarginContainer"]
 layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="PreviewControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+color = Color(0.628154, 0.689345, 0.792057, 0.384314)
+
+[node name="MarginContainer" type="MarginContainer" parent="PreviewControl/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 200
+
+[node name="NoteContainer" type="PanelContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("2_2m4no")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MarginContainer3" type="MarginContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+
+[node name="ComponentName" type="Label" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "COMPONENT NAME"
+label_settings = SubResource("LabelSettings_mny5u")
+uppercase = true
+
+[node name="Counter" type="HBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
+visible = false
+layout_mode = 2
+text = "NEWEST"
+label_settings = SubResource("LabelSettings_mny5u")
+
+[node name="BackIcon" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("7_ief6q")]
+layout_mode = 2
+icon = 28
+icon_color = Color(0, 0.254902, 0.0823529, 1)
+
+[node name="ComponentCount" type="Label" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
+layout_mode = 2
+text = "1/1"
+label_settings = SubResource("LabelSettings_mny5u")
+
+[node name="MoreIcon" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("7_ief6q")]
+layout_mode = 2
+icon = 28
+icon_color = Color(0, 0.254902, 0.0823529, 1)
+flip_h = true
+
+[node name="Label2" type="Label" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
+visible = false
+layout_mode = 2
+text = "OLDEST"
+label_settings = SubResource("LabelSettings_mny5u")
+
+[node name="MarginContainer" type="MarginContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="NoteList" type="VBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="NoteItem" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer/NoteList" instance=ExtResource("8_x4oev")]
+layout_mode = 2
+
+[node name="NoNotesLabel" type="Label" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "NO NOTES"
+label_settings = SubResource("LabelSettings_qcla4")
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 0
+
+[node name="CreateBtn" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_inb6f")]
+layout_mode = 2
+key_label = "E"
+action_label = "Create"
+
+[node name="RemoveBtn" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_inb6f")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+key_label = "R"
+action_label = "Remove"
+is_disabled = true
+
+[node name="BackBtn" parent="PreviewControl/PanelContainer/MarginContainer/MarginContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("6_inb6f")]
+layout_mode = 2
+key_label = "B"
+action_label = "Back"
 
 [node name="Overlay" type="MarginContainer" parent="PreviewControl/PanelContainer"]
 layout_mode = 2
@@ -468,4 +611,7 @@ text = "scp@user:/CreateNote.exe"
 label_settings = SubResource("LabelSettings_qsuu7")
 
 [node name="NoteControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="TransitionScreen" parent="." instance=ExtResource("8_b8pka")]
 layout_mode = 2

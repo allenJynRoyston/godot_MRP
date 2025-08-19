@@ -13,6 +13,11 @@ extends PanelContainer
 var room_config:Dictionary
 var current_location:Dictionary
 
+const note_details:Dictionary = {
+	"name": "Warnings",
+	"description": "Description goes here."
+}
+
 # -----------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_process(self)

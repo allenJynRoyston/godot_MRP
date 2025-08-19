@@ -36,6 +36,7 @@ extends PanelContainer
 @onready var FinalCompositeTextureRect:TextureRect = $FinalComposition/FinalComposite
 
 # NOTE AND MESSAGE BUTTON
+@onready var TerminalViewport:SubViewport = $BorderShader
 @onready var Terminal:Control = $BorderShader/Terminal
 
 # COLORRECT bluescreens
@@ -267,6 +268,7 @@ func _init() -> void:
 		GBL.save_resolution(DisplayServer.screen_get_size())
 		
 	GBL.register_node(REFS.MAIN, self)		
+		
 	GBL.subscribe_to_process(self)	
 	GBL.subscribe_to_mouse_icons(self)
 # ------------------------------------------------------------------------------
@@ -275,6 +277,7 @@ func _init() -> void:
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 	GBL.unregister_node(REFS.MAIN)
+	GBL.unregister_node(REFS.MAIN_TERMINAL_VIEWPORT)	
 	GBL.unregister_node(REFS.MAIN_ACTIVE_VIEWPORT)
 	GBL.unregister_node(REFS.MAIN_ARTICLE_VIEWPORT)
 	GBL.unregister_node(REFS.MAIN_OS_VIEWPORT)
@@ -284,16 +287,17 @@ func _exit_tree() -> void:
 
 # -----------------------------------	
 func _ready() -> void:
-	# print important stuff
-	if !is_production_build:
-		print( "Save files located at: ", OS.get_user_data_dir() )
-	
 	# register node
 	GBL.register_node(REFS.MAIN_ACTIVE_VIEWPORT, ActiveSubviewport)
 	GBL.register_node(REFS.MAIN_ARTICLE_VIEWPORT, ArticleViewport)
 	GBL.register_node(REFS.MAIN_OS_VIEWPORT, OSViewport)
+	GBL.register_node(REFS.MAIN_TERMINAL_VIEWPORT, TerminalViewport)
 	GBL.register_node(REFS.MAIN_CELL_VIEWPORT, CellViewport)
 	GBL.register_node(REFS.MAIN_FINAL_COMPOSITION_VIEWPORT, FinalCompositeViewport)
+		
+	# print important stuff
+	if !is_production_build:
+		print( "Save files located at: ", OS.get_user_data_dir() )
 	
 	# assign debugs
 	assign_debugs()

@@ -3,9 +3,11 @@ extends PanelContainer
 @onready var SelectedControl:Control = $SelectedControl
 
 @onready var Icon:Control = $MarginContainer/HBoxContainer/SVGIcon
-@onready var CountLabel:Label = $MarginContainer/HBoxContainer/MarginContainer/CountLabel
-
-
+@onready var NameContainer:MarginContainer = $MarginContainer/HBoxContainer/NameContainer
+@onready var CountLabel:Label = $MarginContainer/HBoxContainer/NameContainer/HBoxContainer/CountLabel
+@onready var NameLabel:Label = $MarginContainer/HBoxContainer/NameContainer/HBoxContainer/NameLabel
+@onready var TransferControl:Control = $TransferControl
+@onready var DetailsPanel:Control = $DetailControl/PanelContainer
 
 @onready var NoteControl:Control = $NoteControl
 @onready var NoteContainer:PanelContainer = $NoteControl/PanelContainer/NoteContainer
@@ -74,6 +76,7 @@ func on_node_ref_update() -> void:
 
 	NoteList.hide() if all_notes.is_empty() else NoteList.show()
 
+	NameLabel.text = node_ref.name
 	ComponentName.text = node_ref.name
 	CountLabel.text = str(all_notes.size())
 	
@@ -81,13 +84,33 @@ func on_node_ref_update() -> void:
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	await U.tick()
-	SelectedControl.show() if is_selected else SelectedControl.hide()
+	
+	if is_selected:
+		var ComponentCopy:Control = node_ref.duplicate()
+		TransferControl.add_child(ComponentCopy)
+
+		ComponentCopy.global_position = (GBL.game_resolution / 2) - (ComponentCopy.size / 2)#GBL.game_resolution/2 - self.global_position
+		DetailsPanel.global_position = Vector2(50, ComponentCopy.global_position.y/2) + Vector2(0, DetailsPanel.size.y)  #- (DetailsPanel.size/2)
+		DetailsPanel.show()
+		#SelectedControl.global_position = ComponentCopy.global_position + Vector2(ComponentCopy.size.x, 0)
+	
+
+	else:
+		DetailsPanel.hide()
+		for node in TransferControl.get_children():
+			node.queue_free()
+	
+	self.z_index = 2 if is_selected else 0
+	
+	NameContainer.hide() #if is_selected else NameContainer.hide()
+	SelectedControl.hide() #if is_selected else SelectedControl.hide()
+	
 	stylebox_copy.bg_color = Color.GREEN if !is_selected else Color.BLACK	
 	stylebox_copy.bg_color.a = 1.0 if is_selected else 0.8
 
 	label_settings_copy.font_color = Color.GREEN if is_selected else Color.BLACK
 	Icon.icon_color = Color.GREEN if is_selected else Color.BLACK
-	Icon.icon = SVGS.TYPE.INFO if is_selected else SVGS.TYPE.QUESTION_MARK
+	Icon.icon = SVGS.TYPE.DOT if is_selected else SVGS.TYPE.INVESTIGATE
 	
 
 func set_selected_index(index:int) -> void:

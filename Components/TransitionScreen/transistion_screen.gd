@@ -14,8 +14,8 @@ func _ready() -> void:
 	await U.tick()
 	TextureRectUI.hide()
 	
-func start(duration:float = 0.3, clear_after:bool = false) -> void:
-	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(REFS.MAIN_ACTIVE_VIEWPORT))
+func start(duration:float = 0.3, clear_after:bool = false, viewpoint_ref:int = REFS.MAIN_ACTIVE_VIEWPORT) -> void:
+	TextureRectUI.texture = U.get_viewport_texture(GBL.find_node(viewpoint_ref))
 	TextureRectUI.show()
 	
 	match transition_type:

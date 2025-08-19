@@ -16,7 +16,7 @@ theme_override_constants/separation = 0
 script = ExtResource("1_o10qg")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(11, 30)
 layout_mode = 2
 color = Color(0, 0.964706, 0.278431, 1)
 
@@ -31,7 +31,6 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="ColorRect/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "E"
 label_settings = ExtResource("1_5h1sl")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -52,5 +51,4 @@ theme_override_constants/margin_left = 5
 
 [node name="ActionLabel" type="Label" parent="ColorRect2/MarginContainer"]
 layout_mode = 2
-text = "ACTION"
 label_settings = SubResource("LabelSettings_qs14k")

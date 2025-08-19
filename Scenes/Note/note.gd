@@ -1,5 +1,6 @@
 extends Control
 @onready var BGTextureRect:TextureRect = $BackgroundTextureRect
+@onready var TransitionScreen:Control = $TransitionScreen
 
 @onready var SnapshotControl:Control = $SnapshotControl
 @onready var SnapshotPanel:PanelContainer = $SnapshotControl/PanelContainer
@@ -155,7 +156,11 @@ func on_note_index_update() -> void:
 	SelectedNoteNode.show_notes = false
 	for child in PreviewControl.get_children():
 		child.is_selected = SelectedNoteNode == child
-	
+	TransitionScreen.start(0.2, true, REFS.MAIN_TERMINAL_VIEWPORT)
+			
+			
+
+
 func on_note_item_index_update() -> void:
 	if note_items.is_empty():return
 	for index in note_items.size():
@@ -164,8 +169,7 @@ func on_note_item_index_update() -> void:
 		if note_item_index == index:
 			SelectedNoteItemNode = item.node
 			SelectedNoteNode.set_selected_index(index)
-			
-			
+
 func on_tab_index_update() -> void:	
 	for index in TabList.size():
 		var node:Control = TabList[index]
