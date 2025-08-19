@@ -64,4 +64,5 @@ layout_mode = 2
 icon = 37
 amount = 1
 max_amount = 10
+offset_amount = 0
 icon_size = Vector2(20, 20)

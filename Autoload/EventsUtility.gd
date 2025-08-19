@@ -6,30 +6,15 @@ var option_selected:Dictionary = {
 	"selected": null
 }
 
-func onSelected(selected:Dictionary) -> void:
-	if selected.option.has("outcomes"):
-		var outcome_dict:Dictionary
-		var total_chance:int = 0
-		for item in selected.option.outcomes.list:
-			outcome_dict[total_chance + item.chance] = item
-			total_chance += item.chance
-		var roll:int = randi() % total_chance
-		var outcome:Dictionary
-		var outcome_index:int = 0
-		for val in outcome_dict:		
-			if roll <= int(val):
-				outcome = outcome_dict[val]
-				break
-			else:
-				outcome_index += 1
-				
-		# assign to option selected
-		option_selected.selected = {
-			# return selected index
-			"type": selected.option.type,
-			"outcome_index": outcome_index,
-			"outcome": outcome
-		}
+func onSelected(choice:Dictionary) -> void:
+	# assign to option selected
+	option_selected.selected = {
+		# return selected index
+		"choice": choice,
+		"type": choice.option.type,
+		"outcome_index": choice.outcome_index,
+		"outcome": choice.option.outcomes.list[choice.outcome_index]
+	}
 		
 func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 		return [
@@ -47,13 +32,25 @@ func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 				if props.has("onSelection"):
 					props.onSelection.call(option_selected.selected)
 				
-				# call effect function
+				# call effect function (optional, used to do something other than calculate currency, metrics, buffs, debuffs, etc)
+				# that steps happens in the EventContainer
 				if option_selected.selected.outcome.has("effect"):
 					await option_selected.selected.outcome.effect.call()
 				
+				# checks if there's an impact
+				var has_choice_impact:bool = option_selected.selected.choice.option.has("impact")
+				var has_local_impact:bool = option_selected.selected.outcome.has("impact")
+				
+				# if impact, initiate tally
+				if has_choice_impact or has_local_impact:
+					return {
+						"tally": true,
+						"end": true
+					}
+				
 				return {
 					"end": true
-				}
+				},
 		]
 # ------------------------------------------------------------------------
 
@@ -69,8 +66,8 @@ var TEST_EVENT_A:Dictionary = {
 			"options": [
 				# ----------------------------------------- NEUTRAL
 				{
-					"header": "HEADER",
-					"title": "TITLE OF OPTION 1",
+					"header": "CURRENCY",
+					"title": "EFFECT CURRENCY",
 					"description": "Description of option.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"outcomes": {
@@ -78,19 +75,25 @@ var TEST_EVENT_A:Dictionary = {
 							{
 								"chance": 50,  
 								"response": [
-									"Response for outcome 1 goes here."	
+									"Lost money."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+								"impact": {
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -5,
+									}
+								},
 							},
 							{
 								"chance": 50,  
 								"response": [
-									"Response for outcome 2 goes here."	
+									"Gain money."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
-							}							
+								"impact": {
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: 10,
+									}
+								},
+							}
 						]
 					},
 					"onSelected": onSelected
@@ -99,8 +102,8 @@ var TEST_EVENT_A:Dictionary = {
 				
 				# ----------------------------------------- NEUTRAL
 				{
-					"header": "HEADER",
-					"title": "TITLE OF OPTION 2",
+					"header": "METRICS",
+					"title": "EFFECT METRICS",
 					"description": "Description of option.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"outcomes": {
@@ -108,24 +111,85 @@ var TEST_EVENT_A:Dictionary = {
 							{
 								"chance": 50,  
 								"response": [
-									"Response for outcome 1 goes here."	
+									"Lost MORALE."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: -5,
+									}
+								},
 							},
 							{
 								"chance": 50,  
 								"response": [
+									"Gain MORALE."	
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: 3,
+									}
+								},
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+				
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "BUFFS",
+					"title": "EFFECT BUFFS/DEBUFF",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,  
+								"impact": {
+									"buff": [
+										BASE.BUFF.MORALE_BOOST
+									]
+								},
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+							},
+							{
+								"chance": 50,  
+								"impact": {
+									"debuff": [
+										BASE.DEBUFF.MORALE_DRAIN
+									]
+								},								
+								"response": [
 									"Response for outcome 2 goes here."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
 							}							
 						]
 					},
 					"onSelected": onSelected
 				},
 				# -----------------------------------------				
+								
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "DO NOTHING",
+					"title": "NO IMPACT",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"response": [
+									"No changes to anything."	
+								],
+							},
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------								
 
 			]
 		})
@@ -147,7 +211,7 @@ var TEST_EVENT_B:Dictionary = {
 					"title": "TITLE OF OPTION 1",
 					"description": "Description of option.",
 					"type": EVT.OUTCOME.NEUTRAL,
-					"cost": {
+					"impact": {
 						"metrics": {
 							RESOURCE.METRICS.MORALE: -5,
 							RESOURCE.METRICS.SAFETY: 2
@@ -166,16 +230,12 @@ var TEST_EVENT_B:Dictionary = {
 								"response": [
 									"Response for outcome 1 goes here."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
 							},
 							{
 								"chance": 1,  
 								"response": [
 									"Response for outcome 2 goes here."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
 							}
 						]
 					},
@@ -189,6 +249,14 @@ var TEST_EVENT_B:Dictionary = {
 					"title": "TITLE OF OPTION 2",
 					"description": "Description of option.",
 					"type": EVT.OUTCOME.NEUTRAL,
+					"impact": {
+						"buff": [
+							BASE.BUFF.MORALE_BOOST
+						],
+						"debuff": [
+							BASE.DEBUFF.PANIC
+						],
+					},					
 					"outcomes": {
 						"list": [
 							{
@@ -196,16 +264,12 @@ var TEST_EVENT_B:Dictionary = {
 								"response": [
 									"Response for outcome 1 goes here."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: -1} ),
 							},
 							{
 								"chance": 1,  
 								"response": [
 									"Response for outcome 2 goes here."	
 								],
-								"effect": func() -> void:
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.MONEY: 1} ),
 							}							
 						]
 					},
@@ -242,10 +306,7 @@ var MYSTERY_MEAT_1:Dictionary = {
 								"chance": 1,
 								"response": [
 									"Minor irregularities surface in the supply chain. Correcting them strains resources, and some staff seem unsettled, though they cannot explain why."
-								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
-									SUBSCRIBE.base_states = base_states,
+								]
 							},
 							{
 								"chance": 1,
@@ -270,19 +331,13 @@ var MYSTERY_MEAT_1:Dictionary = {
 								"chance": 1,
 								"response": [
 									"Initial resistance fades as staff adapt to the vegetable menu. The unexplained enthusiasm around the meat vanishes, but so does a certain energy in the facility."
-								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
-									SUBSCRIBE.base_states = base_states,
+								]
 							},
 							{
 								"chance": 1,
 								"response": [
 									"Some staff complain of cravings and unease following the switch. While no overt anomaly manifests, the sense of absence is difficult to ignore."
-								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
-									SUBSCRIBE.base_states = base_states,
+								]
 							},
 						]
 					},
@@ -301,21 +356,13 @@ var MYSTERY_MEAT_1:Dictionary = {
 								"chance": 1,
 								"response": [
 									"Staff morale improves after the meals, though their enthusiasm feels oddly intense. You make a note to keep watch."
-								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] += 1
-									SUBSCRIBE.base_states = base_states
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: -1} ),
+								]
 							},
 							{
 								"chance": 1,
 								"response": [
 									"Meat consumption rates spike, driving up operational costs. Several requisition logs contain inconsistencies that can’t be fully explained."
-								],
-								"effect": func() -> void:
-									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 1
-									SUBSCRIBE.resources_data = resources_data
-									await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: -1} ),
+								]
 							},
 						],
 					},
@@ -351,18 +398,12 @@ var MYSTERY_MEAT_2:Dictionary = {
 								"response": [
 									"The audit uncovers no registered supplier matching the meat’s origin. Several interviewed staff recall events you did not record authorizing. Their accounts differ in subtle but consistent ways."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.READINESS] += 1
-									SUBSCRIBE.base_states = base_states,
 							},
 							{
 								"chance": 1,
 								"response": [
 									"Cross-checking logistics burns time and resources. The findings are inconclusive, but multiple employees display unusual reluctance to discuss their dining habits."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
-									SUBSCRIBE.base_states = base_states,
 							}
 						]
 					},
@@ -382,18 +423,12 @@ var MYSTERY_MEAT_2:Dictionary = {
 								"response": [
 									"With meat service restricted, affected staff show mild agitation but eventually comply. Surveillance notes subtle differences in behavior between those who continue eating the meat and those who abstain."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.SAFETY] += 1
-									SUBSCRIBE.base_states = base_states,
 							},
 							{
 								"chance": 1,
 								"response": [
 									"Attempts to isolate distribution generate pushback. Some staff insist they were authorized to receive extra servings, though no such orders exist in your system."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 1
-									SUBSCRIBE.base_states = base_states,
 							},
 						]
 					},
@@ -413,18 +448,12 @@ var MYSTERY_MEAT_2:Dictionary = {
 								"response": [
 									"Morale rises significantly, with staff displaying heightened cooperation and energy. Still, several personnel reports contain inconsistencies regarding memory of events during mealtimes."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] += 2
-									SUBSCRIBE.base_states = base_states,
 							},
 							{
 								"chance": 1,
 								"response": [
 									"Operational costs escalate as meat shipments triple. A review of invoices reveals faintly distorted seals from suppliers—unlike any registered vendor."
 								],
-								"effect": func() -> void:
-									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 2
-									SUBSCRIBE.resources_data = resources_data,
 							},
 						],
 					},
@@ -460,11 +489,6 @@ var MYSTERY_MEAT_3:Dictionary = {
 								"response": [
 									"Quarantine succeeds, but not before multiple staff members are lost to violent outbursts. Remaining personnel are shaken by the containment measures, but the spread of the anomaly slows."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
-									resources_data.amount[RESOURCE.CURRENCY.MONEY] -= 5
-									SUBSCRIBE.base_states = base_states
-									SUBSCRIBE.resources_data = resources_data,
 							}
 						]
 					},
@@ -485,10 +509,6 @@ var MYSTERY_MEAT_3:Dictionary = {
 								"response": [
 									"All meat is incinerated under strict supervision. Withdrawal symptoms ripple through the facility: tremors, hallucinations, and mass unrest. Several staff must be sedated, but eventually the anomaly recedes."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 7
-									base_states.metrics[RESOURCE.METRICS.SAFETY] += 2
-									SUBSCRIBE.base_states = base_states,
 							}
 						]
 					},
@@ -509,10 +529,6 @@ var MYSTERY_MEAT_3:Dictionary = {
 								"response": [
 									"Staff behavior spirals into chaos. Work grinds to a halt as fights break out over rations. Security is forced to intervene, but several personnel are injured before order is restored."
 								],
-								"effect": func() -> void:
-									base_states.metrics[RESOURCE.METRICS.MORALE] -= 5
-									base_states.metrics[RESOURCE.METRICS.READINESS] -= 5
-									SUBSCRIBE.base_states = base_states,
 							}
 						]
 					},

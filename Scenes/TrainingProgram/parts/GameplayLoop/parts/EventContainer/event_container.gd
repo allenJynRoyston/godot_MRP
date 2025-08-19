@@ -11,6 +11,10 @@ extends GameContainer
 @onready var ResourceMargin:MarginContainer = $ResourceContainer/PanelContainer/MarginContainer
 @onready var Vibes:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Vibes
 @onready var Economy:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Economy
+@onready var Buffs:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Buffs
+@onready var BuffList:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Buffs/VBoxContainer/Content/MarginContainer/BuffList
+@onready var Debuffs:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Debuffs
+@onready var DebuffList:Control = $ResourceContainer/PanelContainer/MarginContainer/VBoxContainer/Debuffs/VBoxContainer/Content/MarginContainer/DebuffList
 
 @onready var BGOutputTexture:PanelContainer = $BGContainer
 @onready var ImageBG:TextureRect = $BGContainer/SubViewport/ImageBgTextureRect
@@ -21,6 +25,7 @@ extends GameContainer
 @onready var HeaderTitle:Control = $HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/HeaderTitle
 @onready var HeaderSubTitle:Label = $HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/VBoxContainer/HeaderSubTitle
 @onready var HeaderTextureRect:TextureRect = $HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/VBoxContainer/HeaderTextureRect
+@onready var StaticTextureRect:TextureRect = $HeaderControl/PanelContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer2/VBoxContainer/HeaderTextureRect/StaticTexture
 
 @onready var ContentPanel:PanelContainer = $ContentControl/PanelContainer
 @onready var ContentMargin:MarginContainer = $ContentControl/PanelContainer/MarginContainer
@@ -33,18 +38,22 @@ extends GameContainer
 @onready var OptionsContainer:Control = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer
 @onready var OptionsContainerList:HBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/OptionsContainerList
 
-
-
 # @onready var NoteContainer:VBoxContainer = $ContentControl/PanelContainer/MarginContainer/VBoxContainer/OptionsContainer/HBoxContainer/NoteContainer
 enum MODE {HIDE, ACTIVE}
 enum CONTROLS {FREEZE, TEXT_REVEAL, OPTIONS}
 
-const OptionListItem:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionListItem.tscn")
+const OptionListItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/OptionListItem.tscn")
+const BuffOrDebuffItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/BuffOrDebuffItem.tscn")
 
 var SelectedNode:Control
 var event_data:Array = [] 	
 var event_instructions:Array = []
 var option_selected_index:int = 0
+
+var impacted_metrics:Dictionary = {}
+var impacted_currency:Dictionary = {}
+var impacted_buffs:Array = []
+var impacted_debuffs:Array = []
 
 var event_instruction_index:int = 0
 var current_event_instruction:Dictionary = {} : 
@@ -138,6 +147,11 @@ func reset() -> void:
 	instruction_index = 0
 	text_index = 0
 	event_output = {}
+	
+	impacted_metrics = {}
+	impacted_currency = {}
+	impacted_buffs = []
+	impacted_debuffs = []
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -169,9 +183,9 @@ func start(new_event_data:Array) -> void:
 	# transition in
 	BtnControls.disable_back_btn = true
 	BtnControls.onBack = func() -> void:pass
-	BtnControls.onAction = func() -> void:pass	
-	BtnControls.reveal(true)
+	BtnControls.onAction = func() -> void:pass		
 	await TransitionScreen.start(1.0)	
+	BtnControls.reveal(true)
 	
 	# set event data and continue	
 	event_data = new_event_data
@@ -335,12 +349,11 @@ func on_current_instruction_update() -> void:
 		HeaderSubTitle.hide()
 
 	if current_instruction.has("img_src"):	
-		HeaderTextureRect.show()
 		if HeaderTextureRect.texture != CACHE.fetch_image(current_instruction.img_src):
 			HeaderTextureRect.texture = CACHE.fetch_image(current_instruction.img_src)
-		#reveal_outputtexture(true, 0.3)
+		StaticTextureRect.hide()
 	else:
-		HeaderTextureRect.hide()
+		StaticTextureRect.show()
 
 	if current_instruction.has("set_return_val"):
 		event_output = current_instruction.set_return_val.call()	
@@ -387,7 +400,7 @@ func on_current_instruction_update() -> void:
 		
 		for index in options.size():
 			var option:Dictionary = options[index]
-			var new_node:Control = OptionListItem.instantiate()
+			var new_node:Control = OptionListItemPreload.instantiate()
 			var is_unavailable:bool = option.is_unavailable if "is_unavailable" in option else false
 			var hint_description:String = option.hint_description if option.has("hint_description") else ""
 			new_node.can_afford = true
@@ -404,15 +417,45 @@ func on_current_instruction_update() -> void:
 			for index in OptionsContainerList.get_child_count():
 				var node:Control = OptionsContainerList.get_child(index)
 				node.is_selected = node == _node	
+				
+				# clear list
+				for list in [BuffList, DebuffList]:
+					for list_node in list.get_children():
+						list_node.queue_free()
+				
+				# then add impact
 				if node == _node:
 					var option:Dictionary = options[index]
-					reveal_resources(option.has("cost"), 0.3 if option.has("cost") else 0)
-					
-					if option.has("cost"):
-						if option.cost.has("currency"):
+					reveal_resources(option.has("impact"), 0.3 if option.has("impact") else 0)
+	
+					if option.has("impact"):
+						if option.impact.has("buff"):
+							Buffs.show()
+							for ref in option.impact.buff:
+								var buff_data:Dictionary = BASE_UTIL.return_buff(ref)
+								var new_node:Control = BuffOrDebuffItemPreload.instantiate()
+								new_node.title = buff_data.name
+								new_node.description = buff_data.description
+								BuffList.add_child(new_node)
+						else:
+							Buffs.hide()
+							
+						if option.impact.has("debuff"):
+							Debuffs.show()
+							for ref in option.impact.debuff:
+								var buff_data:Dictionary = BASE_UTIL.return_debuff(ref)
+								var new_node:Control = BuffOrDebuffItemPreload.instantiate()
+								new_node.title = buff_data.name
+								new_node.description = buff_data.description								
+								DebuffList.add_child(new_node)
+						else:
+							Debuffs.hide()							
+							
+						
+						if option.impact.has("currency"):
 							Economy.show()
-							for ref in option.cost.currency:
-								var amount:int = option.cost.currency[ref]
+							for ref in option.impact.currency:
+								var amount:int = option.impact.currency[ref]
 								match ref:
 									RESOURCE.CURRENCY.MONEY:
 										Economy.money_offset = amount
@@ -425,10 +468,10 @@ func on_current_instruction_update() -> void:
 						else:
 							Economy.hide()
 						
-						if option.cost.has("metrics"):
+						if option.impact.has("metrics"):
 							Vibes.show()
-							for ref in option.cost.metrics:
-								var amount:int = option.cost.metrics[ref]
+							for ref in option.impact.metrics:
+								var amount:int = option.impact.metrics[ref]
 								match ref:
 									RESOURCE.METRICS.MORALE:
 										Vibes.offset_morale = amount
@@ -455,6 +498,23 @@ func on_current_instruction_update() -> void:
 		return
 	# -----------------------------------
 	
+	if current_instruction.has("tally") and current_instruction.tally:
+		# tally changes
+		await GAME_UTIL.open_tally(impacted_currency, impacted_metrics)
+		
+		# add buffs/debuffs
+		for buff in impacted_buffs:
+			GAME_UTIL.add_buff_to_base(buff, 7)
+			
+		for debuff in impacted_debuffs:
+			GAME_UTIL.add_debuff_to_base(debuff, 7)
+		
+		# reset
+		impacted_metrics = {}
+		impacted_currency = {}
+		impacted_buffs = []
+		impacted_debuffs = []
+	
 	# -----------------------------------
 	if current_instruction.has("end") and current_instruction.end:
 		BtnControls.reveal(true)
@@ -480,13 +540,78 @@ func on_option_select(option:Dictionary) -> void:
 		var node:Control = OptionsContainerList.get_child(index)
 		node.fade_out() 
 	
+	#
+	var outcome_index:int = 0	
+	if option.has("outcomes"):
+		var outcome_dict:Dictionary
+		var total_chance:int = 0
+		for item in option.outcomes.list:
+			var chance_val:int = item.chance if item.has('chance') else 1
+			outcome_dict[total_chance + chance_val] = item
+			total_chance += chance_val
+		var roll:int = randi() % total_chance
+		var outcome:Dictionary
+		for val in outcome_dict:		
+			if roll <= int(val):
+				outcome = outcome_dict[val]
+				break
+			else:
+				outcome_index += 1		
+
 	# call onSelected
 	if option.has("onSelected"):
-		option.onSelected.call({
+		option.onSelected.call({			
 			"index": option_selected_index, 
-			"option": option
+			"outcome_index": outcome_index,
+			"option": option,
 		})
 		
+		
+	# combine top level impact with local one
+	var option_selected:Dictionary = option.outcomes.list[outcome_index]
+	
+	# add to tally
+	# top level impact
+	if option.has("impact"):
+		if option.impact.has("metrics"):
+			for ref in option.impact.metrics:
+				if ref not in impacted_metrics:
+					impacted_metrics[ref] = 0
+				impacted_metrics[ref] += option.impact.metrics[ref]
+		if option.impact.has("currency"):
+			for ref in option.impact.currency:
+				if ref not in impacted_metrics:
+					impacted_currency[ref] = 0
+				impacted_currency[ref] = option.impact.currency[ref]
+		if option.impact.has("buff"):
+			for ref in option.impact.buff:
+				impacted_buffs.push_back(ref)
+		if option.impact.has("debuff"):
+			for ref in option.impact.debuff:
+				impacted_debuffs.push_back(ref)
+
+	# global impact
+	if option_selected.has("impact"):
+		if option_selected.impact.has("metrics"):
+			for ref in option_selected.impact.metrics:
+				if ref not in impacted_metrics:
+					impacted_metrics[ref] = 0
+				impacted_metrics[ref] += option_selected.impact.metrics[ref]
+		if option_selected.impact.has("currency"):
+			for ref in option_selected.impact.currency:
+				if ref not in impacted_currency:
+					impacted_currency[ref] = 0
+				impacted_currency[ref] += option_selected.impact.currency[ref]
+		if option_selected.impact.has("buff"):
+			for ref in option_selected.impact.buff:
+				impacted_buffs.push_back(ref)
+		if option_selected.impact.has("debuff"):
+			for ref in option_selected.impact.debuff:
+				impacted_debuffs.push_back(ref)
+	
+	print(option_selected)
+	print(impacted_currency)
+
 	# remove element from tree and place it where it can be transisitioned
 	var SelectNodeCopy:Control = SelectedNode.duplicate()
 	var node_pos:Vector2 = SelectedNode.global_position
@@ -506,7 +631,7 @@ func on_option_select(option:Dictionary) -> void:
 	for index in OptionsContainerList.get_child_count():
 		var node:Control = OptionsContainerList.get_child(index)	
 		node.queue_free()
-	SelectNodeCopy.queue_free()
+	SelectNodeCopy.queue_free()	
 	
 	# goto next
 	next_instruction(true)

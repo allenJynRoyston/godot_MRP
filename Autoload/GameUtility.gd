@@ -670,6 +670,11 @@ func set_emergency_mode_to_danger(skip_confirm:bool = false, add_debuff:bool = t
 # ---------------------
 
 # --------------------------------------------------------------------------------------------------
+# add buff to base
+func add_buff_to_base(buff_ref:int, duration:int) -> void:
+	BASE_UTIL.add_buff_or_deubff_to_base(BASE.TYPE.BUFF, buff_ref, duration)
+# ---------------------
+
 # Add buff to an entire floor
 func add_buff_to_floor(buff_ref:int, duration:int, floor:int = current_location.floor) -> void:
 	BASE_UTIL.add_buff_or_debuff_to_floor(BASE.TYPE.BUFF, buff_ref, duration, floor)
@@ -1328,17 +1333,17 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func open_tally(differential:Dictionary, color_bg:Color = Color(0, 0, 0, 0.7)) -> void:
+func open_tally(currency_diff:Dictionary = {}, metric_diff:Dictionary = {}) -> void:
 	previous_show_taskbar_state = GBL.find_node(REFS.OS_LAYOUT).freeze_inputs
 	disable_taskbar(true)
 	
 	var NewtallyNode:Control = NewTallyPreload.instantiate()
 	NewtallyNode.z_index = z_index_lvl + 1	
 	GameplayNode.add_child(NewtallyNode)
-	NewtallyNode.set_props("COLLECT RESOURCES", "Put it to good use.", "", Color(0, 0, 0, 0.7))	
+	#NewtallyNode.set_props("COLLECT RESOURCES", "Put it to good use.", "", Color(0, 0, 0, 0.7))	
 	await NewtallyNode.activate(false)
 	
-	NewtallyNode.start(differential)
+	NewtallyNode.start(currency_diff, metric_diff)
 	await NewtallyNode.user_response	
 	
 	disable_taskbar(previous_show_taskbar_state)

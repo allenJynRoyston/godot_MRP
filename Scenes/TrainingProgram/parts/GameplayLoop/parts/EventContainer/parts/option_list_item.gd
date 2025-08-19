@@ -126,11 +126,31 @@ func update_node(rebuild_list:bool = true) -> void:
 	else:
 		OutcomeLabel.hide()
 		
-	if data.has("cost"):
+	if data.has("impact"):
 		Costs.show()	
-		if data.cost.has("currency") and !built_once:
-			for ref in data.cost.currency:
-				var amount:int = data.cost.currency[ref]
+		if data.impact.has("buff") and !built_once:
+			for ref in data.impact.buff:
+				var new_node:Control = Label.new()
+				var buff_data:Dictionary = BASE_UTIL.return_buff(ref)
+				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
+				label_setting.font_color = Color.DARK_GREEN
+				new_node.label_settings = label_setting				
+				new_node.text = buff_data.name
+				CostList.add_child(new_node)	
+				
+		if data.impact.has("debuff") and !built_once:
+			for ref in data.impact.debuff:
+				var new_node:Control = Label.new()
+				var buff_data:Dictionary = BASE_UTIL.return_debuff(ref)
+				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
+				label_setting.font_color = COLORS.disabled_color
+				new_node.label_settings = label_setting	
+				new_node.text = buff_data.name
+				CostList.add_child(new_node)
+		
+		if data.impact.has("currency") and !built_once:
+			for ref in data.impact.currency:
+				var amount:int = data.impact.currency[ref]
 				var new_node:Control = Label.new()
 				var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
 				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
@@ -139,9 +159,9 @@ func update_node(rebuild_list:bool = true) -> void:
 				new_node.text = "%s%s %s" % ["+" if amount >= 0 else "", amount, resource_data.name]
 				CostList.add_child(new_node)		
 		
-		if data.cost.has("metrics") and !built_once:
-			for ref in data.cost.metrics:
-				var amount:int = data.cost.metrics[ref]
+		if data.impact.has("metrics") and !built_once:
+			for ref in data.impact.metrics:
+				var amount:int = data.impact.metrics[ref]
 				var new_node:Control = Label.new()
 				var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
 				var label_setting:LabelSettings = cost_item_label_setting.duplicate()
@@ -181,5 +201,5 @@ func update_node(rebuild_list:bool = true) -> void:
 # ----------------------	
 func _process(delta: float) -> void:
 	if !is_node_ready():return
-	Subviewport.size = MainPanel.size
+	Subviewport.size = MainPanel.size + Vector2(5, 5)
 # ----------------------	
