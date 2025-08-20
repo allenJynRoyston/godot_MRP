@@ -1,7 +1,11 @@
 extends Node
 
 enum TYPE {
-	TEST_EVENT_A, TEST_EVENT_B,
+	TEST_EVENT_A, TEST_EVENT_B, TEST_EVENT_C,
+	# -------------
+	MYSTERY_MEAT_1, MYSTERY_MEAT_2, MYSTERY_MEAT_3,
+	# -------------
+	FACILITY_RAID_1, FACILITY_RAID_2,
 	# -------------
 	GAME_OVER,
 	# -------------
@@ -35,8 +39,7 @@ enum TYPE {
 	UNHAPPY_HOUR,
 	# -------------
 	
-	# -------------
-	MYSTERY_MEAT_1, MYSTERY_MEAT_2, MYSTERY_MEAT_3,
+
 }
 
 enum OUTCOME {GOOD, BAD, NEUTRAL}

@@ -19,6 +19,12 @@ var flashing:bool = false
 var room_config:Dictionary
 var current_location:Dictionary
 
+const tutorial_notes:Array = [
+	"Power is required for rooms and modules.",
+	"I can get more by building certain rooms or upgrading the wing via Engineering.",
+]
+
+
 # -----------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_process(self)

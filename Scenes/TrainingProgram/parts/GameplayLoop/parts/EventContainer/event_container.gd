@@ -609,9 +609,6 @@ func on_option_select(option:Dictionary) -> void:
 			for ref in option_selected.impact.debuff:
 				impacted_debuffs.push_back(ref)
 	
-	print(option_selected)
-	print(impacted_currency)
-
 	# remove element from tree and place it where it can be transisitioned
 	var SelectNodeCopy:Control = SelectedNode.duplicate()
 	var node_pos:Vector2 = SelectedNode.global_position

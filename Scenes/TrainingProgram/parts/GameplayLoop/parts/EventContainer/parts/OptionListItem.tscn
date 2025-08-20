@@ -1,43 +1,28 @@
-[gd_scene load_steps=16 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=21 format=3 uid="uid://doexmbeotqsd4"]
 
-[ext_resource type="Material" uid="uid://ciqd2sulkor5t" path="res://CanvasShader/ScreenMelt/screenMelt.tres" id="1_d1ljd"]
+[ext_resource type="Shader" uid="uid://wtxyh6raqh8m" path="res://CanvasShader/ScreenMelt/screenMelt.gdshader" id="1_43xce"]
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_4l8vf"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="4_4l8vf"]
-[ext_resource type="LabelSettings" uid="uid://c3u6ej7u2mgh8" path="res://Fonts/font_2_black.tres" id="5_8ufj8"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_d1ljd"]
 [ext_resource type="LabelSettings" uid="uid://34n116bw0xn5" path="res://Fonts/small_font_label_setting.tres" id="6_8ufj8"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="7_43xce"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="7_fb51e"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="8_d1ljd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d1ljd"]
+shader = ExtResource("1_43xce")
+shader_parameter/transition = 0.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_d1ljd"]
 viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_43xce"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1ljd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kiami"]
 bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 shadow_offset = Vector2(3, 3)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kiami"]
-bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fb51e"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_d1ljd"]
-font = ExtResource("7_43xce")
-font_color = Color(0.510764, 0.00166744, 0.716704, 1)
-outline_size = 2
-outline_color = Color(0.509804, 0, 0.717647, 0.168627)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fb51e"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -48,17 +33,65 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
+[sub_resource type="LabelSettings" id="LabelSettings_657bn"]
+font = ExtResource("5_d1ljd")
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fb51e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bvnlg"]
+font = ExtResource("7_43xce")
+font_color = Color(0.510764, 0.00166744, 0.716704, 1)
+outline_size = 2
+outline_color = Color(0.509804, 0, 0.717647, 0.168627)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1ljd"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1qt0"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wnb1o"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wnb1o"]
+font = ExtResource("7_43xce")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
 [node name="OptionListItem" type="TextureRect"]
-material = ExtResource("1_d1ljd")
+modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_d1ljd")
 offset_right = 250.0
 offset_bottom = 400.0
 texture = SubResource("ViewportTexture_d1ljd")
 stretch_mode = 4
 script = ExtResource("1_j7po5")
+hint_title = "HINT"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(250, 400)
+size = Vector2i(255, 342)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 custom_minimum_size = Vector2(250, 0)
@@ -78,7 +111,7 @@ theme_override_constants/separation = 0
 [node name="Header" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_d1ljd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiami")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer/Header"]
 custom_minimum_size = Vector2(200, 0)
@@ -118,7 +151,7 @@ icon_size = Vector2(15, 15)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kiami")
+theme_override_styles/panel = SubResource("StyleBoxFlat_fb51e")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(0, 150)
@@ -139,7 +172,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "Title option..."
-label_settings = ExtResource("5_8ufj8")
+label_settings = SubResource("LabelSettings_657bn")
 autowrap_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -166,7 +199,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Known outcome goes here.  It can be either positive or negative."
-label_settings = SubResource("LabelSettings_d1ljd")
+label_settings = SubResource("LabelSettings_bvnlg")
 vertical_alignment = 1
 autowrap_mode = 2
 
@@ -201,13 +234,13 @@ icon_size = Vector2(10, 18)
 [node name="HeaderLabel" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Cost/Header/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "impact"
+text = "EFFECT"
 label_settings = ExtResource("4_4l8vf")
 horizontal_alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/Cost"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fb51e")
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1qt0")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer"]
 layout_mode = 2
@@ -221,12 +254,65 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer/MarginContainer/CostList"]
+[node name="Requires" type="VBoxContainer" parent="SubViewport/PanelContainer/VBoxContainer"]
 layout_mode = 2
-text = "-1 morale"
-label_settings = ExtResource("7_fb51e")
+theme_override_constants/separation = 0
 
-[node name="Label2" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer/MarginContainer/CostList"]
+[node name="Header" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires"]
 layout_mode = 2
-text = "+ MONEY"
-label_settings = ExtResource("7_fb51e")
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1ljd")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires/Header/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SVGIcon" parent="SubViewport/PanelContainer/VBoxContainer/Requires/Header/MarginContainer/HBoxContainer" instance=ExtResource("3_4l8vf")]
+visible = false
+custom_minimum_size = Vector2(10, 18)
+layout_mode = 2
+icon = 43
+icon_color = Color(1, 0.74902, 0.2, 1)
+icon_size = Vector2(10, 18)
+
+[node name="HeaderLabel" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Requires/Header/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "REQUIRES"
+label_settings = ExtResource("4_4l8vf")
+horizontal_alignment = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wnb1o")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RequiresList" type="VBoxContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList"]
+layout_mode = 2
+
+[node name="RequiresCheckbox" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList/HBoxContainer" instance=ExtResource("8_d1ljd")]
+layout_mode = 2
+is_negative = false
+
+[node name="RequiresLabel" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList/HBoxContainer"]
+layout_mode = 2
+text = "Label goes here."
+label_settings = SubResource("LabelSettings_wnb1o")

@@ -5,6 +5,11 @@ extends Control
 
 const MTFItemPreload:PackedScene = preload("res://UI/MTFItem/MTFItem.tscn")
 
+const tutorial_notes:Array = [
+	"MTF means Mobile Task Force.  I can only house three differnt types per wing.",
+	"They seem to be useful when combined with Containment Cells, but they might have other uses."
+]
+
 var mtf:Array = [] : 
 	set(val):
 		mtf = val

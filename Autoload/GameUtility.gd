@@ -518,6 +518,7 @@ func run_event(event_ref:EVT.TYPE) -> void:
 	if event_ref not in base_states.event_record:
 		base_states.event_record[event_ref] = {
 			"count": 0,
+			"triggered_on_day": progress_data.current_day,
 			"outcome_type": [],
 			"outcome_results": []
 		}

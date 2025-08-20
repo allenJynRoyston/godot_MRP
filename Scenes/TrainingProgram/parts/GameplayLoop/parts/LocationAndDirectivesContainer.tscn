@@ -1,0 +1,201 @@
+[gd_scene load_steps=13 format=3 uid="uid://chcu224iunhwr"]
+
+[ext_resource type="Script" uid="uid://dpgivctsdi0w0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/location_and_directives_container.gd" id="1_6qlav"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="1_k8dpa"]
+[ext_resource type="LabelSettings" uid="uid://bsrcxwnbjodu1" path="res://Fonts/font_2_inverse.tres" id="2_6qlav"]
+[ext_resource type="LabelSettings" uid="uid://bh6uxtrmlpvog" path="res://Fonts/font_2_inverse_large.tres" id="3_l0of8"]
+[ext_resource type="PackedScene" uid="uid://bxuo606skn1w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Visualizer/Visualizer.tscn" id="4_mi0lt"]
+[ext_resource type="PackedScene" uid="uid://dgdmryq5bt0oh" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/BuffsAndDebuffs/BuffsAndDebuffs.tscn" id="5_3iq6m"]
+[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="6_3lcbn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6qlav"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u0n1i"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.580392)
+shadow_size = 1
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e64td"]
+bg_color = Color(0.0509804, 0.0509804, 0.0509804, 0)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cd3up"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4txy"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_offset = Vector2(3, 3)
+
+[node name="LocationAndDirectivesContainer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_6qlav")
+
+[node name="Component" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6qlav")
+
+[node name="MarginContainer" type="MarginContainer" parent="Component"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 140
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Component/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Location" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="Component/MarginContainer/VBoxContainer/Location"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_u0n1i")
+
+[node name="MarginContainer" type="MarginContainer" parent="Component/MarginContainer/VBoxContainer/Location/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 7
+
+[node name="SectorLabel" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Header/MarginContainer"]
+layout_mode = 2
+text = "SECTOR 0A"
+label_settings = ExtResource("1_k8dpa")
+horizontal_alignment = 1
+
+[node name="Content" type="PanelContainer" parent="Component/MarginContainer/VBoxContainer/Location"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_e64td")
+
+[node name="LocationPanel" type="PanelContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_cd3up")
+
+[node name="MarginContainer" type="MarginContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Location" type="HBoxContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Floor" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Floor"]
+layout_mode = 2
+text = "FLOOR"
+label_settings = ExtResource("2_6qlav")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Floor"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("3_l0of8")
+horizontal_alignment = 1
+
+[node name="Wing" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Wing"]
+layout_mode = 2
+text = "WING"
+label_settings = ExtResource("2_6qlav")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Wing"]
+layout_mode = 2
+text = "A"
+label_settings = ExtResource("3_l0of8")
+horizontal_alignment = 1
+
+[node name="Room" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CenterLabel" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Room"]
+layout_mode = 2
+text = "ROOM"
+label_settings = ExtResource("2_6qlav")
+horizontal_alignment = 1
+
+[node name="CenterLabel2" type="Label" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer/Location/Room"]
+layout_mode = 2
+text = "1"
+label_settings = ExtResource("3_l0of8")
+horizontal_alignment = 1
+
+[node name="Visualizer" parent="Component/MarginContainer/VBoxContainer/Location/Content/LocationPanel/MarginContainer/VBoxContainer" instance=ExtResource("4_mi0lt")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="BuffsAndDebuffs" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="Component/MarginContainer/VBoxContainer/BuffsAndDebuffs"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_u0n1i")
+
+[node name="MarginContainer" type="MarginContainer" parent="Component/MarginContainer/VBoxContainer/BuffsAndDebuffs/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 7
+
+[node name="SectorLabel" type="Label" parent="Component/MarginContainer/VBoxContainer/BuffsAndDebuffs/Header/MarginContainer"]
+layout_mode = 2
+text = "DIRECTIVES"
+label_settings = ExtResource("1_k8dpa")
+horizontal_alignment = 1
+
+[node name="Content" type="PanelContainer" parent="Component/MarginContainer/VBoxContainer/BuffsAndDebuffs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_r4txy")
+
+[node name="PanelContainer" parent="Component/MarginContainer/VBoxContainer/BuffsAndDebuffs/Content" instance=ExtResource("5_3iq6m")]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("6_3lcbn")

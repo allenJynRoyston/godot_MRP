@@ -23,7 +23,20 @@ extends MouseInteractions
 var onClick:Callable = func():pass
 var onDismiss:Callable = func():pass
 
+
+var tutorial_notes:Array = []
+
+
 # --------------------------------------
+func _notification(what):
+	match what:
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if is_visible_in_tree():
+				SUBSCRIBE.add_note_node(self)
+			else:
+				SUBSCRIBE.remove_note_node(self)
+				
+				
 func _ready() -> void:
 	super._ready()
 	on_duration_update()
@@ -32,6 +45,10 @@ func _ready() -> void:
 	
 	hint_icon = SVGS.TYPE.INFO
 	hint_title = "HINT"
+	
+	tutorial_notes = [
+		hint_description
+	]
 # --------------------------------------
 
 # --------------------------------------

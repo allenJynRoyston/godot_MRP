@@ -1,17 +1,18 @@
 extends Control
 
-@onready var RootPanel:PanelContainer = $PanelContainer
-@onready var MarginPanel:MarginContainer = $PanelContainer/MarginContainer
+@onready var RootPanel:PanelContainer = $"."
+@onready var MarginPanel:MarginContainer = $MarginContainer
 
-@onready var FloorBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
-@onready var RingBuffsContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
-@onready var RoomBuffContainer:HBoxContainer = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RoomBuffContainer
+@onready var FloorBuffsContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
+@onready var RingBuffsContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
+@onready var RoomBuffContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RoomBuffContainer
 
 const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/BuffsAndDebuffs/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
 
 var current_location:Dictionary = {}
 var room_config:Dictionary = {}
 var control_pos:Dictionary = {}
+# --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -130,9 +131,9 @@ func update() -> void:
 	
 	for item in status_list:
 		var new_node:Control = BuffOrDebuffTag.instantiate()
-		FloorBuffsContainer.add_child(new_node)	
 		new_node.title = item.title
 		new_node.duration = item.duration
 		new_node.hint_description = item.hint_description
 		new_node.type = item.type
+		FloorBuffsContainer.add_child(new_node)	
 # -----------------------------------------------

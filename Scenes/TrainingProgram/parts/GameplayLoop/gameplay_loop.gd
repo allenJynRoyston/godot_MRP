@@ -209,9 +209,9 @@ var initial_values:Dictionary = {
 		
 		return {
 			"metrics": {
-				RESOURCE.METRICS.MORALE: 6,
-				RESOURCE.METRICS.SAFETY: 6,
-				RESOURCE.METRICS.READINESS: 6
+				RESOURCE.METRICS.MORALE: 0,
+				RESOURCE.METRICS.SAFETY: 0,
+				RESOURCE.METRICS.READINESS: 0
 			},
 			"event_record": {
 				# record events and their outcomes
@@ -932,7 +932,7 @@ func on_current_phase_update() -> void:
 			
 			# ADD TO PROGRESS DATA day count
 			progress_data.day += 1
-			
+
 			# first, get list of rooms that will be completed in order of floor -> ring -> room
 			var construction_complete:Dictionary = {}
 			var previous_ring:int = -1
@@ -1000,7 +1000,25 @@ func on_current_phase_update() -> void:
 									base_states.room[room_designation].ability_on_cooldown[key] -= 1
 									if base_states.room[room_designation].ability_on_cooldown[key] == 0:
 										ToastContainer.add("[%s] is ready!" % [key])
-				
+			
+			for facility in purchased_facility_arr:
+				var room_details:Dictionary = ROOM_UTIL.return_data(facility.ref)				
+				var room_base_state:Dictionary = GAME_UTIL.get_room_base_state(facility.location) 
+				for event in room_details.event_triggers.conditionals:
+					# first check if condition has been met
+					var condition_met:bool = event.check.call(facility.location)
+					if !condition_met:
+						break
+					# then check if event is repeatable
+					var is_repeatable:bool = EVENT_UTIL.return_data(event.ref).is_repeatable
+					
+					# check if event has not occurred yet OR it has occured but it's repeatable
+					if (event.ref not in base_states.event_record) or (event.ref in base_states.event_record and is_repeatable):
+						
+						# then add it to events_pending
+						if event.ref not in room_base_state.events_pending:
+							GAME_UTIL.add_room_event(event.ref, facility.location)
+					
 			# update subscriptions
 			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
@@ -1033,15 +1051,13 @@ func on_current_phase_update() -> void:
 					# check and add event breachs
 					if (random_int < breach_event_chance) and (ref not in event_final_containment):
 						event_breach_refs.push_back(ref)
-				
-			
+						
 			# start breach splash
 			if event_breach_refs.size() > 0:
 				PhaseAnnouncement.end()
 				# then do them...
 				for index in event_breach_refs.size():
 					await GAME_UTIL.trigger_breach_event(event_breach_refs[index])
-			
 			
 			# start breach splash
 			if event_final_containment.size() > 0:
@@ -1084,6 +1100,10 @@ func on_current_phase_update() -> void:
 			#SUBSCRIBE.music_data = {
 				#"selected": previous_track,
 			#}
+
+			#print( event_triggers.conditionals )
+						
+						
 			
 			# next
 			current_phase = PHASE.CONCLUDE

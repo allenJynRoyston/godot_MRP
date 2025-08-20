@@ -49,6 +49,13 @@ extends PanelContainer
 		dclass_max_count = val
 		on_dclass_update()
 
+const tutorial_notes:Array = [
+	"There are four main personnel to keep in mind: ADMIN, RESEARCHERS, SECURITY and DCLASS.",
+	"Every facility has different personnel needs.  As long as I have the correct amount, the room is automatically activated.",
+	"I can incrase their capacity by building key rooms."
+]
+
+
 var room_config:Dictionary
 # ----------------------------------------------
 

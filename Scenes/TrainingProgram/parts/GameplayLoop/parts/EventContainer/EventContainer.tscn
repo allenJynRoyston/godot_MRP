@@ -93,7 +93,7 @@ outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oju27"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idm37"]
 bg_color = Color(0.054902, 0.054902, 0.054902, 0.796078)
 
 [node name="EventContainer" type="PanelContainer"]
@@ -242,8 +242,6 @@ layout_mode = 2
 
 [node name="Vibes" parent="ResourceContainer/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_td1l6")]
 layout_mode = 2
-offset_morale = 2
-offset_safety = 2
 
 [node name="Buffs" type="PanelContainer" parent="ResourceContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -447,7 +445,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_oju27")
+theme_override_styles/panel = SubResource("StyleBoxFlat_idm37")
 
 [node name="Label" type="Label" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/Footer"]
 layout_mode = 2

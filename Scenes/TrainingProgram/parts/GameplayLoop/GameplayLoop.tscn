@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dphmbf3c8t587" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/ActionContainer.tscn" id="7_rbrft"]
 [ext_resource type="PackedScene" uid="uid://3ltyxjadd2yt" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ToastContainer/ToastContainer.tscn" id="9_wx8fv"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="10_3w3kc"]
-[ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/HeaderControl.tscn" id="13_goe6f"]
+[ext_resource type="PackedScene" uid="uid://bjpif0yvapqdn" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/BuffsAndDebuffs/HeaderControl.tscn" id="13_goe6f"]
 [ext_resource type="PackedScene" uid="uid://p7chmumf3rm2" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LineDrawContainer/LineDrawContainer.tscn" id="14_g12vl"]
 [ext_resource type="PackedScene" uid="uid://btl83p0xrlqoi" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/PhaseAnnouncement/PhaseAnnouncement.tscn" id="20_q3yo6"]
 
@@ -34,7 +34,6 @@ z_index = 1
 layout_mode = 2
 
 [node name="MarkedObjectivesContainer" parent="." instance=ExtResource("4_lgd8l")]
-visible = false
 z_index = 1
 layout_mode = 2
 
@@ -42,14 +41,12 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="LineDrawContainer" parent="." instance=ExtResource("14_g12vl")]
-visible = false
 layout_mode = 2
 
 [node name="HeaderControl" parent="." instance=ExtResource("13_goe6f")]
 layout_mode = 2
 
 [node name="PhaseAnnouncement" parent="." instance=ExtResource("20_q3yo6")]
-visible = false
 layout_mode = 2
 
 [node name="ToastContainer" parent="." instance=ExtResource("9_wx8fv")]

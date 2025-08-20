@@ -9,7 +9,6 @@ bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_df1cc"]
 font = ExtResource("3_p7mqf")
-font_size = 24
 
 [node name="VHSLabel" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_n2ipd")
@@ -32,18 +31,21 @@ alignment = 1
 layout_mode = 2
 
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer/Control" instance=ExtResource("2_87h53")]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(20, 25)
 layout_mode = 2
-offset_left = -40.0
-offset_top = -3.0
-offset_right = -10.0
-offset_bottom = 27.0
-icon = 0
+offset_left = -44.0
+offset_top = -6.0
+offset_right = -19.0
+offset_bottom = 19.0
+icon = 16
 icon_color = Color(1, 0.0509804, 0.0509804, 1)
-icon_size = Vector2(30, 30)
+icon_size = Vector2(20, 25)
 
 [node name="StageLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(225, 1)
 layout_mode = 2
+size_flags_horizontal = 3
 label_settings = SubResource("LabelSettings_df1cc")
-horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true

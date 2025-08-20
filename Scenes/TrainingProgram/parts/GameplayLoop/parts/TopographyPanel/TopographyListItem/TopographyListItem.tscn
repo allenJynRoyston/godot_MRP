@@ -127,6 +127,7 @@ size_flags_horizontal = 4
 horizontal_mode = true
 icon = 39
 amount = 1
+offset_amount = 0
 burn_val = "0"
 icon_size = Vector2(20, 20)
 

@@ -26,7 +26,6 @@ var is_locked:bool :
 func _ready() -> void:
 	label_settings_copy = TextLabel.label_settings.duplicate()
 	TextLabel.label_settings = label_settings_copy	
-	
 	on_content_update()
 	on_is_selected_update()
 	on_is_locked_update()
@@ -34,19 +33,11 @@ func _ready() -> void:
 func on_is_selected_update() -> void:
 	if !is_node_ready():return
 	show() if is_selected else hide()
-	#SelectIcon.show() if is_selected else SelectIcon.hide()
-	#var new_color:Color = Color.WHITE if is_selected else Color.GREEN
-	#new_color.a = 0.5 if !is_selected else 1
-	#label_settings_copy.font_color = new_color
-	#label_settings_copy.outline_color = new_color
-	#label_settings_copy.outline_color.a = 0.2
-	#SelectIcon.icon_color = new_color
-	#LockIcon.icon_color = new_color
-	
+
 	
 func on_is_locked_update() -> void:
 	if !is_node_ready():return
-	LockedContainer.show() if is_locked else LockedContainer.hide()
+	#LockedContainer.show() if is_locked else LockedContainer.hide()
 
 func on_content_update() -> void:
 	if !is_node_ready():return

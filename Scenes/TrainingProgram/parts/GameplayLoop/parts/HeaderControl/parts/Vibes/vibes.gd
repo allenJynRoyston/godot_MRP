@@ -21,9 +21,22 @@ extends PanelContainer
 		update_node()
 
 var base_states:Dictionary
+
+const tutorial_notes:Array = [
+	"There are three main vibes to keep track of: morale, safety and readiness.",
+	"I think they're used in events, or possible trigger certain events?",
+]
 # --------------------------------------------
 
 # --------------------------------------------
+func _notification(what):
+	match what:
+		NOTIFICATION_VISIBILITY_CHANGED:
+			if is_visible_in_tree():
+				SUBSCRIBE.add_note_node(self)
+			else:
+				SUBSCRIBE.remove_note_node(self)
+
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_base_states(self)
 

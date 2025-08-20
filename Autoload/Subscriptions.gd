@@ -546,16 +546,16 @@ func remove_note_node(node:Node) -> void:
 var notes_subscriptions:Array = []
 var note:Array = [] :
 	set(val):
-		note = val 
+		note = val.filter(func(x): return x != null) 
 		for node in notes_subscriptions:
 			if "on_note_update" in node:
-				node.on_note_update.call( note )
+				node.on_note_update.call( note.filter(func(x): return x != null) )
 				
 func subscribe_to_notes(node:Node) -> void:
 	if node not in notes_subscriptions:
 		notes_subscriptions.push_back(node)
 		if "on_note_update" in node:
-			node.on_note_update.call( note )
+			node.on_note_update.call( note.filter(func(x): return x != null) )
 			
 func unsubscribe_to_notes(node:Node) -> void:
 	notes_subscriptions.erase(node)				

@@ -3,10 +3,10 @@ extends GameContainer
 @onready var Location:Control = $Location
 @onready var Visualizer:Control = $Visualizer
 @onready var HeaderLeft:Control = $HeaderLeft
-@onready var HeaderWingRight:Control = $HeaderWingRight
-@onready var HeaderFloorRight:Control = $HeaderFloorRight
 @onready var BuffsAndDebuffs:Control = $BuffsAndDebuffs
 
+#@onready var HeaderWingRight:Control = $HeaderWingRight
+#@onready var HeaderFloorRight:Control = $HeaderFloorRight
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -56,15 +56,15 @@ func get_hint_buttons() -> Array:
 func update() -> void:
 	if !is_node_ready() or camera_settings.is_empty():return
 
-	match camera_settings.type:
-		CAMERA.TYPE.FLOOR_SELECT:
-			HeaderWingRight.reveal(false)
-			for node in [Location, Visualizer, HeaderLeft, HeaderFloorRight, BuffsAndDebuffs]:
-				node.reveal(is_showing)	
-		CAMERA.TYPE.WING_SELECT:
-			HeaderFloorRight.reveal(false)
-			for node in [Location, Visualizer, HeaderLeft, HeaderWingRight, BuffsAndDebuffs]:
-				node.reveal(is_showing)	
-	
+	#match camera_settings.type:
+		#CAMERA.TYPE.FLOOR_SELECT:
+			#HeaderWingRight.reveal(false)
+			#for node in [Location, Visualizer, HeaderLeft, HeaderFloorRight, BuffsAndDebuffs]:
+				#node.reveal(is_showing)	
+		#CAMERA.TYPE.WING_SELECT:
+			#HeaderFloorRight.reveal(false)
+			#for node in [Location, Visualizer, HeaderLeft, HeaderWingRight, BuffsAndDebuffs]:
+				#node.reveal(is_showing)	
+	#
 
 # -----------------------------------------------	

@@ -6,7 +6,6 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_yttpu"]
 font = ExtResource("3_6gu3u")
-font_size = 24
 font_color = Color(0, 0.909804, 0.105882, 1)
 outline_size = 2
 outline_color = Color(0, 0.96, 0.272, 0.419608)
@@ -23,25 +22,17 @@ script = ExtResource("2_kpnm2")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-
-[node name="SVGIcon" parent="HBoxContainer/MarginContainer" instance=ExtResource("2_yttpu")]
-layout_mode = 2
-icon = 27
-icon_color = Color(0, 0.964706, 0.278431, 1)
+alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 
 [node name="LockIcon" parent="HBoxContainer/MarginContainer2" instance=ExtResource("2_yttpu")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 48
+icon = 53
 icon_color = Color(0, 0.964706, 0.278431, 1)
 icon_size = Vector2(15, 15)
 

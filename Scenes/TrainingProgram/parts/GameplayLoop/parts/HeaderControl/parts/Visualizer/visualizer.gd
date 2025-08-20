@@ -1,13 +1,13 @@
 extends Control
 
-@onready var VisulizerPanel:PanelContainer = $VisulizerPanel
-@onready var VisulizerMargin:MarginContainer = $VisulizerPanel/MarginContainer
+@onready var VisulizerPanel:PanelContainer = $"."
+@onready var VisulizerMargin:MarginContainer = $MarginContainer
 
-@onready var FloorVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer
-@onready var WingVisualizer:HBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer
-@onready var RoomVisualizer:VBoxContainer = $VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer
+@onready var FloorVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer
+@onready var WingVisualizer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer
+@onready var RoomVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer
 
-@onready var SectorLabel:Label = $VisulizerPanel/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/SectorLabel
+@onready var SectorLabel:Label = $MarginContainer/VBoxContainer/PanelContainer/MarginContainer/SectorLabel
 
 
 var room_visualizer_nodes:Array = []

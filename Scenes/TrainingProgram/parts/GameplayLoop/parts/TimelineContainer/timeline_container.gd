@@ -20,7 +20,7 @@ var is_setup:bool = false
 
 signal wait_for_complete
 
-# --------------------------------------------------------------------------------------------------
+
 func _init() -> void:
 	super._init()
 	GBL.register_node(REFS.TIMELINE, self)

@@ -1,36 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://cx4hj0y7bd6fr"]
+[gd_scene load_steps=6 format=3 uid="uid://cx4hj0y7bd6fr"]
 
 [ext_resource type="Script" uid="uid://bhwronuqqv353" path="res://Scenes/Note/parts/note_item.gd" id="1_8sy3s"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_ufg05"]
-[ext_resource type="StyleBox" uid="uid://dr0kq08kg1hre" path="res://Styles/BlackPanel.tres" id="3_ufg05"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_ufg05"]
-[ext_resource type="PackedScene" uid="uid://nkqud1uuvula" path="res://Scenes/Note/parts/NoteLineItem.tscn" id="5_y0n8y"]
-[ext_resource type="PackedScene" uid="uid://cl3tx3ln0xeju" path="res://Scenes/Note/parts/NoteBtn.tscn" id="8_78mjc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufg05"]
 bg_color = Color(0.0497766, 0.0497766, 0.0497766, 1)
 shadow_color = Color(0.05, 0.05, 0.05, 0.278431)
 shadow_size = 1
 shadow_offset = Vector2(5, 5)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3wqeu"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_djjo6"]
-font = ExtResource("4_ufg05")
-font_color = Color(0, 0.964706, 0.278431, 1)
-outline_size = 2
-outline_color = Color(0.19, 0.19, 0.19, 0.376471)
-shadow_offset = Vector2(2, 2)
-
-[sub_resource type="LabelSettings" id="LabelSettings_3wqeu"]
-font = ExtResource("4_ufg05")
-font_size = 24
-font_color = Color(0.91, 0, 0, 1)
-outline_size = 2
-outline_color = Color(0.96, 0, 0, 0.419608)
-shadow_size = 3
-shadow_color = Color(0, 0, 0, 0.380392)
-shadow_offset = Vector2(2, 2)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ft5pi"]
 font = ExtResource("4_ufg05")
@@ -48,174 +26,66 @@ offset_bottom = 2.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ufg05")
 script = ExtResource("1_8sy3s")
 
-[node name="SelectedControl" type="Control" parent="."]
+[node name="Cursor" type="Control" parent="."]
+z_index = 4
+z_as_relative = false
 layout_mode = 2
 
-[node name="SVGIcon" parent="SelectedControl" instance=ExtResource("2_ufg05")]
-visible = false
+[node name="Control" type="Control" parent="Cursor"]
+layout_mode = 2
+anchors_preset = 0
+offset_right = 33.0
+offset_bottom = 33.0
+pivot_offset = Vector2(16.5, 16.5)
+
+[node name="SVGIcon" parent="Cursor/Control" instance=ExtResource("2_ufg05")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 0
-offset_left = 35.0
-offset_top = 43.0
-offset_right = 50.0
-offset_bottom = 58.0
+offset_left = 9.0
+offset_top = 32.0
+offset_right = 24.0
+offset_bottom = 47.0
 icon = 43
-icon_color = Color(0, 0, 0, 1)
+icon_color = Color(0, 1, 0, 1)
 icon_size = Vector2(15, 15)
 
-[node name="PanelContainer" type="PanelContainer" parent="SelectedControl"]
-visible = false
+[node name="SVGIcon2" parent="Cursor/Control" instance=ExtResource("2_ufg05")]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 0
-offset_top = 53.0
-offset_right = 120.0
-offset_bottom = 98.0
-theme_override_styles/panel = ExtResource("3_ufg05")
+offset_left = 9.0
+offset_top = -14.0
+offset_right = 24.0
+offset_bottom = 1.0
+icon = 43
+icon_color = Color(0, 1, 0, 1)
+icon_size = Vector2(15, 15)
+flip_v = true
 
-[node name="MarginContainer" type="MarginContainer" parent="SelectedControl/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+[node name="SVGIcon3" parent="Cursor/Control" instance=ExtResource("2_ufg05")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 0
+offset_left = -13.0
+offset_top = 9.0
+offset_right = 2.0
+offset_bottom = 24.0
+icon = 32
+icon_color = Color(0, 1, 0, 1)
+icon_size = Vector2(15, 15)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SelectedControl/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="NoteBtn" parent="SelectedControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "e"
-action_label = "Read Notes"
-
-[node name="NoteBtn2" parent="SelectedControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "B"
-action_label = "Back"
-
-[node name="NoteControl" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="NoteControl"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-offset_left = -1.0
-offset_top = 53.0
-offset_right = 243.0
-offset_bottom = 197.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_3wqeu")
-
-[node name="NoteContainer" type="PanelContainer" parent="NoteControl/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("3_ufg05")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="NoteControl/PanelContainer/NoteContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="MarginContainer3" type="MarginContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3"]
-layout_mode = 2
-
-[node name="ComponentName" type="Label" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "COMPONENT NAME"
-label_settings = SubResource("LabelSettings_djjo6")
-uppercase = true
-
-[node name="Counter" type="HBoxContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-visible = false
-layout_mode = 2
-text = "NEWEST"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="BackIcon" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("2_ufg05")]
-layout_mode = 2
-icon = 28
-icon_color = Color(0, 0.254902, 0.0823529, 1)
-
-[node name="ComponentCount" type="Label" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-layout_mode = 2
-text = "1/1"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="MoreIcon" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("2_ufg05")]
-layout_mode = 2
-icon = 28
-icon_color = Color(0, 0.254902, 0.0823529, 1)
-flip_h = true
-
-[node name="Label2" type="Label" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-visible = false
-layout_mode = 2
-text = "OLDEST"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="MarginContainer" type="MarginContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 25
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="NoteList" type="VBoxContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="NoteItem" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer/NoteList" instance=ExtResource("5_y0n8y")]
-layout_mode = 2
-
-[node name="NoNotesLabel" type="Label" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "NO NOTES"
-label_settings = SubResource("LabelSettings_3wqeu")
-horizontal_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 0
-
-[node name="CreateBtn" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "E"
-action_label = "Create"
-
-[node name="RemoveBtn" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-key_label = "R"
-action_label = "Remove"
-is_disabled = true
-
-[node name="BackBtn" parent="NoteControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "B"
-action_label = "Back"
+[node name="SVGIcon4" parent="Cursor/Control" instance=ExtResource("2_ufg05")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 0
+offset_left = 32.0
+offset_top = 9.0
+offset_right = 47.0
+offset_bottom = 24.0
+icon = 33
+icon_color = Color(0, 1, 0, 1)
+icon_size = Vector2(15, 15)
+flip_v = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+z_index = 3
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
@@ -229,11 +99,12 @@ theme_override_constants/separation = 5
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_ufg05")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-icon = 52
+icon = 46
 icon_color = Color(0, 0.91, 0.106167, 1)
 icon_size = Vector2(25, 25)
 
 [node name="NameContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = -2
 theme_override_constants/margin_right = 5
@@ -251,128 +122,3 @@ visible = false
 layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_ft5pi")
-
-[node name="TransferControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="DetailControl" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="DetailControl"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 0
-offset_left = -1.0
-offset_top = 53.0
-offset_right = 243.0
-offset_bottom = 197.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_3wqeu")
-
-[node name="NoteContainer" type="PanelContainer" parent="DetailControl/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("3_ufg05")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DetailControl/PanelContainer/NoteContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="MarginContainer3" type="MarginContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3"]
-layout_mode = 2
-
-[node name="ComponentName" type="Label" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "COMPONENT NAME"
-label_settings = SubResource("LabelSettings_djjo6")
-uppercase = true
-
-[node name="Counter" type="HBoxContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-visible = false
-layout_mode = 2
-text = "NEWEST"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="BackIcon" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("2_ufg05")]
-layout_mode = 2
-icon = 28
-icon_color = Color(0, 0.254902, 0.0823529, 1)
-
-[node name="ComponentCount" type="Label" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-layout_mode = 2
-text = "1/1"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="MoreIcon" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter" instance=ExtResource("2_ufg05")]
-layout_mode = 2
-icon = 28
-icon_color = Color(0, 0.254902, 0.0823529, 1)
-flip_h = true
-
-[node name="Label2" type="Label" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer3/HBoxContainer/Counter"]
-visible = false
-layout_mode = 2
-text = "OLDEST"
-label_settings = SubResource("LabelSettings_djjo6")
-
-[node name="MarginContainer" type="MarginContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 25
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="NoteList" type="VBoxContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="NoteItem" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer/NoteList" instance=ExtResource("5_y0n8y")]
-layout_mode = 2
-
-[node name="NoNotesLabel" type="Label" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "NO NOTES"
-label_settings = SubResource("LabelSettings_3wqeu")
-horizontal_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 0
-
-[node name="CreateBtn" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "E"
-action_label = "Create"
-
-[node name="RemoveBtn" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-modulate = Color(1, 0, 0, 1)
-layout_mode = 2
-key_label = "R"
-action_label = "Remove"
-is_disabled = true
-
-[node name="BackBtn" parent="DetailControl/PanelContainer/NoteContainer/VBoxContainer/MarginContainer2/HBoxContainer" instance=ExtResource("8_78mjc")]
-layout_mode = 2
-key_label = "B"
-action_label = "Back"

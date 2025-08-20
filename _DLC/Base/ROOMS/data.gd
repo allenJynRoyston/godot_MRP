@@ -1,4 +1,4 @@
-extends Node
+extends SubscribeWrapper
 
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
@@ -17,6 +17,17 @@ var DEBUG_ROOM:Dictionary = {
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],
+	"event_triggers": {
+		"on_build": null,
+		"conditionals": [
+			{
+				"ref": EVT.TYPE.FACILITY_RAID_1, 
+				"check": func(use_location:Dictionary) -> bool:
+					#EVENTS_UTIL.check_for_event()
+					return true,
+			},
+		]
+	},	
 	# ------------------------------------------
 
 	# ------------------------------------------	
@@ -32,6 +43,7 @@ var DEBUG_ROOM:Dictionary = {
 		RESOURCE.METRICS.READINESS: 1
 	},	
 	"environmental":{
+		"hazard": 1,
 		"temp": 1,
 		"pollution": 1
 	},	
@@ -100,10 +112,10 @@ var DIRECTORS_OFFICE:Dictionary = {
 	"categories": [ROOM.CATEGORY.SPECIAL],
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "The site directors office.",
-	"event_trigger": {
-		"ref": EVT.TYPE.DIRECTORS_OFFICE,
-		"day": 2
-	},
+	#"event_trigger": {
+		#"ref": EVT.TYPE.DIRECTORS_OFFICE,
+		#"day": 2
+	#},
 	# ------------------------------------------
 
 	# ------------------------------------------

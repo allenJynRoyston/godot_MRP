@@ -6,6 +6,7 @@ extends GameContainer
 @onready var SummaryControls:Control = $SummaryControls
 @onready var NameControl:Control = $NameControl
 @onready var TransistionScreen:Control = $TransitionScreen
+@onready var LocationAndDirectivesContainer:Control = $LocationAndDirectivesContainer
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -446,20 +447,20 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 				# update
 				if confirm:
 					await ROOM_UTIL.add_room(x.details.ref)
-					if !x.details.event_trigger.is_empty():
-						var event_data:Dictionary = EVENT_UTIL.return_data(x.details.event_trigger.ref)
-						
-						GAME_UTIL.add_timeline_item({
-							"title": event_data.timeline.title,
-							"icon": event_data.timeline.icon,
-							"description": event_data.timeline.description,
-							"day": progress_data.day + x.details.event_trigger.day,
-							"location": current_location.duplicate(),
-							"event": {
-								"ref": x.details.event_trigger.ref
-							},
-							
-						})
+					#if !x.details.event_trigger.is_empty():
+						#var event_data:Dictionary = EVENT_UTIL.return_data(x.details.event_trigger.ref)
+						#
+						#GAME_UTIL.add_timeline_item({
+							#"title": event_data.timeline.title,
+							#"icon": event_data.timeline.icon,
+							#"description": event_data.timeline.description,
+							#"day": progress_data.day + x.details.event_trigger.day,
+							#"location": current_location.duplicate(),
+							#"event": {
+								#"ref": x.details.event_trigger.ref
+							#},
+							#
+						#})
 					ActiveMenuNode.close()
 					return
 				
@@ -887,7 +888,20 @@ func show_debug() -> void:
 						await ActiveMenuNode.lock()
 						await GAME_UTIL.run_event(EVT.TYPE.TEST_EVENT_B)
 						ActiveMenuNode.unlock(),
-				},												
+				},
+				{
+					"title": "TEST EVENT C",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for TEST_EVENT_C event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.TEST_EVENT_C)
+						ActiveMenuNode.unlock(),
+				},				
 				{
 					"title": "HAPPY HOUR",
 					"icon": SVGS.TYPE.CONVERSATION,
@@ -900,7 +914,7 @@ func show_debug() -> void:
 						await ActiveMenuNode.lock()
 						await GAME_UTIL.run_event(EVT.TYPE.HAPPY_HOUR)
 						ActiveMenuNode.unlock(),
-				},				
+				},
 				{
 					"title": "MYSTERY MEAT 1",
 					"icon": SVGS.TYPE.CONVERSATION,
@@ -938,6 +952,32 @@ func show_debug() -> void:
 					"action": func() -> void:
 						await ActiveMenuNode.lock()
 						await GAME_UTIL.run_event(EVT.TYPE.MYSTERY_MEAT_3)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "FACILITY RAID 1",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for MYSTERY_MEAT event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.FACILITY_RAID_1)
+						ActiveMenuNode.unlock(),
+				},
+				{
+					"title": "FACILITY RAID 2",
+					"icon": SVGS.TYPE.CONVERSATION,
+					"hint": {
+						"icon": SVGS.TYPE.CONVERSATION,
+						"title": "HINT",
+						"description": "Test for MYSTERY_MEAT event."
+					},
+					"action": func() -> void:
+						await ActiveMenuNode.lock()
+						await GAME_UTIL.run_event(EVT.TYPE.FACILITY_RAID_2)
 						ActiveMenuNode.unlock(),
 				},				
 			]
@@ -1574,26 +1614,19 @@ func check_btn_states() -> void:
 				TransistionScreen.start(0.5, true)
 				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
 				
-				
 				# get triggerable event
 				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
 				# remove from base_state
 				GAME_UTIL.remove_room_event_at_index(0)
 				#trigger event
-				await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
-					EVT.TYPE.HAPPY_HOUR, 
-						{
-							"onSelection": func(selection:Dictionary) -> void:
-								print("selection: ", selection),
-						}
-					)
-				])
+				await GAME_UTIL.run_event(event_ref)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				TelemetryControls.reveal(true)
+				
 				reveal_telemetry(true)
 				reveal_summarycard(true, false)
 				reveal_action_label(true, 0.4, "TELEMETRY")
 				await TransistionScreen.start(0.5, true)
+				TelemetryControls.reveal(true)
 				
 			
 			TelemetryControls.onCBtn = func() -> void:
@@ -1820,9 +1853,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		match current_mode:
 			# --------------
 			MODE.NONE:
+				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
 				reveal_action_label(false)			
+				LocationAndDirectivesContainer.reveal(true)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = true
 				lock_actions(false)
@@ -1832,7 +1867,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
 			# --------------
-			MODE.INFO:			
+			MODE.INFO:
+				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
 				GameplayNode.show_marked_objectives = true
@@ -1840,6 +1876,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				InfoControls.reveal(true)
 			# --------------
 			MODE.SUMMARY_CARD:
+				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
 				SummaryControls.reveal(true)
@@ -1848,10 +1885,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				SummaryControls.item_index = 0
 			# --------------
 			MODE.ENGINEERING:
+				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
 				
 			# -------------
 			MODE.TELEMETRY:
+				LocationAndDirectivesContainer.reveal(false)
 				telemetry_count = 0
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
@@ -1860,10 +1899,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_telemetry(true)
 			# -------------
 			MODE.HEALTH:
+				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false					
 			# --------------
 			MODE.BUILD:
+				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.set_to_build_mode(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
 				RenderingNode.set_shader_strength(1)
@@ -1874,6 +1915,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				DesignControls.reveal(true)			
 			# --------------
 			MODE.COMMANDS:
+				LocationAndDirectivesContainer.reveal(true)
 				#WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1890,6 +1932,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				WingRenderNode.highlight_rooms = [selected_room]								
 			# -----------	
 			MODE.PROGRAMS:
+				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false

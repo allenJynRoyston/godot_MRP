@@ -57,6 +57,7 @@ func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 
 # ------------------------------------------------------------------------
 var TEST_EVENT_A:Dictionary = {
+	"is_repeatable": true,
 	"event_instructions": func(props:Dictionary) -> Array:
 		return build_event_content(props, {
 			"header": "TEST EVENT A",
@@ -198,6 +199,7 @@ var TEST_EVENT_A:Dictionary = {
 
 # ------------------------------------------------------------------------
 var TEST_EVENT_B:Dictionary = {
+	"is_repeatable": true,
 	"event_instructions": func(props:Dictionary) -> Array:
 		return build_event_content(props, {
 			"header": "TEST EVENT B",
@@ -214,14 +216,7 @@ var TEST_EVENT_B:Dictionary = {
 					"impact": {
 						"metrics": {
 							RESOURCE.METRICS.MORALE: -5,
-							RESOURCE.METRICS.SAFETY: 2
 						},
-						"currency": {
-							RESOURCE.CURRENCY.MONEY: 10,
-							RESOURCE.CURRENCY.SCIENCE: -5,
-							RESOURCE.CURRENCY.MATERIAL: 5,
-							RESOURCE.CURRENCY.CORE: -2
-						}
 					},
 					"outcomes": {
 						"list": [
@@ -242,7 +237,7 @@ var TEST_EVENT_B:Dictionary = {
 					"onSelected": onSelected
 				},
 				# -----------------------------------------
-				
+
 				# ----------------------------------------- NEUTRAL
 				{
 					"header": "HEADER",
@@ -250,11 +245,39 @@ var TEST_EVENT_B:Dictionary = {
 					"description": "Description of option.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"impact": {
+						"currency": {
+							RESOURCE.CURRENCY.MONEY: -50
+						},
+					},
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+				
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 3",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"impact": {
 						"buff": [
 							BASE.BUFF.MORALE_BOOST
-						],
-						"debuff": [
-							BASE.DEBUFF.PANIC
 						],
 					},					
 					"outcomes": {
@@ -282,9 +305,112 @@ var TEST_EVENT_B:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var TEST_EVENT_C:Dictionary = {
+	"is_repeatable": true,
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "TEST EVENT C",
+			"subheader": "Subheader goes here",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Test event C text goes here."],
+			"options": [
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 1",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"requires":{
+						"title": "Add a conditional here.  This one is true.",
+						"check": func() -> bool:
+							return true,
+					},
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------
+
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 2",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"requires":{
+						"title": "Add a conditional here.  This one is false.",
+						"check": func() -> bool:
+							return false,
+					},
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+				
+				# ----------------------------------------- NEUTRAL
+				{
+					"header": "HEADER",
+					"title": "TITLE OF OPTION 3",
+					"description": "Description of option.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 1 goes here."	
+								],
+							},
+							{
+								"chance": 1,  
+								"response": [
+									"Response for outcome 2 goes here."	
+								],
+							}							
+						]
+					},
+					"onSelected": onSelected
+				},
+				# -----------------------------------------				
+
+			]
+		})
+}
+# ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
 var MYSTERY_MEAT_1:Dictionary = {
+	"is_repeatable": false,
 	"event_instructions": func(props:Dictionary) -> Array:
 		return build_event_content(props, {
 			"header": "MYSTERY MEAT 1",
@@ -376,6 +502,7 @@ var MYSTERY_MEAT_1:Dictionary = {
 
 # ------------------------------------------------------------------------
 var MYSTERY_MEAT_2:Dictionary = {
+	"is_repeatable": false,	
 	"event_instructions": func(props:Dictionary) -> Array:
 		return build_event_content(props, {
 			"header": "MYSTERY MEAT 2",
@@ -467,6 +594,7 @@ var MYSTERY_MEAT_2:Dictionary = {
 
 # ------------------------------------------------------------------------
 var MYSTERY_MEAT_3:Dictionary = {
+	"is_repeatable": false,	
 	"event_instructions": func(props:Dictionary) -> Array:
 		return build_event_content(props, {
 			"header": "MYSTERY MEAT 3",
@@ -542,6 +670,306 @@ var MYSTERY_MEAT_3:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------
+var FACILITY_RAID_1:Dictionary = {
+	"is_repeatable": true,		
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "Facility Breach",
+			"subheader": "Unidentified Hostile Raid",
+			"img_src": "res://Media/images/Events/raid.png",
+			"text": [
+				"Security reports multiple armed intruders breaching the facility perimeter.  Initial reports indicate that they're a scouting party for the Chaos Insurgency.  What could they be after?", 
+				"Your security forces prepare to engage.",
+			],
+			"options": [
+				# ----------------------------------------- DEFEND WITH FUNDS
+				{
+					"header": "FIGHT",
+					"title": "Engage with hostile forces.",
+					"description": "Send your security forces to confront the intruders head-on. Risk lives and resources to try to repel the attackers before they breach sensitive areas.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"requires":{
+						"title": "Have at least 10 security officers stationed.",
+						"check": func() -> bool:
+							return true,
+					},					
+					"outcomes": {
+						"list": [
+							{
+								"chance": 60,
+								"response": [
+									"After a brief but brutal firefight, your security forces manage to repel the invading force.",
+									"Minor structural damage occurs, but no critical systems are lost."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: 3
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -3
+									},
+								},
+							},
+							{
+								"chance": 40,
+								"response": [
+									"The intruders initially overwhelm your security teams, breaching several perimeter defenses.",
+									"Backup forces arrive just in time to prevent total disaster, but not before some equipment is destroyed and minor injuries occur.",
+									"Staff morale suffers from the sudden shock, and the facility sustains operational setbacks that will need attention."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: -5
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -3
+									},
+								},
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# ----------------------------------------- RESEARCH RAIDED
+				{
+					"header": "COMMUNICATE",
+					"title": "Identify and negotiate",
+					"description": "Try to identify the intruders and understand their intentions. Success could prevent bloodshed; failure may escalate the situation.",
+					"type": EVT.OUTCOME.GOOD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,
+								"response": [
+									"The intruders step forward and identify themselves as members of the Chaos Insurgency.",
+									"They claim they’re here to destroy SCP-X, insisting the anomaly is far more dangerous than the Foundation admits.",
+									"After tense negotiation, they agree to withdraw for now. Yet their words leave an unease — were they sincere, or was it just misdirection for a later strike?",
+									"Your staff breathe a sigh of relief, morale stabilizes, and readiness improves slightly."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.READINESS: 3
+									},
+								},
+							},
+							{
+								"chance": 50,
+								"response": [
+									"The intruders step forward and identify themselves as members of the Chaos Insurgency.",
+									"They claim they’re here to destroy SCP-X, insisting the anomaly is far more dangerous than the Foundation admits.",
+									"Negotiations break down quickly. Before retreating, they warn that they’ll return with greater numbers — but it’s unclear if they mean to neutralize SCP-X or seize it for themselves.",
+									"The facility is left tense, security forces shaken, and operational readiness takes a hit."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.READINESS: -3
+									},
+								},
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# ----------------------------------------- BUFF/DEBUFF
+				{
+					"header": "LOCKDOWN",
+					"title": "Lockdown Protocols",
+					"description": "Initiate a full-site lockdown. Secure doors, disable lifts, and reroute power to containment systems.",
+					"type": EVT.OUTCOME.BAD,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 60,
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: 3
+									}
+								},
+								"response": [
+									"Heavy blast doors slam into place and reinforced corridors seal tight.",
+									"Cut off from their objective, the raiders pound futilely against steel and security barriers.",
+									"After several tense minutes, their assault collapses, and they retreat into the shadows outside the facility."
+								],
+							},
+							{
+								"chance": 40,
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.READINESS: -3
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -10
+									}
+								},
+								"response": [
+									"The lockdown holds, sealing off the raiders completely.",
+									"However, the sudden power rerouting fries several systems, damaging equipment and disrupting ongoing projects.",
+									"Though the site is secure, the financial and operational costs leave staff shaken."
+								],
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+			]
+		})
+}
+
+var FACILITY_RAID_2:Dictionary = {
+	"is_repeatable": false,		
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "Facility Breach: Assault",
+			"subheader": "Chaos Insurgency Returns",
+			"img_src": "res://Media/images/Events/raid.png",
+			"text": [
+				"It’s the middle of the night when alarms suddenly blare across the facility.",
+				"The Chaos Insurgency has returned — this time with greater numbers and heavier weapons.",
+				"They’ve studied your defenses and are determined to reach SCP-X. Security forces prepare to engage.",
+			],
+			"options": [
+				# ----------------------------------------- DEFEND WITH FORCE
+				{
+					"header": "FIGHT",
+					"title": "Mount a Counter-Offensive",
+					"description": "Deploy all available security units. This will test both your officers and your facility’s defensive infrastructure.",
+					"type": EVT.OUTCOME.GOOD,
+					"requires":{
+						"title": "Have at least 15 security officers stationed.",
+						"check": func() -> bool:
+							return true,
+					},					
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,
+								"response": [
+									"Your officers, hardened by the first raid, coordinate a disciplined counter-offensive.",
+									"After intense fighting, the Chaos Insurgency is pushed back with heavy casualties.",
+									"Though the site sustains minor damage, Foundation morale rises as staff see resistance succeed."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: 5
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -5
+									},
+								},
+							},
+							{
+								"chance": 50,
+								"response": [
+									"The raiders advance with new breaching charges, overwhelming outer defenses.",
+									"Though eventually contained by reinforcements, several wings suffer significant damage and casualties mount.",
+									"The Chaos Insurgency retreats — but at great cost to both morale and resources."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: -5
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -10
+									},
+								},
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+				# ----------------------------------------- NEGOTIATE (RISK)
+				{
+					"header": "DEFEND",
+					"title": "Deploy Defensive Countermeasures",
+					"description": "Activate facility traps, turrets, and environmental systems to impede the Chaos Insurgency. This can reduce casualties, but may also damage infrastructure.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 50,
+								"response": [
+									"Automated turrets and reinforced security doors force the enemy into predefined corridors of engagement giving your security forces a tactical advantage",
+									"After a tense and brutal engagement, your teams manage to repel the attackers, who retreat in disarray."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.READINESS: 2,
+										RESOURCE.METRICS.MORALE: 1
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -2
+									}
+								}
+							},
+							{
+								"chance": 50,
+								"response": [
+									"Automated turrets and reinforced security doors activate, but the intruders exploit weak points and force multiple skirmishes in unexpected corridors.",
+									"The battle is chaotic and costly. Security teams manage to push the attackers back, but several systems are damaged and personnel are injured.",
+									"The raiders retreat, but the facility is left reeling from the intensity of the assault."
+								],
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.READINESS: -3,
+										RESOURCE.METRICS.MORALE: 1
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -8
+									}
+								}
+							}
+						]
+					},
+					"onSelected": onSelected
+				},
+
+				# ----------------------------------------- LOCKDOWN (ESCALATION)
+				{
+					"header": "LOCKDOWN",
+					"title": "Full Lockdown Protocols",
+					"description": "Initiate a full-site lockdown. The Chaos Insurgency is prepared this time and the strain on infrastructure could have severe consequences.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"outcomes": {
+						"list": [
+							{
+								"chance": 60,
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.SAFETY: 3
+									}
+								},
+								"response": [
+									"Blast doors and reinforced bulkheads slam into place, channeling intruders into dead-end corridors.",
+									"Security forces exploit the tactical advantage, and the Chaos Insurgency is forced to retreat.",
+									"Staff remain tense, but no containment breaches occur, and morale stabilizes slightly under the success."
+								]
+							},
+							{
+								"chance": 40,
+								"impact": {
+									"metrics": {
+										RESOURCE.METRICS.MORALE: -5,
+									},
+									"currency": {
+										RESOURCE.CURRENCY.MONEY: -15
+									}
+								},
+								"response": [
+									"The lockdown succeeds in stopping the intruders, but the effort strains the facility to its limits.",
+									"Power surges disable backup systems, and containment teams race to stabilize anomalies before disaster strikes.",
+									"Though the site remains secure, the financial, operational, and human toll is significant, leaving staff weary and resources depleted."
+								]
+							}
+						]
+					},
+					"onSelected": onSelected
+				}
+				# ----------------------------------------- DO NOTHING
+			]
+		})
+}
+# ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
 var HAPPY_HOUR:Dictionary = {
@@ -576,9 +1004,6 @@ var HAPPY_HOUR:Dictionary = {
 		})
 }
 # ------------------------------------------------------------------------
-
-
-
 
 # ------------------------------------------------------------------------
 var GAME_OVER:Dictionary = {
@@ -940,7 +1365,6 @@ var SCP_NO_STAFF_EVENT:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------
 var HIRE_RESEARCHER:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
@@ -1191,9 +1615,6 @@ var PROMOTE_RESEARCHER:Dictionary = {
 }
 # ------------------------------------------------------------------------
 
-
-
-
 # ------------------------------------------------------------------------
 var UNHAPPY_HOUR:Dictionary = {
 	"event_instructions": func(props:Dictionary) -> Array:
@@ -1426,7 +1847,10 @@ var SCP_CONTAINMENT_AWARD_EVENT:Dictionary = {
 var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_A: TEST_EVENT_A,
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
+	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
+	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
+	EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,
 	# ------------------
 	EVT.TYPE.GAME_OVER: GAME_OVER,
 	# ------------------

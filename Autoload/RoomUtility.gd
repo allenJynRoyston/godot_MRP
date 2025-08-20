@@ -18,7 +18,10 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"event_trigger": {},
+	"event_triggers": {
+		"on_build": null,
+		"conditionals": []
+	},
 	#{
 		#"ref": EVT.TYPE.DIRECTORS_OFFICE,
 		#"day": 10
@@ -67,6 +70,7 @@ var ROOM_TEMPLATE:Dictionary = {
 
 	# ------------------------------------------
 	"environmental":{
+		"hazard": 0,
 		"temp": 0,
 		"pollution": 0
 	},

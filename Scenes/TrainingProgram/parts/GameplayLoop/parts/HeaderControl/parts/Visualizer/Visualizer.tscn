@@ -7,214 +7,206 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5ak5"]
 
-[node name="Visualizer" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_1kg5b")
-
-[node name="VisulizerPanel" type="PanelContainer" parent="."]
-layout_mode = 1
+[node name="VisulizerPanel" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_m5ak5")
+script = ExtResource("1_1kg5b")
 
-[node name="MarginContainer" type="MarginContainer" parent="VisulizerPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 65
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VisulizerPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = -5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 11
 alignment = 1
 
-[node name="FloorVisualizer" type="VBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="FloorVisualizer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_constants/separation = -38
 alignment = 1
 
-[node name="Wing1" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing1" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 7
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing2" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing2" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 6
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing3" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing3" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 5
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing4" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing4" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 4
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing5" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing5" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 3
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing6" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing6" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 2
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="Wing7" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing7" parent="MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer" instance=ExtResource("4_8j4x8")]
 z_index = 1
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="WingVisualizer" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="WingVisualizer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 theme_override_constants/separation = -2
 alignment = 1
 
-[node name="Wing1" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing1" parent="MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 75
 is_hoverable = false
 
-[node name="Wing2" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing2" parent="MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 75
 is_hoverable = false
 
-[node name="Wing3" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing3" parent="MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 75
 is_hoverable = false
 
-[node name="Wing4" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
+[node name="Wing4" parent="MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 75
 is_hoverable = false
 
-[node name="RoomVisualizer" type="VBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="RoomVisualizer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = -15
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer2" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer2" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="IconBtn2" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer2" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn2" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer2" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="IconBtn2" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn2" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="IconBtn3" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn3" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer4" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer5" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer5" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="IconBtn2" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer5" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn2" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer5" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="IconBtn" parent="VisulizerPanel/MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer3" instance=ExtResource("4_8j4x8")]
+[node name="IconBtn" parent="MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer/HBoxContainer3" instance=ExtResource("4_8j4x8")]
 layout_mode = 2
 icon = 74
 is_hoverable = false
 
-[node name="PanelContainer" type="PanelContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("3_b8krp")
 
-[node name="MarginContainer" type="MarginContainer" parent="VisulizerPanel/MarginContainer/VBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 7
 
-[node name="SectorLabel" type="Label" parent="VisulizerPanel/MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
+[node name="SectorLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 text = "SECTOR 0A"
 label_settings = ExtResource("4_fmgt6")

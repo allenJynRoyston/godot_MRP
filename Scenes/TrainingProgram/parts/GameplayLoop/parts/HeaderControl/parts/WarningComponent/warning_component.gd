@@ -13,10 +13,9 @@ extends PanelContainer
 var room_config:Dictionary
 var current_location:Dictionary
 
-const note_details:Dictionary = {
-	"name": "Warnings",
-	"description": "Description goes here."
-}
+const tutorial_notes:Array = [
+	"Lets me know when something isn't right, like extreme temperature or certain dangers."
+]
 
 # -----------------------------------------------
 func _init() -> void:

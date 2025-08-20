@@ -20,6 +20,11 @@ extends MouseInteractions
 @onready var Costs:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Cost
 @onready var CostList:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer/MarginContainer/CostList
 
+@onready var Requires:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Requires
+@onready var RequiresList:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList
+@onready var RequiresCheckbox:Control = $SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList/HBoxContainer/RequiresCheckbox
+@onready var RequiresLabel:Label = $SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList/HBoxContainer/RequiresLabel
+
 @onready var content_stylebox_copy:StyleBoxFlat = ContentPanel.get("theme_override_styles/panel").duplicate()
 @onready var header_stylebox_copy:StyleBoxFlat = HeaderPanel.get("theme_override_styles/panel").duplicate()
 @onready var cost_stylebox_copy:StyleBoxFlat = CostPanel.get("theme_override_styles/panel").duplicate()
@@ -27,6 +32,7 @@ extends MouseInteractions
 @onready var title_label_setting:LabelSettings = TitleLabel.get("label_settings").duplicate()
 @onready var outcome_label_setting:LabelSettings = OutcomeLabel.get("label_settings").duplicate()
 @onready var cost_item_label_setting:LabelSettings = TitleLabel.get("label_settings").duplicate()
+@onready var requires_label_setting:LabelSettings = RequiresLabel.get("label_settings").duplicate()
 
 @onready var root_texture_material:ShaderMaterial = RootTextureRect.material.duplicate()
 
@@ -64,6 +70,7 @@ func _ready() -> void:
 	CostPanel.set("theme_override_styles/panel", cost_stylebox_copy)
 	TitleLabel.set("label_settings", title_label_setting)
 	OutcomeLabel.set("label_settings", outcome_label_setting)
+	RequiresLabel.set("label_settings", requires_label_setting)
 	RootTextureRect.material = root_texture_material
 	
 	for node in CostList.get_children():
@@ -125,6 +132,19 @@ func update_node(rebuild_list:bool = true) -> void:
 		OutcomeLabel.text = data.outcomes.outcome_description
 	else:
 		OutcomeLabel.hide()
+		
+	if data.has("requires"):		
+		Requires.show()
+		is_available = RequiresCheckbox.is_checked
+		requires_label_setting.font_color = COLORS.disabled_color if !is_available else COLORS.primary_black		
+		
+		RequiresCheckbox.is_checked = data.requires.check.call()
+		RequiresCheckbox.is_negative = !is_available
+		RequiresLabel.text = data.requires.title		
+		
+		
+	else:
+		Requires.hide()
 		
 	if data.has("impact"):
 		Costs.show()	

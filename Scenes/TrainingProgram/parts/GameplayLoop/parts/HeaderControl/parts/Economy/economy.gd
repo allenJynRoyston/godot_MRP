@@ -77,7 +77,15 @@ var resources_data:Dictionary
 var room_config:Dictionary
 var current_location:Dictionary
 
-const tutorial_notes:Array = [ "I can't let all these values hit 0 or I lose the game."]
+const tutorial_notes:Array = [
+	"There are four key resources: money, research, material, and core.",
+	"Money can be used it to build facilities.",
+	"Research is used to unlock new facilities.",
+	"Material can upgrade facilities.",
+	"Core can be used to update the wing.",
+	"If all of these hit zero I lose the game."
+]
+
 
 # -----------------------------------------------
 func _init() -> void:
@@ -89,7 +97,6 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 
-	
 func _notification(what):
 	match what:
 		NOTIFICATION_VISIBILITY_CHANGED:

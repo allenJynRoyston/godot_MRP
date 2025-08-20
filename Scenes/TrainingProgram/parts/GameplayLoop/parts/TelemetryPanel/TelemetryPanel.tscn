@@ -102,7 +102,6 @@ custom_minimum_size = Vector2(10, 20)
 layout_mode = 0
 offset_left = 10.0
 offset_top = 61.0
-offset_right = 30.0
 offset_bottom = 81.0
 icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)

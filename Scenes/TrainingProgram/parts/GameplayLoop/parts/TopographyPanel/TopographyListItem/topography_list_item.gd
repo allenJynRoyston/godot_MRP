@@ -7,6 +7,7 @@ extends PanelContainer
 @onready var RoomStatus:Label = $MarginContainer2/HBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer/RoomStatus
 @onready var StaffCountComponent:Control = $MarginContainer2/HBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer/StaffCountComponent
 
+@onready var room_title_label_settings:LabelSettings = RoomNameLabel.get("label_settings").duplicate()
 @onready var room_status_label_settings:LabelSettings = RoomStatus.get("label_settings").duplicate()
 
 const StaticMaterialPreload:ShaderMaterial = preload("res://Shader/Static.tres")
@@ -23,13 +24,14 @@ var room_level_config:Dictionary :
 		
 func _ready() -> void:
 	RoomStatus.label_settings = room_status_label_settings
+	RoomNameLabel.label_settings = room_title_label_settings
 	
 	on_index_update()
 	on_room_level_config_update()
 	
 func on_index_update() -> void:
 	if !is_node_ready():return
-	RoomIndexLabel.text = str(index)
+	RoomIndexLabel.text = str(index + 1)
 	
 func on_room_level_config_update() -> void:
 	if !is_node_ready() or room_level_config.is_empty():return
@@ -45,6 +47,7 @@ func on_room_level_config_update() -> void:
 		# -------------
 		ActivatedIcon.icon_color = Color.BLACK
 		room_status_label_settings.font_color = Color.DARK_SLATE_GRAY
+		room_title_label_settings.font_color = Color.DARK_SLATE_GRAY
 		return
 	
 	var room_data:Dictionary = room_level_config.room_data	
@@ -59,4 +62,6 @@ func on_room_level_config_update() -> void:
 	# -------------
 	ActivatedIcon.icon_color = Color(0.0, 0.534, 0.129) if room_level_config.is_activated else Color(0.994, 0.205, 0.199)
 	room_status_label_settings.font_color = ActivatedIcon.icon_color
+	room_title_label_settings.font_color = Color.BLACK
+	
 	

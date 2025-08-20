@@ -1,8 +1,9 @@
-[gd_scene load_steps=23 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=24 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_n6idl"]
+[ext_resource type="PackedScene" uid="uid://chcu224iunhwr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationAndDirectivesContainer.tscn" id="4_xathl"]
 [ext_resource type="PackedScene" uid="uid://dxeregxb5my7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/EngineeringPanel.tscn" id="6_bk83u"]
 [ext_resource type="PackedScene" uid="uid://ck4ghs6psctsy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanel.tscn" id="7_xathl"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="8_bk83u"]
@@ -138,6 +139,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "TELEMETRY"
 assigned_key = "T"
 icon = 47
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -149,6 +151,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
 title = "ENGINEERING"
 assigned_key = "E"
 icon = 46
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -159,6 +162,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "FABRICATION"
 assigned_key = "F"
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -170,6 +174,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "MANAGEMENT"
 assigned_key = "M"
 icon = 30
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -181,6 +186,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "OPERATIONS"
 assigned_key = "O"
 icon = 6
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -192,6 +198,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
 title = "HEALTH AND WELFARE"
 assigned_key = "H"
 icon = 39
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -221,6 +228,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "SETTINGS"
 assigned_key = "TAB"
 icon = 15
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -232,6 +240,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "INFO"
 assigned_key = "I"
 icon = 23
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -243,6 +252,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "END TURN"
 assigned_key = "ENTER"
 icon = 32
+hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
@@ -334,7 +344,11 @@ assigned_key = "m"
 icon = 5
 primary_color = Color(0.177067, 0.817889, 0.923605, 1)
 is_flashing = true
+hidden_but_usable = false
 is_disabled = false
+
+[node name="LocationAndDirectivesContainer" parent="." instance=ExtResource("4_xathl")]
+layout_mode = 2
 
 [node name="Summary" type="Control" parent="."]
 layout_mode = 2
@@ -363,7 +377,6 @@ metadata/_edit_group_ = true
 [node name="SummaryCard" parent="Summary/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="ModulesAndPrograms" type="Control" parent="."]
