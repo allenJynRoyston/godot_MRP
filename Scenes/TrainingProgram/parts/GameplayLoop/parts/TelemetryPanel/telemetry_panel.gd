@@ -1,13 +1,15 @@
 extends SubscribeWrapper
 
-@onready var Content:PanelContainer = $VBoxContainer/Content
-@onready var Empty:PanelContainer = $VBoxContainer/Empty
+@onready var Empty:VBoxContainer = $VBoxContainer/Empty
+@onready var Stats:VBoxContainer = $VBoxContainer/Stats
+@onready var Income:VBoxContainer = $VBoxContainer/Income
 
-@onready var StatusLabel:Label = $VBoxContainer/Content/MarginContainer/VBoxContainer2/Status/StatusLabel
-@onready var DamageLabel:Label = $VBoxContainer/Content/MarginContainer/VBoxContainer2/Damage/DamageLabel
-@onready var ProductionList:VBoxContainer = $VBoxContainer/Content/MarginContainer/VBoxContainer2/Production/ProductionList
-@onready var VibeList:VBoxContainer = $VBoxContainer/Content/MarginContainer/VBoxContainer2/Vibes/VibeList
-@onready var EffectLabel:Label = $VBoxContainer/Content/MarginContainer/VBoxContainer2/Effect/EffectLabel
+@onready var StatusLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Status/StatusLabel
+@onready var DamageLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Damage/DamageLabel
+@onready var EffectLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Effect/EffectLabel
+
+@onready var ProductionList:VBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/Production/ProductionList
+@onready var VibeList:VBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/Vibes/VibeList
 
 @onready var Detected:Control = $Detected
 @onready var DetectedPanel:PanelContainer = $Detected/DetectedPanel
@@ -34,7 +36,8 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	Empty.hide()
-	Content.hide()
+	Stats.hide()
+	Income.hide()
 		
 	DetectedPanel.modulate.a = 0
 	DetectedHeader.set("theme_override_styles/panel", detected_header_stylebox)
@@ -47,7 +50,8 @@ func start() -> void:
 	
 func end() -> void:
 	Empty.hide()
-	Content.hide()
+	Stats.hide()
+	Income.hide()
 		
 	DetectedPanel.modulate.a = 0
 	is_active = false
@@ -83,10 +87,6 @@ func update_node() -> void:
 	# set flag
 	has_event = !room_base_states.events_pending.is_empty()
 	
-	# show correct content
-	Empty.show() if !has_room else Empty.hide()
-	Content.show() if has_room else Content.hide()
-	
 	# is activated
 	StatusLabel.text = "Anamolly detected!" if has_event else "Under construction" if is_under_construction else ("Active" if is_activated else "Inactive")
 	status_label_setting.font_color = COLORS.disabled_color if (is_under_construction or has_event) else (COLORS.primary_black if is_activated else COLORS.disabled_color)
@@ -114,7 +114,7 @@ func update_node() -> void:
 			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
 			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			ProductionList.add_child(new_label)
-	
+
 	for ref in metrics:
 		var amount:int = metrics[ref]
 		if amount != 0:
@@ -124,7 +124,7 @@ func update_node() -> void:
 			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
 			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			VibeList.add_child(new_label)			
-	
+
 	# is empty production list
 	if ProductionList.get_child_count() == 0:
 		var new_label:Label = Label.new()
@@ -148,6 +148,12 @@ func update_node() -> void:
 			
 	DetectedPanel.modulate.a = 0
 	DetectedPanel.global_position = room_pos - Vector2(0, 120 if has_room else 80)
+	
+	# show correct content
+	Empty.show() if !has_room else Empty.hide()
+	Stats.show() if has_room else Stats.hide()	
+	Income.hide() if (VibeList.get_child_count() == 0 and ProductionList.get_child_count() == 0) else Income.show()
+		
 	
 	if has_event:		
 		U.debounce(str(self, "_show_warning"), show_warning, 0.3)

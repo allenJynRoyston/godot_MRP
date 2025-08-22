@@ -4,9 +4,8 @@ extends GameContainer
 @onready var MainMargin:MarginContainer = $Control/PanelContainer/MarginContainer
 
 @onready var DetectorPanel:PanelContainer = $Control/PanelContainer/DetectorPanel
-@onready var Gradiant:TextureRect = $Control/PanelContainer/DetectorPanel/Gradiant
 
-@onready var ObjectiveList:VBoxContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/ObjectiveList
+@onready var ObjectiveList:VBoxContainer = $Control/PanelContainer/MarginContainer/VBoxContainer/Objectives/ObjectiveList
 
 const ObjectiveItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn")
 const delay:float = 0.3
@@ -28,15 +27,6 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	super._ready()	
 	is_showing = false
-	Gradiant.modulate = Color(1, 1, 1, 0)
-	
-	DetectorPanel.onFocus = func() -> void:
-		if control_pos.is_empty():return
-		fade_in_gradiant(true)
-
-	DetectorPanel.onBlur = func() -> void:
-		if control_pos.is_empty():return
-		fade_in_gradiant(false)
 	
 	await U.tick()
 	
@@ -90,10 +80,10 @@ func on_bookmarked_objectives_update(new_val:Array) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 
-# --------------------------------------------------------------------------------------------------	
-func fade_in_gradiant(state:bool) -> void:
-	U.tween_node_property(Gradiant, "modulate", Color(1, 1, 1, 1 if state else 0))
-# --------------------------------------------------------------------------------------------------	
+## --------------------------------------------------------------------------------------------------	
+#func fade_in_gradiant(state:bool) -> void:
+	#U.tween_node_property(Gradiant, "modulate", Color(1, 1, 1, 1 if state else 0))
+## --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		
 func update_control_pos() -> void:	
@@ -109,7 +99,7 @@ func update_control_pos() -> void:
 
 # --------------------------------------------------------------------------------------------------	
 func show_details(state:bool) -> void:
-	fade_in_gradiant(state)
+	#fade_in_gradiant(state)
 	
 	for child in ObjectiveList.get_children():
 		for item in child.get_items():

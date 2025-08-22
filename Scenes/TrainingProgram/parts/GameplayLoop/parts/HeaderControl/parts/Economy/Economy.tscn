@@ -13,6 +13,7 @@ corner_radius_top_right = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6i1j1"]
 bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
@@ -27,6 +28,7 @@ theme_override_constants/separation = 0
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4d3ey")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]
@@ -51,7 +53,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
 layout_mode = 2
@@ -62,26 +64,22 @@ alignment = 1
 layout_mode = 2
 size_flags_vertical = 0
 icon = 36
-offset_amount = 0
 burn_val = "00"
 
 [node name="Research" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 size_flags_vertical = 0
 icon = 49
-offset_amount = 0
 burn_val = "00"
 
 [node name="Material" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 size_flags_vertical = 0
 icon = 45
-offset_amount = 0
 burn_val = "00"
 
 [node name="Core" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_6i1j1")]
 layout_mode = 2
 size_flags_vertical = 0
 icon = 44
-offset_amount = 0
 burn_val = "00"

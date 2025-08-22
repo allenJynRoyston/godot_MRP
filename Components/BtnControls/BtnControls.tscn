@@ -122,6 +122,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
 title = "BACK"
 assigned_key = "B"
 icon = 28
+hidden_but_usable = false
 allow_hint = false
 
 [node name="RightSideBtnList" type="HBoxContainer" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
@@ -136,6 +137,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_j6bi6")
 title = "INFO"
 assigned_key = "R"
 icon = 23
+hidden_but_usable = false
 allow_hint = false
 
 [node name="ABtn" parent="BtnControlPanel/BtnMarginContainer/PanelContainer/MarginContainer/HBoxContainer/RightSideBtnList" instance=ExtResource("2_re623")]
@@ -144,6 +146,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_0q36v")
 title = "NEXT"
 assigned_key = "E"
 icon = 32
+hidden_but_usable = false
 allow_hint = false
 
 [node name="Control" type="Control" parent="BtnControlPanel/BtnMarginContainer"]

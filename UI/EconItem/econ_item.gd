@@ -79,18 +79,13 @@ extends PanelContainer
 # --------------------------------------
 func _ready() -> void:
 	OffsetAmountLabel.set("label_settings", offset_amount_label_setting)
-		
-	on_update_amount()
-	on_is_negative_update()
-	on_icon_size_update()
-	on_icon_update()
-	on_burn_val_amount()
-	on_max_amount_amount()
-	on_invert_colors_update()
-	on_horizontal_mode_update()
-	on_bonus_amount_update()
 	
-	on_offset_amount_update()
+	on_horizontal_mode_update()
+	on_icon_update()
+	on_icon_size_update()
+	on_burn_val_amount()
+	on_bonus_amount_update()
+	update()
 
 func on_horizontal_mode_update() -> void:
 	if !is_node_ready():return
@@ -144,6 +139,7 @@ func on_is_negative_update() -> void:
 	U.debounce( str(self, "_update_all"), update)
 	
 func update() -> void:
+	if !is_node_ready():return
 	var label_settings_copy:LabelSettings = VAmountLabel.label_settings.duplicate()
 	var use_color:Color = negative_color if is_negative else (primary_color if !invert_colors else Color.WHITE)
 	label_settings_copy.font_color = use_color

@@ -1,11 +1,8 @@
 extends Control
 
-@onready var RootPanel:PanelContainer = $"."
-@onready var MarginPanel:MarginContainer = $MarginContainer
-
-@onready var FloorBuffsContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/FloorBuffsContainer
-@onready var RingBuffsContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RingBuffsContainer
-@onready var RoomBuffContainer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RoomBuffContainer
+@onready var FloorBuffsContainer:HBoxContainer = $FloorBuffsContainer
+@onready var RingBuffsContainer:HBoxContainer = $RingBuffsContainer
+@onready var RoomBuffContainer:HBoxContainer = $RoomBuffContainer
 
 const BuffOrDebuffTag:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/BuffsAndDebuffs/BuffOrDebuffTag/BuffOrDebuffTag.tscn")
 
@@ -23,32 +20,6 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 
-
-func _ready() -> void:	
-	await U.tick()
-	
-	control_pos[RootPanel] = {
-		"show": 0,
-		"hide": -MarginPanel.size.y
-	}
-		
-	reveal(false, true)
-	update.call_deferred()
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-func reveal(state:bool, instant:bool = false) -> void:
-	if control_pos.is_empty():return
-	
-	var new_pos:int = control_pos[RootPanel].show if state else control_pos[RootPanel].hide
-	
-	if instant:
-		RootPanel.position.y = new_pos
-		return
-	
-	await U.tween_node_property(RootPanel, "position:y", new_pos)
-# --------------------------------------------------------------------------------------------------
-
 # -----------------------------------------------	
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
@@ -62,7 +33,6 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
 	U.debounce(str(self.name, "_update"), update)
 # -----------------------------------------------			
-
 
 # -----------------------------------------------
 func update() -> void:
@@ -123,9 +93,7 @@ func update() -> void:
 			"hint_description": debuff.data.description,
 			"type": BASE.TYPE.DEBUFF
 		})
-		
-	
-	
+
 	for node in FloorBuffsContainer.get_children():
 		node.queue_free()
 	
@@ -136,4 +104,5 @@ func update() -> void:
 		new_node.hint_description = item.hint_description
 		new_node.type = item.type
 		FloorBuffsContainer.add_child(new_node)	
+
 # -----------------------------------------------

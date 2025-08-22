@@ -3,9 +3,11 @@ extends SubscribeWrapper
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.DEBUG_ROOM,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"is_department": true,
+	
 	"name": "DEBUG_ROOM",
 	"shortname": "DEBUG_ROOM",
-	"categories": [ROOM.CATEGORY.UTILITY],
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Debug room.",
 	"requires_unlock": false,	
@@ -34,13 +36,13 @@ var DEBUG_ROOM:Dictionary = {
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 1,
 		RESOURCE.CURRENCY.MATERIAL: 0,
-		RESOURCE.CURRENCY.SCIENCE: 1,
+		RESOURCE.CURRENCY.SCIENCE: 0,
 		RESOURCE.CURRENCY.CORE: 0,
 	},
 	"metrics": {
-		RESOURCE.METRICS.MORALE: 1,
+		RESOURCE.METRICS.MORALE: 0,
 		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 1
+		RESOURCE.METRICS.READINESS: 0
 	},	
 	"environmental":{
 		"hazard": 1,
@@ -101,6 +103,340 @@ var DEBUG_ROOM:Dictionary = {
 		],	
 	# ------------------------------------------		
 }
+
+var ADMIN_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ADMIN_DEPARTMENT,		
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,
+	"is_department": true,
+	
+	"name": "ADMIN_DEPARTMENT",
+	"shortname": "ADMIN_DEPARTMENT",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Attach other ADMIN rooms for utility.",
+	"requires_unlock": false,	
+}
+
+var ENGINEERING_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ENGINEERING_DEPARTMENT,		
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.ENGINEERING_LINKABLE,
+	"is_department": true,
+	
+	"name": "ENGINEERING_DEPARTMENT",
+	"shortname": "ENGINEERING_DEPARTMENT",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Attach other ENGINEERING rooms for utility.",
+	"requires_unlock": false,	
+}
+
+var SECURITY_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.SECURITY_DEPARTMENT,		
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.SECURITY_LINKABLE,
+	"is_department": true,
+	
+	"name": "SECURITY_DEPARTMENT",
+	"shortname": "RESEARCHER_ROOM",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Attach other SECURITY rooms for utility.",
+	"requires_unlock": false,	
+}
+
+var SCIENCE_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.SCIENCE_LINKABLE,
+	"is_department": true,
+	
+	"name": "SCIENCE_DEPARTMENT",
+	"shortname": "SCIENCE_DEPARTMENT",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Attach other SCIENCE rooms for utility.",
+	"requires_unlock": false,	
+}
+
+var MEDICAL_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.MEDICAL_DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.MEDICAL_LINKABLE,
+	"is_department": true,
+	
+	"name": "MEDICAL_DEPARTMENT",
+	"shortname": "MEDICAL_DEPARTMENT",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Attach other MEDICAL rooms for utility.",
+	"requires_unlock": false,	
+}
+
+#region ADMIN linkables
+var ADMIN_LINK_1:Dictionary = {
+	"ref": ROOM.REF.ADMIN_LINK_1,
+	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
+	"name": "HIRE ADMINS",
+	"shortname": "ADMIN_LINK_1",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Hires administrators.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.HIRE_ADMIN),
+		],			
+}
+
+var ADMIN_LINK_2:Dictionary = {
+	"ref": ROOM.REF.ADMIN_LINK_2,
+	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],	
+	"name": "HIRE RESEARCHERS",
+	"shortname": "ADMIN_LINK_2",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Hires researchers.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.HIRE_RESEARCHERS),
+		],
+}
+
+var ADMIN_LINK_3:Dictionary = {
+	"ref": ROOM.REF.ADMIN_LINK_3,
+	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],	
+	"name": "HIRE SECURITY",
+	"shortname": "ADMIN_LINK_3",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Hires DClass.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.HIRE_DCLASS),
+		],
+}
+
+var ADMIN_LINK_4:Dictionary = {
+	"ref": ROOM.REF.ADMIN_LINK_3,
+	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],	
+	"name": "HIRE SECURITY",
+	"shortname": "ADMIN_LINK_4",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "The site directors office.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER),
+		],
+}
+#endregion
+
+#region ENGINEERING linkables
+var ENGINEERING_LINK_1:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_1,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],
+	"name": "HEATING",
+	"shortname": "HEATING",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables HEATING in the engineering tab.",
+}
+
+var ENGINEERING_LINK_2:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_2,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],	
+	"name": "COOLING",
+	"shortname": "COOLING",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables COOLING in the engineering tab.",
+}
+
+var ENGINEERING_LINK_3:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_3,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],
+	"name": "VENTILATION",
+	"shortname": "VENTILATION",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables VENTILATION in the engineering tab.",
+}
+
+var ENGINEERING_LINK_4:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_4,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],	
+	"name": "SRA",
+	"shortname": "SRA",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables SRA in the engineering tab.",
+}
+
+var ENGINEERING_LINK_5:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_5,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],	
+	"name": "Energy",
+	"shortname": "Energy",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables ENERGY in the engineering tab.",
+}
+
+var ENGINEERING_LINK_6:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_LINK_6,
+	"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],	
+	"name": "Logistics",
+	"shortname": "Logistics",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables LOGISTICS in the engineering tab.",
+}
+#endregion
+
+#region SECURITY linkables
+var SECURITY_LINK_1:Dictionary = {
+	"ref": ROOM.REF.SECURITY_LINK_1,
+	"categories": [ROOM.CATEGORY.SECURITY_LINKABLE],
+	"name": "EMERGENCY BROADCAST ",
+	"shortname": "E.BROADCAST",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables HEATING in the engineering tab.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.SET_WARNING_MODE),
+			ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),
+		],				
+}
+
+var SECURITY_LINK_2:Dictionary = {
+	"ref": ROOM.REF.SECURITY_LINK_2,
+	"categories": [ROOM.CATEGORY.SECURITY_LINKABLE],
+	"name": "HIRE SECURITY",
+	"shortname": "HIRE",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables HEATING in the engineering tab.",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.HIRE_SECURITY),
+		]
+}
+
+var SECURITY_LINK_3:Dictionary = {
+	"ref": ROOM.REF.SECURITY_LINK_3,
+	"categories": [ROOM.CATEGORY.SECURITY_LINKABLE],
+	"name": "SAFETY +",
+	"shortname": "SAFETY",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Enables SAFETY.",
+	"metrics": {
+		RESOURCE.METRICS.SAFETY: 1,
+	},		
+}
+
+var SECURITY_LINK_4:Dictionary = {
+	"ref": ROOM.REF.SECURITY_LINK_4,
+	"categories": [ROOM.CATEGORY.SECURITY_LINKABLE],
+	"name": "READINESS +",
+	"shortname": "READINESS",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Increases READINESS.",
+	"metrics": {
+		RESOURCE.METRICS.READINESS: 1,
+	},		
+}
+#endregion
+
+#region SCIENCE linkables
+var SCIENCE_LINK_1:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_LINK_1,
+	"categories": [ROOM.CATEGORY.SCIENCE_LINKABLE],
+	"name": "ACADEMIC OUTREACH",
+	"shortname": "ACADEMIC OUTREACH",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Description goes here...",		
+	"effect": {
+		"description": "Converts any unused energy into SCIENCE.",
+		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			# IMPLEMENT
+			return _new_room_config,
+	}
+}
+
+var SCIENCE_LINK_2:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_LINK_2,
+	"categories": [ROOM.CATEGORY.SCIENCE_LINKABLE],
+	"name": "SCIENCE_LINK_2",
+	"shortname": "SCIENCE_LINK_2",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",
+	"currencies": {
+		RESOURCE.CURRENCY.SCIENCE: 1,
+	},	
+}
+
+var SCIENCE_LINK_3:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_LINK_3,
+	"categories": [ROOM.CATEGORY.SCIENCE_LINKABLE],
+	"name": "SCIENCE_LINK_3",
+	"shortname": "SCIENCE_LINK_3",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",
+	"metrics": {
+		RESOURCE.METRICS.READINESS: 1
+	},		
+}
+
+var SCIENCE_LINK_4:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_LINK_4,
+	"categories": [ROOM.CATEGORY.SCIENCE_LINKABLE],
+	"name": "RESEARCH & DEVELOPMENT",
+	"shortname": "R&D",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.UNLOCK_FACILITIES),
+		]	
+}
+#endregion
+
+#region SCIENCE linkables
+var MEDICAL_LINK_1:Dictionary = {
+	"ref": ROOM.REF.MEDICAL_LINK_1,
+	"categories": [ROOM.CATEGORY.MEDICAL_LINKABLE],
+	"name": "MEDICAL_LINK_1",
+	"shortname": "MEDICAL_LINK_1",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",		
+}
+
+var MEDICAL_LINK_2:Dictionary = {
+	"ref": ROOM.REF.MEDICAL_LINK_2,
+	"categories": [ROOM.CATEGORY.MEDICAL_LINKABLE],
+	"name": "MEDICAL_LINK_2",
+	"shortname": "MEDICAL_LINK_2",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "..."
+}
+
+var MEDICAL_LINK_3:Dictionary = {
+	"ref": ROOM.REF.MEDICAL_LINK_3,
+	"categories": [ROOM.CATEGORY.MEDICAL_LINKABLE],
+	"name": "MEDICAL_LINK_3",
+	"shortname": "MEDICAL_LINK_3",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 1
+	},		
+}
+
+var MEDICAL_LINK_4:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_LINK_4,
+	"categories": [ROOM.CATEGORY.MEDICAL_LINKABLE],
+	"name": "MEDICAL_LINK_4",
+	"shortname": "MEDICAL_LINK_4",	
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "...",
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.ADD_TRAIT),
+			ABL.get_ability(ABL.REF.REMOVE_TRAIT, 1),
+		]	
+}
+#endregion
+
 
 #region SPECIALS
 # ------------------------------------------------------------------------------ SPECIALS
@@ -501,37 +837,37 @@ var ADMIN_OFFICE:Dictionary = {
 	# ------------------------------------------
 }
 
-var SECURITY_DEPARTMENT:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.SECURITY_DEPARTMENT,
-	"name": "SECURITY DEPARTMENT",
-	"shortname": "SEC.DPT",
-	"categories": [ROOM.CATEGORY.RECRUITMENT],
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Supplies security.",
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.SECURITY, 
-		RESEARCHER.SPECIALIZATION.ADMIN
-	],	
-	# ------------------------------------------	
-
-	# ------------------------------------------
-	"costs": {
-		"unlock": 1,
-		"purchase": 1,
-	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.HIRE_SECURITY),
-		],		
-	# ------------------------------------------
-}
+#var SECURITY_DEPARTMENT:Dictionary = {
+	## ------------------------------------------
+	#"ref": ROOM.REF.SECURITY_DEPARTMENT,
+	#"name": "SECURITY DEPARTMENT",
+	#"shortname": "SEC.DPT",
+	#"categories": [ROOM.CATEGORY.RECRUITMENT],
+	#"img_src": "res://Media/rooms/research_lab.png",
+	#"description": "Supplies security.",
+	## ------------------------------------------
+	#
+	## ------------------------------------------
+	#"required_staffing": [
+		#RESEARCHER.SPECIALIZATION.SECURITY, 
+		#RESEARCHER.SPECIALIZATION.ADMIN
+	#],	
+	## ------------------------------------------	
+#
+	## ------------------------------------------
+	#"costs": {
+		#"unlock": 1,
+		#"purchase": 1,
+	#},
+	## ------------------------------------------
+	#
+	## ------------------------------------------
+	#"abilities": func() -> Array: 
+		#return [
+			#ABL.get_ability(ABL.REF.HIRE_SECURITY),
+		#],		
+	## ------------------------------------------
+#}
 
 var ACADEMIC_OUTREACH:Dictionary = {
 	# ------------------------------------------
@@ -1423,6 +1759,19 @@ var SP_CLINIC:Dictionary = {
 # -----------------------------------	
 var list:Array[Dictionary] = [
 	DEBUG_ROOM,
+	# -------------- FOUNDATION ROOMS
+	ADMIN_DEPARTMENT, ENGINEERING_DEPARTMENT, SECURITY_DEPARTMENT, SCIENCE_DEPARTMENT, MEDICAL_DEPARTMENT,
+
+	# --------------- ADMIN LINKABLES
+	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4,
+	# --------------- ENGINEERING LINKABLES
+	ENGINEERING_LINK_1, ENGINEERING_LINK_2, ENGINEERING_LINK_3, ENGINEERING_LINK_4, ENGINEERING_LINK_5, ENGINEERING_LINK_6,
+	# --------------- ENGINEERING LINKABLES
+	SECURITY_LINK_1, SECURITY_LINK_2, SECURITY_LINK_3, SECURITY_LINK_4,
+	# --------------- SCIENCE LINKABLES
+	SCIENCE_LINK_1, SCIENCE_LINK_2, SCIENCE_LINK_3, SCIENCE_LINK_4,
+	# --------------- MEDICAL LINKABLES
+	MEDICAL_LINK_1, MEDICAL_LINK_2, MEDICAL_LINK_3, MEDICAL_LINK_4,
 	
 	# --------------- SPECIALS
 	DIRECTORS_OFFICE, 
@@ -1436,7 +1785,7 @@ var list:Array[Dictionary] = [
 	NUCLEAR_FAILSAFE,
 	
 	# --------------- RECRUIT
-	ADMIN_OFFICE, ACADEMIC_OUTREACH, SECURITY_DEPARTMENT, PRISONER_BLOCK,
+	ADMIN_OFFICE, ACADEMIC_OUTREACH, PRISONER_BLOCK,
 	
 	# --------------- CONTAINMENT
 	STANDARD_CONTAINMENT_CELL, 
@@ -1455,7 +1804,7 @@ var list:Array[Dictionary] = [
 	MONEY_CONVERTER,
 	
 	# --------------- RECRUITMENT
-	PRISONER_BLOCK, OPERATIONS_SUPPORT, SECURITY_DEPARTMENT,
+	PRISONER_BLOCK, OPERATIONS_SUPPORT, 
 	MTF_BARRICKS,
 	
 	# --------------- ENERGY

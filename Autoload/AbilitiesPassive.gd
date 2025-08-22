@@ -66,9 +66,9 @@ var ADDITIONAL_STORE_UNLOCKS:Dictionary = {
 	"description": "Additional facilities can be unlocked in the store.",
 	"lvl_required": 0,
 	"energy_cost": 4,
-	"floor_effect": func(floor_config_data:Dictionary) -> void:
-		if floor_config_data.room_unlock_val < 1:
-			floor_config_data.room_unlock_val = 1
+	#"floor_effect": func(floor_config_data:Dictionary) -> void:
+		#if floor_config_data.room_unlock_val < 1:
+			#floor_config_data.room_unlock_val = 1
 		
 }
 

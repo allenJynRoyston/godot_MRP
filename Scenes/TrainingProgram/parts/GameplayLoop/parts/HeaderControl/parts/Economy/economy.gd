@@ -14,45 +14,45 @@ extends PanelContainer
 # --------------------------------------------
 
 # --------------------------------------------
-var header:String  = "" : 
-	set(val):
-		header = val
-		on_header_update()
+#var header:String  = "" : 
+	#set(val):
+		#header = val
+		#on_header_update()
 		
-var money_val:int : 
-	set(val):
-		money_val = val
-		on_money_val_update()
-var research_val:int: 
-	set(val):
-		research_val = val
-		on_research_val_update()
-var material_val:int: 
-	set(val):
-		material_val = val
-		on_material_val_update()
-var core_val:int: 
-	set(val):
-		core_val = val
-		on_core_val_update()
-
-var money_income:int: 
-	set(val):
-		money_income = val
-		on_money_income_update()
-var researcher_income:int: 
-	set(val):
-		researcher_income = val
-		on_researcher_income_update()
-var material_income:int: 
-	set(val):
-		material_income = val
-		on_material_income_update()
-var core_income:int: 
-	set(val):
-		core_income = val
-		on_core_income_update()
-		
+#var money_val:int : 
+	#set(val):
+		#money_val = val
+		#on_money_val_update()
+#var research_val:int: 
+	#set(val):
+		#research_val = val
+		#on_research_val_update()
+#var material_val:int: 
+	#set(val):
+		#material_val = val
+		#on_material_val_update()
+#var core_val:int: 
+	#set(val):
+		#core_val = val
+		#on_core_val_update()
+#
+#var money_income:int: 
+	#set(val):
+		#money_income = val
+		#on_money_income_update()
+#var researcher_income:int: 
+	#set(val):
+		#researcher_income = val
+		#on_researcher_income_update()
+#var material_income:int: 
+	#set(val):
+		#material_income = val
+		#on_material_income_update()
+#var core_income:int: 
+	#set(val):
+		#core_income = val
+		#on_core_income_update()
+		#
 @export var money_offset:int = 0: 
 	set(val):
 		money_offset = val
@@ -108,17 +108,17 @@ func _notification(what):
 func _ready() -> void:
 	Header.set('theme_override_styles/panel', header_stylebox_copy)		
 	
-	on_header_update()
+	#on_header_update()
 	
-	on_money_val_update()
-	on_research_val_update()
-	on_material_val_update()
-	on_core_val_update()
-	
-	on_money_income_update()
-	on_researcher_income_update()
-	on_material_income_update()
-	on_core_income_update()
+	#on_money_val_update()
+	#on_research_val_update()
+	#on_material_val_update()
+	#on_core_val_update()
+	#
+	#on_money_income_update()
+	#on_researcher_income_update()
+	#on_material_income_update()
+	#on_core_income_update()
 	
 	on_money_offset_update()
 	on_research_offset_update()
@@ -127,41 +127,41 @@ func _ready() -> void:
 # --------------------------------------------
 
 # --------------------------------------------
-func on_header_update() -> void:
-	if !is_node_ready():return
+#func on_header_update() -> void:
+	#if !is_node_ready():return
 	#HeaderTitle.text = str(header)
-	
-func on_money_val_update() -> void:
-	if !is_node_ready():return
-	EcoMoney.amount = money_val
-	
-func on_research_val_update() -> void:
-	if !is_node_ready():return
-	EcoResearch.amount = research_val
-	
-func on_material_val_update() -> void:
-	if !is_node_ready():return
-	EcoMaterial.amount = material_val
-	
-func on_core_val_update() -> void:
-	if !is_node_ready():return	
-	EcoCore.amount = core_val
-	
-func on_money_income_update() -> void:
-	if !is_node_ready():return	
-	EcoMoney.bonus_amount = money_income
-	
-func on_researcher_income_update() -> void:
-	if !is_node_ready():return	
-	EcoResearch.bonus_amount = researcher_income
-	
-func on_material_income_update() -> void:
-	if !is_node_ready():return	
-	EcoMaterial.bonus_amount = material_income
-	
-func on_core_income_update() -> void:
-	if !is_node_ready():return	
-	EcoCore.bonus_amount = core_income
+	#
+#func on_money_val_update() -> void:
+	#if !is_node_ready():return
+	#EcoMoney.amount = money_val
+	#
+#func on_research_val_update() -> void:
+	#if !is_node_ready():return
+	#EcoResearch.amount = research_val
+	#
+#func on_material_val_update() -> void:
+	#if !is_node_ready():return
+	#EcoMaterial.amount = material_val
+	#
+#func on_core_val_update() -> void:
+	#if !is_node_ready():return	
+	#EcoCore.amount = core_val
+	#
+#func on_money_income_update() -> void:
+	#if !is_node_ready():return	
+	#EcoMoney.bonus_amount = money_income
+	#
+#func on_researcher_income_update() -> void:
+	#if !is_node_ready():return	
+	#EcoResearch.bonus_amount = researcher_income
+	#
+#func on_material_income_update() -> void:
+	#if !is_node_ready():return	
+	#EcoMaterial.bonus_amount = material_income
+	#
+#func on_core_income_update() -> void:
+	#if !is_node_ready():return	
+	#EcoCore.bonus_amount = core_income
 	
 func on_money_offset_update() -> void:
 	if !is_node_ready():return	
@@ -189,10 +189,15 @@ func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 func update_node() -> void:
 	if !is_node_ready() or resources_data.is_empty():return
 
-	money_val = resources_data[RESOURCE.CURRENCY.MONEY].amount
-	research_val = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
-	material_val = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
-	core_val = resources_data[RESOURCE.CURRENCY.CORE].amount	
+	EcoMoney.amount = resources_data[RESOURCE.CURRENCY.MONEY].amount
+	EcoResearch.amount = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+	EcoMaterial.amount = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
+	EcoCore.amount = resources_data[RESOURCE.CURRENCY.CORE].amount	
+	
+	EcoMoney.bonus_amount = resources_data[RESOURCE.CURRENCY.MONEY].diff
+	EcoResearch.bonus_amount = resources_data[RESOURCE.CURRENCY.SCIENCE].diff
+	EcoMaterial.bonus_amount = resources_data[RESOURCE.CURRENCY.MATERIAL].diff
+	EcoCore.bonus_amount = resources_data[RESOURCE.CURRENCY.CORE].diff		
 # -----------------------------------------------
 
 
@@ -203,8 +208,8 @@ func on_process_update(delta: float, time_passed:float) -> void:
 
 	# Oscillates between 0 and 1
 	var t:float = (sin(time_passed * 5.0) + 1.0) / 2.0
-	var count:int = money_val + research_val + material_val + core_val
+	var is_flashing:bool = EcoMoney.amount == 0 or EcoResearch.amount == 0 or EcoMaterial.amount == 0 or EcoCore.amount == 0
 	
 	# Blend between black and red
-	header_stylebox_copy.bg_color = COLORS.primary_black.lerp(COLORS.disabled_color, t) if count < 3 else COLORS.primary_black
+	header_stylebox_copy.bg_color = COLORS.primary_black.lerp(COLORS.disabled_color, t) if is_flashing else COLORS.primary_black
 # -----------------------------------------------

@@ -4,6 +4,7 @@ extends GameContainer
 # SPECIAL NODES
 @onready var Backdrop:ColorRect = $Backdrop
 @onready var SummaryControls:Control = $SummaryControls
+@onready var AdminControls:Control = $AdminControls
 @onready var NameControl:Control = $NameControl
 @onready var TransistionScreen:Control = $TransitionScreen
 @onready var LocationAndDirectivesContainer:Control = $LocationAndDirectivesContainer
@@ -11,13 +12,15 @@ extends GameContainer
 
 #  ---------------------------------------
 # CONTROLS
-@onready var DesignControls:Control = $DesignControls
+@onready var FabricationControls:Control = $FabricationControls
 @onready var CommandControls:Control = $CommandControls
 @onready var InfoControls:Control = $InfoControls
 @onready var ProgramControls:Control = $ProgramControls
-@onready var TopographyControls:Control = $TopographyControls
+@onready var MedicalControls:Control = $MedicalControls
 @onready var EngineeringControls:Control = $EngineeringControls
 @onready var TelemetryControls:Control = $TelemetryControls
+@onready var SecurityControls:Control = $SecurityControls
+@onready var ScienceControls:Control = $ScienceControls
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -64,11 +67,14 @@ extends GameContainer
 @onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
 
 # LEFT SIDE
-@onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/EngineeringBtn
 @onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/FabricationBtn
-@onready var ManagementBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/ManagementBtn
+@onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/EngineeringBtn
+@onready var AdminBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/AdminBtn
+@onready var SecurityBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/SecurityBtn
+@onready var ScienceBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/ScienceBtn
+@onready var MedicalBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/MedicalBtn
+
 @onready var OperationsBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/OperationsBtn
-@onready var HealthBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/HealthBtn
 @onready var TelemetryBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/TelemetryBtn
 @onready var DebugBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/DebugBtn
 
@@ -81,15 +87,23 @@ extends GameContainer
 enum MODE { 
 	NONE,
 	COMMANDS,
+	
+	ENGINEERING,	
+	ADMINISTRATION,
+	SECURITY,
+	SCIENCE, 
+	MEDICAL,
+	
 	SUMMARY_CARD,
 	BASE_MANAGEMENT,
-	ENGINEERING,
+
 	HEALTH,
 	TELEMETRY,
 	INFO,
 	ABILITY,
 	PROGRAMS,
-	BUILD,
+	FABRICATION,
+	FABRICATION_LINKABLE,
 	ACTIVE_MENU_OPEN,
 }
 
@@ -106,10 +120,12 @@ var current_mode:MODE = MODE.NONE :
 var selected_room:int = -1
 var telemetry_count:int = 0
 var list_of_available_rooms:Array = []
+var list_of_adjacent_rooms:Array = []
 
 var prev_draw_state:Dictionary	= {}
 var is_in_transition:bool = false 
 var active_menu_is_open:bool = false
+var add_on_base_location:Dictionary
 
 var is_started:bool = false
 var show_new_message_btn:bool = false : 
@@ -134,12 +150,12 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	for node in [SummaryControls, DesignControls, CommandControls, InfoControls, ProgramControls, TopographyControls, EngineeringControls, TelemetryControls]:
+	for node in [SummaryControls, FabricationControls, AdminControls, CommandControls, InfoControls, ProgramControls, MedicalControls, EngineeringControls, TelemetryControls]:
 		node.reveal(false)
 	#DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 	
 	# set reference 
-	GBL.direct_ref["SummaryCard"] = SummaryCard	
+	#GBL.direct_ref["SummaryCard"] = SummaryCard	
 	
 	# CREATE NAMETAGS AND ADD THEM TO SCENE
 	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
@@ -247,54 +263,6 @@ func start() -> void:
 	# -------------------------------------
 
 	# -------------------------------------
-	HealthBtn.onClick = func() -> void:
-		await lock_actions(true)
-		current_mode = MODE.HEALTH
-		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)
-		reveal_topography(true)		
-		TopographyControls.reveal(true)
-		
-	TopographyControls.onBack = func() -> void:			
-		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)		
-		reveal_topography(false)
-		await TopographyControls.reveal(false)
-		lock_actions(false)
-		current_mode = MODE.NONE
-		GameplayNode.restore_player_hud()
-		
-		GameplayNode.show_marked_objectives = true
-		GameplayNode.show_timeline = true
-		reveal_action_label(true, false)
-		
-	TopographyControls.onAction = func() -> void:
-		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)		
-		reveal_topography(false)
-		# end topology, start engineering
-		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
-		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
-		current_mode = MODE.ENGINEERING
-		reveal_engineering(true)
-		# start and reveal
-		EngineeringComponent.start()
-		EngineeringControls.reveal(true)		
-		TopographyControls.reveal(false)
-		
-	TopographyControls.onCBtn = func() -> void:
-		camera_settings.type = CAMERA.TYPE.WING_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)		
-		reveal_topography(false)
-		await TopographyControls.reveal(false)
-		# end topology, start engineering
-		TelemetryControls.reveal(true)
-		current_mode = MODE.TELEMETRY
-		
 	EngineeringBtn.onClick = func() -> void:
 		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
 		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
@@ -317,8 +285,8 @@ func start() -> void:
 		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
 		SUBSCRIBE.camera_settings = camera_settings
 		TransistionScreen.start(0.3, true)
-		reveal_topography(true)		
-		TopographyControls.reveal(true)
+		reveal_medical(true)		
+		MedicalControls.reveal(true)
 		GameplayNode.restore_player_hud()
 		
 	EngineeringControls.onBack = func() -> void:
@@ -333,16 +301,28 @@ func start() -> void:
 		
 	FabricationBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.BUILD
+		current_mode = MODE.FABRICATION
 		
-	ManagementBtn.onClick = func() -> void:
+	AdminBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.COMMANDS	
+		current_mode = MODE.ADMINISTRATION	
+		
+	SecurityBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.SECURITY	
 	
 	OperationsBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.PROGRAMS
+		
+	ScienceBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.SCIENCE
 
+	MedicalBtn.onClick = func() -> void:
+		await lock_actions(true)
+		current_mode = MODE.MEDICAL
+		
 	InfoBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.INFO	
@@ -359,19 +339,13 @@ func start() -> void:
 		current_mode = MODE.NONE
 
 	SettingsBtn.onClick = func() -> void:
-		set_backdrop_state(true)
 		await lock_actions(true)
-		GameplayNode.show_marked_objectives = false
-		GameplayNode.show_timeline = false			
 		current_mode = MODE.ACTIVE_MENU_OPEN	
 		await show_settings()
 		current_mode = MODE.NONE
 		
 	DebugBtn.onClick = func() -> void:
-		set_backdrop_state(true)
 		await lock_actions(true)
-		GameplayNode.show_marked_objectives = false
-		GameplayNode.show_timeline = false			
 		current_mode = MODE.ACTIVE_MENU_OPEN	
 		await show_debug()
 		current_mode = MODE.NONE
@@ -401,14 +375,13 @@ func clear_lines() -> void:
 
 # --------------------------------------------------------------------------------------------------
 signal query_complete
-func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable) -> void:
+func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable, action:Callable) -> void:
 	var query:Dictionary
 	var start_at:int = page * query_size
 	query = ROOM_UTIL.get_unlocked_category(category, start_at, query_size)	
 
 	return_list.push_back(
 		query.list.map(func(x):
-			
 		return {
 			"title": x.details.name,
 			"img_src": x.details.img_src,
@@ -416,209 +389,114 @@ func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY,
 			"hint": hint_func.call(x), 
 			"ref": x.ref,
 			"details": x.details,
-			"action": func() -> void:
-				await ActiveMenuNode.lock()
-				# purchase and show tally
-				var room_details:Dictionary = ROOM_UTIL.return_data(x.details.ref)
-				
-				# skip or use build confirm
-				var has_build_confirm:bool = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].gameplay_settings.enable_build_confirm
-				
-				# set default as true
-				var confirm:bool = true
-				
-				# calculate costs
-				var costs:Array = [{
-					"amount": -(room_details.costs.purchase), 
-					"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
-				}] if room_details.costs.purchase > 0 else []
-				
-				# use build confirm
-				if has_build_confirm:
-					confirm = await GAME_UTIL.create_modal("Construct %s here?" % room_details.name, "This room CANNOT be destroyed once placed.  Are you sure you want to continue?" if !room_details.can_destroy else "Continue?" , room_details.img_src, costs)					
-				
-				# or skip
-				else:
-					for item in costs:
-						var amount:int = item.amount
-						RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
-					
-					
-				# update
-				if confirm:
-					await ROOM_UTIL.add_room(x.details.ref)
-					#if !x.details.event_trigger.is_empty():
-						#var event_data:Dictionary = EVENT_UTIL.return_data(x.details.event_trigger.ref)
-						#
-						#GAME_UTIL.add_timeline_item({
-							#"title": event_data.timeline.title,
-							#"icon": event_data.timeline.icon,
-							#"description": event_data.timeline.description,
-							#"day": progress_data.day + x.details.event_trigger.day,
-							#"location": current_location.duplicate(),
-							#"event": {
-								#"ref": x.details.event_trigger.ref
-							#},
-							#
-						#})
-					ActiveMenuNode.close()
-					return
-				
-				ActiveMenuNode.unlock(),
+			"action": action.bind(x)
 		})
 	)	
 	
 	if query.has_more:
-		query_items(ActiveMenuNode, query_size, category, page + 1, return_list, is_disabled_func, hint_func)
+		query_items(ActiveMenuNode, query_size, category, page + 1, return_list, is_disabled_func, hint_func, action)
 	else:
 		await U.tick()
 		query_complete.emit(return_list)
 
 signal show_build_complete
-func show_build_options() -> void:
+signal linkable_action
+func show_fabrication_options() -> void:
 	const query_size:int = 100
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
-	var ring_level_config:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring]
+	var list:Array = []
+	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config()
 	var energy_availble:int = ring_level_config.energy.available - ring_level_config.energy.used
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
+	var is_room_empty:bool = room_extract.room.is_empty()
+	
+	# assists functions
+	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
+		return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref)
+	var hint_func:Callable = func(x: Dictionary) -> Dictionary:
+		var description: String = x.details.description
+		var disabled_reason: String = ""
 
-	for listitem in [
+		if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+			disabled_reason = "Insufficient funds."
+		elif energy_availble < x.details.required_energy:
+			disabled_reason = "Not enough energy."
+		elif ROOM_UTIL.at_own_limit(x.ref):
+			disabled_reason = "At building capacity."
+
+		return {
+			"icon": SVGS.TYPE.GLOBAL,
+			"title": x.details.name,
+			"description": description if disabled_reason == "" else disabled_reason
+		}
+	var on_selected:Callable = func(x:Dictionary) -> void:
+		await ActiveMenuNode.lock()
+		# purchase and show tally
+		var room_details:Dictionary = ROOM_UTIL.return_data(x.details.ref)
+		# calculate costs
+		var costs:Array = [{
+			"amount": -(room_details.costs.purchase), 
+			"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+		}] if room_details.costs.purchase > 0 else []
+
+		# build new foundation
+		if is_room_empty:	
+			# pay and close
+			for item in costs:
+				var amount:int = item.amount
+				RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
+			await ROOM_UTIL.add_room(x.details.ref, false)
+			ActiveMenuNode.close()
+		
+		# it must be an add-on, so select which side it gets built on
+		else:
+			var revert_location:Dictionary = current_location.duplicate(true)
+			list_of_adjacent_rooms = [
+				U.location_lookup(current_location.room, U.DIR.UP),
+				U.location_lookup(current_location.room, U.DIR.DOWN),
+				U.location_lookup(current_location.room, U.DIR.LEFT),
+				U.location_lookup(current_location.room, U.DIR.RIGHT),
+			].filter(func(x): return x != -1)
+			
+			# change controls so you can move again...
+			current_mode = MODE.FABRICATION_LINKABLE
+			await FabricationControls.reveal(true)
+			active_menu_is_open = false
+			
+			var confirm:bool = await linkable_action
+			
+			if confirm:
+				await ROOM_UTIL.add_room(x.details.ref, true)
+
+			current_location = revert_location
+			SUBSCRIBE.current_location = current_location
+			active_menu_is_open = true
+			ActiveMenuNode.unlock()
+
+
+	if is_room_empty:
+		list = [
 			{
-				"title": 'RESOURCES', 
-				"type": ROOM.CATEGORY.RESOURCES,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif energy_availble < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-			},
+				"title": 'DEPARTMENT', 
+				"type": ROOM.CATEGORY.DEPARTMENT,
+				"is_disabled_func": is_disabled_func,
+				"hint_func": hint_func
+			}
+		]
+	else:
+		# TODO: IF ADMIN ROOM, BRING BACK ADMIN TYPES, RESEARCHER, RESEEARCHER TYPE , etc
+		list = [
 			{
-				"title": 'RECRUITMENT', 
-				"type": ROOM.CATEGORY.RECRUITMENT,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif energy_availble < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-			},			
-			{
-				"title": 'ENERGY', 
-				"type": ROOM.CATEGORY.ENERGY,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif energy_availble < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-			},
-			{
-				"title": 'UTILITY', 
-				"type": ROOM.CATEGORY.UTILITY,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif energy_availble < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-			},			
-			{
-				"title": 'CONTAINMENT', 
-				"type": ROOM.CATEGORY.CONTAINMENT,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif energy_availble < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-			},
-			{
-				"title": 'SPECIAL', 
-				"type": ROOM.CATEGORY.SPECIAL,
-				"is_disabled_func": func(x:Dictionary) -> bool:
-					return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref),
-				"hint_func": func(x: Dictionary) -> Dictionary:
-					var description: String = x.details.description
-					var disabled_reason: String = ""
-
-					if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-						disabled_reason = "Insufficient funds."
-					elif ring_level_config.energy.available < x.details.required_energy:
-						disabled_reason = "Not enough energy."
-					elif ROOM_UTIL.at_own_limit(x.ref):
-						disabled_reason = "At building capacity."
-
-					return {
-						"icon": SVGS.TYPE.GLOBAL,
-						"title": x.details.name,
-						"description": description if disabled_reason == "" else disabled_reason
-					},
-
-			},
-		]:
-
-		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func)
+				"title": 'ADD-ON', 
+				"type": room_extract.room.details.link_categories,
+				"is_disabled_func": is_disabled_func,
+				"hint_func": hint_func
+			}
+		]
+		
+	for listitem in list:
+		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
 		var query_results:Array = await query_complete
 		for index in query_results.size():
 			var items:Array = query_results[index]
@@ -627,7 +505,7 @@ func show_build_options() -> void:
 					"title": listitem.title,
 					"items": items,
 					"footer": "%s / %s" % [index + 1, items.size() ],
-				})		
+				})
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
@@ -651,13 +529,13 @@ func show_build_options() -> void:
 	
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
+		current_mode = MODE.FABRICATION
 		SummaryCard.preview_mode_ref = -1
 		SummaryCard.preview_mode = false		
 		await reveal_summarycard(false)
 		active_menu_is_open = false
 		show_build_complete.emit()
-		
-		
+
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	ActiveMenuNode.render_on_right = true
@@ -666,7 +544,6 @@ func show_build_options() -> void:
 	SummaryCard.preview_mode = true	
 	reveal_summarycard(true, false)	
 
-	
 	# ACTIVATE NODE	
 	add_child(ActiveMenuNode)
 	await ActiveMenuNode.activate(4)
@@ -677,13 +554,13 @@ func show_build_options() -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
-signal show_show_program_list_complete
-func show_program_list() -> void:
+signal show_programs_complete
+func show_programs(filter_for:Array, title:String) -> void:
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 
 	var update_list:Callable = func() -> void:
 		await U.tick()
-		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, true).map(func(x): 
+		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
 			return {
 				"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
 				"show": x.at_level_threshold,
@@ -697,7 +574,7 @@ func show_program_list() -> void:
 		}) )
 		
 
-	var items:Array = GAME_UTIL.get_list_of_programs(current_location, true).map(func(x): 
+	var items:Array = GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
 		return {
 			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
 			"show": x.at_level_threshold,
@@ -719,13 +596,9 @@ func show_program_list() -> void:
 		
 	var options:Array = [
 		{
-			"title": "GLOBAL",
+			"title": title,
 			"items": items,
 		},
-		{
-			"title": "FLOOR SPECIFIC",
-			"items": [],
-		}		
 	]
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
@@ -735,9 +608,8 @@ func show_program_list() -> void:
 	ActiveMenuNode.onClose = func() -> void:	
 		await U.tick()
 		active_menu_is_open = false
-		show_show_program_list_complete.emit()
+		show_programs_complete.emit()
 		
-	
 	ActiveMenuNode.use_color = Color.WHITE
 	ActiveMenuNode.options_list = options
 	ActiveMenuNode.render_on_right = true
@@ -746,99 +618,240 @@ func show_program_list() -> void:
 	await ActiveMenuNode.activate()
 	ActiveMenuNode.open()	
 	
-	await show_show_program_list_complete
+	await show_programs_complete
 # --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-signal show_generator_complete
-func show_generator_updates() -> void:			
-	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	var gen_level:int = base_states.floor[str(current_location.floor)].generator_level
-
-	var options:Array = [
-		{
-			"title": "GENERATOR ABILITIES",
-			"items": [
-				{
-					"title": "ENERGY CAPACITY (lvl %s)" % (gen_level + 1),
-					"hint": {
-						"icon": SVGS.TYPE.ENERGY,
-						"title": "HINT",
-						"description": "Increases the available energy for each wing."
-					},
-					"is_togglable": true,
-					"action": func() -> void:
-						await ActiveMenuNode.lock()
-				
-						var activation_cost:int = (base_states.floor[str(current_location.floor)].generator_level + 1) * 50
-
-						var costs:Array = [{
-							"amount": -(activation_cost), 
-							"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)
-						}]
-						
-						var confirm:bool = await GAME_UTIL.create_modal( "Increase generator capacity for floor %s?" % current_location.floor, "Effects all wings equally." , "", costs)
-						
-						if confirm:
-							await ActiveMenuNode.lock()
-							await GAME_UTIL.upgrade_generator_level()							
-							ActiveMenuNode.close()
-							return
-							
-						ActiveMenuNode.unlock(),						
-						
-
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.QUESTION_MARK,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.QUESTION_MARK,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				},
-				{
-					"title": "???",
-					"hint": {
-						"icon": SVGS.TYPE.QUESTION_MARK,
-						"title": "HINT",
-						"description": "???"
-					},
-					"is_disabled": true,
-					"action": func() -> void:
-						pass,
-				}
-			]
-		}
-	]
-	
-	active_menu_is_open = true
-	ActiveMenuNode.onClose = func() -> void:	
-		active_menu_is_open = false
-		show_generator_complete.emit()
-	
-	ActiveMenuNode.options_list = options
-	
-	add_child(ActiveMenuNode)
-	await ActiveMenuNode.activate()
-	ActiveMenuNode.open()	
-	
-	await show_generator_complete
-# --------------------------------------------------------------------------------------------------
+#
+## --------------------------------------------------------------------------------------------------
+#signal show_security_programs_list_complete
+#func show_security_programs() -> void:
+	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+#
+	#var update_list:Callable = func() -> void:
+		#await U.tick()
+		#ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, [ROOM.CATEGORY.SECURITY_LINKABLE]).map(func(x): 
+			#return {
+				#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+				#"show": x.at_level_threshold,
+				#"is_disabled": x.on_cooldown,
+				#"data": x.data,
+				#"hint": {
+					#"icon": SVGS.TYPE.ENERGY,
+					#"title": "HINT",
+					#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},			
+		#}) )
+		#
+#
+	#var items:Array = GAME_UTIL.get_list_of_programs(current_location, [ROOM.CATEGORY.SECURITY_LINKABLE]).map(func(x): 
+		#return {
+			#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			#"show": x.at_level_threshold,
+			#"is_disabled": x.on_cooldown,
+			#"data": x.data,
+			#"hint": {
+				#"icon": SVGS.TYPE.ENERGY,
+				#"title": "HINT",
+				#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},
+			#"is_togglable": false,
+			#"action": func() -> void:
+				#await ActiveMenuNode.lock()
+				#await GAME_UTIL.use_active_ability(x.ability, x.room_details.ref, x.index, x.location)
+				#await update_list.call()
+				#ActiveMenuNode.unlock(),
+		#}
+	#)
+		#
+	#var options:Array = [
+		#{
+			#"title": "SECURITY PROGRAMS",
+			#"items": items,
+		#},
+	#]
+	#
+	#ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
+		#SUBSCRIBE.current_location = item.data.location
+	#
+	#active_menu_is_open = true
+	#ActiveMenuNode.onClose = func() -> void:	
+		#await U.tick()
+		#active_menu_is_open = false
+		#show_security_programs_list_complete.emit()
+		#
+	#ActiveMenuNode.use_color = Color.WHITE
+	#ActiveMenuNode.options_list = options
+	#ActiveMenuNode.render_on_right = true
+	#
+	#add_child(ActiveMenuNode)
+	#await ActiveMenuNode.activate()
+	#ActiveMenuNode.open()	
+	#
+	#await show_security_programs_list_complete
+## --------------------------------------------------------------------------------------------------
+#
+## --------------------------------------------------------------------------------------------------
+#signal show_show_program_list_complete
+#func show_program_list() -> void:
+	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+#
+	#var update_list:Callable = func() -> void:
+		#await U.tick()
+		#ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, []).map(func(x): 
+			#return {
+				#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+				#"show": x.at_level_threshold,
+				#"is_disabled": x.on_cooldown,
+				#"data": x.data,
+				#"hint": {
+					#"icon": SVGS.TYPE.ENERGY,
+					#"title": "HINT",
+					#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},			
+		#}) )
+		#
+#
+	#var items:Array = GAME_UTIL.get_list_of_programs(current_location, []).map(func(x): 
+		#return {
+			#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			#"show": x.at_level_threshold,
+			#"is_disabled": x.on_cooldown,
+			#"data": x.data,
+			#"hint": {
+				#"icon": SVGS.TYPE.ENERGY,
+				#"title": "HINT",
+				#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},
+			#"is_togglable": false,
+			#"action": func() -> void:
+				#await ActiveMenuNode.lock()
+				#await GAME_UTIL.use_active_ability(x.ability, x.room_details.ref, x.index, x.location)
+				#await update_list.call()
+				#ActiveMenuNode.unlock(),
+		#}
+	#)
+		#
+	#var options:Array = [
+		#{
+			#"title": "GLOBAL",
+			#"items": items,
+		#},
+		#{
+			#"title": "FLOOR SPECIFIC",
+			#"items": [],
+		#}		
+	#]
+	#
+	#ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
+		#SUBSCRIBE.current_location = item.data.location
+	#
+	#active_menu_is_open = true
+	#ActiveMenuNode.onClose = func() -> void:	
+		#await U.tick()
+		#active_menu_is_open = false
+		#show_show_program_list_complete.emit()
+		#
+	#
+	#ActiveMenuNode.use_color = Color.WHITE
+	#ActiveMenuNode.options_list = options
+	#ActiveMenuNode.render_on_right = true
+	#
+	#add_child(ActiveMenuNode)
+	#await ActiveMenuNode.activate()
+	#ActiveMenuNode.open()	
+	#
+	#await show_show_program_list_complete
+## --------------------------------------------------------------------------------------------------
+#
+## --------------------------------------------------------------------------------------------------
+#signal show_generator_complete
+#func show_generator_updates() -> void:			
+	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+	#var gen_level:int = base_states.floor[str(current_location.floor)].generator_level
+#
+	#var options:Array = [
+		#{
+			#"title": "GENERATOR ABILITIES",
+			#"items": [
+				#{
+					#"title": "ENERGY CAPACITY (lvl %s)" % (gen_level + 1),
+					#"hint": {
+						#"icon": SVGS.TYPE.ENERGY,
+						#"title": "HINT",
+						#"description": "Increases the available energy for each wing."
+					#},
+					#"is_togglable": true,
+					#"action": func() -> void:
+						#await ActiveMenuNode.lock()
+				#
+						#var activation_cost:int = (base_states.floor[str(current_location.floor)].generator_level + 1) * 50
+#
+						#var costs:Array = [{
+							#"amount": -(activation_cost), 
+							#"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)
+						#}]
+						#
+						#var confirm:bool = await GAME_UTIL.create_modal( "Increase generator capacity for floor %s?" % current_location.floor, "Effects all wings equally." , "", costs)
+						#
+						#if confirm:
+							#await ActiveMenuNode.lock()
+							#await GAME_UTIL.upgrade_generator_level()							
+							#ActiveMenuNode.close()
+							#return
+							#
+						#ActiveMenuNode.unlock(),						
+						#
+#
+				#},
+				#{
+					#"title": "???",
+					#"hint": {
+						#"icon": SVGS.TYPE.QUESTION_MARK,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"is_disabled": true,
+					#"action": func() -> void:
+						#pass,
+				#},
+				#{
+					#"title": "???",
+					#"hint": {
+						#"icon": SVGS.TYPE.QUESTION_MARK,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"is_disabled": true,
+					#"action": func() -> void:
+						#pass,
+				#},
+				#{
+					#"title": "???",
+					#"hint": {
+						#"icon": SVGS.TYPE.QUESTION_MARK,
+						#"title": "HINT",
+						#"description": "???"
+					#},
+					#"is_disabled": true,
+					#"action": func() -> void:
+						#pass,
+				#}
+			#]
+		#}
+	#]
+	#
+	#active_menu_is_open = true
+	#ActiveMenuNode.onClose = func() -> void:	
+		#active_menu_is_open = false
+		#show_generator_complete.emit()
+	#
+	#ActiveMenuNode.options_list = options
+	#
+	#add_child(ActiveMenuNode)
+	#await ActiveMenuNode.activate()
+	#ActiveMenuNode.open()	
+	#
+	#await show_generator_complete
+## --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 signal show_debug_complete
@@ -1161,128 +1174,7 @@ func show_debug() -> void:
 	ActiveMenuNode.open()	
 	
 	await show_debug_complete
-# --------------------------------------------------------------------------------------------------
-
-# --------------------------------------------------------------------------------------------------
-#signal show_facility_complete
-#func show_facility_updates() -> void:			
-	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-	#var is_powered:bool = base_states.floor[str(current_location.floor)].is_powered
-	#
-	#var options:Array = [
-		#{
-			#"title": "ENERGY",
-			#"items": [
-				#{
-					#"title": "SUPPLY POWER",
-					#"hint": {
-						#"icon": SVGS.TYPE.ENERGY,
-						#"title": "HINT",
-						#"description": "Supply power to FLOOR %s." % [current_location.floor]
-					#},
-					##"is_disabled": is_powered,
-					#"is_checked": is_powered,
-					#"is_togglable": true,
-					#"action": func() -> void:
-						#await ActiveMenuNode.lock()
-						#var activation_cost:int = GAME_UTIL.get_activated_floor_count() * 25 if !is_powered else 0
-#
-						#var costs:Array = [{
-							#"amount": -(activation_cost), 
-							#"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)
-						#}]
-						#
-						#var confirm:bool 
-						#
-						#if is_powered:
-							#confirm = await GAME_UTIL.create_warning("Remove power from floor %s" % current_location.floor, "Rooms on this floor will be deactivated and any SCP's contained here a be at risk of breaking containment.", "res://Media/images/Defaults/stop_sign.png")						
-						#else:
-							#confirm = await GAME_UTIL.create_modal( "Supply power to floor %s?" % current_location.floor, "All rings will become usable." , "res://Media/images/Defaults/lightbulb_on.jpg", costs)
-						#
-						#if confirm:
-							#ActiveMenuNode.close()
-							#if !is_powered:
-								#GAME_UTIL.activate_floor(current_location.floor)
-							#else:
-								#GAME_UTIL.deactivate_floor(current_location.floor)
-							#await U.set_timeout(0.7)
-							#camera_settings.type = CAMERA.TYPE.WING_SELECT
-							#SUBSCRIBE.camera_settings = camera_settings	
-							#return			
-							#
-						#ActiveMenuNode.unlock(),
-				#},
-				#{
-					#"title": "???",
-					#"hint": {
-						#"icon": SVGS.TYPE.ENERGY,
-						#"title": "HINT",
-						#"description": "???"
-					#},
-					#"is_disabled": true,
-					#"action": func() -> void:
-						#pass,
-				#}
-			#]
-		#},
-		#{
-			#"title": "PERSONNEL MANAGEMENT",
-			#"items": [
-				#{
-					#"title": "VIEW PROFILES" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
-					#"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
-					#"hint": {
-						#"icon": SVGS.TYPE.INVESTIGATE,
-						#"title": "HINT",
-						#"description": "View personnel records"
-					#} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
-						#"icon": SVGS.TYPE.QUESTION_MARK,
-						#"title": "HINT",
-						#"description": "???"
-					#},
-					#"action": func() -> void:
-						#await ActiveMenuNode.lock()
-						#
-						#await GAME_UTIL.view_personnel()
-							#
-						#ActiveMenuNode.unlock(),
-				#},
-				#{
-					#"title": "PROMOTE" if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else "???",
-					#"is_disabled": !ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ),
-					#"hint": {
-						#"icon": SVGS.TYPE.INVESTIGATE,
-						#"title": "HINT",
-						#"description": "Promote a researcher, security officer or administrator."
-					#} if ROOM_UTIL.owns_and_is_active(ROOM.REF.HQ) else {
-						#"icon": SVGS.TYPE.QUESTION_MARK,
-						#"title": "HINT",
-						#"description": "???"
-					#},
-					#"action": func() -> void:
-						#await ActiveMenuNode.lock()
-						#
-						#await GAME_UTIL.promote_researcher()
-							#
-						#ActiveMenuNode.unlock(),
-				#}
-			#]
-		#}		
-	#]
-	#
-	#active_menu_is_open = true
-	#ActiveMenuNode.onClose = func() -> void:	
-		#active_menu_is_open = false
-		#show_facility_complete.emit()		
-	#
-	#ActiveMenuNode.options_list = options
-	#
-	#add_child(ActiveMenuNode)
-	#await ActiveMenuNode.activate(2)
-	#ActiveMenuNode.open()	
-	#
-	#await show_facility_complete
-# --------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------s
 
 # --------------------------------------------------------------------------------------------------
 signal show_settings_complete
@@ -1421,14 +1313,14 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty() or control_pos.is_empty():return
 	
-	match camera_settings.type:
-		# ----------------------
-		CAMERA.TYPE.FLOOR_SELECT:
-			NameControl.hide()
-			
-		# ----------------------
-		CAMERA.TYPE.WING_SELECT:
-			NameControl.hide()
+	#match camera_settings.type:
+		## ----------------------
+		#CAMERA.TYPE.FLOOR_SELECT:
+			#NameControl.hide()
+			#
+		## ----------------------
+		#CAMERA.TYPE.WING_SELECT:
+			#NameControl.hide()
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1493,11 +1385,38 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			FabricationBtn.is_disabled = !is_powered
+			# always show/always working
+			FabricationBtn.show()
+			FabricationBtn.is_disabled = false #!is_powered
+			
+			# need engineering department before you can use this 
+			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) else EngineeringBtn.hide()
+			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
+			
+			AdminBtn.show() if ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) else AdminBtn.hide()
+			AdminBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT)
+			
+			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) else SecurityBtn.hide()
+			SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
+			
+			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) else ScienceBtn.hide()
+			ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
+			
+			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) else MedicalBtn.hide()
+			MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
+			
+			OperationsBtn.hide()
+			DebugBtn.hide()
+			TelemetryBtn.show()
+			
 			# WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
-			OperationsBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty() 
-			ManagementBtn.is_disabled = rooms_in_wing_count == 0
+			#OperationsBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty() 
+			#ManagementBtn.is_disabled = rooms_in_wing_count == 0
 			#GenActionBtn.is_disabled = !has_one_floor_activated
+			
+
+											
+			
 		# -----------	
 		MODE.INFO:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
@@ -1537,7 +1456,7 @@ func check_btn_states() -> void:
 			SummaryControls.onBack = func() -> void:
 				ModulesCard.deselect_btns()
 				await SummaryControls.reveal(false)
-				current_mode = MODE.COMMANDS
+				current_mode = MODE.ADMINISTRATION
 		
 			SummaryControls.onUpdate = func(node:Control) -> void:
 				for _node in SummaryControls.itemlist:
@@ -1562,6 +1481,97 @@ func check_btn_states() -> void:
 						SummaryControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE MODULE" 
 						SummaryControls.disable_active_btn = node.ref_data.is_disabled
 					# ----------------------
+		# -----------	
+		MODE.ADMINISTRATION:
+			AdminControls.disable_active_btn = is_room_empty
+			AdminControls.a_btn_title = "UTILIZE" if has_options else "NO ABILITIES"
+			
+			AdminControls.onAction = func() -> void:
+				await AdminControls.reveal(false)
+				current_mode = MODE.SUMMARY_CARD
+
+				
+			AdminControls.onCBtn = func() -> void:
+				await AdminControls.reveal(false)				
+				await show_programs([ROOM.CATEGORY.ADMIN_LINKABLE], "ADMIN PROGRAMS")
+				AdminControls.reveal(true)
+
+			AdminControls.onBack = func() -> void:
+				await AdminControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.NONE
+		# -----------	
+		MODE.SECURITY:
+			SecurityControls.disable_active_btn = is_room_empty
+			
+			SecurityControls.onAction = func() -> void:
+				await SecurityControls.reveal(false)				
+				print("lockdown this room or unlock this room")
+				print("lockdown stops the spreading of bad events, contaigons, etc")
+				await U.set_timeout(1.0)
+				SecurityControls.reveal(true)			
+			
+			SecurityControls.onCBtn = func() -> void:
+				await SecurityControls.reveal(false)				
+				await show_programs([ROOM.CATEGORY.SECURITY_LINKABLE], "SECURITY PROGRAMS")
+				SecurityControls.reveal(true)
+
+			SecurityControls.onBack = func() -> void:
+				await SecurityControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.NONE
+		# -----------
+		MODE.SCIENCE:
+			ScienceControls.disable_active_btn = is_room_empty or !is_activated or at_max_level
+			
+			ScienceControls.onAction = func() -> void:
+				await ScienceControls.reveal(false)				
+				var confirm:bool = await GAME_UTIL.upgrade_facility()
+				if confirm:
+					await U.tick()
+					on_current_location_update()	
+				ScienceControls.reveal(true)			
+			
+			ScienceControls.onCBtn = func() -> void:
+				await ScienceControls.reveal(false)				
+				await show_programs([ROOM.CATEGORY.SCIENCE_LINKABLE], "SCIENCE PROGRAMS")			
+				ScienceControls.reveal(true)
+
+			ScienceControls.onBack = func() -> void:
+				await ScienceControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.NONE
+		# -----------
+		MODE.MEDICAL:
+			
+			MedicalControls.onAction = func() -> void:
+				pass
+				
+			MedicalControls.onCBtn = func() -> void:
+				reveal_medical(false)
+				await MedicalControls.reveal(false)
+				camera_settings.type = CAMERA.TYPE.WING_SELECT 
+				SUBSCRIBE.camera_settings = camera_settings
+				TransistionScreen.start(0.3, true)
+				await show_programs([ROOM.CATEGORY.MEDICAL_LINKABLE], "MEDICAL PROGRAMS")
+				camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
+				SUBSCRIBE.camera_settings = camera_settings
+				MedicalControls.reveal(true)
+				reveal_medical(true)
+				
+			MedicalControls.onBack = func() -> void:
+				reveal_medical(false)
+				await MedicalControls.reveal(false)
+				camera_settings.type = CAMERA.TYPE.WING_SELECT
+				SUBSCRIBE.camera_settings = camera_settings
+				TransistionScreen.start(0.3, true)
+				
+				lock_actions(false)
+				current_mode = MODE.NONE
+				GameplayNode.restore_player_hud()
+				GameplayNode.show_timeline = true
+				reveal_action_label(true, false)
+				
 		# -----------	
 		MODE.COMMANDS:
 			var can_activate:bool = ROOM_UTIL.can_activate_check(room_extract.room.details.ref)	if !room_extract.room.is_empty() else false
@@ -1600,7 +1610,7 @@ func check_btn_states() -> void:
 		# -----------	
 		MODE.PROGRAMS:
 			current_mode = MODE.ACTIVE_MENU_OPEN
-			await show_program_list()
+			await show_programs([], "ALL PROGRAMS")
 			current_mode = MODE.NONE
 		MODE.TELEMETRY:
 			TelemetryControls.disable_active_btn = room_base_state.events_pending.is_empty()
@@ -1635,54 +1645,61 @@ func check_btn_states() -> void:
 				telemetry_count = U.min_max(telemetry_count + 1, 0, list.size() - 1, true)
 				var next_item:Dictionary = list[telemetry_count]
 				SUBSCRIBE.current_location = next_item.location
-			
 		# -----------	
-		MODE.BUILD:	
-			DesignControls.a_btn_title = ("SELECT FACILITY" if is_room_empty else "DESTROY") if !is_under_construction else "CANCEL CONSTRUCTION"
-			DesignControls.c_btn_title = "RUSH CONSTRUCTION"
-			
-			DesignControls.hide_c_btn = !is_under_construction
-			
-			DesignControls.onCBtn = func() -> void:
-				await DesignControls.reveal(false)
-				var confirm:bool = await GAME_UTIL.rush_construction_room()
+		MODE.FABRICATION:	
+			if is_under_construction:
+				FabricationControls.a_btn_title = "RUSH FABRICATION" if is_room_empty else "RUSH MODULE"
+			else:
+				FabricationControls.a_btn_title = ("FABRICATE DEPARTMENT" if is_room_empty else "FABRICATE MODULE") 
+				
+			FabricationControls.c_btn_title = "CANCEL FABRICATION" if is_under_construction else "REMOVE FACILITY"
+			FabricationControls.disable_c_btn = is_room_empty
+			FabricationControls.disable_active_btn = false
+
+			# remove room
+			FabricationControls.onCBtn = func() -> void:
+				await FabricationControls.reveal(false)
+				var confirm:bool
+				if is_under_construction:
+					confirm = await GAME_UTIL.cancel_construction(current_location)
+				else:
+					confirm = await GAME_UTIL.reset_room(current_location)
+				
 				if confirm:
 					await U.tick()
 					on_current_location_update()
-				DesignControls.reveal(true)
-				return
+				FabricationControls.reveal(true)
 			
-			DesignControls.onAction = func() -> void:				
-				await DesignControls.reveal(false)
-				
-				# if cancel construction
-				if is_under_construction:
-					var made_changes:bool = await GAME_UTIL.cancel_construction(current_location)
-					if made_changes:
-						await U.tick()
-						on_current_location_update()
-					DesignControls.reveal(true)
-					return
-				
-				# if build new room
-				if is_room_empty:
-					await show_build_options()
-					DesignControls.reveal(true)
+			FabricationControls.onAction = func() -> void:
+				await FabricationControls.reveal(false)
+				if is_room_empty or (!is_room_empty and !is_under_construction):
+					await show_fabrication_options()
+					FabricationControls.reveal(true)
 					reveal_summarycard(true, false)
 					return
-						
-				#...else destroy room
-				var confirm:bool = await GAME_UTIL.reset_room(current_location)
+			
+				var confirm:bool = await GAME_UTIL.rush_construction_room()
 				if confirm:
-					await U.tick()
 					on_current_location_update()
-				DesignControls.reveal(true)
+				FabricationControls.reveal(true)
 						
-			DesignControls.onBack = func() -> void:
+			FabricationControls.onBack = func() -> void:
 				WingRenderNode.set_to_build_mode(false)
-				await DesignControls.reveal(false)
+				await FabricationControls.reveal(false)
 				current_mode = MODE.NONE
-
+		# -----------	
+		MODE.FABRICATION_LINKABLE:
+			FabricationControls.a_btn_title = "BUILD HERE"
+			FabricationControls.disable_active_btn = !is_room_empty or (current_location.room not in list_of_adjacent_rooms)
+			
+			FabricationControls.onAction = func() -> void:
+				await FabricationControls.reveal(false)
+				linkable_action.emit(true)
+				
+			FabricationControls.onBack = func() -> void:
+				await FabricationControls.reveal(false)
+				linkable_action.emit(false)
+			
 # --------------------------------------------------------------------------------------------------
 func set_backdrop_state(state:bool) -> void:	
 	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.7 if state else 0.0))	
@@ -1740,9 +1757,7 @@ func reveal_summarycard(state:bool, show_modules:bool = true, duration:float = 0
 # --------------------------------------------------------------------------------------------------		
 func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
-	
-	reveal_action_label(state, 0.4, "ENGINEERING")
-	
+		
 	if state:
 		EngineeringPanel.show()
 		
@@ -1754,10 +1769,8 @@ func reveal_engineering(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_topography(state:bool, duration:float = 0.3) -> void:
+func reveal_medical(state:bool, duration:float = 0.3) -> void:
 	if !is_node_ready():return
-	
-	reveal_action_label(state, 0.4, "HEALTH AND WELFARE")			
 	
 	if state:
 		TopographyPanel.show()
@@ -1853,6 +1866,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		match current_mode:
 			# --------------
 			MODE.NONE:
+				NameControl.show()
 				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
@@ -1863,11 +1877,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				lock_actions(false)
 				set_backdrop_state(false)
 				reveal_summarycard(false, false)
-				
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
 			# --------------
 			MODE.INFO:
+				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
@@ -1876,6 +1890,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				InfoControls.reveal(true)
 			# --------------
 			MODE.SUMMARY_CARD:
+				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
@@ -1883,13 +1898,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 
 				SummaryControls.itemlist = ModulesCard.get_ability_btns()
 				SummaryControls.item_index = 0
-			# --------------
-			MODE.ENGINEERING:
-				LocationAndDirectivesContainer.reveal(false)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
-				
 			# -------------
 			MODE.TELEMETRY:
+				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				telemetry_count = 0
 				GameplayNode.show_marked_objectives = false
@@ -1899,11 +1910,13 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_telemetry(true)
 			# -------------
 			MODE.HEALTH:
+				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false					
+				GameplayNode.show_timeline = false
 			# --------------
-			MODE.BUILD:
+			MODE.FABRICATION:
+				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.set_to_build_mode(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
@@ -1911,28 +1924,90 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
-				reveal_action_label(true, 0.4, "FABRICATION")
-				DesignControls.reveal(true)			
+				reveal_action_label(true, 0.4, "FABRICATION DEPARTMENT")
+				FabricationControls.reveal(true)
 			# --------------
-			MODE.COMMANDS:
-				LocationAndDirectivesContainer.reveal(true)
-				#WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+			MODE.ENGINEERING:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)
+				reveal_action_label(true, 0.4, "ENGINEERING DEPARTMENT")
+			# --------------
+			MODE.ADMINISTRATION:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "MANAGEMENT")
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, true)
-				CommandControls.reveal(true)
-				
-				list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
-				list_of_available_rooms.sort()
-				selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]
-				if selected_room != -1:
-					SUBSCRIBE.current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": selected_room}
-				WingRenderNode.highlight_rooms = [selected_room]								
+				reveal_action_label(true, 0.4, "ADMINISTRATIVE DEPARTMENT")
+				AdminControls.reveal(true)
+			# --------------
+			MODE.SECURITY:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				reveal_summarycard(true, false)
+				reveal_action_label(true, 0.4, "SECURITY DEPARTMENT")
+				SecurityControls.reveal(true)
+			# -----------	
+			MODE.SCIENCE:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false	
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				reveal_summarycard(true, false)
+				reveal_action_label(true, 0.4, "RESEARCH DEPARTMENT")
+				ScienceControls.reveal(true)
+			# -----------	
+			MODE.MEDICAL:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false					
+				camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
+				SUBSCRIBE.camera_settings = camera_settings
+				TransistionScreen.start(0.3, true)
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				reveal_medical(true)		
+				reveal_action_label(true, 0.4, "MEDICAL DEPARTMENT")
+				MedicalControls.reveal(true)
+			# -----------	
+			MODE.ACTIVE_MENU_OPEN:
+				set_backdrop_state(true)
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false
+			# -----------	
+			MODE.COMMANDS:
+				pass
+				#NameControl.hide()
+				#LocationAndDirectivesContainer.reveal(false)
+				##WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				#RenderingNode.set_shader_strength(1)
+				#GameplayNode.show_marked_objectives = false
+				#GameplayNode.show_timeline = false	
+				#reveal_action_label(true, 0.4, "ADMINISTRATIVE")
+				#reveal_summarycard(true, true)
+				#CommandControls.reveal(true)
+				#
+				#list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
+				#list_of_available_rooms.sort()
+				#selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]
+				#if selected_room != -1:
+					#SUBSCRIBE.current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": selected_room}
+				#WingRenderNode.highlight_rooms = [selected_room]								
 			# -----------	
 			MODE.PROGRAMS:
-				LocationAndDirectivesContainer.reveal(true)
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1982,22 +2057,82 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 			WingRenderNode.highlight_rooms = [current_location.room]
 		# ----------------------------
-		MODE.BUILD:
+		MODE.FABRICATION:
 			match key:
 				# ----------------------------
 				"W":
-					U.room_up(true)
+					U.room_up()
 				# ----------------------------
 				"S":
-					U.room_down(true)
+					U.room_down()
 				# ----------------------------
 				"D":
-					U.room_right(true)
+					U.room_right()
 				# ----------------------------
 				"A":
-					U.room_left(true)
+					U.room_left()
+		# ----------------------------					
+		MODE.FABRICATION_LINKABLE:
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up()
+				# ----------------------------
+				"S":
+					U.room_down()
+				# ----------------------------
+				"D":
+					U.room_right()
+				# ----------------------------
+				"A":
+					U.room_left()
 		# ----------------------------
-		MODE.HEALTH:
+		MODE.ADMINISTRATION:			
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up(true, true)
+				# ----------------------------
+				"S":
+					U.room_down(true, true)
+				# ----------------------------
+				"D":
+					U.room_right(true, true)
+				# ----------------------------
+				"A":
+					U.room_left(true, true)
+		# ----------------------------
+		MODE.SECURITY:			
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up(true, true)
+				# ----------------------------
+				"S":
+					U.room_down(true, true)
+				# ----------------------------
+				"D":
+					U.room_right(true, true)
+				# ----------------------------
+				"A":
+					U.room_left(true, true)
+		# ----------------------------
+		MODE.SCIENCE:			
+			match key:
+				# ----------------------------
+				"W":
+					U.room_up(true, true)
+				# ----------------------------
+				"S":
+					U.room_down(true, true)
+				# ----------------------------
+				"D":
+					U.room_right(true, true)
+				# ----------------------------
+				"A":
+					U.room_left(true, true)
+		# ----------------------------
+		MODE.MEDICAL:
 			match key:
 				# ----------------------------
 				"W":

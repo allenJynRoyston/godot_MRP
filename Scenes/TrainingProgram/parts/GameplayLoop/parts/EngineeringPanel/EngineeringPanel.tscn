@@ -172,6 +172,13 @@ title = "ENERGY"
 active_level = 4
 color = Color(0.864543, 0.586489, 0.281442, 1)
 
+[node name="Logistics" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("4_1m6fd")]
+layout_mode = 2
+size_flags_horizontal = 0
+title = "Logistics"
+color = Color(0.640597, 0.660379, 0.647715, 1)
+values = [1, 2, 3, 4]
+
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -204,20 +211,19 @@ alignment = 1
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 0
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 30
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer"]
 layout_mode = 2
-alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "ENERGY AVAILABLE"
 label_settings = ExtResource("8_1jjk5")
-horizontal_alignment = 2
 
 [node name="EnergyItem" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer4/MarginContainer/HBoxContainer" instance=ExtResource("8_u58ao")]
 layout_mode = 2
@@ -226,6 +232,31 @@ icon = 37
 amount = 1
 max_amount = 10
 icon_size = Vector2(20, 20)
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer5/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SUPPORT 1 FACILITY PER WING"
+label_settings = ExtResource("8_1jjk5")
 
 [node name="Upgrade" type="Control" parent="."]
 layout_mode = 2

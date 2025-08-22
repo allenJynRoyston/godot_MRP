@@ -20,7 +20,7 @@ extends PanelContainer
 		offset_readiness = val	
 		update_node()
 
-var base_states:Dictionary
+var room_config:Dictionary
 
 const tutorial_notes:Array = [
 	"There are three main vibes to keep track of: morale, safety and readiness.",
@@ -38,25 +38,25 @@ func _notification(what):
 				SUBSCRIBE.remove_note_node(self)
 
 func _init() -> void:
-	SUBSCRIBE.subscribe_to_base_states(self)
+	SUBSCRIBE.subscribe_to_room_config(self)
 
 func _exit_tree() -> void:
-	SUBSCRIBE.unsubscribe_to_base_states(self)
+	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _ready() -> void:
 	update_node()
 # --------------------------------------------
 
 # --------------------------------------------
-func on_base_states_update(new_val:Dictionary) -> void:
-	base_states = new_val	
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val	
 	U.debounce(str(self, "_update_node"), update_node)
 # --------------------------------------------	
 
 # --------------------------------------------	
 func update_node() -> void:
-	if !is_node_ready() or base_states.is_empty():return
-	var metrics:Dictionary = GAME_UTIL.get_metrics()
+	if !is_node_ready() or room_config.is_empty():return
+	var metrics:Dictionary = room_config.base.metrics
 	
 	# update vibes
 	Morale.value = metrics[RESOURCE.METRICS.MORALE]

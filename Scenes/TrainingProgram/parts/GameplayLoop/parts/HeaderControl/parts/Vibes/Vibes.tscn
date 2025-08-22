@@ -13,6 +13,7 @@ corner_radius_top_right = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r28sf"]
 bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
@@ -27,6 +28,7 @@ theme_override_constants/separation = 0
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jnnei")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Header"]

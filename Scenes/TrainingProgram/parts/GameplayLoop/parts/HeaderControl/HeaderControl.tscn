@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bjpif0yvapqdn"]
+
+[ext_resource type="Script" uid="uid://da8752kxl16py" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/header_control.gd" id="1_6cd3r"]
+[ext_resource type="PackedScene" uid="uid://ccu56yntif2r1" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/HeaderContent/HeaderContent.tscn" id="1_foqo6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ai5k"]
+
+[node name="HeaderPanel" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8ai5k")
+script = ExtResource("1_6cd3r")
+
+[node name="HeaderControl" parent="." instance=ExtResource("1_foqo6")]
+layout_mode = 2

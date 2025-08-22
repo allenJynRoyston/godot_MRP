@@ -5,12 +5,26 @@ const dlc_folder:String = "res://_DLC/"
 
 var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
+	"ref": null,
+	"categories": [],
+	"link_categories": null,
+	"is_department": false,
+		
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
-	"categories": [ROOM.CATEGORY.UTILITY],
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Room description.",
 	# ------------------------------------------
+	
+	# ------------------------------------------
+	"can_destroy": true,
+	"can_assign_researchers": true,
+	"requires_unlock": true,	
+	"own_limit": 99,
+	"unlock_level": 0,
+	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],
+	"required_energy": 1,
+	# ------------------------------------------	
 
 	# ------------------------------------------
 	"can_contain": false,
@@ -26,16 +40,6 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"ref": EVT.TYPE.DIRECTORS_OFFICE,
 		#"day": 10
 	#},	
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"can_destroy": true,
-	"can_assign_researchers": true,
-	"requires_unlock": true,	
-	"own_limit": 99,
-	"unlock_level": 0,
-	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],
-	"required_energy": 1,
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -277,7 +281,7 @@ func add_to_unlocked_list(ref:int) -> void:
 ## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func add_room(ref:int, use_location:Dictionary = current_location) -> void:
+func add_room(ref:int, linkable:bool, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
 	WingRenderNode.start_construction(location_copy)	
@@ -286,6 +290,7 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	purchased_facility_arr.push_back({
 		"ref": ref,
 		"under_construction": true,
+		"linkable": linkable,
 		"location": {
 			"floor": location_copy.floor,
 			"ring": location_copy.ring,
@@ -394,6 +399,12 @@ func calculate_operating_costs(ref:int, add:bool = true) -> Dictionary:
 func build_count(ref:int) -> int:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
 	return filter.size()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------
+func owns(ref:int) -> bool:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
+	return filter.size() > 0
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

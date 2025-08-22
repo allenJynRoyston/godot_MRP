@@ -147,9 +147,9 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
-title = "INTEL"
+title = "TELEMETRY"
 assigned_key = "T"
-icon = 17
+icon = 47
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -184,20 +184,8 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "SECURITY"
-assigned_key = "C"
-icon = 48
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
-[node name="ScienceBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "SCIENTIFIC"
 assigned_key = "R"
-icon = 49
+icon = 48
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -214,12 +202,12 @@ hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
-[node name="MedicalBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+[node name="HealthBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
-title = "MEDICAL"
+title = "HEALTH AND WELFARE"
 assigned_key = "H"
 icon = 39
 hidden_but_usable = false
@@ -300,21 +288,14 @@ a_btn_title = "UNLOCK"
 layout_mode = 2
 a_btn_title = "DEALLOCATE STAFF"
 intercept_click_event = true
-c_btn_title = "ADMIN OPERATIONS"
+c_btn_title = "OPERATIONS"
 hide_c_btn = false
 
 [node name="SecurityControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "LOCKDOWN"
+a_btn_title = "UNUSED"
 intercept_click_event = true
-c_btn_title = "SECURITY OPERATIONS"
-hide_c_btn = false
-
-[node name="ScienceControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "UPGRADE"
-intercept_click_event = true
-c_btn_title = "RESEARCH OPERATIONS"
+c_btn_title = "OPERATIONS"
 hide_c_btn = false
 
 [node name="CommandControls" parent="." instance=ExtResource("10_58xi4")]
@@ -340,12 +321,11 @@ intercept_click_event = true
 c_btn_title = "REPLAY TUTORIAL"
 hide_c_btn = false
 
-[node name="MedicalControls" parent="." instance=ExtResource("10_58xi4")]
+[node name="TopographyControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 a_btn_title = "ENGINEERING"
 hide_a_btn = true
-c_btn_title = "MEDICAL PROGRAMS"
-hide_c_btn = false
+c_btn_title = "TELEMETRY"
 
 [node name="TelemetryControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
@@ -445,7 +425,7 @@ custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 200
+theme_override_constants/margin_top = 170
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true

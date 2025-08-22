@@ -220,6 +220,7 @@ func on_update() -> void:
 	show()
 	
 	if modules_only:
+		SidePanel.hide()
 		InfoContainer.hide()
 		ModuleComponent.room_details = {}
 		
@@ -265,7 +266,8 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	var personnel_capacity:Dictionary = room_details.details.personnel_capacity	
 	var required_staffing:Array = room_details.details.required_staffing
 
-	# assign details		t
+	# assign details
+	SidePanel.show()
 	InfoContainer.show()
 	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
 	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]

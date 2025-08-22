@@ -1,17 +1,7 @@
 extends Control
 
-@onready var NameLabel:Label = $VBoxContainer/NameLabel
-@onready var Icon:Control = $VBoxContainer/SVGIcon
-
-@onready var MoneyIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MoneyIcon
-@onready var MatIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/MatIcon
-@onready var ScienceIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/ScienceIcon
-@onready var CoreIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/CoreIcon
-
-@onready var TechnicianIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/TechnicianIcon
-@onready var StaffIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/StaffIcon
-@onready var SecurityIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/SecurityIcon
-@onready var DClassIcon:Control = $VBoxContainer/PanelContainer/MarginContainer/List/DClassIcon
+@onready var DownArrowIcon:Control = $Control/DownArrowIcon
+@onready var ListIcon:Control = $MarginContainer/ListContainer
 
 @export var show_resource_reason:bool = false : 
 	set(val):
@@ -30,6 +20,8 @@ extends Control
 
 @export var ignore_current_location:bool = false
 
+const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn")
+const EcoItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 const fade_int:float = 5
 
 var room_config:Dictionary = {}
@@ -37,6 +29,7 @@ var current_location:Dictionary = {}
 var offset:Vector2
 var name_str:String
 var shifted_val:int = 5
+var is_room_empty:bool 
 
 var previous_ring:int
 var previous_floor:int
@@ -94,8 +87,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	if previous_ring != current_location.ring or previous_floor != current_location.floor:
 		previous_ring = current_location.ring 
 		previous_floor = current_location.floor
-	
-		await U.tick()
+
 		U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
 
 func on_room_config_update(new_val:Dictionary) -> void:
@@ -121,74 +113,86 @@ func update_node(shift_val:int = 10) -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
 	shifted_val = shift_val
 	
+	# clear list
+	for child in ListIcon.get_children():
+		child.queue_free()
+	
 	# get location
 	var use_location:Dictionary = current_location.duplicate()
 	use_location.room = index
 	
-	# config data
-	var room_config_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	
-	# hide/show personnel icons
-	#for key in room_config_data.personnel:
-		#var val:bool = 	room_config_data.personnel[key]
-		#match key:
-			#RESOURCE.PERSONNEL.TECHNICIANS:
-				#TechnicianIcon.hide() if !val else TechnicianIcon.show()
-			#RESOURCE.PERSONNEL.STAFF:
-				#StaffIcon.hide() if !val else StaffIcon.show()
-			#RESOURCE.PERSONNEL.SECURITY:
-				#SecurityIcon.hide() if !val else SecurityIcon.show()
-			#RESOURCE.PERSONNEL.DCLASS:
-				#DClassIcon.hide() if !val else DClassIcon.show()
-
 	# hide/show currency icons
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
-	var is_room_empty:bool = room_extract.room.is_empty()
+	is_room_empty = room_extract.room.is_empty()
 	self.modulate = Color(1, 1, 1, 1 if !is_room_empty or !fade else 0)
 	
-	if !is_room_empty:
-		var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
-		var currencies_check:Dictionary = {
-			RESOURCE.CURRENCY.MONEY: 0,
-			RESOURCE.CURRENCY.MATERIAL: 0,
-			RESOURCE.CURRENCY.SCIENCE: 0,
-			RESOURCE.CURRENCY.CORE: 0
-		}
-		
-		for key in room_details.currencies:
-			currencies_check[key] += room_details.currencies[key]
-
-		if !room_extract.scp.is_empty():
-			for key in room_extract.scp.details.currencies: 
-				currencies_check[key] += room_extract.scp.details.currencies[key]
+	if is_room_empty:
+		hide()
+		return
+	
+	show()
+	
+	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
+	var is_empty:bool = true
+	
+	for ref in room_details.currencies:
+		var amount:int = room_details.currencies[ref]
+		if amount != 0:
+			var new_node:Control = EcoItemPreload.instantiate()
+			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			new_node.amount = amount
+			new_node.icon = resource_details.icon
+			ListIcon.add_child(new_node)
+			is_empty = false
+			
+	for ref in room_details.metrics:
+		var amount:int = room_details.metrics[ref]
+		if amount != 0:
+			var new_node:Control = VibeItemPreload.instantiate()
+			var resource_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
+			new_node.value = amount
+			new_node.metric = ref
+			new_node.invert_color = true
+			new_node.big_numbers = true
+			ListIcon.add_child(new_node)
+			is_empty = false
 				
-		for key in currencies_check:
-			var amount:int = currencies_check[key]
-			match key:
-				RESOURCE.CURRENCY.MONEY:
-					MoneyIcon.hide() if amount <= 0 else MoneyIcon.show()
-				RESOURCE.CURRENCY.MATERIAL:
-					MatIcon.hide() if amount <= 0 else MatIcon.show()
-				RESOURCE.CURRENCY.SCIENCE:
-					ScienceIcon.hide() if amount <= 0 else ScienceIcon.show()
-				RESOURCE.CURRENCY.CORE:
-					CoreIcon.hide() if amount <= 0 else CoreIcon.show()
+	
+	hide() if is_empty else show()
+	
+	await U.tick()
+	self.size = Vector2(1, 1)	
+		#if !room_extract.scp.is_empty():
+			#for key in room_extract.scp.details.currencies: 
+				#currencies_check[key] += room_extract.scp.details.currencies[key]
+				
+		#for key in currencies_check:
+			#var amount:int = currencies_check[key]
+			#match key:
+				#RESOURCE.CURRENCY.MONEY:
+					#MoneyIcon.hide() if amount <= 0 else MoneyIcon.show()
+				#RESOURCE.CURRENCY.MATERIAL:
+					#MatIcon.hide() if amount <= 0 else MatIcon.show()
+				#RESOURCE.CURRENCY.SCIENCE:
+					#ScienceIcon.hide() if amount <= 0 else ScienceIcon.show()
+				#RESOURCE.CURRENCY.CORE:
+					#CoreIcon.hide() if amount <= 0 else CoreIcon.show()
 		
-		name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
-		Icon.icon_color = Color.GREEN if room_extract.room.is_activated else COLORS.disabled_color
-
-	hide() if is_room_empty else show()
-# --------------------------------------------
+	#name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
+		#Icon.icon_color = Color.GREEN if room_extract.room.is_activated else COLORS.disabled_color
 
 # --------------------------------------------
+
+# -------------------------------------------- update location
 func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos - Vector2(self.size.x/2 - 20, -50)
+	self.global_position = tag_pos + Vector2(40, -20 if is_room_empty else -100) - Vector2(self.size.x/2, 0)
+	DownArrowIcon.position.x = 3
 
-func _physics_process(delta: float) -> void:
-	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
-	if shifted_val > 0:
-		shifted_val -= 1		
-		NameLabel.text = str(" ", shift_string_backward(name_str, shifted_val))
+#func _physics_process(delta: float) -> void:
+	#if !is_node_ready() or !is_visible_in_tree() or index == -1:return
+	#if shifted_val > 0:
+		#shifted_val -= 1		
+		#NameLabel.text = str(" ", shift_string_backward(name_str, shifted_val))
 # --------------------------------------------

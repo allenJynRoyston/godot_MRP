@@ -145,8 +145,6 @@ func animate_under_construction(state:bool, skip_animation:bool = false) -> void
 		under_construction_is_animating = false
 		return
 	
-
-	
 	# else animate...
 	if state:
 		for node in [SafetyLights, ParticleEmitter, RoomRender]:
@@ -174,7 +172,6 @@ func animate_under_construction(state:bool, skip_animation:bool = false) -> void
 		custom_tween_node_property(gate_two_tween, Flap2, "position:x", 13 if state else 4, animation_speed)
 		await custom_tween_node_property(gate_one_tween, Flap1, "position:x", -13 if state else -4, animation_speed)
 	
-
 		for node in [ParticleEmitter, ConstructionOmniLight, RoomRender, SafetyLights]:
 			node.hide()
 	
@@ -204,8 +201,7 @@ func animate_built(state:bool, skip_animation:bool = false) -> void:
 		await U.tick()
 		build_is_animating = false
 		return
-
-
+		
 	# first animate gates
 	await animate_under_construction(false, true)	
 	
@@ -255,29 +251,66 @@ func update_room_data() -> void:
 	var skip_animation:bool = true # leave this set to true
 	var final_color:Color
 	
-	# check if under construction
-	if is_under_construction:
-		set_texture(RoomRenderUnderConstructionMaterial)
-		final_color = OriginalMaterial.albedo_color	
-		animate_under_construction(is_under_construction, skip_animation)
-	
-	# or if it's activated
-	if !is_empty and !is_under_construction:
-		set_texture(RoomRenderBuiltMaterial)	
-		final_color = OriginalMaterial.albedo_color	 if is_activated else Color.RED
-		animate_built(true, skip_animation)
-
-	# and then apply mesh and albedo
-	if is_under_construction or !is_empty:
-		# default color is current color
-		final_color.a = 1 if is_selected else 0.5
+	# overhead build mode (non texture)
+	if camera_viewpoint == CAMERA.VIEWPOINT.OVERHEAD:
+		set_texture(RoomRenderBuiltMaterial)
+		OriginalMaterial.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		
+		if is_under_construction:		
+			final_color = Color.DARK_TURQUOISE
+		
+		else:
+			final_color = Color.ORANGE
+		
+			
 		DuplicateMaterial.albedo_color = final_color
-		RoomMesh.surface_set_material(0, DuplicateMaterial)
-		return
+		RoomMesh.surface_set_material(0, DuplicateMaterial)	
 	
-	# if room is empty, reset all
-	animate_under_construction(false, skip_animation)
-	animate_built(false, skip_animation)
+	# normal view mode (fully textured)
+	else:	
+
+		# check if under construction
+		if is_under_construction:
+			set_texture(RoomRenderUnderConstructionMaterial)
+			final_color = OriginalMaterial.albedo_color
+			animate_under_construction(is_under_construction, skip_animation)
+		
+		# or if it's activated
+		if !is_empty and !is_under_construction:
+			set_texture(RoomRenderBuiltMaterial)
+			final_color = OriginalMaterial.albedo_color	 if is_activated else Color.ORANGE
+			animate_built(true, skip_animation)
+
+		# and then apply mesh and albedo
+		if is_under_construction or !is_empty:
+			match room_extract.room.details.environmental.temp:
+				# hot (blue shades)
+				-1:
+					final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.2)  
+				-2:
+					final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.5)
+				-3:
+					final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.9)
+					
+				# hot (red shades)
+				1:
+					final_color = OriginalMaterial.albedo_color + Color(0.2, 0, 0)  
+				2:
+					final_color = OriginalMaterial.albedo_color + Color(0.5, 0, 0)  
+				3:
+					final_color = OriginalMaterial.albedo_color + Color(0.9, 0, 0)  
+
+
+			# default color is current color
+			final_color.a = 1 if is_selected else 0.5
+				
+			DuplicateMaterial.albedo_color = final_color
+			RoomMesh.surface_set_material(0, DuplicateMaterial)
+			return
+	
+		# if room is empty, reset all
+		animate_under_construction(false, skip_animation)
+		animate_built(false, skip_animation)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

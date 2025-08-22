@@ -226,7 +226,13 @@ func on_options_list_update() -> void:
 		List.add_child(btn_node)		
 		return
 	
-	PaginationContainer.show() if options_list.size() > 1 else PaginationContainer.hide()
+	PaginationContainer.show()# if options_list.size() > 1 else PaginationContainer.hide()
+	for icon in [PrevIcon, NextIcon]:
+		if options_list.size() > 1:
+			icon.show() 
+		else:
+			icon.hide()
+	
 	if options_list.size() > 1:
 		PrevIcon.icon_color.a = 0.2 if tab_index == 0 else 1
 		NextIcon.icon_color.a = 0.2 if tab_index == options_list.size() - 1 else 1

@@ -518,7 +518,7 @@ func run_event(event_ref:EVT.TYPE) -> void:
 	if event_ref not in base_states.event_record:
 		base_states.event_record[event_ref] = {
 			"count": 0,
-			"triggered_on_day": progress_data.current_day,
+			"triggered_on_day": progress_data.day,
 			"outcome_type": [],
 			"outcome_results": []
 		}
@@ -1474,7 +1474,7 @@ func add_currency_to_adjacent_rooms(_new_room_config:Dictionary, amount:int, res
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-func get_list_of_programs(use_location:Dictionary = current_location, include_all:bool = false) -> Array:
+func get_list_of_programs(use_location:Dictionary = current_location, filter_catagories:Array = []) -> Array:
 	var list:Array = []
 	for item in purchased_facility_arr:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
@@ -1483,10 +1483,14 @@ func get_list_of_programs(use_location:Dictionary = current_location, include_al
 		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]
 		var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(location)
 		var is_activated:bool = room_config_data.is_activated		
-		
+		var include:bool = false
+		for category in room_details.categories:
+			if category in filter_catagories:
+				include = true
+				break
+				
 		for index in abilities.size():
 			var ability:Dictionary = abilities[index]
-			var include:bool = true if include_all else use_location.floor == location.floor and use_location.ring == location.ring
 			var room_designation:String = str(location.floor, location.ring, location.room)
 			var ability_uid:String = str(room_details.ref, index)
 			var abilities_on_cooldown:Dictionary = base_states.room[room_designation].ability_on_cooldown

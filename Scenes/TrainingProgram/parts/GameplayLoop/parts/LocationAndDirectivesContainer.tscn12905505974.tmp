@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://chcu224iunhwr"]
+[gd_scene load_steps=9 format=3 uid="uid://chcu224iunhwr"]
 
 [ext_resource type="Script" uid="uid://dpgivctsdi0w0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/location_and_directives_container.gd" id="1_6qlav"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="1_k8dpa"]
 [ext_resource type="PackedScene" uid="uid://y15q2qyj1364" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/TempMonitor.tscn" id="3_qr38x"]
-[ext_resource type="PackedScene" uid="uid://dqn2ef77ux60p" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/PollutionMonitor.tscn" id="4_6qlav"]
 [ext_resource type="PackedScene" uid="uid://cwdbde0bi13fr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/parts/RealityMonitor.tscn" id="4_k8dpa"]
 [ext_resource type="PackedScene" uid="uid://bxuo606skn1w" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Visualizer/Visualizer.tscn" id="4_mi0lt"]
 
@@ -62,15 +61,10 @@ theme_override_constants/separation = 0
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="Monitors" type="HBoxContainer" parent="Component/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Component/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TempMonitor" parent="Component/MarginContainer/VBoxContainer/Monitors" instance=ExtResource("3_qr38x")]
-layout_mode = 2
-mini = true
-
-[node name="PollutionMonitor" parent="Component/MarginContainer/VBoxContainer/Monitors" instance=ExtResource("4_6qlav")]
-visible = false
+[node name="TempMonitor" parent="Component/MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("3_qr38x")]
 layout_mode = 2
 
 [node name="Directives" type="VBoxContainer" parent="Component/MarginContainer/VBoxContainer"]

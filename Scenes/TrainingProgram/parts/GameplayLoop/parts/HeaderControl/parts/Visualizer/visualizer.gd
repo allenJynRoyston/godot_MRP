@@ -3,15 +3,17 @@ extends Control
 @onready var VisulizerPanel:PanelContainer = $"."
 @onready var VisulizerMargin:MarginContainer = $MarginContainer
 
-@onready var FloorVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/FloorVisualizer
-@onready var WingVisualizer:HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/WingVisualizer
-@onready var RoomVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer/RoomVisualizer
+@onready var SectorLabel:Label = $MarginContainer/VBoxContainer/Location/HeaderHBox/Header/MarginContainer/SectorLabel
 
-@onready var SectorLabel:Label = $MarginContainer/VBoxContainer/PanelContainer/MarginContainer/SectorLabel
+@onready var FloorVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/FloorVisualizer
+@onready var WingVisualizer:HBoxContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/WingVisualizer
+@onready var RoomVisualizer:VBoxContainer = $MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/RoomVisualizer
 
+@onready var FloorLabel:Label = $MarginContainer/VBoxContainer/Location/Floor/FloorLabel
+@onready var WingLabel:Label = $MarginContainer/VBoxContainer/Location/Wing/WingLabel
+@onready var RoomLabel:Label = $MarginContainer/VBoxContainer/Location/Room/RoomLabel
 
 var room_visualizer_nodes:Array = []
-
 var current_location:Dictionary = {}
 var camera_settings:Dictionary = {}
 var control_pos:Dictionary = {}
@@ -19,43 +21,16 @@ var control_pos:Dictionary = {}
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)
-	SUBSCRIBE.subscribe_to_camera_settings(self)
-
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_current_location(self)
-	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
 func _ready() -> void:
-	var os_settings:Dictionary = GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].os_settings
-	
 	for HBoxNode in RoomVisualizer.get_children():
 		for child in HBoxNode.get_children():
 			room_visualizer_nodes.push_back(child)
-			
-	await U.tick()
-	
-	control_pos[VisulizerPanel] = {
-		"show": 0,
-		"hide": -VisulizerMargin.size.y
-	}
-	
-	
-	reveal(false, true)
 # --------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------
-func reveal(state:bool, instant:bool = false) -> void:
-	if control_pos.is_empty():return
-	
-	var new_pos_visualizer:int = control_pos[VisulizerPanel].show if state else control_pos[VisulizerPanel].hide
-
-	if instant:
-		VisulizerPanel.position.y = new_pos_visualizer
-		return
-	
-	await U.tween_node_property(VisulizerPanel, "position:y", new_pos_visualizer)
-# --------------------------------------------------------------------------------------------------
 
 # -----------------------------------------------	
 func on_current_location_update(new_val:Dictionary) -> void:
@@ -72,22 +47,10 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	for index in room_visualizer_nodes.size():
 		var IconBtn:Control = room_visualizer_nodes[index]
 		IconBtn.static_color = Color(1, 1, 1, 1 if index == new_val.room else 0.75)
+	
+	FloorLabel.text = str(new_val.floor)
+	WingLabel.text = U.ring_to_str(new_val.ring)
+	RoomLabel.text = str(new_val.room)
 		
 	SectorLabel.text = str("SECTOR ", new_val.floor, U.ring_to_str(new_val.ring))
-# -----------------------------------------------			
-
-# ----------------------------------------------			
-func on_camera_settings_update(new_val:Dictionary) -> void: 
-	if !is_node_ready() or new_val.is_empty():return
-	#var nodes:Array = [FloorVisualizer, WingVisualizer, RoomVisualizer]
-#
-	#match new_val.type:
-		#CAMERA.TYPE.FLOOR_SELECT:
-			#ModeLabel.text = "OVEERSEER MODE"
-					#
-		#CAMERA.TYPE.WING_SELECT:
-			#ModeLabel.text = "FLOOR MANAGER MODE"
-			#
-		#CAMERA.TYPE.ROOM_SELECT:
-			#ModeLabel.text = "ROOM MANAGER MODE"
 # -----------------------------------------------			

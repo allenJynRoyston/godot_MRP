@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://djft0vod8xyqg"]
+[gd_scene load_steps=7 format=3 uid="uid://djft0vod8xyqg"]
 
 [ext_resource type="Script" uid="uid://bbooyim4irs2v" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/MarkedObjectivesContainer/marked_objectives_container.gd" id="1_jh8wr"]
 [ext_resource type="PackedScene" uid="uid://bf3827l1mdr17" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ObjectivesContainer/parts/ObjectiveItem.tscn" id="1_sed7y"]
@@ -7,33 +7,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ixlt"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jh8wr"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hud5c"]
-
-[sub_resource type="GDScript" id="GDScript_2ixlt"]
-script/source = "extends MouseInteractions
-
-var onFocus:Callable = func():pass
-var onBlur:Callable = func():pass
-
-
-# --------------------------------------	
-func on_focus(state:bool) -> void:
-	if state:
-		onFocus.call()
-	else:
-		onBlur.call()
-# --------------------------------------	
-"
-
-[sub_resource type="Gradient" id="Gradient_q3i3u"]
-offsets = PackedFloat32Array(0, 0.992537)
-colors = PackedColorArray(0, 0, 0, 0.356863, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_q76y8"]
-gradient = SubResource("Gradient_q3i3u")
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud5c"]
 bg_color = Color(1, 1, 1, 0)
@@ -69,45 +42,34 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jh8wr")
 
-[node name="DetectorPanel" type="PanelContainer" parent="Control/PanelContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_hud5c")
-script = SubResource("GDScript_2ixlt")
-
-[node name="Gradiant" type="TextureRect" parent="Control/PanelContainer/DetectorPanel"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-texture = SubResource("GradientTexture2D_q76y8")
-flip_h = true
-
 [node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 130
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Objectives" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/Objectives"]
 layout_mode = 2
 text = "OBJECTIVES"
 label_settings = ExtResource("2_hud5c")
 
-[node name="ObjectiveList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ObjectiveList" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/Objectives"]
 custom_minimum_size = Vector2(400, 270)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/separation = -10
 
-[node name="ObjectiveItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/ObjectiveList" instance=ExtResource("1_sed7y")]
+[node name="ObjectiveItem" parent="Control/PanelContainer/MarginContainer/VBoxContainer/Objectives/ObjectiveList" instance=ExtResource("1_sed7y")]
 modulate = Color(1, 1, 1, 1)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud5c")

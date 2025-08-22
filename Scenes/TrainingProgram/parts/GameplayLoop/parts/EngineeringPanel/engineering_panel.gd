@@ -18,6 +18,7 @@ extends SubscribeWrapper
 @onready var Ventilation:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Ventilation
 @onready var SRA:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/SRA
 @onready var Energy:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Energy
+@onready var Logistics:Control = $VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer/Logistics
 
 @onready var component_list:Array = [
 	{"node": Heating, "prop": "heating", "description": "Keeps rooms warm and comfortable."}, 
@@ -25,6 +26,7 @@ extends SubscribeWrapper
 	{"node": Ventilation, "prop": "ventilation", "description": "Circulates fresh air throughout the wing."}, 
 	{"node": SRA, "prop": "sra", "description": "Set strength of localized Scranton Reality Anchors."}, 
 	{"node": Energy, "prop": "energy", "description": "Set the available energy for the wing."}, 
+	{"node": Logistics, "prop": "logistics", "description": "Support more rooms with higher logistics rating."}, 
 ]
 
 var control_pos:Dictionary = {}
@@ -115,13 +117,15 @@ func update_node() -> void:
 	Ventilation.active_level = power_distribution.ventilation
 	SRA.active_level = power_distribution.sra
 	Energy.active_level = power_distribution.energy
+	Logistics.active_level = power_distribution.logistics
 	
 	# check if they have the correct buildings to enable
-	Heating.is_disabled = false
-	Cooling.is_disabled = false
-	Ventilation.is_disabled = false
-	SRA.is_disabled = false
-	Energy.is_disabled = false
+	Heating.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_1)
+	Cooling.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_2)
+	Ventilation.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_3)
+	SRA.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_4)
+	Energy.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_5)
+	Logistics.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_6)
 	
 	
 func on_component_list_update() -> void:

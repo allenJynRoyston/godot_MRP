@@ -185,11 +185,12 @@ var initial_values:Dictionary = {
 					"buffs": [],
 					"debuffs": [],
 					"power_distribution": {
-						"heating": 1,
-						"cooling": 1,
-						"ventilation": 2,
+						"heating": 2 if floor_index in [5, 6] else 0,
+						"cooling": 2 if floor_index in [0, 1] else 0,
+						"ventilation": 1,
 						"sra": 1,
 						"energy": 2 if floor_index in [0, 1] else 1,
+						"logistics": 0
 					}
 				}
 				
@@ -197,7 +198,6 @@ var initial_values:Dictionary = {
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
 						"abl_lvl": 0,
-						"is_activated": false,
 						"passives_enabled_list": [],
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
@@ -521,7 +521,6 @@ func start_new_game() -> void:
 		SUBSCRIBE.timeline_array = timeline_array
 		SUBSCRIBE.progress_data = progress_data
 		
-
 	# ----------------------- LAST PHASE, START EVERYTHING AND REMOVE SETUP
 	# then show player hud
 	SetupContainer.subtitle = "Initilization simulation."
@@ -538,7 +537,6 @@ func start_new_game() -> void:
 	
 	# start actionContainer or start at ring level
 	ActionContainer.start()
-	HeaderControl.start()
 		
 	# 6.) CREATE NEW CHECKPOINT IF NEW GAME, 
 	# clear all quicksaves/restorespoints/aftersetup
@@ -920,7 +918,6 @@ func on_current_phase_update() -> void:
 			# hide objectives
 			show_marked_objectives = false
 			
-
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
@@ -1341,18 +1338,19 @@ func update_room_config(force_setup:bool = false) -> void:
 	
 	# ROOM, check for effects
 	room_check_for_effects(new_room_config)	
-	scp_check_for_effects(new_room_config)	
+	#scp_check_for_effects(new_room_config)	
 	
 	# ROOM, setup and loop
-	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
+	# room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
 	
 	# check for buffs/debuffs
-	check_for_buffs_and_debuffs(new_room_config)		
+	# check_for_buffs_and_debuffs(new_room_config)		
+	
 	# check for passives
-	room_passive_check_for_effect(new_room_config)	
+	# room_passive_check_for_effect(new_room_config)	
 	
 	# check after effects
-	room_check_for_after_effects(new_room_config)	
+	# room_check_for_after_effects(new_room_config)	
 	
 	# add metrics/currencies
 	room_calculate(new_room_config)
@@ -1366,16 +1364,15 @@ func update_room_config(force_setup:bool = false) -> void:
 			conditional_dict.on_change.call(val)
 		
 	# then go through each floor and add/sub from the diff
-	for floor_index in new_room_config.floor.size():
-		var floor_level:Dictionary = new_room_config.floor[floor_index]
-		for key in floor_level.currencies:
-			var amount:int = floor_level.currencies[key]
-			resource_diff[key] += amount
+	#for floor_index in new_room_config.floor.size():
+		#var floor_level:Dictionary = new_room_config.floor[floor_index]
+		#for key in floor_level.currencies:
+			#var amount:int = floor_level.currencies[key]
+			#resource_diff[key] += amount
 	
-
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
-	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
+	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals	
 	
 func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	# energy availble per levels
@@ -1383,8 +1380,6 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
-	#new_room_config.base.generator_level = base_states.base.generator_level
-	#new_room_config.base.generator_energy = base_states.base.generator_energy
 	
 	# FLOOR LEVEL ------------- 
 	for floor_index in new_room_config.floor.size():
@@ -1402,16 +1397,23 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 			# setup initial energy
 			ring_level_config.energy.available = energy_levels[ring_base_state.power_distribution.energy - 1] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
 			ring_level_config.energy.used = 0
-			#ring_level.is_ventilated = ring_base_state.is_ventilated
-			#ring_level.is_overheated = ring_base_state.is_overheated
 			
 			# transfer power_distribution
 			ring_level_config.power_distribution = ring_base_state.power_distribution
 			
-			# TODO: swap 0 for heat, pollution, reality generated from room
-			ring_level_config.monitor.temp =  U.min_max(0 + (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
+			# get environmental count
+			var ring_temp_total:int = 0
+			var ring_pollution_total:int = 0
+			var rooms:Array = purchased_facility_arr.filter(func(x): return x.location.floor == floor_index and x.location.ring == ring_index) 
+			for item in rooms:
+				var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+				ring_temp_total = U.min_max( ring_temp_total + room_details.environmental.temp, 0, 3)
+				ring_pollution_total = U.min_max( ring_pollution_total + room_details.environmental.pollution, 0, 3)
+			
+			# assign monitor levels
+			ring_level_config.monitor.temp =  U.min_max(ring_temp_total + (ring_base_state.power_distribution.heating - 1) - (ring_base_state.power_distribution.cooling - 1), -3, 3) 
 			ring_level_config.monitor.reality = U.min_max(0 - (ring_base_state.power_distribution.sra - 1), 0, 3)  
-			ring_level_config.monitor.pollution = U.min_max(0 - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
+			ring_level_config.monitor.pollution = U.min_max(ring_pollution_total - (ring_base_state.power_distribution.ventilation - 1), 0, 3) 
 			
 			# set emergency mode
 			if base_states.base.onsite_nuke.triggered:
@@ -1426,7 +1428,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 				
 				# room level ability level
 				room_level.abl_lvl = room_base_state.abl_lvl
-				room_level.is_activated = room_base_state.is_activated
+				
 
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
@@ -1555,14 +1557,6 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary, new_gamep
 				if room_base_state.passives_enabled[ability_uid]:
 					if "mtf_ref" in ability:
 						ring_config_data.mtf.push_back(ability.mtf_ref)
-					if "base_effect" in ability:
-						ability.base_effect.call(new_room_config.base)
-					if "floor_effect" in ability:
-						ability.floor_effect.call(floor_config_data)
-					if "ring_effect" in ability:
-						ability.ring_effect.call(ring_config_data)
-					if "room_effect" in ability:
-						ability.room_effect.call(room_config_data)
 					if "conditionals" in ability:
 						for conditional in ability.conditionals:
 							new_gameplay_conditionals[conditional].val = true
@@ -1572,19 +1566,32 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
+		
 		var floor_config_data:Dictionary = new_room_config.floor[floor]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 		var is_activated:bool = room_config.is_activated
-	
-		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		if !room_data.effect.is_empty() and is_activated:
-			if room_data.effect.has("func"):
-				new_room_config = room_data.effect.func.call( new_room_config, item )
-			
 
+		if is_activated:
+			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+			
+			# add metrics
+			for ref in room_details.metrics:
+				var amount:int = room_details.metrics[ref]
+				new_room_config.base.metrics[ref] = U.min_max(new_room_config.base.metrics[ref] + amount, -10, 10)
+			
+			# add income
+			for ref in room_details.currencies:
+				var amount:int = room_details.currencies[ref]
+				resources_data[ref].diff += amount
+
+			# check for effect
+			if !room_details.effect.is_empty():
+				if room_details.effect.has("func"):
+					new_room_config = room_details.effect.func.call( new_room_config, item )
+			
 func room_check_for_after_effects(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1647,16 +1654,16 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 						if "metrics" in ability: 
 							for key in ability.metrics:
 								var amount:int = ability.metrics[key]
-								ring_config.metrics[key] += amount
-								room_config.metrics[key] += amount
+								#ring_config.metrics[key] += amount
+								#room_config.metrics[key] += amount
 								
 						# check for metrics
 						if "currencies" in ability: 
 							for key in ability.currencies:
 								var amount:int = ability.currencies[key]
-								floor_config.currencies[key] += amount
-								ring_config.currencies[key] += amount
-								room_config.currencies[key] += amount
+								#floor_config.currencies[key] += amount
+								#ring_config.currencies[key] += amount
+								#room_config.currencies[key] += amount
 								
 						# check for any conditional changes
 						if "conditional" in ability:
@@ -1696,16 +1703,12 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		else:
 			room_config_data.is_activated = false
 		
-
 		# if activated, then check if room has additional properties
 		if room_config_data.is_activated:
 			for key in room_details.personnel_capacity:
 				var amount:int = room_details.personnel_capacity[key]
 				new_room_config.base.staff_capacity[key] += amount
 		
-
-
-
 func room_calculate(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1753,8 +1756,6 @@ func scp_check_for_effects(new_room_config:Dictionary) -> void:
 			if !scp_details.effect.is_empty():				
 				if scp_details.effect.has("func"):					
 					new_room_config = scp_details.effect.func.call( new_room_config, sdata )
-
-
 
 func scp_calculate(new_room_config:Dictionary) -> void:
 	for ref in scp_data:
