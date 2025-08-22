@@ -27,7 +27,7 @@ enum MODE {INIT, START, TITLESPLASH, DISPLAY_LOGO, DISPLAY_TITLE, DISPLAY_SIDE_T
 @onready var PressStartMainPanel:MarginContainer = $PressStart/PanelContainer/MarginContainer
 @onready var FadeOverlay:ColorRect = $FadeOverlay
 
-const game_title:String = "MEMORY RECOVERY PROTOCOL"
+const game_title:String = "BLACKBOX"
 const BlurInLetterPreload:PackedScene = preload("res://Scenes/IntroAndTitleScreen/parts/BlurInLetter.tscn")
 
 var control_pos:Dictionary = {}

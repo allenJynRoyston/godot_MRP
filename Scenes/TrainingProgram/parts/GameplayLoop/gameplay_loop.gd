@@ -184,6 +184,7 @@ var initial_values:Dictionary = {
 					"has_containment_breach": false,
 					"buffs": [],
 					"debuffs": [],
+					"level": 0,
 					"power_distribution": {
 						"heating": 2 if floor_index in [5, 6] else 0,
 						"cooling": 2 if floor_index in [0, 1] else 0,
@@ -528,10 +529,10 @@ func start_new_game() -> void:
 	restore_player_hud()	
 	await U.set_timeout(duration)	
 	await SetupContainer.end()	
-	
+		
 	# start game music
 	OS_AUDIO.play(OS_AUDIO.TRACK.GAME_TRACK_ONE)
-		
+			
 	# then build marked objectives
 	GAME_UTIL.mark_current_objectives()
 	

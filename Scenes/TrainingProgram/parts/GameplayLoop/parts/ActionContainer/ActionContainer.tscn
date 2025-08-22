@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_n6idl"]
-[ext_resource type="PackedScene" uid="uid://chcu224iunhwr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationAndDirectivesContainer.tscn" id="4_xathl"]
+[ext_resource type="PackedScene" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationAndDirectivesContainer.tscn" id="4_xathl"]
 [ext_resource type="PackedScene" uid="uid://dxeregxb5my7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/EngineeringPanel.tscn" id="6_bk83u"]
 [ext_resource type="PackedScene" uid="uid://ck4ghs6psctsy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanel.tscn" id="7_xathl"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="8_bk83u"]
@@ -130,6 +130,19 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
+
+[node name="StartGameBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
+title = "START"
+assigned_key = "E"
+icon = 10
+is_flashing = true
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
 
 [node name="FabricationBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
@@ -294,7 +307,9 @@ hide_c_btn = false
 
 [node name="EngineeringControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "UNLOCK"
+a_btn_title = "UPGRADE LEVEL"
+c_btn_title = "ENGINEERING PROGRAMS"
+hide_c_btn = false
 
 [node name="AdminControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2

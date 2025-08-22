@@ -67,6 +67,7 @@ extends GameContainer
 @onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
 
 # LEFT SIDE
+@onready var StartGameBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/StartGameBtn
 @onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/FabricationBtn
 @onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/EngineeringBtn
 @onready var AdminBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/AdminBtn
@@ -86,6 +87,7 @@ extends GameContainer
 
 enum MODE { 
 	NONE,
+	NEW_GAME,
 	COMMANDS,
 	
 	ENGINEERING,	
@@ -242,15 +244,40 @@ func start() -> void:
 	
 	
 	# -------------------------------------
-	for btn in [EndTurnBtn]:
-		btn.onClick = func() -> void:
-			await lock_actions(true)
-			await GameplayNode.next_day()
-			lock_actions(false)
+	EndTurnBtn.onClick = func() -> void:
+		EndTurnBtn.is_flashing = false
+		await lock_actions(true)
+		await GameplayNode.next_day()
+		lock_actions(false)
 	
 	# -------------------------------------
-	#if !GameplayNode.is_tutorial:
-		#TutorialBtn.hide()
+	StartGameBtn.onClick = func() -> void:
+		GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
+		await lock_actions(true)
+		current_mode = MODE.NEW_GAME
+		await U.set_timeout(0.3)
+		await GAME_UTIL.run_event(EVT.TYPE.SELECT_STARTING_DEPARTMENTS_1)
+		await U.set_timeout(1.0)
+		
+		current_location = {"floor": 0, "ring": 1, "room": 4}
+		SUBSCRIBE.current_location = current_location
+		await U.set_timeout(1.0)
+		await GAME_UTIL.run_event(EVT.TYPE.SELECT_STARTING_DEPARTMENTS_2)
+		await U.set_timeout(1.0)
+
+		current_location = {"floor": 0, "ring": 2, "room": 4}
+		SUBSCRIBE.current_location = current_location
+		await U.set_timeout(1.0)
+		await GAME_UTIL.run_event(EVT.TYPE.SELECT_STARTING_DEPARTMENTS_3)
+		await U.set_timeout(1.0)
+
+		current_location = {"floor": 0, "ring": 0, "room": 4}
+		SUBSCRIBE.current_location = current_location
+		await U.set_timeout(1.0)
+		await GameplayNode.restore_player_hud()
+		
+		EndTurnBtn.is_flashing = true
+		current_mode = MODE.NONE
 
 	# -------------------------------------
 	NewMessageBtn.onClick = func() -> void:
@@ -273,31 +300,7 @@ func start() -> void:
 		# start and reveal
 		EngineeringComponent.start()
 		EngineeringControls.reveal(true)
-		
-	EngineeringControls.onAction = func() -> void:		
-		reveal_engineering(false)
-		EngineeringComponent.end()
-		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
-		TransistionScreen.start(0.3, true)				
-		EngineeringControls.reveal(false)
-		# go to topology
-		current_mode = MODE.HEALTH
-		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT # if camera_settings.type == CAMERA.TYPE.WING_SELECT else CAMERA.TYPE.WING_SELECT		
-		SUBSCRIBE.camera_settings = camera_settings
-		TransistionScreen.start(0.3, true)
-		reveal_medical(true)		
-		MedicalControls.reveal(true)
-		GameplayNode.restore_player_hud()
-		
-	EngineeringControls.onBack = func() -> void:
-		reveal_engineering(false)
-		GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
-		EngineeringComponent.end()
-		await EngineeringControls.reveal(false)
-		lock_actions(false)
-		current_mode = MODE.NONE
-		GameplayNode.restore_player_hud()
-		reveal_action_label(false)
+	
 		
 	FabricationBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -1385,36 +1388,38 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			# always show/always working
+			var select_starting_base:bool = purchased_facility_arr.size() == 0
+
+			
+			# show only starting/info if new game
+			StartGameBtn.show() if select_starting_base else StartGameBtn.hide()
+			TelemetryBtn.show() # always visible
+
+			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
+			# TODO: maaabe not thoo....
 			FabricationBtn.show()
-			FabricationBtn.is_disabled = false #!is_powered
+			FabricationBtn.is_disabled = !is_powered
 			
 			# need engineering department before you can use this 
-			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) else EngineeringBtn.hide()
+			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !select_starting_base else EngineeringBtn.hide()
 			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
 			
-			AdminBtn.show() if ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) else AdminBtn.hide()
+			AdminBtn.show() if ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) and !select_starting_base else AdminBtn.hide()
 			AdminBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT)
 			
-			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) else SecurityBtn.hide()
+			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !select_starting_base else SecurityBtn.hide()
 			SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
 			
-			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) else ScienceBtn.hide()
+			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !select_starting_base else ScienceBtn.hide()
 			ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
 			
-			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) else MedicalBtn.hide()
+			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !select_starting_base else MedicalBtn.hide()
 			MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
 			
 			OperationsBtn.hide()
-			DebugBtn.hide()
+			DebugBtn.show()
 			TelemetryBtn.show()
 			
-			# WingDesignBtn.title = "DESIGN" if is_powered else "UNAVAILABLE"
-			#OperationsBtn.is_disabled = GAME_UTIL.get_list_of_programs(current_location, true).is_empty() 
-			#ManagementBtn.is_disabled = rooms_in_wing_count == 0
-			#GenActionBtn.is_disabled = !has_one_floor_activated
-			
-
 											
 			
 		# -----------	
@@ -1688,6 +1693,31 @@ func check_btn_states() -> void:
 				await FabricationControls.reveal(false)
 				current_mode = MODE.NONE
 		# -----------	
+		MODE.ENGINEERING:
+			EngineeringControls.onAction = func() -> void:		
+				await EngineeringControls.reveal(false)
+				var costs:Array = [{
+					"amount": -3, 
+					"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)
+				}]
+				
+				var confirm:bool = await GAME_UTIL.create_modal( "Upgrade room?." , "Engineering can upgrade to level X.", "", costs)
+				if confirm:
+					print("upgrade room level here")
+					return
+				EngineeringControls.reveal(false)
+
+				
+			EngineeringControls.onBack = func() -> void:
+				reveal_engineering(false)
+				GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
+				EngineeringComponent.end()
+				await EngineeringControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.NONE
+				GameplayNode.restore_player_hud()
+				reveal_action_label(false)
+						
 		MODE.FABRICATION_LINKABLE:
 			FabricationControls.a_btn_title = "BUILD HERE"
 			FabricationControls.disable_active_btn = !is_room_empty or (current_location.room not in list_of_adjacent_rooms)
@@ -1879,6 +1909,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_summarycard(false, false)
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
+			MODE.NEW_GAME:
+				NameControl.hide()
+				LocationAndDirectivesContainer.reveal(false)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false					
+				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)				
 			# --------------
 			MODE.INFO:
 				NameControl.hide()

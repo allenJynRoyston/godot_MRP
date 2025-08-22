@@ -11,7 +11,7 @@ func onSelected(choice:Dictionary) -> void:
 	option_selected.selected = {
 		# return selected index
 		"choice": choice,
-		"type": choice.option.type,
+		"type": choice.option.type if choice.option.has("type") else 0,
 		"outcome_index": choice.outcome_index,
 		"outcome": choice.option.outcomes.list[choice.outcome_index]
 	}
@@ -407,6 +407,172 @@ var TEST_EVENT_C:Dictionary = {
 		})
 }
 # ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SELECT_STARTING_DEPARTMENTS_ENGINE:Dictionary = {
+	"is_repeatable": true,
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "SELECT STARTING DEPARTMENTS",
+			"subheader": "THE ENGINE",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Two departments drive the machinery of survival:"],
+			"options": [
+				# ----------------------------------------- ENGINEERING
+				{
+					"header": "ENGINEERING",
+					"title": "Applied Engineering Division",
+					"description": "Keeps walls upright, locks sealed, and the lights on. When systems fail, so does containment.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"impact": {
+						"currency": { RESOURCE.CURRENCY.MATERIAL: 5 }
+					},					
+					"outcomes": {
+						"list": [
+							{ "response": ["Steel does not ask questions. It only holds."] },
+							{ "response": ["Infrastructure is reinforced. Supplies are secured."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+				# ----------------------------------------- LOGISTICS
+				{
+					"header": "LOGISTICS",
+					"title": "Logistics & Supply Chain Division",
+					"description": "Moves anomalies, weapons, and resources without incident. Failure is catastrophic.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"impact": {
+						"currency": { RESOURCE.CURRENCY.MONEY: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["A missing crate kills faster than a missing guard."] },
+							{ "response": ["Procurement chains tighten. Waste diminishes."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SELECT_STARTING_DEPARTMENTS_HEART:Dictionary = {
+	"is_repeatable": true,
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "SELECT STARTING DEPARTMENTS",
+			"subheader": "THE HEART",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Two departments determine the pulse of the Foundation:"],
+			"options": [
+				# ----------------------------------------- SCIENCE
+				{
+					"header": "SCIENCE",
+					"title": "Research & Anomalous Sciences",
+					"description": "Studies, catalogs, and exploits anomalies. Curiosity kills, but ignorance kills faster.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
+					"impact": {
+						"currency": { RESOURCE.CURRENCY.SCIENCE: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Every anomaly documented is another weapon — or warning."] },
+							{ "response": ["Research protocols expand Foundation archives."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+				# ----------------------------------------- SECURITY
+				{
+					"header": "SECURITY",
+					"title": "Security & Tactical Response",
+					"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
+					"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
+					"impact": {
+						"metrics": { RESOURCE.METRICS.READINESS: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Order exists because someone enforces it."] },
+							{ "response": ["Personnel drill and mobilize with renewed precision."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SELECT_STARTING_DEPARTMENTS_MIND:Dictionary = {
+	"is_repeatable": true,
+	"event_instructions": func(props:Dictionary) -> Array:
+		return build_event_content(props, {
+			"header": "SELECT STARTING DEPARTMENTS",
+			"subheader": "THE MIND",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Two departments shape thought and compliance:"],
+			"options": [
+				# ----------------------------------------- ADMIN
+				{
+					"header": "ADMINISTRATION",
+					"title": "Administrative Department",
+					"description": "Assigns clearance, enforces discipline, and maintains order through bureaucracy.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
+					"impact": {
+						"metrics": { RESOURCE.METRICS.MORALE: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Paperwork buries faster than bullets."] },
+							{ "response": ["Clear authority improves compliance and morale."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+				# ----------------------------------------- MEDICAL
+				{
+					"header": "MEDICAL",
+					"title": "Medical & Psychological Services",
+					"description": "Stabilizes the body and the mind. Clearance is irrelevant; recovery is compulsory.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.MEDICAL_DEPARTMENT,
+					"impact": {
+						"metrics": { RESOURCE.METRICS.SAFETY: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Pain is inevitable. Collapse is unacceptable."] },
+							{ "response": ["Preventative measures reduce incident severity."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						onSelected(choice),
+				},
+			]
+		})
+}
+# ------------------------------------------------------------------------
+
+
 
 # ------------------------------------------------------------------------
 var MYSTERY_MEAT_1:Dictionary = {
@@ -1848,6 +2014,11 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_A: TEST_EVENT_A,
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
+	
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_1: SELECT_STARTING_DEPARTMENTS_ENGINE,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_2: SELECT_STARTING_DEPARTMENTS_HEART,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_3: SELECT_STARTING_DEPARTMENTS_MIND,
+	
 	
 	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
 	EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,
