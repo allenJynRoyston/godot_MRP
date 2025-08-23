@@ -13,10 +13,8 @@ extends GameContainer
 @onready var AdminControls:Control = $AdminControls
 @onready var AdminModulesControls:Control = $AdminModulesControls
 @onready var FabricationControls:Control = $FabricationControls
-@onready var CommandControls:Control = $CommandControls
 @onready var IntelControls:Control = $IntelControls
 @onready var IntelOverviewControls:Control = $IntelOverviewControls
-@onready var ProgramControls:Control = $ProgramControls
 @onready var MedicalControls:Control = $MedicalControls
 @onready var MedicalOverviewControls:Control = $MedicalOverviewControls
 @onready var EngineeringControls:Control = $EngineeringControls
@@ -157,7 +155,6 @@ func _ready() -> void:
 			IntelControls, IntelOverviewControls,
 			FabricationControls, 
 			AdminControls, AdminModulesControls, 
-			CommandControls, ProgramControls, 
 			MedicalControls, MedicalOverviewControls,
 			EngineeringControls, EngineeringConfigControls, 
 		]:
@@ -1239,7 +1236,7 @@ func check_btn_states() -> void:
 				await SecurityControls.reveal(false)
 				GAME_UTIL.toggle_lockdown(false)
 				await U.set_timeout(1.0)
-				SecurityControls.reveal(true)			
+				SecurityControls.reveal(true)
 			
 			SecurityControls.onCBtn = func() -> void:
 				await SecurityControls.reveal(false)				
@@ -1252,11 +1249,11 @@ func check_btn_states() -> void:
 				current_mode = MODE.NONE
 		# -----------
 		MODE.SCIENCE:
-			ScienceControls.disable_active_btn = is_room_empty or !is_activated or at_max_level
+			ScienceControls.disable_active_btn = false #is_room_empty or !is_activated or at_max_level
 			
 			ScienceControls.onAction = func() -> void:
 				await ScienceControls.reveal(false)				
-				var confirm:bool = await GAME_UTIL.upgrade_facility()
+				var confirm:bool = await GAME_UTIL.open_store()
 				if confirm:
 					await U.tick()
 					on_current_location_update()	
@@ -1444,9 +1441,11 @@ func check_btn_states() -> void:
 				current_mode = MODE.NONE
 		# -----------	
 		MODE.LOGISTICS:
+			LogisticsControls.disable_active_btn = is_room_empty or !is_activated or at_max_level
+			
 			LogisticsControls.onAction = func() -> void:		
 				await LogisticsControls.reveal(false)
-				await U.set_timeout(1.0)
+				await GAME_UTIL.upgrade_facility() 
 				LogisticsControls.reveal(true)
 				
 			LogisticsControls.onCBtn = func() -> void:		
@@ -1786,7 +1785,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_summarycard(true, false)
+				#reveal_summarycard(false, false)
 				reveal_action_label(true, 0.4, "RESEARCH DEPARTMENT")
 				ScienceControls.reveal(true)
 			# -----------	
@@ -1939,6 +1938,35 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"A":
 					U.dec_ring(false)
 		# ----------------------------
+		MODE.SCIENCE:
+			match key:
+				# ----------------------------
+				"W":
+					U.inc_floor(false)
+				# ----------------------------
+				"S":
+					U.dec_floor(false)
+				# ----------------------------
+				"D":
+					U.inc_ring(false)
+				# ----------------------------
+				"A":
+					U.dec_ring(false)
+		MODE.ENGINEERING:
+			match key:
+				# ----------------------------
+				"W":
+					U.inc_floor(false)
+				# ----------------------------
+				"S":
+					U.dec_floor(false)
+				# ----------------------------
+				"D":
+					U.inc_ring(false)
+				# ----------------------------
+				"A":
+					U.dec_ring(false)			
+		# ----------------------------
 		MODE.FABRICATION:
 			match key:
 				# ----------------------------
@@ -1970,6 +1998,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 					U.room_left()
 		# ----------------------------		
 		MODE.ADMINISTRATION_MODULES:
+			pass
+		MODE.ENGINEERING_CONFIG:
 			pass
 		# ----------------------------		
 		_:

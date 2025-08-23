@@ -337,13 +337,13 @@ c_btn_title = "ENGINEERING PROGRAMS"
 
 [node name="LogisticsControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "TRADE"
+a_btn_title = "UPGRADE"
 c_btn_title = "LOGISTIC PROGRAMS"
 hide_c_btn = false
 
 [node name="EthicsControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "ISSUE DIRECTIVES"
+a_btn_title = "DIRECTIVES"
 c_btn_title = "LOGISTIC PROGRAMS"
 hide_c_btn = false
 
@@ -368,37 +368,14 @@ hide_c_btn = false
 
 [node name="ScienceControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "UPGRADE"
+a_btn_title = "R&D"
 intercept_click_event = true
 c_btn_title = "RESEARCH OPERATIONS"
 hide_c_btn = false
 
-[node name="CommandControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "UTILIZE"
-a_btn_icon = 24
-intercept_click_event = true
-c_btn_title = "UPGRADE"
-hide_c_btn = false
-
-[node name="ProgramControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "USE PROGRAM"
-a_btn_icon = 24
-intercept_click_event = true
-c_btn_title = "UPGRADE"
-
-[node name="InfoControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "HINT"
-a_btn_icon = 24
-intercept_click_event = true
-c_btn_title = "REPLAY TUTORIAL"
-hide_c_btn = false
-
 [node name="MedicalControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "OVERVIEW"
+a_btn_title = "POLICY"
 c_btn_title = "MEDICAL PROGRAMS"
 hide_c_btn = false
 

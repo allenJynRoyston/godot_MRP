@@ -239,6 +239,25 @@ var ETHICS_DEPARTMENT:Dictionary = {
 	"required_energy": 0,	
 }
 
+var CONTAINMENT_CELL:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.CONTAINMENT_LINKABLES,
+	"is_department": true,
+	
+	"name": "STANDARD_CONTAINMENT_CELL",
+	"shortname": "STANDARD_CONTAINMENT_CELL",
+	"img_src": "res://Media/rooms/ethics.png",
+	"description": "Attach other STANDARD_CONTAINMENT_CELL.",
+
+	"requires_unlock": false,	
+	"own_limit": 20,
+	"required_staffing": [],
+	"required_energy": 0,	
+}
+
+
 #region ADMIN linkables
 var ADMIN_LINK_1:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_1,
@@ -590,6 +609,52 @@ var ETHICS_LINK_4:Dictionary = {
 		return [
 			#ABL.get_ability(ABL.REF.PREVENT_BREACH),
 			#ABL.get_ability(ABL.REF.INCREASE_MORALE, 1),
+		]
+}
+#endregion
+
+#region CONTAINMENT linkables
+var CONTAINMENT_LINK_1:Dictionary = {
+	"ref": ROOM.REF.CONTAINMENT_LINK_1,
+	"categories": [ROOM.CATEGORY.CONTAINMENT_LINKABLES],
+	"name": "Observation Chamber",
+	"shortname": "OBSERVATION_CHAMBER",
+	"img_src": "res://Media/rooms/council_chamber.png",
+	"description": "Reinforced viewing area with one-way glass and monitoring equipment, allowing staff to observe the anomaly without direct exposure.",
+}
+
+var CONTAINMENT_LINK_2:Dictionary = {
+	"ref": ROOM.REF.CONTAINMENT_LINK_2,
+	"categories": [ROOM.CATEGORY.CONTAINMENT_LINKABLES],
+	"name": "Interview Suite",
+	"shortname": "INTERVIEW_SUITE",
+	"img_src": "res://Media/rooms/interview_room.png",
+	"description": "Secure, shielded room for controlled communication with anomalies. Built-in restraints and emergency shutdowns protect staff.",
+}
+
+var CONTAINMENT_LINK_3:Dictionary = {
+	"ref": ROOM.REF.CONTAINMENT_LINK_3,
+	"categories": [ROOM.CATEGORY.CONTAINMENT_LINKABLES],
+	"name": "Support Annex",
+	"shortname": "SUPPORT_ANNEX",
+	"img_src": "res://Media/rooms/wellness_center.png",
+	"description": "Provides quick access to life-support, sedation, or reinforcement systems tied to the containment cell.",
+	"metrics": {
+		RESOURCE.METRICS.SAFETY: 2
+	},
+}
+
+var CONTAINMENT_LINK_4:Dictionary = {
+	"ref": ROOM.REF.CONTAINMENT_LINK_4,
+	"categories": [ROOM.CATEGORY.CONTAINMENT_LINKABLES],
+	"name": "Control Hub",
+	"shortname": "CONTROL_HUB",
+	"img_src": "res://Media/rooms/oversight_hub.png",
+	"description": "Centralized controls for automated defenses, environmental systems, and failsafes. Operators can trigger countermeasures instantly.",
+	"abilities": func() -> Array:
+		return [
+			#ABL.get_ability(ABL.REF.PREVENT_BREACH),
+			#ABL.get_ability(ABL.REF.CONTAINMENT_STRENGTHEN, 1),
 		]
 }
 #endregion
@@ -1168,7 +1233,7 @@ var STANDARD_CONTAINMENT_CELL:Dictionary = {
 	"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,		
 	"name": "STANDARD CONTAINMENT",
 	"shortname": "S.CONTAINMENT",
-	"categories": [ROOM.CATEGORY.CONTAINMENT],
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Containment cell used to house anamolous objects.",
 		
@@ -1918,6 +1983,7 @@ var list:Array[Dictionary] = [
 	DEBUG_ROOM,
 	# -------------- FOUNDATION ROOMS
 	ADMIN_DEPARTMENT, ENGINEERING_DEPARTMENT, SECURITY_DEPARTMENT, SCIENCE_DEPARTMENT, MEDICAL_DEPARTMENT, ETHICS_DEPARTMENT, LOGISTICS_DEPARTMENT,
+	CONTAINMENT_CELL,
 
 	# --------------- ADMIN LINKABLES
 	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4,
@@ -1929,6 +1995,8 @@ var list:Array[Dictionary] = [
 	SCIENCE_LINK_1, SCIENCE_LINK_2, SCIENCE_LINK_3, SCIENCE_LINK_4,
 	# --------------- MEDICAL LINKABLES
 	MEDICAL_LINK_1, MEDICAL_LINK_2, MEDICAL_LINK_3, MEDICAL_LINK_4,
+	# --------------- MEDICAL LINKABLES
+	CONTAINMENT_LINK_1, CONTAINMENT_LINK_2, CONTAINMENT_LINK_3, CONTAINMENT_LINK_4,	
 	
 	# --------------- SPECIALS
 	DIRECTORS_OFFICE, 
@@ -1944,9 +2012,7 @@ var list:Array[Dictionary] = [
 	# --------------- RECRUIT
 	ADMIN_OFFICE, ACADEMIC_OUTREACH, PRISONER_BLOCK,
 	
-	# --------------- CONTAINMENT
-	STANDARD_CONTAINMENT_CELL, 
-	
+
 	# --------------- RESOURCES
 	MONEY_GEN_1,			
 	RESEARCH_GEN_1,
