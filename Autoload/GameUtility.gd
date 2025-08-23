@@ -555,6 +555,27 @@ func trigger_event(event_data:Array) -> Dictionary:
 # ---------------------
 
 # ---------------------
+func toggle_lockdown(skip_confirm:bool = false) -> bool:
+	var in_lockdown:bool = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode == ROOM.EMERGENCY_MODES.LOCKDOWN
+	
+	if !skip_confirm:
+		var confirm:bool = await create_modal("Order lockdown of wing?" if !in_lockdown else "Remove lockdown order?", "")
+		
+		if !confirm:
+			return false
+			
+	# set lockdown
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.LOCKDOWN if !in_lockdown else ROOM.EMERGENCY_MODES.LOCKDOWN
+	SUBSCRIBE.base_states = base_states
+	
+	# add debuff
+	#if add_debuff:
+		#add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -2, current_location.floor, [current_location.ring])
+	
+	return true
+# ---------------------
+
+# ---------------------
 func toggle_onsite_nuke() -> void:
 	base_states.base.onsite_nuke.triggered = !base_states.base.onsite_nuke.triggered
 	SUBSCRIBE.base_states = base_states		
@@ -632,24 +653,24 @@ func set_emergency_mode_to_caution(skip_confirm:bool = false, add_debuff:bool = 
 	return true
 # ---------------------
 
-# ---------------------
-func set_emergency_mode_to_warning(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
-	if !skip_confirm:
-		var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
-		
-		if !confirm:
-			return false
-			
-	# set emergency mode
-	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
-	SUBSCRIBE.base_states = base_states
-	
-	# add debuff
-	if add_debuff:
-		add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -2, current_location.floor, [current_location.ring])
-	
-	return true
-# ---------------------
+## ---------------------
+#func set_emergency_mode_to_warning(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
+	#if !skip_confirm:
+		#var confirm:bool = await create_modal("Set the wing to WARNING mode?", "")
+		#
+		#if !confirm:
+			#return false
+			#
+	## set emergency mode
+	#base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
+	#SUBSCRIBE.base_states = base_states
+	#
+	## add debuff
+	#if add_debuff:
+		#add_debuff_to_floor_and_rings(BASE.DEBUFF.PANIC, -2, current_location.floor, [current_location.ring])
+	#
+	#return true
+## ---------------------
 
 # ---------------------
 func set_emergency_mode_to_danger(skip_confirm:bool = false, add_debuff:bool = true) -> bool:
@@ -783,7 +804,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 
 	# set emergency mode
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
-	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.WARNING
+	base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode = ROOM.EMERGENCY_MODES.LOCKDOWN
 	SUBSCRIBE.base_states = base_states
 	GameplayNode.capture_current_showing_state()
 	await U.set_timeout(1.5)	

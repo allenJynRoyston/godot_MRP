@@ -136,7 +136,7 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "SITE SETUP"
+title = "START"
 assigned_key = "E"
 icon = 10
 is_flashing = true
@@ -155,7 +155,7 @@ hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
-[node name="IntelBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+[node name="TelemetryBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -163,30 +163,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
 title = "INTEL"
 assigned_key = "T"
 icon = 17
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
-[node name="AdminBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "ADMINISTRATION"
-assigned_key = "M"
-icon = 30
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
-[node name="LogisticsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
-title = "LOGISTICS"
-assigned_key = "L"
-icon = 46
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -203,37 +179,14 @@ hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
-[node name="ScienceBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+[node name="AdminBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "SCIENTIFIC"
-assigned_key = "R"
-icon = 49
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
-[node name="MedicalBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
-title = "MEDICAL"
-assigned_key = "H"
-icon = 39
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
-[node name="EthicsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_273dx")
-title = "ETHICS"
-icon = 46
+title = "ADMINISTRATION"
+assigned_key = "M"
+icon = 30
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -246,6 +199,42 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "SECURITY"
 assigned_key = "C"
 icon = 48
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
+
+[node name="ScienceBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
+title = "SCIENTIFIC"
+assigned_key = "R"
+icon = 49
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
+
+[node name="OperationsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
+title = "OPERATIONS"
+assigned_key = "O"
+icon = 6
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
+
+[node name="MedicalBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nld38")
+title = "MEDICAL"
+assigned_key = "H"
+icon = 39
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -309,18 +298,6 @@ layout_mode = 2
 intercept_click_event = true
 c_btn_icon = 26
 
-[node name="IntelControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "INVESTIGATE"
-c_btn_title = "OVERVIEW"
-hide_c_btn = false
-
-[node name="IntelOverviewControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "INVESTIGATE"
-hide_a_btn = true
-c_btn_title = "OVERSIGHT"
-
 [node name="FabricationControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 a_btn_title = "SELECT FACILITY"
@@ -330,26 +307,8 @@ hide_c_btn = false
 
 [node name="EngineeringControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "CONFIG"
+a_btn_title = "UPGRADE LEVEL"
 c_btn_title = "ENGINEERING PROGRAMS"
-hide_c_btn = false
-
-[node name="EngineeringConfigControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "CONFIG"
-hide_a_btn = true
-c_btn_title = "ENGINEERING PROGRAMS"
-
-[node name="LogisticsControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "TRADE"
-c_btn_title = "LOGISTIC PROGRAMS"
-hide_c_btn = false
-
-[node name="EthicsControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "ISSUE DIRECTIVES"
-c_btn_title = "LOGISTIC PROGRAMS"
 hide_c_btn = false
 
 [node name="AdminControls" parent="." instance=ExtResource("10_58xi4")]
@@ -398,15 +357,16 @@ hide_c_btn = false
 
 [node name="MedicalControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "OVERVIEW"
-c_btn_title = "MEDICAL PROGRAMS"
-hide_c_btn = false
-
-[node name="MedicalOverviewControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
 a_btn_title = "ENGINEERING"
 hide_a_btn = true
 c_btn_title = "MEDICAL PROGRAMS"
+hide_c_btn = false
+
+[node name="TelemetryControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "INVESTIGATE"
+c_btn_title = "NEXT ANAMOLLY"
+hide_c_btn = false
 
 [node name="LocationAndDirectivesContainer" parent="." instance=ExtResource("4_xathl")]
 layout_mode = 2

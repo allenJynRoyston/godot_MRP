@@ -45,11 +45,10 @@ func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 				if has_choice_impact or has_local_impact:
 					return {
 						"tally": true,
-						"end": true
 					}
 				
 				return {
-					"end": true
+					
 				},
 		]
 # ------------------------------------------------------------------------
@@ -409,10 +408,13 @@ var TEST_EVENT_C:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_ENGINE:Dictionary = {
+var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 	"is_repeatable": true,
 	"event_instructions": func(props:Dictionary) -> Array:
-		return build_event_content(props, {
+		# admin department always installed
+		ROOM_UTIL.add_room(ROOM.REF.ADMIN_DEPARTMENT, false, {"floor": current_location.floor, "ring": 0, "room": 4})
+		
+		var instructions_1:Array = build_event_content(props, {
 			"header": "SELECT STARTING DEPARTMENTS",
 			"subheader": "THE ENGINE",
 			"img_src": "res://Media/images/redacted.png",
@@ -435,7 +437,7 @@ var SELECT_STARTING_DEPARTMENTS_ENGINE:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":1, "room": 4})
 						onSelected(choice),
 				},
 				# ----------------------------------------- LOGISTICS
@@ -455,21 +457,15 @@ var SELECT_STARTING_DEPARTMENTS_ENGINE:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 1, "room": 4})
 						onSelected(choice),
 				},
 			]
 		})
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_HEART:Dictionary = {
-	"is_repeatable": true,
-	"event_instructions": func(props:Dictionary) -> Array:
-		return build_event_content(props, {
+		
+		var instructions_2:Array = build_event_content(props, {
 			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE HEART",
+			"subheader": "THE MIND",
 			"img_src": "res://Media/images/redacted.png",
 			"text": ["Two departments determine the pulse of the Foundation:"],
 			"options": [
@@ -490,64 +486,10 @@ var SELECT_STARTING_DEPARTMENTS_HEART:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
 						onSelected(choice),
 				},
 				# ----------------------------------------- SECURITY
-				{
-					"header": "SECURITY",
-					"title": "Security & Tactical Response",
-					"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
-					"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
-					"impact": {
-						"metrics": { RESOURCE.METRICS.READINESS: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Order exists because someone enforces it."] },
-							{ "response": ["Personnel drill and mobilize with renewed precision."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
-						onSelected(choice),
-				},
-			]
-		})
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_MIND:Dictionary = {
-	"is_repeatable": true,
-	"event_instructions": func(props:Dictionary) -> Array:
-		return build_event_content(props, {
-			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE MIND",
-			"img_src": "res://Media/images/redacted.png",
-			"text": ["Two departments shape thought and compliance:"],
-			"options": [
-				# ----------------------------------------- ADMIN
-				{
-					"header": "ADMINISTRATION",
-					"title": "Administrative Department",
-					"description": "Assigns clearance, enforces discipline, and maintains order through bureaucracy.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
-					"impact": {
-						"metrics": { RESOURCE.METRICS.MORALE: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Paperwork buries faster than bullets."] },
-							{ "response": ["Clear authority improves compliance and morale."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
-						onSelected(choice),
-				},
-				# ----------------------------------------- MEDICAL
 				{
 					"header": "MEDICAL",
 					"title": "Medical & Psychological Services",
@@ -564,13 +506,66 @@ var SELECT_STARTING_DEPARTMENTS_MIND:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						await ROOM_UTIL.add_room(choice.option.room_ref, false)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
 						onSelected(choice),
 				},
 			]
 		})
+		
+		var instruction_3:Array = build_event_content(props, {
+			"header": "SELECT STARTING DEPARTMENTS",
+			"subheader": "THE SOUL",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Two departments shape thought and compliance:"],
+			"options": [
+				# ----------------------------------------- ADMIN
+				{
+					"header": "ETHICS",
+					"title": "Ethics Committee",
+					"description": "Oversees Foundation conduct, ensuring containment efforts balance necessity with humanity. Their scrutiny can steady staff morale, though at times it slows operations.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ETHICS_DEPARTMENT,
+					"impact": {
+						"metrics": { RESOURCE.METRICS.MORALE: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Staff find reassurance knowing oversight exists beyond cold efficiency."] },
+							{ "response": ["Committee reviews delay certain projects, but morale improves under a watchful eye."] },
+							{ "response": ["Ethical scrutiny curbs excesses, reinforcing discipline and confidence among staff."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
+						onSelected(choice),
+				},
+
+				# ----------------------------------------- MEDICAL
+				{
+					"header": "SECURITY",
+					"title": "Security & Tactical Response",
+					"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
+					"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
+					"impact": {
+						"metrics": { RESOURCE.METRICS.READINESS: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["Order exists because someone enforces it."] },
+							{ "response": ["Personnel drill and mobilize with renewed precision."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
+						onSelected(choice),
+				},
+			]
+		})		
+
+		return instructions_1 + instructions_2 + instruction_3
 }
 # ------------------------------------------------------------------------
+
 
 
 
@@ -2015,9 +2010,7 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_1: SELECT_STARTING_DEPARTMENTS_ENGINE,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_2: SELECT_STARTING_DEPARTMENTS_HEART,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_3: SELECT_STARTING_DEPARTMENTS_MIND,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS: SELECT_STARTING_DEPARTMENTS,
 	
 	
 	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,

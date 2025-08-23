@@ -173,7 +173,6 @@ var initial_values:Dictionary = {
 		for floor_index in [0, 1, 2, 3, 4, 5, 6]:
 			floor[str(floor_index)] = {
 				# if start on ring level, floor 0 starts with power
-				"previous_powered": false,
 				"buffs": [],
 				"debuffs": [],
 			} 
@@ -1686,7 +1685,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var is_under_construction:bool = item.under_construction
-		var energy_availble:int = ring_config_data.energy.available - ring_config_data.energy.used
+		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
 		
 		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
@@ -1697,7 +1696,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		).size()
 		
 		# apply is activated state if have enough staff and enough energy
-		if energy_availble >= room_details.required_energy:
+		if energy_available >= room_details.required_energy:
 			room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
 			ring_config_data.energy.used += room_details.required_energy
 			room_config_data.energy_used += room_details.required_energy

@@ -285,7 +285,6 @@ func add_room(ref:int, linkable:bool, use_location:Dictionary = current_location
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
 	WingRenderNode.start_construction(location_copy)	
-	await U.tick()
 	
 	purchased_facility_arr.push_back({
 		"ref": ref,

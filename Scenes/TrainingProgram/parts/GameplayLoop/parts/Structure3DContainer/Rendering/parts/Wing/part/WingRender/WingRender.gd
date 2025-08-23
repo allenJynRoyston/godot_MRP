@@ -417,7 +417,7 @@ func update_room_lighting() -> void:
 					CautionLights.show()	
 					altered = true
 							
-				ROOM.EMERGENCY_MODES.WARNING:
+				ROOM.EMERGENCY_MODES.LOCKDOWN:
 					WorldLight.light_color = WARNING_LIGHT_COLOR
 					WorldLight.light_energy = 1.2	
 					BaseLights.hide()
@@ -497,9 +497,9 @@ func update_billboards() -> void:
 				left_billboard_text = "DANGER"
 				right_billboard_text = "DANGER"
 						
-			ROOM.EMERGENCY_MODES.WARNING:
-				left_billboard_text = "WARNING"
-				right_billboard_text = "WARNING"
+			ROOM.EMERGENCY_MODES.LOCKDOWN:
+				left_billboard_text = "LOCKDOWN"
+				right_billboard_text = "LOCKDOWN"
 				
 			ROOM.EMERGENCY_MODES.CAUTION:
 				left_billboard_text = "CAUTION"

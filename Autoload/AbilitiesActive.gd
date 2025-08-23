@@ -3,6 +3,9 @@ extends SubscribeWrapper
 enum REF {
 	EVAL_SCP, 
 	
+	# 
+	FABRICATOR,
+	
 	# site director
 	TRIGGER_ONSITE_NUKE, CANCEL_NUCLEAR_DETONATION,
 	
@@ -43,6 +46,17 @@ var EVAL_SCP:Dictionary = {
 	"cooldown_duration":  0, 
 	"effect": func() -> bool:
 		return await GAME_UTIL.eval_scp(),
+}
+# ---------------------------------
+
+# ---------------------------------
+var FABRICATOR:Dictionary = {
+	"name": "FABRICATOR",
+	"description": "Build additional structures.",
+	"science_cost": 0,
+	"cooldown_duration": 5, 
+	"effect": func() -> bool:
+		return await GAME_UTIL.eval_scp(),	
 }
 # ---------------------------------
 
@@ -384,6 +398,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	match ref:
 		REF.EVAL_SCP:
 			ability = EVAL_SCP
+		REF.FABRICATOR:
+			ability = FABRICATOR
 		# -----------------------------=
 		REF.TRIGGER_ONSITE_NUKE:
 			ability = TRIGGER_ONSITE_NUKE

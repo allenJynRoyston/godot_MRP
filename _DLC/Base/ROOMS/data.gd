@@ -115,7 +115,12 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"shortname": "ADMIN_DEPARTMENT",	
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other ADMIN rooms for utility.",
+	
 	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,	
+	
 }
 
 var ENGINEERING_DEPARTMENT:Dictionary = {
@@ -129,7 +134,19 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 	"shortname": "ENGINEERING_DEPARTMENT",
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other ENGINEERING rooms for utility.",
+	
 	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.MTF_A),
+			ABL_P.get_ability(ABL_P.REF.MTF_B),
+			ABL_P.get_ability(ABL_P.REF.MTF_C),
+			ABL_P.get_ability(ABL_P.REF.MTF_D),
+		],
 }
 
 var SECURITY_DEPARTMENT:Dictionary = {
@@ -143,7 +160,11 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"shortname": "RESEARCHER_ROOM",
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other SECURITY rooms for utility.",
+	
 	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,		
 }
 
 var SCIENCE_DEPARTMENT:Dictionary = {
@@ -157,7 +178,11 @@ var SCIENCE_DEPARTMENT:Dictionary = {
 	"shortname": "SCIENCE_DEPARTMENT",
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other SCIENCE rooms for utility.",
+
 	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,	
 }
 
 var MEDICAL_DEPARTMENT:Dictionary = {
@@ -171,7 +196,47 @@ var MEDICAL_DEPARTMENT:Dictionary = {
 	"shortname": "MEDICAL_DEPARTMENT",
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other MEDICAL rooms for utility.",
+
 	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,	
+}
+
+var LOGISTICS_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.LOGISTICS_LINKABLE,
+	"is_department": true,
+	
+	"name": "LOGISTICS_DEPARTMENT",
+	"shortname": "LOGISTICS_DEPARTMENT",
+	"img_src": "res://Media/rooms/logistics.png",
+	"description": "Attach other LOGISTICS rooms for supply chain, storage, and transport utility.",
+
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,	
+}
+
+var ETHICS_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ETHICS_DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.ETHICS_LINKABLE,
+	"is_department": true,
+	
+	"name": "ETHICS_DEPARTMENT",
+	"shortname": "ETHICS_DEPARTMENT",
+	"img_src": "res://Media/rooms/ethics.png",
+	"description": "Attach other ETHICS rooms to oversee moral compliance and monitor questionable decisions.",
+
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 0,	
 }
 
 #region ADMIN linkables
@@ -391,7 +456,7 @@ var SCIENCE_LINK_4:Dictionary = {
 }
 #endregion
 
-#region SCIENCE linkables
+#region MEDICAL linkables
 var MEDICAL_LINK_1:Dictionary = {
 	"ref": ROOM.REF.MEDICAL_LINK_1,
 	"categories": [ROOM.CATEGORY.MEDICAL_LINKABLE],
@@ -434,6 +499,98 @@ var MEDICAL_LINK_4:Dictionary = {
 			ABL.get_ability(ABL.REF.ADD_TRAIT),
 			ABL.get_ability(ABL.REF.REMOVE_TRAIT, 1),
 		]	
+}
+#endregion
+
+#region LOGISTICS linkables
+var LOGISTICS_LINK_1:Dictionary = {
+	"ref": ROOM.REF.LOGISTICS_LINK_1,
+	"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	"name": "LOGISTICS_LINK_1",
+	"shortname": "LOGISTICS_LINK_1",
+	"img_src": "res://Media/rooms/storage.png",
+	"description": "Central Supply Depot – stores essential materials and equipment.",
+}
+
+var LOGISTICS_LINK_2:Dictionary = {
+	"ref": ROOM.REF.LOGISTICS_LINK_2,
+	"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	"name": "LOGISTICS_LINK_2",
+	"shortname": "LOGISTICS_LINK_2",
+	"img_src": "res://Media/rooms/vehicle_bay.png",
+	"description": "Transport Hub – coordinates vehicle fleets and rapid deployment.",
+}
+
+var LOGISTICS_LINK_3:Dictionary = {
+	"ref": ROOM.REF.LOGISTICS_LINK_3,
+	"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	"name": "LOGISTICS_LINK_3",
+	"shortname": "LOGISTICS_LINK_3",
+	"img_src": "res://Media/rooms/armory.png",
+	"description": "Armory Annex – maintains weapons and gear for response teams.",
+	"metrics": {
+		RESOURCE.METRICS.READINESS: 2
+	},
+}
+
+var LOGISTICS_LINK_4:Dictionary = {
+	"ref": ROOM.REF.LOGISTICS_LINK_4,
+	"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	"name": "LOGISTICS_LINK_4",
+	"shortname": "LOGISTICS_LINK_4",
+	"img_src": "res://Media/rooms/distribution_center.png",
+	"description": "Distribution Center – optimizes allocation of resources across the site.",
+	"abilities": func() -> Array:
+		return [
+			#ABL.get_ability(ABL.REF.INCREASE_SUPPLY),
+			#ABL.get_ability(ABL.REF.REDUCE_COST, 1),
+		]
+}
+#endregion
+
+#region ETHICS linkables
+var ETHICS_LINK_1:Dictionary = {
+	"ref": ROOM.REF.ETHICS_LINK_1,
+	"categories": [ROOM.CATEGORY.ETHICS_LINKABLE],
+	"name": "ETHICS_LINK_1",
+	"shortname": "ETHICS_LINK_1",
+	"img_src": "res://Media/rooms/council_chamber.png",
+	"description": "Council Hearing Room – formal space for deliberation and oversight.",
+}
+
+var ETHICS_LINK_2:Dictionary = {
+	"ref": ROOM.REF.ETHICS_LINK_2,
+	"categories": [ROOM.CATEGORY.ETHICS_LINKABLE],
+	"name": "ETHICS_LINK_2",
+	"shortname": "ETHICS_LINK_2",
+	"img_src": "res://Media/rooms/interview_room.png",
+	"description": "Interview Suite – used to question staff or D-Class on sensitive incidents.",
+}
+
+var ETHICS_LINK_3:Dictionary = {
+	"ref": ROOM.REF.ETHICS_LINK_3,
+	"categories": [ROOM.CATEGORY.ETHICS_LINKABLE],
+	"name": "ETHICS_LINK_3",
+	"shortname": "ETHICS_LINK_3",
+	"img_src": "res://Media/rooms/wellness_center.png",
+	"description": "Wellness Office – supports mental health and ensures humane conditions.",
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 3
+	},
+}
+
+var ETHICS_LINK_4:Dictionary = {
+	"ref": ROOM.REF.ETHICS_LINK_4,
+	"categories": [ROOM.CATEGORY.ETHICS_LINKABLE],
+	"name": "ETHICS_LINK_4",
+	"shortname": "ETHICS_LINK_4",
+	"img_src": "res://Media/rooms/oversight_hub.png",
+	"description": "Oversight Hub – provides active monitoring of questionable operations.",
+	"abilities": func() -> Array:
+		return [
+			#ABL.get_ability(ABL.REF.PREVENT_BREACH),
+			#ABL.get_ability(ABL.REF.INCREASE_MORALE, 1),
+		]
 }
 #endregion
 
@@ -1760,7 +1917,7 @@ var SP_CLINIC:Dictionary = {
 var list:Array[Dictionary] = [
 	DEBUG_ROOM,
 	# -------------- FOUNDATION ROOMS
-	ADMIN_DEPARTMENT, ENGINEERING_DEPARTMENT, SECURITY_DEPARTMENT, SCIENCE_DEPARTMENT, MEDICAL_DEPARTMENT,
+	ADMIN_DEPARTMENT, ENGINEERING_DEPARTMENT, SECURITY_DEPARTMENT, SCIENCE_DEPARTMENT, MEDICAL_DEPARTMENT, ETHICS_DEPARTMENT, LOGISTICS_DEPARTMENT,
 
 	# --------------- ADMIN LINKABLES
 	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4,
