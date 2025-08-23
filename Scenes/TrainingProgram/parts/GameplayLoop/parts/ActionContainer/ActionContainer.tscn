@@ -304,11 +304,6 @@ hidden_but_usable = false
 is_disabled = false
 allow_hint = false
 
-[node name="SummaryControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-intercept_click_event = true
-c_btn_icon = 26
-
 [node name="IntelControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 a_btn_title = "INVESTIGATE"
@@ -358,6 +353,11 @@ a_btn_title = "DEALLOCATE STAFF"
 intercept_click_event = true
 c_btn_title = "ADMIN OPERATIONS"
 hide_c_btn = false
+
+[node name="AdminModulesControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+intercept_click_event = true
+c_btn_icon = 26
 
 [node name="SecurityControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2

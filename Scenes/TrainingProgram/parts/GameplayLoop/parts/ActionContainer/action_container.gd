@@ -3,8 +3,6 @@ extends GameContainer
 #  ---------------------------------------
 # SPECIAL NODES
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var SummaryControls:Control = $SummaryControls
-@onready var AdminControls:Control = $AdminControls
 @onready var NameControl:Control = $NameControl
 @onready var TransistionScreen:Control = $TransitionScreen
 @onready var LocationAndDirectivesContainer:Control = $LocationAndDirectivesContainer
@@ -12,6 +10,8 @@ extends GameContainer
 
 #  ---------------------------------------
 # CONTROLS
+@onready var AdminControls:Control = $AdminControls
+@onready var AdminModulesControls:Control = $AdminModulesControls
 @onready var FabricationControls:Control = $FabricationControls
 @onready var CommandControls:Control = $CommandControls
 @onready var IntelControls:Control = $IntelControls
@@ -94,26 +94,19 @@ extends GameContainer
 enum MODE { 
 	NONE,
 	NEW_GAME,
-	COMMANDS,
+	
+	FABRICATION,
+	FABRICATION_LINKABLE,
+	INTEL, INTEL_OVERSIGHT, 
 	
 	ENGINEERING, ENGINEERING_CONFIG,
-	ADMINISTRATION,
+	ADMINISTRATION, ADMINISTRATION_MODULES,
 	SECURITY,
 	SCIENCE, 
 	MEDICAL, MEDICAL_OVERVIEW,
 	LOGISTICS, 
 	ETHICS,
 	
-	SUMMARY_CARD,
-	BASE_MANAGEMENT,
-
-	HEALTH,
-	#TELEMETRY, 
-	INTEL, INTEL_OVERSIGHT, 
-	ABILITY,
-	PROGRAMS,
-	FABRICATION,
-	FABRICATION_LINKABLE,
 	ACTIVE_MENU_OPEN,
 }
 
@@ -160,11 +153,13 @@ func _ready() -> void:
 	modulate = Color(1, 1, 1, 0)	
 	
 	# set defaults
-	for node in [SummaryControls, FabricationControls, AdminControls, 
+	for node in [
+			IntelControls, IntelOverviewControls,
+			FabricationControls, 
+			AdminControls, AdminModulesControls, 
 			CommandControls, ProgramControls, 
 			MedicalControls, MedicalOverviewControls,
 			EngineeringControls, EngineeringConfigControls, 
-			IntelControls, IntelOverviewControls
 		]:
 		node.reveal(false)
 
@@ -1093,16 +1088,16 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	
 # --------------------------------------------------------------------------------------------------
 func before_active_selection() -> void:
-	await SummaryControls.reveal(false)
+	await AdminModulesControls.reveal(false)
 
 func after_active_selection() -> void:
-	SummaryControls.reveal(true)
+	AdminModulesControls.reveal(true)
 
 func before_scp_selection() -> void:
-	await SummaryControls.reveal(false)
+	await AdminModulesControls.reveal(false)
 
 func after_scp_selection() -> void:
-	SummaryControls.reveal(true)
+	AdminModulesControls.reveal(true)
 
 func change_camera_to(type:CAMERA.TYPE) -> void:
 	camera_settings.type = type
@@ -1185,80 +1180,47 @@ func check_btn_states() -> void:
 						
 			#OperationsBtn.hide()
 			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
-			
-
 		# -----------	
-		#MODE.INFO:
-			#var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			#var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
-						#
-			## show timeline details
-			#GameplayNode.TimelineContainer.show_details(true)
-			#
-			## set backdrop
-			#set_backdrop_state(true)
-			#
-			## hide tutorial btn if not a tutorial
-			#InfoControls.hide_c_btn = !GameplayNode.is_tutorial or !chapter.has("tutorial")
-			#
-			## show objectives
-			#InfoControls.onAction = func() -> void:
-				#InfoControls.reveal(false)
-				#await GAME_UTIL.open_objectives()
-				#InfoControls.reveal(true)
-			#
-			## show current tutorial
-			#InfoControls.onCBtn = func() -> void:
-				#InfoControls.reveal(false)
-				#await GAME_UTIL.play_tutorial(chapter)
-				#InfoControls.reveal(true)
-			#
-			## on back
-			#InfoControls.onBack = func() -> void:
-				#GameplayNode.TimelineContainer.show_details(false)
-				#await InfoControls.reveal(false)				
-				#current_mode = MODE.NONE
-		# -----------	
-		MODE.SUMMARY_CARD:
-			SummaryControls.directional_pref = "UD"
-			SummaryControls.offset = ModulesCard.global_position
+		MODE.ADMINISTRATION_MODULES:
+			AdminModulesControls.directional_pref = "UD"
+			AdminModulesControls.offset = ModulesCard.global_position
 			
-			SummaryControls.onBack = func() -> void:
+			AdminModulesControls.onBack = func() -> void:
 				ModulesCard.deselect_btns()
-				await SummaryControls.reveal(false)
+				await AdminModulesControls.reveal(false)
 				current_mode = MODE.ADMINISTRATION
 		
-			SummaryControls.onUpdate = func(node:Control) -> void:
-				for _node in SummaryControls.itemlist:
+			AdminModulesControls.onUpdate = func(node:Control) -> void:
+				for _node in AdminModulesControls.itemlist:
 					_node.is_selected = _node == node
 					
-				SummaryControls.onAction = func() -> void:pass
-				SummaryControls.hide_c_btn = true
-				SummaryControls.disable_active_btn = false
+				AdminModulesControls.onAction = func() -> void:pass
+				AdminModulesControls.hide_c_btn = true
+				AdminModulesControls.disable_active_btn = false
 				
-				SummaryControls.disable_active_btn = node.ref_data.is_disabled
+				AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 				# ----------------------
 				match node.ref_data.type:
 					"scp":						
-						SummaryControls.a_btn_title = "SELECT SCP" if node.ref_data.data.is_empty() else "FULL"
-						SummaryControls.disable_active_btn = !node.ref_data.data.is_empty()
+						AdminModulesControls.a_btn_title = "SELECT SCP" if node.ref_data.data.is_empty() else "FULL"
+						AdminModulesControls.disable_active_btn = !node.ref_data.data.is_empty()
 						
 					"active_ability":
-						SummaryControls.a_btn_title = "USE PROGRAM"
-						SummaryControls.disable_active_btn = node.ref_data.is_disabled
+						AdminModulesControls.a_btn_title = "USE PROGRAM"
+						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 					# ----------------------
 					"passive_ability":
-						SummaryControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE MODULE" 
-						SummaryControls.disable_active_btn = node.ref_data.is_disabled
+						AdminModulesControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE" 
+						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 					# ----------------------
 		# -----------	
 		MODE.ADMINISTRATION:
 			AdminControls.disable_active_btn = is_room_empty
-			AdminControls.a_btn_title = "TOGGLE MODULES" #if has_options else "NO ABILITIES"
+			AdminControls.a_btn_title = "MODULES" #if has_options else "NO ABILITIES"
 			
 			AdminControls.onAction = func() -> void:
 				await AdminControls.reveal(false)
-				current_mode = MODE.SUMMARY_CARD
+				current_mode = MODE.ADMINISTRATION_MODULES
 
 			AdminControls.onCBtn = func() -> void:
 				await AdminControls.reveal(false)				
@@ -1335,45 +1297,45 @@ func check_btn_states() -> void:
 				
 
 		# -----------	
-		MODE.COMMANDS:
-			var can_activate:bool = ROOM_UTIL.can_activate_check(room_extract.room.details.ref)	if !room_extract.room.is_empty() else false
-			
-			CommandControls.a_btn_title = "MISSING STAFF" if !is_room_empty and !can_activate else "UTILIZE" if is_activated else "ACTIVATE"
-			CommandControls.hide_a_btn = is_room_empty or is_under_construction
-			CommandControls.disable_active_btn = !is_room_empty and !can_activate
-
-			CommandControls.hide_c_btn = is_room_empty or !is_activated	or at_max_level
-			CommandControls.disable_c_btn = !is_activated
-			
-			CommandControls.onAction = func() -> void:
-				await CommandControls.reveal(false)
-				if is_activated:
-					current_mode = MODE.SUMMARY_CARD
-				else:
-					var confirm:bool = await GAME_UTIL.activate_room()
-					if confirm:
-						await U.tick()
-						on_current_location_update()
-					CommandControls.reveal(true)
-
-			CommandControls.onCBtn = func() -> void:
-				await CommandControls.reveal(false)
-				var confirm:bool = await GAME_UTIL.upgrade_facility()
-				if confirm:
-					await U.tick()
-					on_current_location_update()
-				CommandControls.reveal(true)
-				
-			CommandControls.onBack = func() -> void:
-				WingRenderNode.highlight_rooms = []
-				await CommandControls.reveal(false)
-				lock_actions(false)
-				current_mode = MODE.NONE
-		# -----------	
-		MODE.PROGRAMS:
-			current_mode = MODE.ACTIVE_MENU_OPEN
-			await show_programs([], "ALL PROGRAMS")
-			current_mode = MODE.NONE
+		#MODE.COMMANDS:
+			#var can_activate:bool = ROOM_UTIL.can_activate_check(room_extract.room.details.ref)	if !room_extract.room.is_empty() else false
+			#
+			#CommandControls.a_btn_title = "MISSING STAFF" if !is_room_empty and !can_activate else "UTILIZE" if is_activated else "ACTIVATE"
+			#CommandControls.hide_a_btn = is_room_empty or is_under_construction
+			#CommandControls.disable_active_btn = !is_room_empty and !can_activate
+#
+			#CommandControls.hide_c_btn = is_room_empty or !is_activated	or at_max_level
+			#CommandControls.disable_c_btn = !is_activated
+			#
+			#CommandControls.onAction = func() -> void:
+				#await CommandControls.reveal(false)
+				#if is_activated:
+					#current_mode = MODE.SUMMARY_CARD
+				#else:
+					#var confirm:bool = await GAME_UTIL.activate_room()
+					#if confirm:
+						#await U.tick()
+						#on_current_location_update()
+					#CommandControls.reveal(true)
+#
+			#CommandControls.onCBtn = func() -> void:
+				#await CommandControls.reveal(false)
+				#var confirm:bool = await GAME_UTIL.upgrade_facility()
+				#if confirm:
+					#await U.tick()
+					#on_current_location_update()
+				#CommandControls.reveal(true)
+				#
+			#CommandControls.onBack = func() -> void:
+				#WingRenderNode.highlight_rooms = []
+				#await CommandControls.reveal(false)
+				#lock_actions(false)
+				#current_mode = MODE.NONE
+		## -----------	
+		#MODE.PROGRAMS:
+			#current_mode = MODE.ACTIVE_MENU_OPEN
+			#await show_programs([], "ALL PROGRAMS")
+			#current_mode = MODE.NONE
 		# -----------	
 		MODE.INTEL:
 			var list:Array = GAME_UTIL.get_pending_events_list()
@@ -1425,12 +1387,15 @@ func check_btn_states() -> void:
 		MODE.FABRICATION:	
 			if is_under_construction:
 				FabricationControls.a_btn_title = "RUSH FABRICATION" if is_room_empty else "RUSH MODULE"
-			else:
-				FabricationControls.a_btn_title = ("FABRICATE DEPARTMENT" if is_room_empty else "FABRICATE MODULE") 
+			#else:
+				#FabricationControls.a_btn_title = ("FABRICATE DEPARTMENT" if is_room_empty else "FABRICATE MODULE") 
 				
-			FabricationControls.c_btn_title = "CANCEL FABRICATION" if is_under_construction else "REMOVE FACILITY"
-			FabricationControls.disable_c_btn = is_room_empty
-			FabricationControls.disable_active_btn = false
+			FabricationControls.c_btn_title = "CANCEL FABRICATION" if is_under_construction else "REMOVE"
+			FabricationControls.hide_c_btn = is_room_empty
+			FabricationControls.hide_a_btn = !is_room_empty
+			
+			#FabricationControls.disable_c_btn = is_room_empty
+			#FabricationControls.disable_active_btn = !is_room_empty
 
 			# remove room
 			FabricationControls.onCBtn = func() -> void:
@@ -1706,6 +1671,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_summarycard(false, false)
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
+			# --------------
 			MODE.NEW_GAME:
 				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
@@ -1713,24 +1679,15 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_timeline = false					
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)				
 			# --------------
-			#MODE.INFO:
-				#NameControl.hide()
-				#LocationAndDirectivesContainer.reveal(false)
-				#WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
-				#RenderingNode.set_shader_strength(0)
-				#GameplayNode.show_marked_objectives = true
-				#GameplayNode.show_timeline = true
-				#InfoControls.reveal(true)
-			# --------------
-			MODE.SUMMARY_CARD:
+			MODE.ADMINISTRATION_MODULES:
 				NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
-				SummaryControls.reveal(true)
+				AdminModulesControls.reveal(true)
 
-				SummaryControls.itemlist = ModulesCard.get_ability_btns()
-				SummaryControls.item_index = 0
+				AdminModulesControls.itemlist = ModulesCard.get_ability_btns()
+				AdminModulesControls.item_index = 0
 			# -------------
 			MODE.INTEL:
 				NameControl.hide()
@@ -1747,12 +1704,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			MODE.INTEL_OVERSIGHT:
 				reveal_summarycard(false)
 				IntelOverviewControls.reveal(true)
-			# -------------
-			MODE.HEALTH:
-				NameControl.hide()
-				LocationAndDirectivesContainer.reveal(false)
-				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false
 			# --------------
 			MODE.FABRICATION:
 				NameControl.hide()
@@ -1859,34 +1810,34 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
-			# -----------	
-			MODE.COMMANDS:
-				pass
+			## -----------	
+			#MODE.COMMANDS:
+				#pass
+				##NameControl.hide()
+				##LocationAndDirectivesContainer.reveal(false)
+				###WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				##RenderingNode.set_shader_strength(1)
+				##GameplayNode.show_marked_objectives = false
+				##GameplayNode.show_timeline = false	
+				##reveal_action_label(true, 0.4, "ADMINISTRATIVE")
+				##reveal_summarycard(true, true)
+				##CommandControls.reveal(true)
+				##
+				##list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
+				##list_of_available_rooms.sort()
+				##selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]
+				##if selected_room != -1:
+					##SUBSCRIBE.current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": selected_room}
+				##WingRenderNode.highlight_rooms = [selected_room]								
+			## -----------	
+			#MODE.PROGRAMS:
 				#NameControl.hide()
 				#LocationAndDirectivesContainer.reveal(false)
-				##WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_FAR)
+				#WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				#RenderingNode.set_shader_strength(1)
 				#GameplayNode.show_marked_objectives = false
 				#GameplayNode.show_timeline = false	
-				#reveal_action_label(true, 0.4, "ADMINISTRATIVE")
-				#reveal_summarycard(true, true)
-				#CommandControls.reveal(true)
-				#
-				#list_of_available_rooms = ROOM_UTIL.list_of_rooms_in_wing()
-				#list_of_available_rooms.sort()
-				#selected_room = -1 if list_of_available_rooms.is_empty() else list_of_available_rooms[0]
-				#if selected_room != -1:
-					#SUBSCRIBE.current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": selected_room}
-				#WingRenderNode.highlight_rooms = [selected_room]								
-			# -----------	
-			MODE.PROGRAMS:
-				NameControl.hide()
-				LocationAndDirectivesContainer.reveal(false)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				RenderingNode.set_shader_strength(1)
-				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false	
-				reveal_action_label(true, 0.4, "OPERATIONS")
+				#reveal_action_label(true, 0.4, "OPERATIONS")
 
 		on_current_location_update()
 		on_camera_settings_update()
@@ -2017,6 +1968,9 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				# ----------------------------
 				"A":
 					U.room_left()
+		# ----------------------------		
+		MODE.ADMINISTRATION_MODULES:
+			pass
 		# ----------------------------		
 		_:
 			match key:
