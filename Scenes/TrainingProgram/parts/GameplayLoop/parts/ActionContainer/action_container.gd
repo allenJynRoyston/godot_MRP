@@ -66,7 +66,8 @@ extends GameContainer
 # CURRENT ACTION
 @onready var ActionPanel:PanelContainer = $ActionLabelPanel/PanelContainer
 @onready var ActionMargin:MarginContainer = $ActionLabelPanel/PanelContainer/MarginContainer
-@onready var CurrentActionLabel:Label  =$ActionLabelPanel/PanelContainer/MarginContainer/CurrentActionLabel
+@onready var CurrentActionLabel:Label  = $ActionLabelPanel/PanelContainer/MarginContainer/VBoxContainer/CurrentActionLabel
+@onready var ActionTextureRect:TextureRect = $ActionLabelPanel/PanelContainer/MarginContainer/VBoxContainer/ActionTextureRect
 
 # LEFT SIDE
 @onready var StartGameBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/StartGameBtn
@@ -113,6 +114,8 @@ const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts
 const NametagPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn")
 const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
 
+enum PORTRAIT {ENGINEER, SECURITY, ADMIN}
+
 var current_mode:MODE = MODE.NONE : 
 	set(val):
 		current_mode = val
@@ -133,6 +136,12 @@ var show_new_message_btn:bool = false :
 	set(val):
 		show_new_message_btn = val
 		reveal_new_message(val)
+
+const portrait_img_src:Dictionary = {
+	PORTRAIT.ENGINEER: "res://Media/images/SectionArt/engineer.png",
+	PORTRAIT.SECURITY: "res://Media/images/SectionArt/security.png",	
+	PORTRAIT.ADMIN: "res://Media/images/SectionArt/admin.png",	
+}
 
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
@@ -1342,7 +1351,8 @@ func check_btn_states() -> void:
 			
 			IntelControls.onAction = func() -> void:				
 				IntelControls.reveal(false)
-				reveal_action_label(false)
+				reveal_actionpanel_label(false)
+				reveal_actionpanel_image(false)
 				reveal_summarycard(false)
 				reveal_telemetry(false)
 				TransistionScreen.start(0.5, true)
@@ -1499,16 +1509,29 @@ func set_backdrop_state(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------	
-func reveal_action_label(state:bool, duration:float = 0.3, title:String = "") -> void:
-	CurrentActionLabel.text = str(title)
-	if state:
-		ActionPanel.show()
-		
-	await U.tween_node_property(ActionPanel, "position:x", control_pos[ActionPanel].show if state else control_pos[ActionPanel].hide, duration)
+func reveal_actionpanel_label(state:bool, duration:float = 0.3, title:String = "") -> void:
+	var ActionPanel:Control = GBL.find_node(REFS.RENDERING).ActionPanel
+	ActionPanel.title = title
+	await ActionPanel.reveal(state)
 	
 	if !state:
-		ActionPanel.hide()
+		ActionPanel.title = ""
+
+
+func reveal_actionpanel_image(state:bool, duration:float = 0.3, img_src:String = "", remove_before_clear:bool = false) -> void:
+	var ActionPanel:Control = GBL.find_node(REFS.RENDERING).ActionPanel
+	
+	if state or remove_before_clear:
+		ActionPanel.img_src = img_src
+		
+	await ActionPanel.reveal_image(state)
+	
+	
+	
+	if !state:
+		ActionPanel.img_src = "" 
 # --------------------------------------------------------------------------------------------------	
+
 
 # --------------------------------------------------------------------------------------------------	
 func reveal_notification(state:bool, duration:float = 0.3) -> void:
@@ -1661,7 +1684,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
-				reveal_action_label(false)			
+				reveal_actionpanel_label(false)			
+				reveal_actionpanel_image(false)
+				
 				LocationAndDirectivesContainer.reveal(true)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = true
@@ -1697,7 +1722,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)				
 				reveal_summarycard(true, false)
 				reveal_telemetry(true)
-				reveal_action_label(true, 0.4, "INTEL")
+				reveal_actionpanel_label(true, 0.4, "INTEL")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				IntelControls.reveal(true)
 			# -------------	
 			MODE.INTEL_OVERSIGHT:
@@ -1713,7 +1739,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
-				reveal_action_label(true, 0.4, "FABRICATION DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "FABRICATION DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				FabricationControls.reveal(true)
 			# --------------
 			MODE.ENGINEERING:
@@ -1723,7 +1750,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_action_label(true, 0.4, "ENGINEERING DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "ENGINEERING DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				EngineeringControls.reveal(true)
 			# --------------
 			MODE.ETHICS:
@@ -1733,7 +1761,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_action_label(true, 0.4, "ETHICS DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "ETHICS DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 				EthicsControls.reveal(true)				
 			# --------------
 			MODE.LOGISTICS:
@@ -1743,11 +1772,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_action_label(true, 0.4, "LOGISTICS DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "LOGISTICS DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 				LogisticsControls.reveal(true)
 			# --------------
 			MODE.ENGINEERING_CONFIG:
-				reveal_action_label(false)
+				reveal_actionpanel_label(false)
 				reveal_engineering(true)
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
@@ -1764,7 +1794,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, true)
-				reveal_action_label(true, 0.4, "ADMINISTRATIVE DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "ADMINISTRATIVE DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 				AdminControls.reveal(true)
 			# --------------
 			MODE.SECURITY:
@@ -1775,7 +1806,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, false)
-				reveal_action_label(true, 0.4, "SECURITY DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "SECURITY DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.SECURITY])				
 				SecurityControls.reveal(true)
 			# -----------	
 			MODE.SCIENCE:
@@ -1786,7 +1818,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_timeline = false	
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				#reveal_summarycard(false, false)
-				reveal_action_label(true, 0.4, "RESEARCH DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "RESEARCH DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				ScienceControls.reveal(true)
 			# -----------	
 			MODE.MEDICAL:
@@ -1795,7 +1828,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false					
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_action_label(true, 0.4, "MEDICAL DEPARTMENT")
+				reveal_actionpanel_label(true, 0.4, "MEDICAL DEPARTMENT")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 				MedicalControls.reveal(true)
 			# -----------	
 			MODE.MEDICAL_OVERVIEW:

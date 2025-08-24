@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c60d3ymkiaiyy"]
+[gd_scene load_steps=15 format=3 uid="uid://c60d3ymkiaiyy"]
 
 [ext_resource type="Script" uid="uid://d26k6oiodixrw" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/rendering.gd" id="1_cucwc"]
 [ext_resource type="PackedScene" uid="uid://eqyg3c15y82h" path="res://Scenes/Main/parts/Background/Background.tscn" id="2_lh6qf"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="3_kgjio"]
 [ext_resource type="Shader" uid="uid://dfudwt01nbo8a" path="res://Shader/HV_Interupt/hv_interupt.gdshader" id="4_ocl5o"]
 [ext_resource type="PackedScene" uid="uid://bl0fcbjjnqeux" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/Wing.tscn" id="4_ujma6"]
+[ext_resource type="PackedScene" uid="uid://df6jks6u6jcc4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionPanel/ActionPanel.tscn" id="5_lh6qf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kgjio"]
 shader = ExtResource("2_uoiph")
@@ -91,7 +92,12 @@ rotation = 0.190241
 scale = Vector2(1.2, 1.2)
 pivot_offset = Vector2(960, 540)
 
+[node name="ActionPanel" parent="." instance=ExtResource("5_lh6qf")]
+z_as_relative = false
+layout_mode = 1
+
 [node name="MainViewportTexture" type="TextureRect" parent="."]
+z_as_relative = false
 material = SubResource("ShaderMaterial_ocl5o")
 layout_mode = 0
 offset_right = 1920.0

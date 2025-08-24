@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=25 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
@@ -12,6 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_58xi4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xathl"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_58xi4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_58xi4"]
 
@@ -86,8 +90,6 @@ bg_color = Color(0.89294, 1, 0.89294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ah17n"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xathl"]
-
 [node name="ActionContainer" type="PanelContainer"]
 z_index = 2
 anchors_preset = 15
@@ -102,6 +104,49 @@ script = ExtResource("1_co4u3")
 z_as_relative = false
 layout_mode = 2
 color = Color(0.286684, 0.286684, 0.286684, 0.141176)
+
+[node name="ActionLabelPanel" type="Control" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="ActionLabelPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xathl")
+
+[node name="MarginContainer" type="MarginContainer" parent="ActionLabelPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 140
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ActionLabelPanel/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="CurrentActionLabel" type="Label" parent="ActionLabelPanel/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "CURRENT ACTION!"
+label_settings = ExtResource("8_bk83u")
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="ActionTextureRect" type="TextureRect" parent="ActionLabelPanel/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(600, 600)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = SubResource("PlaceholderTexture2D_58xi4")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="RootControls" type="Control" parent="."]
 layout_mode = 2
@@ -560,35 +605,6 @@ layout_mode = 2
 
 [node name="NameControl" type="Control" parent="."]
 layout_mode = 2
-
-[node name="ActionLabelPanel" type="Control" parent="."]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="ActionLabelPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_xathl")
-
-[node name="MarginContainer" type="MarginContainer" parent="ActionLabelPanel/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 140
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="CurrentActionLabel" type="Label" parent="ActionLabelPanel/PanelContainer/MarginContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-text = "CURRENT ACTION!"
-label_settings = ExtResource("8_bk83u")
-horizontal_alignment = 2
-autowrap_mode = 3
 
 [node name="TransitionScreen" parent="." instance=ExtResource("9_bk83u")]
 layout_mode = 2

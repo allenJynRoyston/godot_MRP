@@ -1,0 +1,105 @@
+[gd_scene load_steps=7 format=3 uid="uid://df6jks6u6jcc4"]
+
+[ext_resource type="Script" uid="uid://cigcbc6iwp13m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionPanel/action_panel.gd" id="1_0jgqq"]
+[ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="2_dr1up"]
+[ext_resource type="Shader" uid="uid://dbt8u5cipx8ne" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionPanel/ActionPanel.gdshader" id="3_ykh6c"]
+[ext_resource type="Texture2D" uid="uid://cby48wufiylx5" path="res://Media/images/SectionArt/engineer.png" id="4_m4ab1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ykh6c"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v4jm8"]
+shader = ExtResource("3_ykh6c")
+shader_parameter/tex_size = Vector2(200, 200)
+shader_parameter/static_strength = 0.1
+shader_parameter/static_speed = 4.381
+shader_parameter/trail_color = Color(0, 0.600835, 0.385031, 1)
+shader_parameter/spark_intensity = 0.913
+shader_parameter/spark_distance = 19.145
+shader_parameter/spark_density = 0.258
+shader_parameter/spark_direction = Vector2(2, 50)
+shader_parameter/spark_speed = 4.56
+shader_parameter/trail_length = 1.0
+shader_parameter/trail_steps = 12
+shader_parameter/edge_expand = 0.0
+shader_parameter/oscillation_pixels = 1.26
+shader_parameter/osc_speed_x = 1.045
+shader_parameter/osc_speed_y = 0.8
+shader_parameter/trail_override = 0.676
+
+[node name="ActionLabelPanel" type="Control"]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0jgqq")
+
+[node name="TitlePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ykh6c")
+
+[node name="MarginContainer" type="MarginContainer" parent="TitlePanel"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TitlePanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="MarginContainer" type="MarginContainer" parent="TitlePanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_right = 30
+
+[node name="TitleLabel" type="Label" parent="TitlePanel/MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "SECTION NAME"
+label_settings = ExtResource("2_dr1up")
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="ImagePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ykh6c")
+
+[node name="MarginContainer" type="MarginContainer" parent="ImagePanel"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ImagePanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 2
+
+[node name="ImageTextRect" type="TextureRect" parent="ImagePanel/MarginContainer/VBoxContainer"]
+material = SubResource("ShaderMaterial_v4jm8")
+custom_minimum_size = Vector2(600, 800)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource("4_m4ab1")
+expand_mode = 1
+stretch_mode = 6

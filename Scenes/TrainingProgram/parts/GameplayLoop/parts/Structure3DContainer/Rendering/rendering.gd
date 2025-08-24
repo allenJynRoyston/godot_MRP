@@ -3,6 +3,7 @@ extends Control
 @onready var RenderSubviewport:SubViewport = $SubViewport
 @onready var MainViewportTexture:TextureRect = $MainViewportTexture
 @onready var TransitionScreen:Control = $TransitionScreen
+@onready var ActionPanel:Control = $ActionPanel
 
 @onready var BGColorRect:ColorRect = $BGColorRect
 @onready var MaterialRect:ColorRect = $ColorRect

@@ -1,7 +1,8 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://d32fkmtetp1ge"]
 
-[ext_resource type="Shader" path="res://Shader/Outline/Outline.gdshader" id="1_g3cir"]
+[ext_resource type="Shader" uid="uid://b3tekv1p1wml4" path="res://Shader/Outline/Outline.gdshader" id="1_g3cir"]
 
 [resource]
 shader = ExtResource("1_g3cir")
-shader_parameter/outline_thickness = 1.0
+shader_parameter/outline_thickness = 10.0
+shader_parameter/outline_color = Vector4(0, 0, 0, 1)
