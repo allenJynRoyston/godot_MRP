@@ -176,12 +176,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="StartGameBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+[node name="HasEventBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "SETUP ADMIN DEPT"
+title = "EVENT PENDING"
 assigned_key = "E"
 icon = 10
 is_flashing = true

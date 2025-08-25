@@ -104,6 +104,27 @@ func unsubscribe_to_progress_data(node:Node) -> void:
 # ------------------------------------------------------------	
 
 # ------------------------------------------------------------
+var priority_events_subscriptions:Array = []
+
+var priority_events:Array = [] : 
+	set(val):
+		priority_events = val
+		for node in priority_events_subscriptions:
+			if "on_priority_events_update" in node:
+				node.on_priority_events_update.call(priority_events)
+
+func subscribe_to_priority_events(node:Node) -> void:
+	if node not in priority_events_subscriptions:
+		priority_events_subscriptions.push_back(node)
+		if "on_priority_events_update" in node:
+			node.on_priority_events_update.call(priority_events)
+			
+func unsubscribe_to_priority_events(node:Node) -> void:
+	priority_events_subscriptions.erase(node)
+# ------------------------------------------------------------	
+
+
+# ------------------------------------------------------------
 var resources_data_subscriptions:Array = []
 
 var resources_data:Dictionary = {} : 

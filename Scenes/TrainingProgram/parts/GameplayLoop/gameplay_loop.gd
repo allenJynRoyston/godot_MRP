@@ -58,6 +58,11 @@ var show_resources:bool = false :
 var starting_data:Dictionary
 
 var initial_values:Dictionary = {
+	# ----------------------------------	
+	"priority_events": func() -> Array:
+		return [
+			EVT.TYPE.ADMIN_SETUP
+		],
 	# ----------------------------------
 	"current_location": func() -> Dictionary:
 		return {
@@ -275,6 +280,7 @@ var initial_values:Dictionary = {
 		return [],	
 }
 
+var priority_events:Array
 var room_config:Dictionary 
 var scp_data:Dictionary
 var timeline_array:Array 
@@ -341,6 +347,7 @@ func _init() -> void:
 	GBL.subscribe_to_mouse_input(self)
 	GBL.subscribe_to_control_input(self)
 
+	SUBSCRIBE.subscribe_to_priority_events(self)
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
@@ -364,6 +371,7 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_mouse_input(self)
 	GBL.unsubscribe_to_control_input(self)
 	
+	SUBSCRIBE.unsubscribe_to_priority_events(self)
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_room_config(self)
@@ -778,6 +786,9 @@ func game_over() -> void:
 # ------------------------------------------------------------------------------	
 #region local SAVABLE ONUPDATES
 # ------------------------------------------------------------------------------	LOCAL ON_UPDATES
+func on_priority_events_update(new_val:Array = priority_events) -> void:
+	priority_events = new_val
+
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 
@@ -1145,19 +1156,10 @@ func on_current_phase_update() -> void:
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
 			
-			print( chapter ) #on_complete_event
-			# trigger reward event
-			#await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
-				#EVT.TYPE.OBJECTIVE_REWARD, 
-					#{
-						#"rewarded": chapter.rewarded.call() if chapter.has("rewarded") else [],
-						#"onSelection": func(selection:Dictionary) -> void:
-							#await selection.func.call(),
-					#}
-				#)
-			#])	
-						
-			
+			if chapter.has("event_triggered"):
+				priority_events.push_back( chapter.has("event_triggered") )
+				SUBSCRIBE.priority_events = priority_events
+
 			# update story...
 			GAME_UTIL.increament_story()
 
@@ -1281,8 +1283,8 @@ func parse_restore_data() -> void:
 	var is_new_game:bool = restore_data.is_empty() 
 
 	# modify if starting a new game
-	var resources_data:Dictionary = initial_values.resources_data.call() if is_new_game else restore_data.resources_data	
-	SUBSCRIBE.resources_data = resources_data
+	SUBSCRIBE.priority_events = initial_values.priority_events.call() if is_new_game else restore_data.priority_events
+	SUBSCRIBE.resources_data = initial_values.resources_data.call() if is_new_game else restore_data.resources_data	
 	
 	# any rooms completed by scenarios become allowed
 	SUBSCRIBE.awarded_rooms = [] #	game_data_config.awarded_rooms

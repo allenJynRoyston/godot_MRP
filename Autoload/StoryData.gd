@@ -19,7 +19,7 @@ var chapters:Array = [
  			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
 		"objectives": {
-			"complete_by_day": 7,
+			"complete_by_day": 3,
 			"required":[
 				{ 
 					"criteria": {
@@ -32,7 +32,7 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 5,
+						"amount": 2,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
 					},

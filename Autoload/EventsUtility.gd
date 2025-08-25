@@ -408,6 +408,66 @@ var TEST_EVENT_C:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
+var ADMIN_SETUP:Dictionary = {
+	"is_repeatable": true,
+	"event_instructions": func(props:Dictionary) -> Array:
+		# admin department always installed
+		ROOM_UTIL.add_room(ROOM.REF.ADMIN_DEPARTMENT, false, {"floor": current_location.floor, "ring": 0, "room": 4})
+		
+		var instructions_1:Array = build_event_content(props, {
+			"header": "SELECT STARTING DEPARTMENTS",
+			"subheader": "THE ENGINE",
+			"img_src": "res://Media/images/redacted.png",
+			"text": ["Two departments drive the machinery of survival:"],
+			"options": [
+				# ----------------------------------------- ENGINEERING
+				{
+					"header": "ENGINEERING",
+					"title": "Applied Engineering Division",
+					"description": "Keeps walls upright, locks sealed, and the lights on. When systems fail, so does containment.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"impact": {
+						"currency": { RESOURCE.CURRENCY.MATERIAL: 5 }
+					},					
+					"outcomes": {
+						"list": [
+							{ "response": ["Steel does not ask questions. It only holds."] },
+							{ "response": ["Infrastructure is reinforced. Supplies are secured."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":1, "room": 4})
+						onSelected(choice),
+				},
+				# ----------------------------------------- LOGISTICS
+				{
+					"header": "LOGISTICS",
+					"title": "Logistics & Supply Chain Division",
+					"description": "Moves anomalies, weapons, and resources without incident. Failure is catastrophic.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"impact": {
+						"currency": { RESOURCE.CURRENCY.MONEY: 5 }
+					},
+					"outcomes": {
+						"list": [
+							{ "response": ["A missing crate kills faster than a missing guard."] },
+							{ "response": ["Procurement chains tighten. Waste diminishes."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 1, "room": 4})
+						onSelected(choice),
+				},
+			]
+		})
+
+		return instructions_1
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
 var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 	"is_repeatable": true,
 	"event_instructions": func(props:Dictionary) -> Array:
@@ -2010,6 +2070,7 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
+	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
 	EVT.TYPE.SELECT_STARTING_DEPARTMENTS: SELECT_STARTING_DEPARTMENTS,
 	
 	

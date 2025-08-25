@@ -17,6 +17,7 @@ class_name GameContainer
 		
 var GameplayNode:Control 
 
+var priority_events:Array = []
 var resources_data:Dictionary = {} 
 var purchased_facility_arr:Array = [] 
 var purchased_base_arr:Array = []
@@ -50,6 +51,7 @@ signal hide_complete
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
+	SUBSCRIBE.subscribe_to_priority_events(self)
 	SUBSCRIBE.subscribe_to_current_location(self)
 	SUBSCRIBE.subscribe_to_progress_data(self)
 	SUBSCRIBE.subscribe_to_timeline_array(self)
@@ -77,6 +79,7 @@ func _init() -> void:
 	freeze_inputs = false	
 	
 func _exit_tree() -> void:
+	SUBSCRIBE.unsubscribe_to_priority_events(self)
 	SUBSCRIBE.unsubscribe_to_current_location(self)
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
 	SUBSCRIBE.unsubscribe_to_timeline_array(self)
@@ -117,6 +120,8 @@ func on_fullscreen_update(state:bool):pass
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func on_priority_events_update(new_val:Array) -> void:
+	priority_events = new_val
 func on_resources_data_update(new_val:Dictionary) -> void:
 	resources_data = new_val
 func on_progress_data_update(new_val:Dictionary) -> void:

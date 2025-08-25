@@ -71,7 +71,7 @@ extends GameContainer
 @onready var ActionTextureRect:TextureRect = $ActionLabelPanel/PanelContainer/MarginContainer/VBoxContainer/ActionTextureRect
 
 # LEFT SIDE
-@onready var StartGameBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/StartGameBtn
+@onready var HasEventBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/HasEventBtn
 @onready var IntelBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/IntelBtn
 @onready var FabricationBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/FabricationBtn
 @onready var EngineeringBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left/EngineeringBtn
@@ -93,9 +93,7 @@ extends GameContainer
 
 enum MODE { 
 	NONE,	
-	NEW_GAME,
-	
-	BASE_SETUP,
+	EVENT_BTN_TRIGGER,
 	
 	FABRICATION,
 	FABRICATION_LINKABLE,
@@ -264,9 +262,9 @@ func start() -> void:
 		lock_actions(false)
 	
 	# -------------------------------------
-	StartGameBtn.onClick = func() -> void:
+	HasEventBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.BASE_SETUP
+		current_mode = MODE.EVENT_BTN_TRIGGER
 
 	# -------------------------------------
 	NewMessageBtn.onClick = func() -> void:
@@ -1126,16 +1124,16 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
-			var select_starting_base:bool = purchased_facility_arr.size() == 0
-			
+			var has_priority_events:bool = !priority_events.is_empty()
+
 			# show only starting/info if new game
-			StartGameBtn.show() if select_starting_base else StartGameBtn.hide()
+			HasEventBtn.show() if has_priority_events else HasEventBtn.hide()
 			
 			# info button
-			IntelBtn.show() if !select_starting_base else IntelBtn.hide()
+			IntelBtn.show() if !has_priority_events else IntelBtn.hide()
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
-			FabricationBtn.show() if !select_starting_base else FabricationBtn.hide()
+			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_powered
 			FabricationBtn.title = "FABRICATION" if rooms_in_wing_count == 0 else "FABRICATION"
 			FabricationBtn.onClick = func() -> void:
@@ -1143,25 +1141,25 @@ func check_btn_states() -> void:
 				current_mode = MODE.FABRICATION
 			
 			# need engineering department before you can use this 
-			AdminBtn.show() if ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) and !select_starting_base else AdminBtn.hide()
+			AdminBtn.show() if ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) and !has_priority_events else AdminBtn.hide()
 			AdminBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT)
 						
-			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !select_starting_base else EngineeringBtn.hide()
+			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !has_priority_events else EngineeringBtn.hide()
 			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
 			
-			LogisticsBtn.show() if ROOM_UTIL.owns(ROOM.REF.LOGISTICS_DEPARTMENT) and !select_starting_base else LogisticsBtn.hide()
+			LogisticsBtn.show() if ROOM_UTIL.owns(ROOM.REF.LOGISTICS_DEPARTMENT) and !has_priority_events else LogisticsBtn.hide()
 			LogisticsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT)
 
-			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !select_starting_base else ScienceBtn.hide()
+			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !has_priority_events else ScienceBtn.hide()
 			ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
 			
-			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !select_starting_base else MedicalBtn.hide()
+			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !has_priority_events else MedicalBtn.hide()
 			MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
 			
-			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !select_starting_base else SecurityBtn.hide()
+			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !has_priority_events else SecurityBtn.hide()
 			SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
 			
-			EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !select_starting_base else EthicsBtn.hide()
+			EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
 			EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)			
 						
 			#OperationsBtn.hide()
@@ -1619,7 +1617,7 @@ func lock_actions(state:bool) -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
-	if base_states.is_empty():return
+	if !is_node_ready() or base_states.is_empty():return
 	var pending_events_count:int = GAME_UTIL.get_pending_events_count()
 	
 	IntelBtn.is_flashing = pending_events_count > 0
@@ -1639,7 +1637,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		match current_mode:
 			# --------------
 			MODE.NONE:
-				NameControl.hide()
+				NameControl.show()
 				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
@@ -1655,32 +1653,24 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				# recenter...
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
 			# --------------
-			MODE.BASE_SETUP:
-				
-				LocationAndDirectivesContainer.reveal(false)
-				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false
-				await GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
-				
-				current_location = {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
-				SUBSCRIBE.current_location = current_location
-				await U.set_timeout(1.0)
-				ROOM_UTIL.add_room(ROOM.REF.ADMIN_DEPARTMENT, true)
-				#ROOM_UTIL.add_room(ROOM.REF.ENGINEERING_DEPARTMENT, false, {"floor": current_location.floor, "ring": 1, "room": 4})
-				#ROOM_UTIL.add_room(ROOM.REF.SCIENCE_DEPARTMENT, false, {"floor": current_location.floor, "ring": 2, "room": 4})
-				#ROOM_UTIL.add_room(ROOM.REF.SECURITY_DEPARTMENT, false, {"floor": current_location.floor, "ring": 3, "room": 4})		
-				#await GAME_UTIL.run_event(EVT.TYPE.SELECT_STARTING_DEPARTMENTS)
-				await U.set_timeout(1.0)
-				await GameplayNode.restore_player_hud()
-				EndTurnBtn.is_flashing = true
-				current_mode = MODE.NONE
-			# --------------
-			MODE.NEW_GAME:
+			MODE.EVENT_BTN_TRIGGER:
 				NameControl.hide()
-				LocationAndDirectivesContainer.reveal(false)
-				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false					
+				reveal_actionpanel_image(false)
+				reveal_summarycard(false)
+				reveal_telemetry(false)
+				TransistionScreen.start(0.5, true)
+				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				
+				#trigger event
+				await GAME_UTIL.run_event( 	priority_events[0] )
+				priority_events.remove_at(0)
+				SUBSCRIBE.priority_events = priority_events
+				
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				
+
+				await TransistionScreen.start(0.5, true)
+				current_mode = MODE.NONE
 			# --------------
 			MODE.ADMINISTRATION:
 				NameControl.hide()
