@@ -210,7 +210,7 @@ func build_hints(hints:Array = current_hints, current_objective:Dictionary = {})
 		new_hint.cost = hint.cost
 		HintList.add_child(new_hint)
 	
-	BtnControls.hide_a_btn = is_upcoming or is_expired or already_completed
+	BtnControls.hide_a_btn = true #is_upcoming or is_expired or already_completed
 	
 	if current_objective.is_empty():
 		CurrentObjective.text = "UPCOMING..."

@@ -3,12 +3,14 @@ extends Node3D
 @onready var SceneCamera:Camera3D = $Camera3D
 @onready var MeshRender:Node3D = $MeshRender
 @onready var Laser:SpotLight3D = $MeshRender/Laser
-@onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
+@onready var WorldEnv:WorldEnvironment = $WorldEnvironment
+# @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 @onready var WingRenderMesh:Node3D = $MeshRender/WingRenderMesh
 
 @onready var RoomContainer:Node3D = $MeshRender/Rooms
 @onready var GateContainer:Node3D = $MeshRender/Gates
 @onready var MarkersContainer:Node3D = $MeshRender/Markers
+@onready var SelectorContainer:Node3D = $MeshRender/Selectors
 #
 #@onready var LeftBillbordLabel:Label3D = $MeshRender/Billboards/Left/LeftWallLabel
 #@onready var RightBillboardLabel:Label3D = $MeshRender/Billboards/Right/RightWallLabel
@@ -29,6 +31,7 @@ extends Node3D
 
 @onready var LeftLabel:Label3D = $MeshRender/Labeling/LeftLabel
 @onready var RightLabel:Label3D = $MeshRender/Labeling/RightLabel
+@onready var world_environment_copy:Resource = WorldEnv.environment.duplicate()
 
 const LOCKDOWN_LIGHT_COLOR:Color = Color.ORANGE_RED	
 const CAUTION_LIGHT_COLOR:Color = Color.MEDIUM_VIOLET_RED
@@ -88,6 +91,11 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	set_engineering_mode(false)
+	
+	WorldEnv.environment = world_environment_copy
+	
+	for child in SelectorContainer.get_children():
+		child.hide()
 	
 	if !Engine.is_editor_hint():
 		for node in [Lighting, Fog, RoomContainer, GateContainer]:
@@ -155,8 +163,13 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	
 	var actual:int = index_to_room_lookup(current_location.room)
 	var marker:Marker3D = MarkersContainer.get_child(actual)
-	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)	
-	MeshSelector.position = Vector3(new_pos.x, MeshSelector.position.y, new_pos.z)
+	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)
+	for index in SelectorContainer.get_child_count():
+		var Selector:MeshInstance3D = SelectorContainer.get_child(index)
+		Selector.show() #if actual == index else Selector.hide()
+
+	#MeshSelector.position = Vector3(new_pos.x, MeshSelector.position.y, new_pos.z)
+	
 	await U.tween_node_property(Laser, "position", new_pos, 0.2, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
 
 func on_purchased_facility_arr_update(new_val:Array) -> void:
@@ -200,33 +213,42 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
-				Laser.show()		
-				BillboardLights.hide()
-				BaseLights.hide()
-				CautionLights.hide()
-				MeshSelector.show()
+				Laser.show()	
+				Lighting.hide()	
+				world_environment_copy.volumetric_fog_enabled = false
+
 				update_camera_size(230)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 85, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_LEFT:
+				Lighting.show()	
+				world_environment_copy.volumetric_fog_enabled = true
+				
 				U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_RIGHT:
+				Lighting.show()	
+				world_environment_copy.volumetric_fog_enabled = true
+				
 				U.tween_node_property(SceneCamera, "position:x", 62, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)				
 			# ---------------------- 
 			CAMERA.VIEWPOINT.DISTANCE:
 				Laser.show()
-				MeshSelector.show()
+				Lighting.show()
+				world_environment_copy.volumetric_fog_enabled = true
+
 				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 90, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
-				MeshSelector.hide()
+				Lighting.show()
+				world_environment_copy.volumetric_fog_enabled = true
+				
 				update_camera_size(180)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.2, 67, -15), 0.3, 0, Tween.TRANS_SINE)
@@ -234,7 +256,9 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_FAR:
 				Laser.show()
-				MeshSelector.show()			
+				Lighting.show()	
+				world_environment_copy.volumetric_fog_enabled = true
+				
 				update_camera_size(200)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(6.7, 65, -15), 0.3, 0, Tween.TRANS_SINE)
@@ -344,7 +368,7 @@ func update_engineering_stats(stat:Dictionary = engineering_stats) -> void:
 
 # --------------------------------------------------------
 func update_mesh_values() -> void:
-	if !is_node_ready() or room_config.is_empty():return
+	if !is_node_ready() or room_config.is_empty() or use_location.is_empty():return
 	var power_distribution:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].power_distribution
 	WingRenderMesh.heating_val = power_distribution.heating
 	WingRenderMesh.cooling_val = power_distribution.cooling

@@ -22,7 +22,7 @@ func calc_starting_data() -> Dictionary:
 # ------------------------------------------------------------------------------
 var starting_data:Dictionary = {	
 	"starting_resources": {
-		RESOURCE.CURRENCY.MONEY: 5,
+		RESOURCE.CURRENCY.MONEY: 3,
 		RESOURCE.CURRENCY.SCIENCE: 3,
 		RESOURCE.CURRENCY.MATERIAL: 3,
 		RESOURCE.CURRENCY.CORE: 3

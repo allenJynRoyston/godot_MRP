@@ -8,7 +8,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"ref": null,
 	"categories": [],
 	"link_categories": null,
-	"is_department": false,
+	"is_core": false,
 		
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
@@ -20,7 +20,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": true,	
-	"own_limit": 99,
+	"own_limit": 1,
 	"unlock_level": 0,
 	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],
 	"required_energy": 1,
@@ -105,7 +105,6 @@ var ROOM_TEMPLATE:Dictionary = {
 		RESEARCHER.SPECIALIZATION.DCLASS: 0, 
 	}
 	# ------------------------------------------
-	
 }
 
 var reference_data:Dictionary = {}
@@ -281,7 +280,7 @@ func add_to_unlocked_list(ref:int) -> void:
 ## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func add_room(ref:int, linkable:bool, use_location:Dictionary = current_location) -> void:
+func add_room(ref:int, under_construction:bool, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
 	WingRenderNode.start_construction(location_copy)	
@@ -289,7 +288,7 @@ func add_room(ref:int, linkable:bool, use_location:Dictionary = current_location
 	purchased_facility_arr.push_back({
 		"ref": ref,
 		"under_construction": true,
-		"linkable": linkable,
+		#"linkable": linkable,
 		"location": {
 			"floor": location_copy.floor,
 			"ring": location_copy.ring,
@@ -412,7 +411,7 @@ func owns_and_is_active(ref:int) -> bool:
 	if filter.size() == 0:
 		return false
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(filter[0].location)
-	return room_extract.room.is_activated
+	return room_extract.room.is_activated if room_extract.room.has("is_activated") else false
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------

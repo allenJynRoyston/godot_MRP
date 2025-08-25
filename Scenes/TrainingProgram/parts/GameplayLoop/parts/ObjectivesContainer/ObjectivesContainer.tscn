@@ -55,7 +55,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_2g7pg")
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 140
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 0
 
@@ -69,11 +69,13 @@ icon = 22
 title = "DAYS REMAINING"
 
 [node name="Cores" parent="ResourceControl/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_ul6yg")]
+visible = false
 layout_mode = 2
 icon = 39
 title = "CORES"
 
 [node name="HintControl" type="Control" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="HintControl"]
@@ -184,6 +186,7 @@ layout_mode = 2
 offset = Vector2(20, 20)
 a_btn_title = "UNLOCK HINT"
 a_btn_icon = 39
+hide_a_btn = true
 
 [node name="TransitionScreen" parent="." instance=ExtResource("8_2g7pg")]
 layout_mode = 2

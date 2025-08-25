@@ -131,7 +131,7 @@ func _ready() -> void:
 # --------------------------------------------------------
 func set_to_build_mode(state:bool) -> void:
 	BuildingMaterialCopy.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if state else BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	BuildingMaterialCopy.albedo_color = Color.DEEP_SKY_BLUE if state else BuildingMaterialOriginal.albedo_color
+	BuildingMaterialCopy.albedo_color = Color.CORNFLOWER_BLUE if state else BuildingMaterialOriginal.albedo_color
 	BuildingMesh.set(material_prop, BuildingMaterialCopy )	
 # --------------------------------------------------------	
 

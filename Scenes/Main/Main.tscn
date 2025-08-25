@@ -200,12 +200,7 @@ stdr_skip_titlescreen = true
 stdr_skip_loadingscreen = true
 show_debug_menu = true
 skip_setup_progress = true
-start_at_ring_level = true
-skip_objectives = true
-enable_scp_debug = true
 max_energy = false
-all_rooms_available = true
-all_resources = true
 staff_debug = true
 
 [node name="OSViewport" type="SubViewport" parent="."]

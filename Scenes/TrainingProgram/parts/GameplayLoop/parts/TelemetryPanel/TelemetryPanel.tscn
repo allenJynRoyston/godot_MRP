@@ -120,6 +120,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer/Empty"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
@@ -177,6 +178,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer/Stats"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
@@ -344,6 +346,7 @@ label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 2
 
 [node name="Content" type="PanelContainer" parent="VBoxContainer/Income"]
+custom_minimum_size = Vector2(275, 0)
 layout_mode = 2
 size_flags_vertical = 2
 theme_override_styles/panel = ExtResource("9_4bmg2")

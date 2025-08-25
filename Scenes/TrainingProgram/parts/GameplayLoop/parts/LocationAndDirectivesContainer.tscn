@@ -63,6 +63,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
 [node name="Monitors" type="HBoxContainer" parent="Component/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="TempMonitor" parent="Component/MarginContainer/VBoxContainer/Monitors" instance=ExtResource("3_qr38x")]

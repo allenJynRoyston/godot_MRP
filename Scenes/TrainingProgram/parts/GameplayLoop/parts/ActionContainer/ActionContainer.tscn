@@ -181,7 +181,7 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "SITE SETUP"
+title = "SETUP ADMIN DEPT"
 assigned_key = "E"
 icon = 10
 is_flashing = true
@@ -430,6 +430,12 @@ a_btn_title = "ENGINEERING"
 hide_a_btn = true
 c_btn_title = "MEDICAL PROGRAMS"
 
+[node name="InfoControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "INVESTIGATE"
+c_btn_title = "OVERVIEW"
+hide_c_btn = false
+
 [node name="LocationAndDirectivesContainer" parent="." instance=ExtResource("4_xathl")]
 layout_mode = 2
 
@@ -596,7 +602,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 140
+theme_override_constants/margin_top = 160
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 

@@ -18,22 +18,28 @@ enum REF {
 	CONTAINMENT_CELL,			# ALL OTHER ROOMS ATTACH TO THESE
 
 	# -----------------  ADMIN LINKABLES
-	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4, ADMIN_LINK_5,
+	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4, ADMIN_LINK_5, ADMIN_LINK_6, ADMIN_LINK_7, ADMIN_LINK_8, ADMIN_LINK_9, ADMIN_LINK_10,
+	
 	# -----------------  ENG LINKABLES
 	ENGINEERING_LINK_1, ENGINEERING_LINK_2,	ENGINEERING_LINK_3, ENGINEERING_LINK_4, ENGINEERING_LINK_5, ENGINEERING_LINK_6,
+	
 	# -----------------  SEC LINKABLES
 	SECURITY_LINK_1, SECURITY_LINK_2, SECURITY_LINK_3, SECURITY_LINK_4,
+	
 	# -----------------  SCIENCE LINKABLES
 	SCIENCE_LINK_1, SCIENCE_LINK_2, SCIENCE_LINK_3, SCIENCE_LINK_4,
+	
 	# -----------------  SCIENCE LINKABLES
 	MEDICAL_LINK_1, MEDICAL_LINK_2, MEDICAL_LINK_3, MEDICAL_LINK_4,
+	
 	# -----------------  LOGISTICS LINKABLES
 	LOGISTICS_LINK_1, LOGISTICS_LINK_2, LOGISTICS_LINK_3, LOGISTICS_LINK_4,
+	
 	# -----------------  ETHICS LINKABLES
 	ETHICS_LINK_1, ETHICS_LINK_2, ETHICS_LINK_3, ETHICS_LINK_4,
+	
 	# -----------------  CONTAINMENT LINKABLES
 	CONTAINMENT_LINK_1, CONTAINMENT_LINK_2, CONTAINMENT_LINK_3, CONTAINMENT_LINK_4,
-		
 		
 	# -----------------  RECRUITMENT
 	PRISONER_BLOCK,
@@ -104,3 +110,43 @@ enum CATEGORY {
 	
 	CONTAINMENT_LINKABLES,
 }
+
+
+
+func return_category_title(ref: CATEGORY) -> String:
+	match ref:
+		CATEGORY.DEPARTMENT:
+			return "Department"
+		#CATEGORY.CONTAINMENT:
+			#return "Containment"
+		#CATEGORY.RECRUITMENT:
+			#return "Recruitment"
+		#CATEGORY.RESOURCES:
+			#return "Resources"
+		CATEGORY.ENERGY:
+			return "Energy"
+		#CATEGORY.UTILITY:
+			#return "Utility"
+		#CATEGORY.SPECIAL:
+			#return "Special"
+
+		CATEGORY.ADMIN_LINKABLE:
+			return "Admin subdivision"
+		CATEGORY.ENGINEERING_LINKABLE:
+			return "Engineering subdivision"
+		CATEGORY.SECURITY_LINKABLE:
+			return "Security subdivision"
+		CATEGORY.SCIENCE_LINKABLE:
+			return "Science subdivision"
+		CATEGORY.MEDICAL_LINKABLE:
+			return "Medical subdivision"
+		CATEGORY.LOGISTICS_LINKABLE:
+			return "Logistics subdivision"
+		CATEGORY.ETHICS_LINKABLE:
+			return "Ethics subdivision"
+
+		CATEGORY.CONTAINMENT_LINKABLES:
+			return "Containment support"
+
+		_:
+			return "Unknown"

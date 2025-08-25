@@ -1,10 +1,10 @@
 [gd_scene load_steps=27 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/WingRender.gd" id="1_nn2y2"]
-[ext_resource type="Shader" uid="uid://b5dg1k76unpwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/WingRender.gdshader" id="2_8vjbp"]
 [ext_resource type="PackedScene" uid="uid://q66xa2ie7ra0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRenderMesh/WingRenderMesh.tscn" id="2_sriu8"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="2_wsecj"]
 [ext_resource type="FontFile" uid="uid://dgdnjq5h1ldkm" path="res://Fonts/VCR_OSD_MONO.ttf" id="3_8vjbp"]
+[ext_resource type="Shader" uid="uid://3sx7ks703ymp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/SelectorWingRender.gdshader" id="3_ojbd3"]
 [ext_resource type="PackedScene" uid="uid://dd18gu8px7b47" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/RoomRender.tscn" id="5_yf1e1"]
 [ext_resource type="PackedScene" uid="uid://da46sqhr4dsg3" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/GateRender/GateRender.tscn" id="6_5obq1"]
 [ext_resource type="PackedScene" uid="uid://vyv5jxl3butn" path="res://Scenes/CellScene/lighting/CustomSpotLight.tscn" id="7_fh3pe"]
@@ -55,18 +55,14 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AABIwQAAgL4AAEjBAAAgQQAAgL4AACDBAABIQQAAgL4AAEjBAABIQQAAgD4AAEhBAAAgQQAAgD4AACBBAABIQQAAgD4AAEjBAABIQQAAgD4AAEhBAABIQQAAgD4AAEjBAABIQQAAgL4AAEhBAABIwQAAgD4AAEhBAAAgQQAAgD4AACBBAABIQQAAgD4AAEhBAABIQQAAgD4AAEjBAAAgQQAAgD4AACBBAAAgQQAAgD4AACDBAAAgQQAAgD4AACDBAAAgwQAAgD4AACDBAABIQQAAgD4AAEjBAABIQQAAgL4AAEjBAABIQQAAgD4AAEjBAABIwQAAgD4AAEjBAABIQQAAgL4AAEhBAAAgQQAAgL4AACDBAAAgQQAAgL4AACBBAABIQQAAgD4AAEhBAABIQQAAgL4AAEhBAABIwQAAgL4AAEhBAAAgQQAAgL4AACBBAAAgwQAAgL4AACBBAABIQQAAgL4AAEhBAABIQQAAgL4AAEhBAABIQQAAgD4AAEjBAABIQQAAgL4AAEjBAABIQQAAgL4AAEjBAAAgQQAAgL4AACDBAABIQQAAgL4AAEhBAABIwQAAgL4AAEjBAAAgwQAAgL4AACBBAAAgwQAAgL4AACDBAAAgwQAAgD4AACBBAAAgQQAAgD4AACBBAABIwQAAgD4AAEhBAABIwQAAgD4AAEhBAAAgwQAAgD4AACDBAAAgwQAAgD4AACBBAABIwQAAgD4AAEhBAABIQQAAgD4AAEhBAABIwQAAgL4AAEhBAAAgwQAAgL4AACDBAAAgQQAAgL4AACDBAABIwQAAgL4AAEjBAABIQQAAgD4AAEjBAAAgwQAAgD4AACDBAABIwQAAgD4AAEjBAABIwQAAgD4AAEjBAABIwQAAgL4AAEjBAABIQQAAgL4AAEjBAABIwQAAgD4AAEjBAAAgwQAAgD4AACDBAABIwQAAgD4AAEhBAABIwQAAgD4AAEjBAABIwQAAgD4AAEhBAABIwQAAgL4AAEjBAABIwQAAgL4AAEhBAAAgwQAAgL4AACBBAABIwQAAgL4AAEjBAABIQQAAgL4AAEhBAAAgwQAAgL4AACBBAABIwQAAgL4AAEhBAABIwQAAgL4AAEjBAABIwQAAgD4AAEhBAABIwQAAgL4AAEhBAAAgwQAAgL4AACBBAAAgwQAAgD4AACDBAAAgwQAAgL4AACDBAAAgQQAAgD4AACBBAAAgwQAAgD4AACBBAAAgQQAAgL4AACBBAAAgQQAAgD4AACBBAAAgQQAAgL4AACDBAAAgQQAAgD4AACDBAAAgQQAAgD4AACBBAAAgQQAAgL4AACBBAAAgQQAAgL4AACDBAAAgwQAAgL4AACBBAAAgQQAAgL4AACBBAAAgwQAAgD4AACBBAAAgwQAAgD4AACDBAAAgQQAAgD4AACDBAAAgwQAAgL4AACDBAAAgQQAAgL4AACDBAAAgwQAAgL4AACDBAAAgQQAAgD4AACDBAAAgwQAAgL4AACBBAAAgwQAAgD4AACBBAAAgwQAAgD4AACDB/38AAP///7//fwAA/v//v/9/AAD+//+//3///wAA/7//f///AAD/v/9///8AAP+/////f/////////9//////////3///////3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//////wAA/7//////AAD/v/////8AAP+//38AAP///7//fwAA/v//v/9/AAD///+//3//f////7//f/9/////v/9//3////+//38AAP///7//fwAA/v//v/9/AAD///+/////f/////////9//////////3///////38AAP7//7//fwAA/v//v/9/AAD///+//38AAP///7//fwAA/v//v/9/AAD///+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3//f////7//f/9/////v/9//3////+//38AAP///7//fwAA/v//v/9/AAD///+//3///wAA/7//f///AAD/v/9///8AAP+//////wAA/7//////AAD/v/////8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/AAD/f/9//78AAP9//3//vwAA/3//f/+//38AAP7//7//fwAA/v//v/9/AAD///+//38AAP///7//fwAA/v//v/9/AAD+//+/AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+/AAD/f/9/AIAAAP9//38AgAAA/3//fwCAAAD/f/9/AIAAAP9//38AgAAA/3//fwCA/////wAA/7//////AAD/v/////8AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+/////f/9/AID///9//38AgP///3//fwCA")
 }]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsecj"]
-transparency = 1
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ojbd3"]
 no_depth_test = true
 shading_mode = 0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yf1e1"]
 render_priority = 0
-next_pass = SubResource("StandardMaterial3D_wsecj")
-shader = ExtResource("2_8vjbp")
-shader_parameter/base_color = Color(6.73831e-07, 0.98378, 0.607226, 1)
-shader_parameter/speed = 10.0
-shader_parameter/thickness = 3.0
+next_pass = SubResource("StandardMaterial3D_ojbd3")
+shader = ExtResource("3_ojbd3")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sqqcm"]
 particle_flag_rotate_y = true
@@ -145,13 +141,14 @@ transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023
 
 [node name="MeshSelector" type="MeshInstance3D" parent="MeshRender"]
 transform = Transform3D(1, 1.49012e-08, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 2.98023e-08, 0, 1, 0.139576, -12.7665, -0.13958)
+visible = false
 mesh = SubResource("ArrayMesh_yf1e1")
 surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
 
 [node name="Laser" type="SpotLight3D" parent="MeshRender"]
 transform = Transform3D(1, -3.57628e-07, -2.83122e-07, 0, -4.47035e-08, 0.999999, 0, -1, 2.45869e-07, 0, 20, 3.8147e-06)
 light_color = Color(0.990498, 0, 0.121469, 1)
-light_energy = 16.0
+light_energy = 11.372
 light_indirect_energy = 0.0
 light_volumetric_fog_energy = 0.0
 light_specular = 3.167
@@ -212,6 +209,55 @@ font_size = 180
 outline_size = 0
 uppercase = true
 line_spacing = 20.0
+
+[node name="Selectors" type="Node3D" parent="MeshRender"]
+transform = Transform3D(1, 0, 0, -1.49012e-08, 0.999999, 1.49012e-08, 0, 0, 1, 0, -16.739, 0)
+visible = false
+
+[node name="S1" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 0, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, -30, 5, -30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S2" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 0, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, 0, 5, -30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S3" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 0, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, 30, 5, -30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S4" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 0, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, -30, 5, 0)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S5" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, -7.45058e-09, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, 3.8147e-06, 5, -3.8147e-06)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S6" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, -7.45058e-09, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, 30, 5, 0)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S7" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 0, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 1.49012e-08, 1, -30, 5, 30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S8" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 7.45058e-09, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 7.45058e-09, 1, 0, 5, 30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
+
+[node name="S9" type="MeshInstance3D" parent="MeshRender/Selectors"]
+transform = Transform3D(1, 7.45058e-09, 2.98023e-08, -1.49012e-08, 0.999999, 1.49012e-08, 0, 7.45058e-09, 1, 30, 5, 30)
+mesh = SubResource("ArrayMesh_yf1e1")
+surface_material_override/0 = SubResource("ShaderMaterial_yf1e1")
 
 [node name="Rooms" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 1.19209e-07, -3.72529e-08, 1, 0, -8.9407e-08, 0, 1, 0.100086, -13.5837, -0.10009)
@@ -304,6 +350,7 @@ transform = Transform3D(1, 6.70552e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.7252
 
 [node name="Lighting" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
+visible = false
 
 [node name="WorldLight" type="DirectionalLight3D" parent="MeshRender/Lighting"]
 transform = Transform3D(-0.805928, -0.484949, 0.339565, 0, 0.573577, 0.819152, -0.592013, 0.660178, -0.462261, 0, 39.904, 0)

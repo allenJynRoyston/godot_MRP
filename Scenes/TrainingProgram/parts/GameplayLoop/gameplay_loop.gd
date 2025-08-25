@@ -498,12 +498,8 @@ func start_new_game() -> void:
 	# swap wing and then back to floor to fix the scenes
 	camera_settings.type = CAMERA.TYPE.WING_SELECT
 	SUBSCRIBE.camera_settings = camera_settings		
-	if !DEBUG.get_val(DEBUG.GAMEPLAY_START_AT_RING_LEVEL):
-		await U.tick()
-		camera_settings.type = CAMERA.TYPE.FLOOR_SELECT
-		SUBSCRIBE.camera_settings = camera_settings		
 
-	
+
 	await U.set_timeout(duration)
 	# 4.) reset any nodes
 	for node in get_all_container_nodes():
@@ -1144,21 +1140,22 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.GAME_WON:
 			PhaseAnnouncement.end()
-				
+			
 			# fetch next objective, update objective
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
-
+			
+			print( chapter ) #on_complete_event
 			# trigger reward event
-			await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
-				EVT.TYPE.OBJECTIVE_REWARD, 
-					{
-						"rewarded": chapter.rewarded.call() if chapter.has("rewarded") else [],
-						"onSelection": func(selection:Dictionary) -> void:
-							await selection.func.call(),
-					}
-				)
-			])	
+			#await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
+				#EVT.TYPE.OBJECTIVE_REWARD, 
+					#{
+						#"rewarded": chapter.rewarded.call() if chapter.has("rewarded") else [],
+						#"onSelection": func(selection:Dictionary) -> void:
+							#await selection.func.call(),
+					#}
+				#)
+			#])	
 						
 			
 			# update story...
@@ -1689,25 +1686,25 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		
 		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
-		var required_staffing:Array = room_details.required_staffing
-		var assigned_to_room_count:int = hired_lead_researchers_arr.filter(func(x): 
-			var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
-			return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
-		).size()
+		#var required_staffing:Array = room_details.required_staffing
+		#var assigned_to_room_count:int = hired_lead_researchers_arr.filter(func(x): 
+			#var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
+			#return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
+		#).size()
 		
 		# apply is activated state if have enough staff and enough energy
-		if energy_available >= room_details.required_energy:
-			room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
-			ring_config_data.energy.used += room_details.required_energy
-			room_config_data.energy_used += room_details.required_energy
-		else:
-			room_config_data.is_activated = false
+		#if energy_available >= room_details.required_energy:
+			## room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
+			#ring_config_data.energy.used += room_details.required_energy
+			##room_config_data.energy_used += room_details.required_energy
+		#else:
+		room_config_data.is_activated = energy_available >= room_details.required_energy and !is_under_construction
 		
 		# if activated, then check if room has additional properties
-		if room_config_data.is_activated:
-			for key in room_details.personnel_capacity:
-				var amount:int = room_details.personnel_capacity[key]
-				new_room_config.base.staff_capacity[key] += amount
+		#if room_config_data.is_activated:
+			#for key in room_details.personnel_capacity:
+				#var amount:int = room_details.personnel_capacity[key]
+				#new_room_config.base.staff_capacity[key] += amount
 		
 func room_calculate(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1719,21 +1716,41 @@ func room_calculate(new_room_config:Dictionary) -> void:
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 
 		if room_config_data.is_activated:
-			var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)
-			# tally their currencies
-			for key in room_config_data.currencies:
-				if key in room_data.currencies:
-					var amount:int = room_data.currencies[key]
-					# add to totals
-					#floor_config_data.currencies[key] += amount
-					#ring_config_data.currencies[key] += amount
-					room_config_data.currencies[key] += amount
+			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+			if room_details.is_core:
+				var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
+				for adjacent_room in adjacent_rooms.filter(func(x): return x != -1):					
+					var adjacent_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[adjacent_room]
 					
-			# tally metrics
-			for key in room_data.metrics:
-				var amount:int = room_data.metrics[key]
-				#ring_config_data.metrics[key] += amount
-				room_config_data.metrics[key] += amount
+					if adjacent_config_data.is_activated:
+						var adjacent_room_details:Dictionary = ROOM_UTIL.return_data_via_location({"floor": floor, "ring": ring, "room": adjacent_room})
+						# syphon currency from non-core rooms
+						for ref in adjacent_room_details.currencies:
+							if ref in adjacent_room_details.currencies:
+								var amount:int = adjacent_room_details.currencies[ref]
+								room_config_data.currencies[ref] += amount
+								
+						# syphon metrics from non-core rooms
+						for ref in adjacent_room_details.metrics:
+							if ref in adjacent_room_details.metrics:
+								var amount:int = adjacent_room_details.metrics[ref]
+								room_config_data.metrics[ref] += amount
+								print("amount: ", amount, room_config_data.metrics)
+
+			## tally their currencies
+			#for key in room_config_data.currencies:
+				#if key in room_details.currencies:
+					#var amount:int = room_details.currencies[key]
+					## add to totals
+					##floor_config_data.currencies[key] += amount
+					##ring_config_data.currencies[key] += amount
+					#room_config_data.currencies[key] += amount
+					#
+			## tally metrics
+			#for key in room_details.metrics:
+				#var amount:int = room_details.metrics[key]
+				##ring_config_data.metrics[key] += amount
+				#room_config_data.metrics[key] += amount
 		
 					
 		room_config_data.room_data = {

@@ -1,7 +1,8 @@
 extends Control
 
-@onready var DownArrowIcon:Control = $Control/DownArrowIcon
-@onready var ListIcon:Control = $MarginContainer/ListContainer
+@onready var DownArrowIcon:Control = $PanelContainer/Control/DownArrowIcon
+@onready var NameLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/NameLabel
+@onready var ListContainer:Control = $PanelContainer/MarginContainer/VBoxContainer/ListContainer
 
 @export var show_resource_reason:bool = false : 
 	set(val):
@@ -114,7 +115,7 @@ func update_node(shift_val:int = 10) -> void:
 	shifted_val = shift_val
 	
 	# clear list
-	for child in ListIcon.get_children():
+	for child in ListContainer.get_children():
 		child.queue_free()
 	
 	# get location
@@ -130,23 +131,24 @@ func update_node(shift_val:int = 10) -> void:
 		hide()
 		return
 	
-	show()
-	
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
 	var is_empty:bool = true
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var currencies:Dictionary = room_level_config.currencies
+	var metrics:Dictionary = room_level_config.metrics
 	
-	for ref in room_details.currencies:
-		var amount:int = room_details.currencies[ref]
+	for ref in currencies:
+		var amount:int = currencies[ref]
 		if amount != 0:
 			var new_node:Control = EcoItemPreload.instantiate()
 			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
 			new_node.amount = amount
 			new_node.icon = resource_details.icon
-			ListIcon.add_child(new_node)
+			ListContainer.add_child(new_node)
 			is_empty = false
-			
-	for ref in room_details.metrics:
-		var amount:int = room_details.metrics[ref]
+
+	for ref in metrics:
+		var amount:int = metrics[ref]
 		if amount != 0:
 			var new_node:Control = VibeItemPreload.instantiate()
 			var resource_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
@@ -154,45 +156,27 @@ func update_node(shift_val:int = 10) -> void:
 			new_node.metric = ref
 			new_node.invert_color = true
 			new_node.big_numbers = true
-			ListIcon.add_child(new_node)
+			ListContainer.add_child(new_node)
 			is_empty = false
 				
 	
-	hide() if is_empty else show()
+	name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
+	await U.set_timeout(0.7)
+	show() #if !is_empty else hide()
 	
-	await U.tick()
-	self.size = Vector2(1, 1)	
-		#if !room_extract.scp.is_empty():
-			#for key in room_extract.scp.details.currencies: 
-				#currencies_check[key] += room_extract.scp.details.currencies[key]
-				
-		#for key in currencies_check:
-			#var amount:int = currencies_check[key]
-			#match key:
-				#RESOURCE.CURRENCY.MONEY:
-					#MoneyIcon.hide() if amount <= 0 else MoneyIcon.show()
-				#RESOURCE.CURRENCY.MATERIAL:
-					#MatIcon.hide() if amount <= 0 else MatIcon.show()
-				#RESOURCE.CURRENCY.SCIENCE:
-					#ScienceIcon.hide() if amount <= 0 else ScienceIcon.show()
-				#RESOURCE.CURRENCY.CORE:
-					#CoreIcon.hide() if amount <= 0 else CoreIcon.show()
-		
-	#name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
-		#Icon.icon_color = Color.GREEN if room_extract.room.is_activated else COLORS.disabled_color
-
 # --------------------------------------------
 
 # -------------------------------------------- update location
 func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos + Vector2(40, -20 if is_room_empty else -100) - Vector2(self.size.x/2, 0)
-	DownArrowIcon.position.x = 3
+	self.global_position = tag_pos - Vector2(self.size.x/2 - 15, self.size.y*2)
+	DownArrowIcon.position = Vector2(self.size.x/2, self.size.y - 8)
 
-#func _physics_process(delta: float) -> void:
-	#if !is_node_ready() or !is_visible_in_tree() or index == -1:return
-	#if shifted_val > 0:
-		#shifted_val -= 1		
-		#NameLabel.text = str(" ", shift_string_backward(name_str, shifted_val))
+func _physics_process(delta: float) -> void:
+	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
+	if shifted_val > 0:
+		shifted_val -= 1		
+		NameLabel.text = shift_string_backward(name_str, shifted_val)
+	self.size = Vector2(1, 1)	
 # --------------------------------------------

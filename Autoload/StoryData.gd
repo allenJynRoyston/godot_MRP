@@ -19,206 +19,83 @@ var chapters:Array = [
  			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
 		"objectives": {
-			"title": "SETUP",
-			"complete_by_day": 5,
-			#"required":[
-				#{
-					#"custom": {
-						#"title": "Supply power to AT LEAST 1 floor.",
-						#"count_str": func(amount:int) -> String:
-							#return "Required 1 FLOOR to be activated.",
-						#"you_have": func() -> int: 
-							#return GAME_UTIL.get_activated_floor_count(),
-						#"is_completed": func() -> bool:
-							#return GAME_UTIL.get_activated_floor_count() > 0,
-						#},
-					#"hints": [
-						#{"title": "Custom step A", "cost": 1},
-					#]
-				#},
-			#],
+			"complete_by_day": 7,
+			"required":[
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 1,
+						"type": TYPE.BUILDING,
+						"ref": ROOM.REF.ADMIN_DEPARTMENT
+					},
+				},				
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 5,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
+				},
+			],
 		},
-		"tutorial": {
-			"title": "TUTORIAL 1",
-			"text": [
-				'Welcome Site Director.'
-			]			
-		}
+		"event_triggered": EVT.TYPE.SELECT_STARTING_DEPARTMENTS
 	},
 		
 	# ----------------------------------------------------------------------------------------------
 	{
-		"story_message": [
-			"You've probably already figured this out, but I'm not actually here.  These messages are just recordings.",
-			"Yeah, I know, it's a bit impersonal but it's not like you'd have much to say anyway.",
-			"You see we wiped your memory before we started.  I can't really explain why, you're just going to have to go with it.",
-			"But hey, if you beat this game you'll get your memory back guaranteed.",
-			"For most that's a good enough motivation to finish.",
-			"But you... you're special."
-		],			
 		"objectives": {
-			"title": "SETUP",
-			"complete_by_day": 4,
+			"complete_by_day": 14,
 			"required":[
-				# --------------------- CRITERIA BASED OBJECTIVES
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.DIRECTORS_OFFICE
+						"amount": 5,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.SCIENCE
 					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-						{"title": "Step 2", "cost": 2},
-						{"title": "Step 3", "cost": 5},
-					]
 				},
-				{ 
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.HQ
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-						{"title": "Step 2", "cost": 2},
-						{"title": "Step 3", "cost": 5},
-					]
-				},
-				{
-					"custom": {
-						"title": "Activate all rooms.",
-						"count_str": func(amount:int) -> String:
-							var activated_count:int = ROOM_UTIL.get_activated_count()
-							return "(Rooms activated: %s out of %s)" % [activated_count, amount],
-						"you_have": func() -> int: 
-							return purchased_facility_arr.size(),
-						"is_completed": func() -> bool:
-							var total_count:int = purchased_facility_arr.size()
-							var activated_count:int = ROOM_UTIL.get_activated_count()
-							return total_count > 0 and total_count == activated_count,
-						},
-					"hints": [
-						{"title": "Custom step A", "cost": 1},
-					]
-				},
-			],
-			"optional": [
-
 			],
 		},
-		"rewarded": func() -> Array:
-			return [
-				{
-					"room_ref": ROOM.REF.HR_DEPARTMENT, 
-					"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
-					"val": {
-						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
-					},
-					"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
-				},
-				{
-					"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
-					"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
-					"val": {
-						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
-					},
-					"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
-				}							
-		],
-		"tutorial": {
-			"title": "TUTORIAL 2",
-			"text": [
-				'Tutorial 2.'
-			]			
-		}		
+		"event_triggered": EVT.TYPE.SELECT_STARTING_DEPARTMENTS
 	},
 	# ----------------------------------------------------------------------------------------------
 	
 	# ----------------------------------------------------------------------------------------------
 	{
 		"objectives": {
-			"title": "STAFF UP",
-			"story_message": [
-				"Congratulations D-Class 313202, seems like you're getting the hang of it.",
-				"Now... you've probably noticed that this computer will... lie to you.",
-				"You cannot trust what it says.  Like at all.  It lies a lot.  That's its one defining trait.",
-				"Just focus on beating that game for now.",
-				"It will not make that goal easy."
-			],			
-			"complete_by_day": 10,
+			"complete_by_day": 21,
 			"required":[
-				# --------------------- CRITERIA BASED OBJECTIVES
-				{
+				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
 						"amount": 5,
-						"type": TYPE.PERSONNEL,
-						"ref": RESEARCHER.SPECIALIZATION.ADMIN
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MATERIAL
 					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-					]
 				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 5,
-						"type": TYPE.PERSONNEL,
-						"ref": RESEARCHER.SPECIALIZATION.RESEARCHER
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-					]
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 5,
-						"type": TYPE.PERSONNEL,
-						"ref": RESEARCHER.SPECIALIZATION.SECURITY
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-					]
-				},
-
-			],
-			"optional": [
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 5,
-						"type": TYPE.PERSONNEL,
-						"ref": RESEARCHER.SPECIALIZATION.DCLASS
-					},
-					"hints": [
-						{"title": "Step 1", "cost": 1},
-					]
-				},				
 			],
 		},
-		"rewarded": func() -> Array:
-			return [
-				{
-					"title":  ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).name,
-					"val": {
-						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.GEOTHERMAL_POWER),
-					},
-					"hint_description": ROOM_UTIL.return_data(ROOM.REF.GEOTHERMAL_POWER).description
-				},
-				{
-					"title":  ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).name,
-					"val": {
-						"func": GAME_UTIL.rewarded_room.bind(ROOM.REF.MINIERAL_MINING),
-					},
-					"hint_description": ROOM_UTIL.return_data(ROOM.REF.MINIERAL_MINING).description
-				}				
-		],
 	},
 	# ----------------------------------------------------------------------------------------------	
+	
+	# ----------------------------------------------------------------------------------------------
+	#{
+		#"objectives": {
+			#"complete_by_day": 14,
+			#"required":[
+				#{ 
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 5,
+						#"type": TYPE.CURRENCY,
+						#"ref": RESOURCE.CURRENCY.MATERIAL
+					#},
+				#},
+			#],
+		#},
+	#},
+	# ----------------------------------------------------------------------------------------------		
 
 	# ----------------------------------------------------------------------------------------------
 	{
@@ -539,7 +416,7 @@ func get_objectives() -> Array:
 				list.push_back(new_objective)
 				
 		objective_list.push_back({
-			"title": chapter.objectives.title,
+			"title": chapter.objectives.title if chapter.objectives.has("title") else "REDACTED",
 			"list": list,
 			"complete_by_day": chapter.objectives.complete_by_day
 		})	
