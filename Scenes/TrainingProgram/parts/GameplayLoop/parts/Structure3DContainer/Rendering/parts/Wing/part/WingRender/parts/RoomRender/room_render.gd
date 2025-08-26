@@ -290,9 +290,9 @@ func update_room_data() -> void:
 			IconSprite.texture = CACHE.fetch_svg(SVGS.TYPE.NONE if is_empty else (SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN)  )
 			
 			# show/hide nodes
-			RoomNode3d.hide()
-			IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
-			#SelectorMesh.show()
+			#RoomNode3d.hide()
+			#IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
+			##SelectorMesh.show()
 			Gate.hide()
 			Barrier.hide()	
 		
@@ -340,8 +340,8 @@ func update_room_data() -> void:
 			#SelectorMesh.hide()
 			#IconSprite.hide()
 			#RoomNode3d.show()
-			#Gate.show()
-			#Barrier.show()
+			Gate.show()
+			Barrier.show()
 			#
 			#if !is_empty:
 				#print("location: ", assigned_location,  "    is_under_construction: ", is_under_construction,  "    is_built: ", is_built)
