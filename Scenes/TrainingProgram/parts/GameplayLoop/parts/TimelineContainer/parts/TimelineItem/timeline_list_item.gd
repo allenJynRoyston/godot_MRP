@@ -26,12 +26,11 @@ func _ready() -> void:
 	on_data_update()
 	on_show_details_update()
 
-# --------------------------------------------------------------------------------------------------	
+# ------------------------------------------------------------------------------
 func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
-	var make_visible:bool = new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE].val		
-	DetailsContainer.show() # if make_visible else DetailsContainer.hide()
-# --------------------------------------------------------------------------------------------------	
+	DetailsContainer.show() if new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE] else DetailsContainer.hide()
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func on_data_update() -> void:

@@ -265,12 +265,18 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	var can_contain:bool = room_details.details.can_contain		
 	var personnel_capacity:Dictionary = room_details.details.personnel_capacity	
 	var required_staffing:Array = room_details.details.required_staffing
+	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var room_level_currencies:Dictionary = room_config_level.currencies
 
+	# added bonus levels to currencies
+	for key in currency_list:
+		currency_list[key].amount = currency_list[key].amount + room_level_currencies[key]
+	
 	# assign details
 	SidePanel.show()
 	InfoContainer.show()
 	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
-	LvlTag.text = "LVL\n%s" % [lvl if !at_max_level else "★"]
+	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "★"]
 	DescriptionLabel.text = room_details.details.description
 	EnergyCostLabel.text = str(room_details.details.required_energy)
 	ConstructionCostTag.text = str(room_details.details.costs.purchase)
@@ -284,7 +290,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	# economy
 	var show_economy:bool = false
 	for ref in currency_list:
-		var item:Dictionary = currency_list[ref]
+		var item:Dictionary = currency_list[ref] 
 		if (item.amount + item.bonus_amount) != 0:
 			show_economy = true
 			break

@@ -56,6 +56,7 @@ var ROOM_TEMPLATE:Dictionary = {
 		#"func": func(new_room_config:Dictionary) -> void:
 			#pass,
 	#},
+	"on_activate": func(_state:bool) -> void:pass,
 	# ------------------------------------------	
 
 	# ------------------------------------------
@@ -301,7 +302,13 @@ func add_room(ref:int, under_construction:bool, use_location:Dictionary = curren
 
 # ------------------------------------------------------------------------------
 func reset_room(use_location:Dictionary) -> void:
-	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): return !(i.location == use_location))
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
+		if i.location == use_location:
+			var room_details:Dictionary = return_data(i.ref)
+			room_details.is_activated.call(false)
+		
+		return !(i.location == use_location)
+	)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

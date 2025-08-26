@@ -263,7 +263,9 @@ func update_room_data() -> void:
 	var room_extract:Dictionary = GAME_UTIL.extract_room_details(assigned_location)
 	var is_under_construction:bool = false if room_extract.room.is_empty() else room_extract.room.is_under_construction	
 	var is_empty:bool = room_extract.room.is_empty()
+	var room_details:Dictionary = room_extract.room.details if !is_empty else {}
 	var is_activated:bool = false if is_empty else room_extract.room.is_activated
+	var is_built:bool =  false if is_empty else !is_under_construction and is_activated
 	var skip_animation:bool = true # leave this set to true
 	var final_color:Color
 
@@ -290,13 +292,13 @@ func update_room_data() -> void:
 			# show/hide nodes
 			RoomNode3d.hide()
 			IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
-			SelectorMesh.show()
+			#SelectorMesh.show()
 			Gate.hide()
 			Barrier.hide()	
 		
 		# normal view mode (fully textured)
 		_:
-			# check if under construction
+			## check if under construction
 			if is_under_construction:
 				set_texture(RoomRenderUnderConstructionMaterial)
 				final_color = OriginalMaterial.albedo_color
@@ -308,44 +310,57 @@ func update_room_data() -> void:
 				final_color = OriginalMaterial.albedo_color	 if is_activated else Color.ORANGE
 				animate_built(true, skip_animation)
 
-			# and then apply mesh and albedo
-			if is_under_construction or !is_empty:
-				match room_extract.room.details.environmental.temp:
-					# hot (blue shades)
-					-1:
-						final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.2)  
-					-2:
-						final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.5)
-					-3:
-						final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.9)
-						
-					# hot (red shades)
-					1:
-						final_color = OriginalMaterial.albedo_color + Color(0.2, 0, 0)  
-					2:
-						final_color = OriginalMaterial.albedo_color + Color(0.5, 0, 0)  
-					3:
-						final_color = OriginalMaterial.albedo_color + Color(0.9, 0, 0)  
+			## and then apply mesh and albedo
+			#if is_under_construction or !is_empty:
+				#match room_extract.room.details.environmental.temp:
+					## hot (blue shades)
+					#-1:
+						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.2)  
+					#-2:
+						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.5)
+					#-3:
+						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.9)
+						#
+					## hot (red shades)
+					#1:
+						#final_color = OriginalMaterial.albedo_color + Color(0.2, 0, 0)  
+					#2:
+						#final_color = OriginalMaterial.albedo_color + Color(0.5, 0, 0)  
+					#3:
+						#final_color = OriginalMaterial.albedo_color + Color(0.9, 0, 0)  
+##
+##
+				## default color is current color
+				#final_color.a = 1 if is_selected else 0.5
+					#
+				#DuplicateMaterial.albedo_color = final_color
+				#RoomMesh.surface_set_material(0, DuplicateMaterial)
+				##return
+				#
+			#SelectorMesh.hide()
+			#IconSprite.hide()
+			#RoomNode3d.show()
+			#Gate.show()
+			#Barrier.show()
+			#
+			#if !is_empty:
+				#print("location: ", assigned_location,  "    is_under_construction: ", is_under_construction,  "    is_built: ", is_built)
+			#
+			#
+			### if room is empty, reset all
+			#if is_under_construction:
+				#animate_under_construction(true, skip_animation)
+				#animate_built(false, skip_animation)
+				#return
+			#
+			#if is_built:
+				#animate_under_construction(false, skip_animation)
+				#animate_built(true, skip_animation)
+				#return
+				#
+			#animate_under_construction(false, skip_animation)
+			#animate_built(false, skip_animation)
 
-
-				# default color is current color
-				final_color.a = 1 if is_selected else 0.5
-					
-				DuplicateMaterial.albedo_color = final_color
-				RoomMesh.surface_set_material(0, DuplicateMaterial)
-				return
-		
-			# if room is empty, reset all
-			animate_under_construction(false, skip_animation)
-			animate_built(false, skip_animation)
-			
-			# show/hide nodes
-			SelectorMesh.hide()
-			IconSprite.hide()
-			RoomNode3d.show()
-			Gate.show()
-			Barrier.show()
-			
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

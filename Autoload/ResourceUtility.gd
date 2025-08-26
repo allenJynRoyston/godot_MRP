@@ -104,10 +104,49 @@ func return_metric(key:int) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func get_random_resource() -> RESOURCE.CURRENCY:
+	var options = [
+		{ "type": RESOURCE.CURRENCY.MONEY, "weight": 30 }, 		# 30% chance
+		{ "type": RESOURCE.CURRENCY.SCIENCE, "weight": 30 },	# 30% chance
+		{ "type": RESOURCE.CURRENCY.MATERIAL, "weight": 30 },	# 15% chance
+		{ "type": RESOURCE.CURRENCY.CORE, "weight": 10 }      	# 10% chance
+	]
+	
+	# Sum weights
+	var total_weight = 0
+	for o in options:
+		total_weight += o.weight
+	
+	# Pick a random number in that range
+	var roll = randi_range(1, total_weight)
+	
+	# Walk the list until the roll fits
+	var cumulative = 0
+	for o in options:
+		cumulative += o.weight
+		if roll <= cumulative:
+			return o.type
+	
+	# Fallback (shouldn’t happen)
+	return RESOURCE.CURRENCY.MONEY
+
+func return_extra_diff() -> Dictionary:
+	var dict:Dictionary = {}
+	
+	for key in resources_data:
+		dict[key] = 0
+	
+	# adds a random resource if this perk is sele
+	dict[get_random_resource()] += 1
+
+	return dict	
+
 func return_diff() -> Dictionary:
 	var dict:Dictionary = {}
+	
 	for key in resources_data:
 		dict[key] = resources_data[key].diff
+	
 	return dict	
 # ------------------------------------------------------------------------------
 

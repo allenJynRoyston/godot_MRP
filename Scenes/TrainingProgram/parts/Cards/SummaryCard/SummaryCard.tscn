@@ -40,15 +40,16 @@ corner_radius_bottom_right = 5
 bg_color = Color(1, 0.74902, 0.2, 1)
 shadow_offset = Vector2(0, 3)
 
-[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
+[sub_resource type="LabelSettings" id="LabelSettings_q31gb"]
 font = ExtResource("8_budmt")
+font_size = 12
 font_color = Color(0, 0, 0, 1)
 outline_size = 2
 outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_q31gb"]
+[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
 font = ExtResource("8_budmt")
 font_size = 12
 font_color = Color(0, 0, 0, 1)
@@ -288,23 +289,14 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_q31gb")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
-
-[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "lvl
-1"
-label_settings = SubResource("LabelSettings_mee86")
-horizontal_alignment = 1
-autowrap_mode = 3
 
 [node name="NameTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(1, 0)
@@ -312,6 +304,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "ECONOMIC REDISTRUBTION ROOM"
 label_settings = SubResource("LabelSettings_q31gb")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "lvl 1"
+label_settings = SubResource("LabelSettings_mee86")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -800,7 +800,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ProgramContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "OPERATIONS"
+text = "PROGRAMS"
 label_settings = ExtResource("6_wqrfb")
 horizontal_alignment = 2
 

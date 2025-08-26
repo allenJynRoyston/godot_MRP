@@ -110,7 +110,7 @@ func activate() -> void:
 	# center elements
 	control_pos[ContentPanel] = {
 		"show": 0, 
-		"present": 100,
+		"present": 150,
 		"hide": -ContentMargin.size.y
 	}
 	

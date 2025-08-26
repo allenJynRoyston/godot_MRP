@@ -63,7 +63,7 @@ var FABRICATOR:Dictionary = {
 # ---------------------------------
 var TRIGGER_ONSITE_NUKE:Dictionary = {
 	"name": "TRIGGER ONSITE NUKE",
-	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  WARNING: this action cannot be canceled (unless you have a NUCLEAR FAILSAFE facility.)",
+	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  Will result in a game over.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
 	"effect": func() -> bool:

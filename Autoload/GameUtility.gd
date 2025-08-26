@@ -1609,3 +1609,9 @@ func get_floor_base_state(use_location:Dictionary = current_location) -> Diction
 func get_metrics() -> Dictionary:
 	return base_states.metrics
 # -----------------------------------------------------------------------------		
+
+# -----------------------------------------------------------------------------	
+func set_conditional(ref:CONDITIONALS.TYPE, state:bool) -> void:
+	gameplay_conditionals[ref] = state
+	SUBSCRIBE.gameplay_conditionals = gameplay_conditionals
+# -----------------------------------------------------------------------------		

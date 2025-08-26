@@ -191,7 +191,7 @@ var initial_values:Dictionary = {
 					"level": 0,
 					"power_distribution": {
 						"heating": 2 if floor_index in [5, 6] else 0,
-						"cooling": 2 if floor_index in [0, 1] else 0,
+						"cooling": 0,
 						"ventilation": 1,
 						"sra": 1,
 						"energy": 2 if floor_index in [0, 1] else 1,
@@ -234,28 +234,27 @@ var initial_values:Dictionary = {
 		},
 	# ----------------------------------
 	"gameplay_conditionals": func() -> Dictionary:
-		return {	
-			CONDITIONALS.TYPE.ENABLE_TIMELINE: {
-				"val": false,
-				"on_change": func(val:bool) -> void:
-					pass,
-			},
-			CONDITIONALS.TYPE.ENABLE_OBJECTIVES: {
-				"val": false,
-				"on_change": func(val:bool) -> void:
-					pass,
-			},
-			
-			CONDITIONALS.TYPE.SHOW_VIBE_IN_HEADER: {
-				"val": false,
-				"on_change": func(val:bool) -> void:
-					pass,
-			},
-			CONDITIONALS.TYPE.SHOW_MTF_IN_HEADER: {
-				"val": false,
-				"on_change": func(val:bool) -> void:
-					pass,
-			},			
+		return {
+			# ---------------------------------------------- starting
+			CONDITIONALS.TYPE.STARTING_PERK_1: false,
+			CONDITIONALS.TYPE.STARTING_PERK_2: false,
+			CONDITIONALS.TYPE.STARTING_PERK_3: false,
+			# ---------------------------------------------- header
+			CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER: false,
+			CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER: false,
+			CONDITIONALS.TYPE.SHOW_MTF_IN_HEADER: false,
+			CONDITIONALS.TYPE.SHOW_POWER_IN_HEADER: false,
+			CONDITIONALS.TYPE.SHOW_DANGERS_IN_HEADER: false,
+			# ---------------------------------------------- ui
+			CONDITIONALS.TYPE.ENABLE_TIMELINE: false,
+			CONDITIONALS.TYPE.ENABLE_OBJECTIVES: false,
+			# ---------------------------------------------- action bar
+			CONDITIONALS.TYPE.SHOW_INFO_BTN: false,
+			# ---------------------------------------------- currency
+			CONDITIONALS.TYPE.PLUS_MONEY_1: false,
+			CONDITIONALS.TYPE.PLUS_SCIENCE_1: false,
+			CONDITIONALS.TYPE.PLUS_MATERIAL_1: false,
+			CONDITIONALS.TYPE.PLUS_CORE_1: false
 		},
 	# ----------------------------------
 	"timeline_array": func() -> Array:
@@ -929,6 +928,9 @@ func on_current_phase_update() -> void:
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
 			
+			if gameplay_conditionals[CONDITIONALS.TYPE.STARTING_PERK_1]:
+				await GAME_UTIL.open_tally( RESOURCE_UTIL.return_extra_diff() )
+				
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
@@ -1154,10 +1156,9 @@ func on_current_phase_update() -> void:
 			
 			# fetch next objective, update objective
 			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
-			
-			if chapter.has("event_triggered"):
-				priority_events.push_back( chapter.has("event_triggered") )
+			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
+			if chapter.objectives.has("reward_event"):
+				priority_events.push_back( chapter.objectives.reward_event )
 				SUBSCRIBE.priority_events = priority_events
 
 			# update story...
@@ -1214,6 +1215,7 @@ func get_save_state() -> Dictionary:
 		},		
 		"on_chapter": story_progress.on_chapter,
 		# NOTE: ROOM CONFIG IS NEVER SAVED: IT IS READ-ONLY AS IT IS CREATED AS BY-PRODUCT
+		"priority_events": priority_events,		
 		"progress_data": progress_data,		
 		"scp_data": scp_data,
 		"timeline_array": timeline_array,
@@ -1294,7 +1296,7 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.progress_data = initial_values.progress_data.call() if is_new_game else restore_data.progress_data
 	SUBSCRIBE.scp_data = initial_values.scp_data.call() if is_new_game else restore_data.scp_data
 	SUBSCRIBE.timeline_array = initial_values.timeline_array.call() if is_new_game else restore_data.timeline_array
-	#SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() #if no_save else restore_data.gameplay_conditionals	
+	SUBSCRIBE.gameplay_conditionals = initial_values.gameplay_conditionals.call() if is_new_game else restore_data.gameplay_conditionals	
 	SUBSCRIBE.purchased_facility_arr = initial_values.purchased_facility_arr.call() if is_new_game else restore_data.purchased_facility_arr  
 	SUBSCRIBE.purchased_base_arr = initial_values.purchased_base_arr.call() if is_new_game else restore_data.purchased_base_arr
 	SUBSCRIBE.bookmarked_rooms = initial_values.bookmarked_rooms.call() if is_new_game else restore_data.bookmarked_rooms
@@ -1356,11 +1358,11 @@ func update_room_config(force_setup:bool = false) -> void:
 	scp_calculate(new_room_config)
 #
 	# trigger any gameplay conditional effects
-	for key in new_gameplay_conditionals:
-		var conditional_dict:Dictionary = new_gameplay_conditionals[key]
-		var val = conditional_dict.val
-		if "on_change" in conditional_dict:
-			conditional_dict.on_change.call(val)
+	#for key in new_gameplay_conditionals:
+		#var conditional_dict:Dictionary = new_gameplay_conditionals[key]
+		#var val = conditional_dict.val
+		#if "on_change" in conditional_dict:
+			#conditional_dict.on_change.call(val)
 		
 	# then go through each floor and add/sub from the diff
 	#for floor_index in new_room_config.floor.size():
@@ -1371,7 +1373,6 @@ func update_room_config(force_setup:bool = false) -> void:
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
-	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals	
 	
 func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	# energy availble per levels
@@ -1379,6 +1380,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
+	new_room_config.base.metrics = base_states.metrics.duplicate()
 	
 	# FLOOR LEVEL ------------- 
 	for floor_index in new_room_config.floor.size():
@@ -1570,10 +1572,9 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
-		var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		var is_activated:bool = room_config.is_activated
-
-		if is_activated:
+		
+		# only for rooms that are activated
+		if room_config_data.is_activated:
 			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
 			
 			# add metrics
@@ -1584,6 +1585,12 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 			# add income
 			for ref in room_details.currencies:
 				var amount:int = room_details.currencies[ref]
+				match ref:
+					RESOURCE.CURRENCY.MONEY:
+						# if room makes at least one money, it makes on more
+						if amount > 0 and gameplay_conditionals[CONDITIONALS.TYPE.PLUS_MONEY_1]:
+							room_config_data.currencies[ref] += 1
+							amount += 1
 				resources_data[ref].diff += amount
 
 			# check for effect
@@ -1685,9 +1692,8 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var is_under_construction:bool = item.under_construction
 		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
-		
-		# check if activated
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
+		
 		#var required_staffing:Array = room_details.required_staffing
 		#var assigned_to_room_count:int = hired_lead_researchers_arr.filter(func(x): 
 			#var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
@@ -1702,6 +1708,10 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		#else:
 		room_config_data.is_activated = energy_available >= room_details.required_energy and !is_under_construction
 		
+		# call activated/deactivated
+		room_details.on_activate.call(room_config_data.is_activated)
+
+
 		# if activated, then check if room has additional properties
 		#if room_config_data.is_activated:
 			#for key in room_details.personnel_capacity:
@@ -1719,25 +1729,24 @@ func room_calculate(new_room_config:Dictionary) -> void:
 
 		if room_config_data.is_activated:
 			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			if room_details.is_core:
-				var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
-				for adjacent_room in adjacent_rooms.filter(func(x): return x != -1):					
-					var adjacent_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[adjacent_room]
-					
-					if adjacent_config_data.is_activated:
-						var adjacent_room_details:Dictionary = ROOM_UTIL.return_data_via_location({"floor": floor, "ring": ring, "room": adjacent_room})
-						# syphon currency from non-core rooms
-						for ref in adjacent_room_details.currencies:
-							if ref in adjacent_room_details.currencies:
-								var amount:int = adjacent_room_details.currencies[ref]
-								room_config_data.currencies[ref] += amount
-								
-						# syphon metrics from non-core rooms
-						for ref in adjacent_room_details.metrics:
-							if ref in adjacent_room_details.metrics:
-								var amount:int = adjacent_room_details.metrics[ref]
-								room_config_data.metrics[ref] += amount
-								print("amount: ", amount, room_config_data.metrics)
+			#if room_details.is_core:
+				#var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
+				#for adjacent_room in adjacent_rooms.filter(func(x): return x != -1):					
+					#var adjacent_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[adjacent_room]
+					#
+					#if adjacent_config_data.is_activated:
+						#var adjacent_room_details:Dictionary = ROOM_UTIL.return_data_via_location({"floor": floor, "ring": ring, "room": adjacent_room})
+						## syphon currency from non-core rooms
+						#for ref in adjacent_room_details.currencies:
+							#if ref in adjacent_room_details.currencies:
+								#var amount:int = adjacent_room_details.currencies[ref]
+								#room_config_data.currencies[ref] += amount
+								#
+						## syphon metrics from non-core rooms
+						#for ref in adjacent_room_details.metrics:
+							#if ref in adjacent_room_details.metrics:
+								#var amount:int = adjacent_room_details.metrics[ref]
+								#room_config_data.metrics[ref] += amount
 
 			## tally their currencies
 			#for key in room_config_data.currencies:

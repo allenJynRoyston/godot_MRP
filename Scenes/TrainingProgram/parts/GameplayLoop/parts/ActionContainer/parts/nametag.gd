@@ -1,8 +1,12 @@
 extends Control
 
-@onready var DownArrowIcon:Control = $PanelContainer/Control/DownArrowIcon
-@onready var NameLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/NameLabel
+@onready var ConstructionIcon:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ConstructionIcon
+@onready var StatusIcon:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/StatusIcon
+@onready var NameLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NameLabel
 @onready var ListContainer:Control = $PanelContainer/MarginContainer/VBoxContainer/ListContainer
+@onready var DownArrowIcon:Control = $PanelContainer/Control/DownArrowIcon
+
+@onready var name_label_settings:LabelSettings = NameLabel.get("label_settings").duplicate()
 
 @export var show_resource_reason:bool = false : 
 	set(val):
@@ -47,6 +51,8 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
+	NameLabel.set("label_settings", name_label_settings)
+	
 	#on_fade_update()
 	hide()
 	await U.tick()
@@ -132,11 +138,12 @@ func update_node(shift_val:int = 10) -> void:
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
-	var is_empty:bool = true
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
 	var currencies:Dictionary = room_level_config.currencies
 	var metrics:Dictionary = room_level_config.metrics
-	
+	var is_activated:bool = room_extract.room.is_activated
+
 	for ref in currencies:
 		var amount:int = currencies[ref]
 		if amount != 0:
@@ -145,7 +152,6 @@ func update_node(shift_val:int = 10) -> void:
 			new_node.amount = amount
 			new_node.icon = resource_details.icon
 			ListContainer.add_child(new_node)
-			is_empty = false
 
 	for ref in metrics:
 		var amount:int = metrics[ref]
@@ -157,12 +163,16 @@ func update_node(shift_val:int = 10) -> void:
 			new_node.invert_color = true
 			new_node.big_numbers = true
 			ListContainer.add_child(new_node)
-			is_empty = false
 				
 	
-	name_str = str(room_extract.room.details.shortname + " %s" % ["(INACTIVE)" if !room_extract.room.is_activated else ""])  if !is_room_empty else "EMPTY"
+	name_label_settings.font_size = 16 if room_details.is_core else 12
+	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
+	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
+	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
+	StatusIcon.icon_color = Color.DARK_GREEN if is_activated else Color.DARK_RED
 	await U.set_timeout(0.7)
-	show() #if !is_empty else hide()
+	name_str = room_extract.room.details.shortname if !is_room_empty else ""
+	show()
 	
 # --------------------------------------------
 

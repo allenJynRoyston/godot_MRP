@@ -111,8 +111,8 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,
 	"is_core": true,
 	
-	"name": "ADMIN_DEPARTMENT",
-	"shortname": "ADMIN_DEPARTMENT",	
+	"name": "ADMINISTRATION DEPARTMENT",
+	"shortname": "ADMIN DEPT",	
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Attach other ADMIN rooms for utility.",
 	
@@ -120,6 +120,20 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"own_limit": 1,
 	"required_staffing": [],
 	"required_energy": 1,	
+	
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 1
+	},
+	
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1),
+		],
+				
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
+		],		
 }
 
 var ENGINEERING_DEPARTMENT:Dictionary = {
@@ -261,66 +275,76 @@ var CONTAINMENT_CELL:Dictionary = {
 var ADMIN_LINK_1:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_1,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "RECORDS",
-	"shortname": "RECORDS",
-	"description": "Stores classified documents, SCP reports, and personnel files.",
-	"requires_unlock": false,	
-	"effect": {
-		"description": "Enables the TIMELINE in the UI."
-	}	
+	"name": "DIRECTORS OFFICE",
+	"shortname": "DIRECTORS OFFICE",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER).description,
+	"requires_unlock": false,
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE),
+		],	
 }
 
 var ADMIN_LINK_2:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_2,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "BUREAU OF ACQUISITIONS",
-	"shortname": "ACQUISITIONS",
-	"description": "Missing description",
-	"requires_unlock": false,
+	"name": "OPERATIONS",
+	"shortname": "OPERATIONS",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_TIMELINE).description,
+	"requires_unlock": false,	
+	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,
 	"effect": {
-		"description": "Enables the ECONOMY in the UI."
-	}
+		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_TIMELINE).description
+	},
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_TIMELINE, state),
 }
 
 var ADMIN_LINK_3:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_3,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "BUDGET & FINANCE OFFICE",
-	"shortname": "FINANCE",
-	"description": "Missing description",
+	"name": "ACCOUNTING",
+	"shortname": "ACCOUNTING",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.PLUS_MONEY_1).description,
 	"requires_unlock": false,
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 1,
 	},
 	"effect": {
-		"description": "On this FLOOR, any facility that generates at least 1 MONEY will generate an additional one."
-	}
+		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.PLUS_MONEY_1).description
+	},
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.PLUS_MONEY_1, state)
 }
-
 
 var ADMIN_LINK_4:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_4,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "PUBLIC RELATIONS OFFICE",
-	"shortname": "PR OFFICE",
-	"description": "Enables the VIBES in the UI.",
+	"name": "HELP OFFICE",
+	"shortname": "HELP OFFICE",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_INFO_BTN).description,
 	"requires_unlock": false,
 	"effect": {
-		"description": "Enables the VIBES panel in the UI."
-	}	
+		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_INFO_BTN).description
+	},
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_INFO_BTN, state),
 }
+
 
 var ADMIN_LINK_5:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_5,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "Office of Information Acquisition",
-	"shortname": "OIA",
-	"description": "Enables the INTEL button.",
-	"requires_unlock": false,
+	"name": "INTERNAL AFFAIRS",
+	"shortname": "I.AFFAIRS",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER).description,
 	"effect": {
-		"description": "Enables the VIBES panel in the UI."
-	}	
+		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER).description
+	},
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER, state),
 }
+
 
 
 

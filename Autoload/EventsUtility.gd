@@ -53,7 +53,6 @@ func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 		]
 # ------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------
 var TEST_EVENT_A:Dictionary = {
 	"is_repeatable": true,
@@ -410,56 +409,75 @@ var TEST_EVENT_C:Dictionary = {
 # ------------------------------------------------------------------------
 var ADMIN_SETUP:Dictionary = {
 	"is_repeatable": true,
+	"btn": {
+		"title": "ADMIN SETUP"
+	},
 	"event_instructions": func(props:Dictionary) -> Array:
 		# admin department always installed
-		ROOM_UTIL.add_room(ROOM.REF.ADMIN_DEPARTMENT, false, {"floor": current_location.floor, "ring": 0, "room": 4})
 		
 		var instructions_1:Array = build_event_content(props, {
-			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE ENGINE",
+			"header": "FACILITY SETUP",
+			"subheader": "A NEW DAY BEGINS",
 			"img_src": "res://Media/images/redacted.png",
-			"text": ["Two departments drive the machinery of survival:"],
+			"text": ["Before full containment operations can begin an Administration Department must be established. Select this facility's priority."],
 			"options": [
-				# ----------------------------------------- ENGINEERING
 				{
-					"header": "ENGINEERING",
-					"title": "Applied Engineering Division",
-					"description": "Keeps walls upright, locks sealed, and the lights on. When systems fail, so does containment.",
+					"header": "FINANCIAL",
+					"title": "Fiscal Oversight",
+					"description": "Gain additional income each turn through optimized budgets and front-company revenue.",
 					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
-						"currency": { RESOURCE.CURRENCY.MATERIAL: 5 }
+						"conditional": CONDITIONALS.TYPE.STARTING_PERK_1,
 					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["Steel does not ask questions. It only holds."] },
-							{ "response": ["Infrastructure is reinforced. Supplies are secured."] }
+							{ "response": ["Administration establishes strict fiscal oversight. You now receive a random economic resource each turn."] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":1, "room": 4})
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_1, true)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
-				# ----------------------------------------- LOGISTICS
 				{
-					"header": "LOGISTICS",
-					"title": "Logistics & Supply Chain Division",
-					"description": "Moves anomalies, weapons, and resources without incident. Failure is catastrophic.",
+					"header": "SCIENTIFIC",
+					"title": "Pure Knowledge",
+					"description": "Gain additional science each turn from improved research oversight and documentation.",
 					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
-						"currency": { RESOURCE.CURRENCY.MONEY: 5 }
-					},
+						"conditional": CONDITIONALS.TYPE.STARTING_PERK_2,
+					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["A missing crate kills faster than a missing guard."] },
-							{ "response": ["Procurement chains tighten. Waste diminishes."] }
+							{ "response": ["Administration emphasizes research coordination. Cost of researching new facilities is reduced."] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 1, "room": 4})
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_2, true)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
+				{
+					"header": "LOGISTICS",
+					"title": "Streamlined Logistics",
+					"description": "Gain additional materials each turn through tighter supply chains and requisitioning.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.STARTING_PERK_3,
+					},					
+					"outcomes": {
+						"list": [
+							{ "response": ["Administration prioritizes logistics. Cost of constructing new facilities is reduced."] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_3, true)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
+						onSelected(choice),
+				}					
 			]
 		})
 
@@ -468,11 +486,18 @@ var ADMIN_SETUP:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS:Dictionary = {
+var SELECT_STARTING_DEPARTMENTS_A:Dictionary = {
 	"is_repeatable": true,
+	"btn": {
+		"title": "REWARD",
+		"is_disabled_check": func() -> bool:
+			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
+				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
+			).size()
+			return rooms_in_wing_count != 0,
+	},
 	"event_instructions": func(props:Dictionary) -> Array:
 		# admin department always installed
-		ROOM_UTIL.add_room(ROOM.REF.ADMIN_DEPARTMENT, false, {"floor": current_location.floor, "ring": 0, "room": 4})
 		
 		var instructions_1:Array = build_event_content(props, {
 			"header": "SELECT STARTING DEPARTMENTS",
@@ -497,7 +522,7 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":1, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				# ----------------------------------------- LOGISTICS
@@ -517,13 +542,30 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 1, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 			]
 		})
 		
-		var instructions_2:Array = build_event_content(props, {
+		return instructions_1
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SELECT_STARTING_DEPARTMENTS_B:Dictionary = {
+	"is_repeatable": true,
+	"btn": {
+		"title": "REWARD",
+		"is_disabled_check": func() -> bool:
+			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
+				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
+			).size()
+			return rooms_in_wing_count != 0,
+	},
+	"event_instructions": func(props:Dictionary) -> Array:
+		
+		var instructions_1:Array = build_event_content(props, {
 			"header": "SELECT STARTING DEPARTMENTS",
 			"subheader": "THE MIND",
 			"img_src": "res://Media/images/redacted.png",
@@ -546,7 +588,7 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				# ----------------------------------------- SECURITY
@@ -566,13 +608,79 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 			]
 		})
-		
-		var instruction_3:Array = build_event_content(props, {
+		#
+		#var instruction_3:Array = build_event_content(props, {
+			#"header": "SELECT STARTING DEPARTMENTS",
+			#"subheader": "THE SOUL",
+			#"img_src": "res://Media/images/redacted.png",
+			#"text": ["Two departments shape thought and compliance:"],
+			#"options": [
+				## ----------------------------------------- ADMIN
+				#{
+					#"header": "ETHICS",
+					#"title": "Ethics Committee",
+					#"description": "Oversees Foundation conduct, ensuring containment efforts balance necessity with humanity. Their scrutiny can steady staff morale, though at times it slows operations.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.ETHICS_DEPARTMENT,
+					#"impact": {
+						#"metrics": { RESOURCE.METRICS.MORALE: 5 }
+					#},
+					#"outcomes": {
+						#"list": [
+							#{ "response": ["Staff find reassurance knowing oversight exists beyond cold efficiency."] },
+							#{ "response": ["Committee reviews delay certain projects, but morale improves under a watchful eye."] },
+							#{ "response": ["Ethical scrutiny curbs excesses, reinforcing discipline and confidence among staff."] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						#ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
+						#onSelected(choice),
+				#},
+#
+				## ----------------------------------------- MEDICAL
+				#{
+					#"header": "SECURITY",
+					#"title": "Security & Tactical Response",
+					#"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
+					#"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
+					#"impact": {
+						#"metrics": { RESOURCE.METRICS.READINESS: 5 }
+					#},
+					#"outcomes": {
+						#"list": [
+							#{ "response": ["Order exists because someone enforces it."] },
+							#{ "response": ["Personnel drill and mobilize with renewed precision."] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						#ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
+						#onSelected(choice),
+				#},
+			#]
+		#})		
+
+		return instructions_1 
+}
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+var SELECT_STARTING_DEPARTMENTS_C:Dictionary = {
+	"is_repeatable": true,
+	"btn": {
+		"title": "REWARD",
+		"is_disabled_check": func() -> bool:
+			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
+				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
+			).size()
+			return rooms_in_wing_count != 0,
+	},
+	"event_instructions": func(props:Dictionary) -> Array:	
+		var instruction_1:Array = build_event_content(props, {
 			"header": "SELECT STARTING DEPARTMENTS",
 			"subheader": "THE SOUL",
 			"img_src": "res://Media/images/redacted.png",
@@ -596,7 +704,7 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 
@@ -616,16 +724,15 @@ var SELECT_STARTING_DEPARTMENTS:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 			]
 		})		
 
-		return instructions_1 + instructions_2 + instruction_3
+		return instruction_1 
 }
 # ------------------------------------------------------------------------
-
 
 
 
@@ -2071,7 +2178,9 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
 	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS: SELECT_STARTING_DEPARTMENTS,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_A: SELECT_STARTING_DEPARTMENTS_A,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B: SELECT_STARTING_DEPARTMENTS_B,
+	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_C: SELECT_STARTING_DEPARTMENTS_C,
 	
 	
 	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,

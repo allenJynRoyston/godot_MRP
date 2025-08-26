@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://doexmbeotqsd4"]
+[gd_scene load_steps=22 format=3 uid="uid://doexmbeotqsd4"]
 
 [ext_resource type="Shader" uid="uid://wtxyh6raqh8m" path="res://CanvasShader/ScreenMelt/screenMelt.gdshader" id="1_43xce"]
 [ext_resource type="Script" uid="uid://cu60b2fp3bgw7" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EventContainer/parts/option_list_item.gd" id="1_j7po5"]
@@ -39,6 +39,14 @@ font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fb51e"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_d1qt0"]
+font = ExtResource("7_43xce")
+font_color = Color(0.510764, 0.00166744, 0.716704, 1)
+outline_size = 2
+outline_color = Color(0.509804, 0, 0.717647, 0.168627)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
 [sub_resource type="LabelSettings" id="LabelSettings_bvnlg"]
 font = ExtResource("7_43xce")
 font_color = Color(0.510764, 0.00166744, 0.716704, 1)
@@ -53,7 +61,7 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1qt0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1i12m"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -71,7 +79,7 @@ shadow_color = Color(0, 0, 0, 0.580392)
 shadow_size = 1
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="LabelSettings" id="LabelSettings_wnb1o"]
+[sub_resource type="LabelSettings" id="LabelSettings_bptqg"]
 font = ExtResource("7_43xce")
 font_color = Color(0, 0, 0, 1)
 outline_size = 2
@@ -91,7 +99,7 @@ hint_title = "HINT"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(255, 342)
+size = Vector2i(255, 402)
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
 custom_minimum_size = Vector2(250, 0)
@@ -199,6 +207,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Known outcome goes here.  It can be either positive or negative."
+label_settings = SubResource("LabelSettings_d1qt0")
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ConditionalLabel" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Known outcome goes here.  It can be either positive or negative."
 label_settings = SubResource("LabelSettings_bvnlg")
 vertical_alignment = 1
 autowrap_mode = 2
@@ -240,7 +258,7 @@ horizontal_alignment = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="SubViewport/PanelContainer/VBoxContainer/Cost"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d1qt0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1i12m")
 
 [node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer"]
 layout_mode = 2
@@ -315,4 +333,4 @@ is_negative = false
 [node name="RequiresLabel" type="Label" parent="SubViewport/PanelContainer/VBoxContainer/Requires/PanelContainer/MarginContainer/RequiresList/HBoxContainer"]
 layout_mode = 2
 text = "Label goes here."
-label_settings = SubResource("LabelSettings_wnb1o")
+label_settings = SubResource("LabelSettings_bptqg")

@@ -5,7 +5,7 @@ enum TYPE {
 	
 	# -------------
 	ADMIN_SETUP,
-	SELECT_STARTING_DEPARTMENTS,
+	SELECT_STARTING_DEPARTMENTS_A, SELECT_STARTING_DEPARTMENTS_B, SELECT_STARTING_DEPARTMENTS_C,
 	# -------------
 	MYSTERY_MEAT_1, MYSTERY_MEAT_2, MYSTERY_MEAT_3,
 	# -------------
@@ -63,23 +63,3 @@ enum CONSEQUENCE {
 	MOOD_CHANGED_TO_RELUCTANT,
 
 }
-
-const CONSEQUENCE_STR:Dictionary = {
-	# ----------------------
-	CONSEQUENCE.HP_HEAL: "is healed!",
-	CONSEQUENCE.SP_HEAL: "is healed!",
-	CONSEQUENCE.HP_HURT: "is hurt!",
-	CONSEQUENCE.SP_HURT: "is slipping into madness!",	
-	# ----------------------
-	CONSEQUENCE.CHANGE_STATUS_TO_KIA: "has been KILLED!",
-	CONSEQUENCE.CHANGE_STATUS_TO_INSANE: "has gone INSANE!",	
-	# ----------------------
-	CONSEQUENCE.MOOD_CHANGED_TO_STABLE: "is now feeling STABLE.",
-	CONSEQUENCE.MOOD_CHANGED_TO_FRIGHTENED: "is now feeling FRIGHTENED!",
-	CONSEQUENCE.MOOD_CHANGED_TO_DEPRESSED: "is now feeling DEPRESSED!",
-	CONSEQUENCE.MOOD_CHANGED_TO_RELUCTANT: "is now feeling RELUCTANT!"
-	# ----------------------
-}
-
-func get_consequence_str(ref:CONSEQUENCE) -> String:
-	return EVT.CONSEQUENCE_STR[ref]

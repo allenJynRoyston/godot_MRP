@@ -19,7 +19,7 @@ var chapters:Array = [
  			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
 		"objectives": {
-			"complete_by_day": 3,
+			"complete_by_day": 7,
 			"required":[
 				{ 
 					"criteria": {
@@ -32,16 +32,15 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 2,
+						"amount": 10,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
 					},
 				},
 			],
-		},
-		"event_triggered": EVT.TYPE.SELECT_STARTING_DEPARTMENTS
+			"reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_A
+		}
 	},
-		
 	# ----------------------------------------------------------------------------------------------
 	{
 		"objectives": {
@@ -50,14 +49,14 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 5,
+						"amount": 10,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.SCIENCE
 					},
 				},
 			],
-		},
-		"event_triggered": EVT.TYPE.SELECT_STARTING_DEPARTMENTS
+			"reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B
+		}
 	},
 	# ----------------------------------------------------------------------------------------------
 	

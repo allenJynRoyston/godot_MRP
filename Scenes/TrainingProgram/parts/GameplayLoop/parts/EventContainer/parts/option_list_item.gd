@@ -15,6 +15,7 @@ extends MouseInteractions
 @onready var TitleLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
 @onready var DescriptionLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Description
 @onready var OutcomeLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/OutcomeLabel
+@onready var ConditionalLabel:Label = $SubViewport/PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ConditionalLabel
 
 @onready var CostPanel:PanelContainer = $SubViewport/PanelContainer/VBoxContainer/Cost/PanelContainer
 @onready var Costs:VBoxContainer = $SubViewport/PanelContainer/VBoxContainer/Cost
@@ -141,14 +142,22 @@ func update_node(rebuild_list:bool = true) -> void:
 		RequiresCheckbox.is_checked = data.requires.check.call()
 		RequiresCheckbox.is_negative = !is_available
 		RequiresLabel.text = data.requires.title		
-		
-		
 	else:
 		Requires.hide()
-		
+
+	
 	if data.has("impact"):
-		Costs.show()	
+		Costs.hide()	
+		if data.impact.has("conditional"):
+			var new_node:Control = Label.new()
+			var conditional_data:Dictionary = CONDITIONALS.return_data(data.impact.conditional)
+			ConditionalLabel.text = conditional_data.description
+			ConditionalLabel.show()
+		else:
+			ConditionalLabel.hide()
+		
 		if data.impact.has("buff") and !built_once:
+			Costs.show()	
 			for ref in data.impact.buff:
 				var new_node:Control = Label.new()
 				var buff_data:Dictionary = BASE_UTIL.return_buff(ref)
@@ -159,6 +168,7 @@ func update_node(rebuild_list:bool = true) -> void:
 				CostList.add_child(new_node)	
 				
 		if data.impact.has("debuff") and !built_once:
+			Costs.show()	
 			for ref in data.impact.debuff:
 				var new_node:Control = Label.new()
 				var buff_data:Dictionary = BASE_UTIL.return_debuff(ref)
@@ -169,6 +179,7 @@ func update_node(rebuild_list:bool = true) -> void:
 				CostList.add_child(new_node)
 		
 		if data.impact.has("currency") and !built_once:
+			Costs.show()	
 			for ref in data.impact.currency:
 				var amount:int = data.impact.currency[ref]
 				var new_node:Control = Label.new()
@@ -180,6 +191,7 @@ func update_node(rebuild_list:bool = true) -> void:
 				CostList.add_child(new_node)		
 		
 		if data.impact.has("metrics") and !built_once:
+			Costs.show()	
 			for ref in data.impact.metrics:
 				var amount:int = data.impact.metrics[ref]
 				var new_node:Control = Label.new()
@@ -193,6 +205,7 @@ func update_node(rebuild_list:bool = true) -> void:
 		built_once = true
 	else:
 		Costs.hide()
+		ConditionalLabel.hide()
 		
 	# update content stylebox
 	content_stylebox_copy.bg_color = Color.DARK_GRAY if !is_selected else COLORS.primary_color 

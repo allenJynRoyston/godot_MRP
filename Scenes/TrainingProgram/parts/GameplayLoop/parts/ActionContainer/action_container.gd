@@ -1,5 +1,6 @@
 extends GameContainer
 
+#region setup
 #  ---------------------------------------
 # SPECIAL NODES
 @onready var Backdrop:ColorRect = $Backdrop
@@ -90,7 +91,9 @@ extends GameContainer
 @onready var InfoBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/InfoBtn
 @onready var EndTurnBtn:BtnBase = $RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right/EndTurnBtn
 #  ---------------------------------------
+#endregion
 
+#region vars
 enum MODE { 
 	NONE,	
 	EVENT_BTN_TRIGGER,
@@ -116,6 +119,12 @@ const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts
 const NametagPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn")
 const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
 
+const portrait_img_src:Dictionary = {
+	PORTRAIT.ENGINEER: "res://Media/images/SectionArt/engineer.png",
+	PORTRAIT.SECURITY: "res://Media/images/SectionArt/security.png",	
+	PORTRAIT.ADMIN: "res://Media/images/SectionArt/admin.png",	
+}
+
 enum PORTRAIT {ENGINEER, SECURITY, ADMIN}
 
 var current_mode:MODE = MODE.NONE : 
@@ -138,13 +147,9 @@ var show_new_message_btn:bool = false :
 	set(val):
 		show_new_message_btn = val
 		reveal_new_message(val)
+#endregion
 
-const portrait_img_src:Dictionary = {
-	PORTRAIT.ENGINEER: "res://Media/images/SectionArt/engineer.png",
-	PORTRAIT.SECURITY: "res://Media/images/SectionArt/security.png",	
-	PORTRAIT.ADMIN: "res://Media/images/SectionArt/admin.png",	
-}
-
+#region setup
 # --------------------------------------------------------------------------------------------------
 func _init() -> void:
 	super._init()
@@ -248,7 +253,6 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	on_current_mode_update(skip_animation)
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func start() -> void:	
 	var BaseRenderNode:Node3D = GBL.find_node( REFS.BASE_RENDER )
@@ -328,25 +332,9 @@ func start() -> void:
 	on_current_mode_update()
 	await U.tween_node_property(self, "modulate", Color(1, 1, 1, 1), 0.3, 0.5)	
 # --------------------------------------------------------------------------------------------------	
+#endregion
 
-# --------------------------------------------------------------------------------------------------	
-func reveal_new_message(state:bool) -> void:
-	if !is_node_ready() or control_pos.is_empty():return
-	NewMessageBtn.show()	if state else NewMessageBtn.hide()
-	await reveal_notification(state)	
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------	
-func on_fullscreen_update(state:bool) -> void:
-	update_control_pos(true)
-# --------------------------------------------------------------------------------------------------	
-
-# --------------------------------------------------------------------------------------------------				
-func clear_lines() -> void:
-	GBL.find_node(REFS.LINE_DRAW).clear()
-	prev_draw_state = {}			
-# --------------------------------------------------------------------------------------------------				
-
+#region active_menus
 # --------------------------------------------------------------------------------------------------
 signal query_complete
 func query_items(ActiveMenuNode:Control, query_size:int, category:ROOM.CATEGORY, page:int, return_list:Array, is_disabled_func:Callable, hint_func:Callable, action:Callable) -> void:
@@ -461,13 +449,13 @@ func show_fabrication_options() -> void:
 	})
 	
 	# ... then departments
-	if department_count < 1:
-		list.push_back({
-			"title": 'DEPARTMENT', 
-			"type": ROOM.CATEGORY.DEPARTMENT,
-			"is_disabled_func": is_disabled_func,
-			"hint_func": hint_func
-		})
+	#if department_count < 1:
+		#list.push_back({
+			#"title": 'DEPARTMENT', 
+			#"type": ROOM.CATEGORY.DEPARTMENT,
+			#"is_disabled_func": is_disabled_func,
+			#"hint_func": hint_func
+		#})
 
 
 	for listitem in list:
@@ -1050,24 +1038,9 @@ func show_settings() -> void:
 	
 	await show_settings_complete
 # --------------------------------------------------------------------------------------------------
+#endregion
 
-# --------------------------------------------------------------------------------------------------		
-func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
-	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
-	# unused currently
-# --------------------------------------------------------------------------------------------------		
-
-# --------------------------------------------------------------------------------------------------		
-func on_current_location_update(new_val:Dictionary = current_location) -> void:
-	current_location = new_val
-	U.debounce(str(self, "_check_btn_states"), check_btn_states)
-
-func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	room_config = new_val
-	U.debounce(str(self, "_check_btn_states"), check_btn_states)
-# --------------------------------------------------------------------------------------------------
-	
+#region checkbtnstates
 # --------------------------------------------------------------------------------------------------
 func before_active_selection() -> void:
 	await AdminModulesControls.reveal(false)
@@ -1115,7 +1088,6 @@ func check_btn_states() -> void:
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
 	).size()	
-
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
 
@@ -1124,13 +1096,22 @@ func check_btn_states() -> void:
 
 	match current_mode:
 		MODE.NONE:
+			# check for priority events and enable/disable the button
 			var has_priority_events:bool = !priority_events.is_empty()
+			if has_priority_events:
+				var event_data:Dictionary = EVENT_UTIL.return_data(priority_events[0])				
+				if event_data.has("btn"):
+					var event_btn_data:Dictionary = event_data.btn
+					HasEventBtn.title = event_btn_data.title
+					HasEventBtn.is_disabled = event_btn_data.is_disabled_check.call() if event_btn_data.has("is_disabled_check") else !is_powered
 
 			# show only starting/info if new game
 			HasEventBtn.show() if has_priority_events else HasEventBtn.hide()
+			EndTurnBtn.is_disabled = has_priority_events
 			
 			# info button
 			IntelBtn.show() if !has_priority_events else IntelBtn.hide()
+			
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
@@ -1160,10 +1141,18 @@ func check_btn_states() -> void:
 			SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
 			
 			EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
-			EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)			
+			EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)
 						
 			#OperationsBtn.hide()
 			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
+			
+			# end button 
+			var end_btn_is_flashing:bool = false
+			for btn in [AdminBtn, EngineeringBtn, LogisticsBtn, ScienceBtn, MedicalBtn, SecurityBtn, EthicsBtn]:
+				if btn.is_visible_in_tree() and btn.is_disabled:
+					end_btn_is_flashing = true 
+					break
+			EndTurnBtn.is_flashing = end_btn_is_flashing
 		# -----------	
 		MODE.ADMINISTRATION_MODULES:
 			AdminModulesControls.directional_pref = "UD"
@@ -1373,9 +1362,11 @@ func check_btn_states() -> void:
 				FabricationControls.reveal(true)
 						
 			FabricationControls.onBack = func() -> void:
-				WingRenderNode.set_to_build_mode(false)
+				WingRenderNode.set_to_build_mode(false)				
 				await FabricationControls.reveal(false)
+				await U.set_timeout(0.5)
 				current_mode = MODE.NONE
+				
 		# -----------	
 		MODE.ENGINEERING:
 			EngineeringControls.onAction = func() -> void:		
@@ -1460,6 +1451,23 @@ func check_btn_states() -> void:
 				GameplayNode.TimelineContainer.show_details( false ) 
 				await InfoControls.reveal(false)
 				current_mode = MODE.NONE			
+# --------------------------------------------------------------------------------------------------
+#endregion
+
+#region reveals
+# --------------------------------------------------------------------------------------------------	
+func reveal_new_message(state:bool) -> void:
+	if !is_node_ready() or control_pos.is_empty():return
+	NewMessageBtn.show()	if state else NewMessageBtn.hide()
+	await reveal_notification(state)	
+# --------------------------------------------------------------------------------------------------	
+
+# --------------------------------------------------------------------------------------------------				
+func clear_lines() -> void:
+	GBL.find_node(REFS.LINE_DRAW).clear()
+	prev_draw_state = {}			
+# --------------------------------------------------------------------------------------------------				
+
 # --------------------------------------------------------------------------------------------------
 func set_backdrop_state(state:bool) -> void:	
 	await U.tween_node_property(Backdrop, 'color', Color(0, 0, 0, 0.7 if state else 0.0))	
@@ -1613,14 +1621,34 @@ func lock_actions(state:bool) -> void:
 		lock_panel_btn_state(false)		
 		check_btn_states()
 # --------------------------------------------------------------------------------------------------		
+#endregion
 
-# --------------------------------------------------------------------------------------------------		
+#region on_X_updates
+# --------------------------------------------------------------------------------------------------	
+func on_fullscreen_update(state:bool) -> void:
+	update_control_pos(true)
+
+func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
+	camera_settings = new_val
+	if !is_node_ready() or camera_settings.is_empty():return
+
+func on_current_location_update(new_val:Dictionary = current_location) -> void:
+	current_location = new_val
+	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+
+func on_room_config_update(new_val:Dictionary = room_config) -> void:
+	room_config = new_val
+	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
 	if !is_node_ready() or base_states.is_empty():return
 	var pending_events_count:int = GAME_UTIL.get_pending_events_count()
-	
 	IntelBtn.is_flashing = pending_events_count > 0
+
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	if !is_node_ready() or new_val.is_empty():return	
+	IntelBtn.show() if new_val[CONDITIONALS.TYPE.SHOW_INFO_BTN] else IntelBtn.hide()
 # --------------------------------------------------------------------------------------------------		
 	
 
@@ -1665,11 +1693,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				await GAME_UTIL.run_event( 	priority_events[0] )
 				priority_events.remove_at(0)
 				SUBSCRIBE.priority_events = priority_events
-				
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
-				
-
-				await TransistionScreen.start(0.5, true)
+				TransistionScreen.start(0.5, true)
 				current_mode = MODE.NONE
 			# --------------
 			MODE.ADMINISTRATION:
@@ -1722,6 +1747,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_summarycard(true, false)
 				reveal_actionpanel_label(true, 0.4, "FABRICATION")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
+				await U.set_timeout(0.5)
 				FabricationControls.reveal(true)
 			# --------------
 			MODE.ENGINEERING:
@@ -1955,16 +1981,16 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match key:
 				# ----------------------------
 				"W":
-					U.room_up()
+					U.room_up(false, true)
 				# ----------------------------
 				"S":
-					U.room_down()
+					U.room_down(false, true)
 				# ----------------------------
 				"D":
-					U.room_right()
+					U.room_right(false, true)
 				# ----------------------------
 				"A":
-					U.room_left()
+					U.room_left(false, true)
 		# ----------------------------
 		MODE.FABRICATION_LINKABLE:
 			match key:
@@ -2001,3 +2027,4 @@ func on_control_input_update(input_data:Dictionary) -> void:
 				"A":
 					U.room_left(true, true)
 		
+#endregion

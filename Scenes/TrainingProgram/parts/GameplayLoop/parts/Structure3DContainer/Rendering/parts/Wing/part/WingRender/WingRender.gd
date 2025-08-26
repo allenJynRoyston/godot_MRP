@@ -29,6 +29,7 @@ extends Node3D
 @onready var EmergencyLights:Node3D = $MeshRender/Lighting/EmergencyLights
 @onready var EmergencyFlareLight:DirectionalLight3D = $MeshRender/Lighting/EmergencyLights/EmergencyFlareLight
 
+@onready var Labeling:Node3D = $MeshRender/Labeling
 @onready var LeftLabel:Label3D = $MeshRender/Labeling/LeftLabel
 @onready var RightLabel:Label3D = $MeshRender/Labeling/RightLabel
 @onready var world_environment_copy:Resource = WorldEnv.environment.duplicate()
@@ -73,7 +74,9 @@ var use_location:Dictionary :
 	set(val):
 		use_location = val
 		on_use_location_update()
-		
+
+signal animation_complete
+
 # --------------------------------------------------------
 func _init() -> void:
 	GBL.register_node(REFS.WING_RENDER, self)	
@@ -166,7 +169,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)
 	for index in SelectorContainer.get_child_count():
 		var Selector:MeshInstance3D = SelectorContainer.get_child(index)
-		Selector.show() #if actual == index else Selector.hide()
+		Selector.show() if actual == index else Selector.hide()
 
 	#MeshSelector.position = Vector3(new_pos.x, MeshSelector.position.y, new_pos.z)
 	
@@ -213,24 +216,18 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
-				Laser.show()	
-				Lighting.hide()	
-				world_environment_copy.volumetric_fog_enabled = false
-
 				update_camera_size(230)
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 45), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 85, -15), 0.3, 0, Tween.TRANS_SINE)
+				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(7.5, 45, 7.5), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_LEFT:
 				Lighting.show()	
-				world_environment_copy.volumetric_fog_enabled = true
 				
 				U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_RIGHT:
 				Lighting.show()	
-				world_environment_copy.volumetric_fog_enabled = true
 				
 				U.tween_node_property(SceneCamera, "position:x", 62, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)				
@@ -238,7 +235,6 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			CAMERA.VIEWPOINT.DISTANCE:
 				Laser.show()
 				Lighting.show()
-				world_environment_copy.volumetric_fog_enabled = true
 
 				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
@@ -247,7 +243,6 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
 				Lighting.show()
-				world_environment_copy.volumetric_fog_enabled = true
 				
 				update_camera_size(180)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
@@ -257,7 +252,6 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			CAMERA.VIEWPOINT.ANGLE_FAR:
 				Laser.show()
 				Lighting.show()	
-				world_environment_copy.volumetric_fog_enabled = true
 				
 				update_camera_size(200)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
@@ -266,8 +260,9 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.DRAMATIC_ZOOM:
 				await update_camera_size(350, 0.4)
-				await update_camera_size(40, 0.3)
-				
+				await update_camera_size(10, 0.3)
+		
+		animation_complete.emit()
 		U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 
 func update_camera_size(size:int, duration:float = 0.3) -> void:
@@ -290,6 +285,7 @@ func update_vars() -> void:
 	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 # --------------------------------------------------------------------------------------------------		
+
 
 # --------------------------------------------------------
 func set_engineering_mode(state:bool) -> void:
@@ -316,20 +312,70 @@ func set_engineering_mode(state:bool) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
+signal room_animation_complete
+func animate_rooms(state:bool) -> void:
+	var spread_amount:float = 1.5
+	var animation_speed:float = 0.05
+	
+	#if state:
+		#await U.tween_node_property(RoomContainer, "position:z", -20)
+	
+	for room in RoomContainer.get_children():
+		if room.position.x != 0:
+			U.tween_node_property(room, "position:x", (room.position.x * spread_amount) if state else (room.position.x / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
+		if room.position.z != 0:
+			U.tween_node_property(room, "position:z", (room.position.z * spread_amount) if state else (room.position.z / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
+		if room.position.x != 0 or room.position.z != 0:
+			await U.set_timeout(animation_speed)	
+			
+	#if !state:
+		#await U.tween_node_property(RoomContainer, "position:z", -0.1)
+					#
+	await U.set_timeout(0.2)
+	room_animation_complete.emit()
+# --------------------------------------------------------
+
+# --------------------------------------------------------
 func set_to_build_mode(state:bool) -> void:
-	WingRenderMesh.set_to_build_mode(state)
-	
+	GBL.add_to_animation_queue(self)
+
+
 	if state:
+		await animation_complete
+		await U.set_timeout(0.3)
+		#WingRenderMesh.set_to_build_mode(state)
 		EditLighting.show() 
+		Lighting.hide()
 		Fog.hide()
-	
+		WingRenderMesh.hide()
+		Labeling.hide()
+		GateContainer.hide()
+		world_environment_copy.volumetric_fog_enabled = false		
+			
+		animate_rooms(true)
+		await room_animation_complete
+			
+
 	if !state:
+		animate_rooms(false)
+		await room_animation_complete
+		#WingRenderMesh.set_to_build_mode(state)		
 		previous_floor = -1
 		previous_ring = -1
 		
+		
 		EditLighting.hide()
+		Lighting.show()
 		Fog.show()
+		WingRenderMesh.show()
+		Labeling.show()
+		GateContainer.show()
+		world_environment_copy.volumetric_fog_enabled = true		
 		update_room_lighting()
+		await U.set_timeout(0.4)
+		
+		
+	GBL.remove_from_animation_queue(self)
 # --------------------------------------------------------	
 	
 

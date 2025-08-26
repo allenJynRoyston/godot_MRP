@@ -1,10 +1,21 @@
-[gd_scene load_steps=23 format=4 uid="uid://dd18gu8px7b47"]
+[gd_scene load_steps=24 format=4 uid="uid://dd18gu8px7b47"]
 
 [ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="2_5s4vs"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="3_donpq"]
 [ext_resource type="Shader" uid="uid://6y3en1uw2l4j" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/RoomRender.gdshader" id="4_31esl"]
 [ext_resource type="Texture2D" uid="uid://d1cqfjvh1kl0" path="res://SVGs/build-svgrepo-com.svg" id="5_x5xbq"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_31esl"]
+_surfaces = [{
+"aabb": AABB(-7.5, -7.5, -7.5, 15, 15, 15),
+"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AADwwAAA8MAAAPBAAADwwAAA8MAAAPDAAADwwAAA8EAAAPDAAADwQAAA8MAAAPDAAADwwAAA8MAAAPDAAADwwAAA8MAAAPBAAADwwAAA8EAAAPDAAADwwAAA8MAAAPDAAADwQAAA8MAAAPDAAADwwAAA8EAAAPDAAADwwAAA8EAAAPBAAADwwAAA8MAAAPBAAADwwAAA8MAAAPBAAADwwAAA8EAAAPBAAADwQAAA8EAAAPBAAADwQAAA8EAAAPBAAADwwAAA8EAAAPBAAADwwAAA8EAAAPDAAADwwAAA8MAAAPBAAADwQAAA8MAAAPBAAADwQAAA8MAAAPDAAADwQAAA8EAAAPBAAADwQAAA8MAAAPBAAADwwAAA8MAAAPBAAADwQAAA8MAAAPDAAADwQAAA8MAAAPBAAADwQAAA8EAAAPBAAADwQAAA8MAAAPDAAADwQAAA8EAAAPDAAADwwAAA8EAAAPDAAADwwAAA8EAAAPDAAADwQAAA8EAAAPDAAADwQAAA8EAAAPBAAADwQAAA8EAAAPBAAADwQAAA8EAAAPDAAADwQAAA8MAAAPDAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
+}]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_nyhco"]
 _surfaces = [{
@@ -106,16 +117,28 @@ size = Vector2(20, 20)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5s4vs"]
 albedo_color = Color(0.899258, 0.899258, 0.899258, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_dxhua"]
-size = Vector2(24, 24)
+[sub_resource type="ArrayMesh" id="ArrayMesh_no1fy"]
+_surfaces = [{
+"aabb": AABB(-12, -0.5, -12, 24, 1, 24),
+"attribute_data": PackedByteArray("AACAPwAAAAAAAIA/AAAAP6uqKj8AAAA/q6qqPgAAAD+rqqo+AACAPwAAAAAAAIA/q6oqPwAAAD8AAIA/AAAAP6uqKj8AAIA/AAAAAAAAAD+rqqo+AAAAPwAAAAAAAIA/q6oqPwAAAD+rqio/AACAP6uqqj4AAIA/AAAAAAAAAACrqqo+AAAAAAAAAAAAAAA/AACAPwAAAD8AAIA/AACAP6uqKj8AAIA/q6oqPwAAAACrqio/AAAAP6uqqj4AAAA/q6qqPgAAAACrqqo+AAAAPwAAAAAAAAA/q6oqPwAAAAAAAIA/AAAAAKuqKj8AAAA/q6qqPgAAAD+rqio/AAAAP6uqqj4AAIA/q6qqPgAAAACrqio/AAAAAKuqqj4AAAA/"),
+"format": 34359738391,
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AABAwQAAAD8AAEDBAABAwQAAAL8AAEDBAABAQQAAAL8AAEDBAABAwQAAAD8AAEBBAABAwQAAAL8AAEBBAABAwQAAAL8AAEDBAABAwQAAAL8AAEBBAABAQQAAAL8AAEBBAABAwQAAAL8AAEDBAABAwQAAAD8AAEDBAABAwQAAAD8AAEBBAABAwQAAAL8AAEDBAABAwQAAAD8AAEBBAABAwQAAAD8AAEDBAABAQQAAAD8AAEDBAABAwQAAAD8AAEBBAABAQQAAAD8AAEBBAABAwQAAAL8AAEBBAABAQQAAAL8AAEBBAABAQQAAAL8AAEDBAABAwQAAAL8AAEDBAABAQQAAAD8AAEDBAABAQQAAAL8AAEDBAABAQQAAAL8AAEBBAABAQQAAAD8AAEBBAABAQQAAAL8AAEBBAABAwQAAAL8AAEBBAABAQQAAAD8AAEDBAABAwQAAAD8AAEDBAABAQQAAAL8AAEDBAABAQQAAAD8AAEBBAABAwQAAAD8AAEBBAABAQQAAAD8AAEDBAABAQQAAAD8AAEBBAABAQQAAAD8AAEDBAABAQQAAAL8AAEBB/////wAA/7//////AAD/v/////8AAP+/AAD/f/9//78AAP9//3//vwAA/3//f/+//38AAP///7//fwAA////v/9/AAD///+/AAD/f/9//78AAP9//3//vwAA/3//f/+//3///wAA/7//f///AAD/v/9///8AAP+//3//f////7//f/9/////v/9//3////+//38AAP///7//fwAA////v/9/AAD///+/////f/////////9//////////3///////3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/////f/////////9//////////3//////")
+}]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_x5xbq"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jj7ck"]
 render_priority = 0
 shader = ExtResource("4_31esl")
-shader_parameter/override_color = Color(0.621524, 0.621524, 0.621524, 1)
+shader_parameter/override_color = Color(1, 1, 1, 1)
 
 [node name="RoomScene" type="Node3D"]
 script = ExtResource("1_cmd18")
+
+[node name="OriginalMesh2" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("ArrayMesh_31esl")
 
 [node name="Gate" type="Node3D" parent="."]
 
@@ -193,27 +216,11 @@ skeleton = NodePath("../Gate/Flap4")
 surface_material_override/0 = SubResource("StandardMaterial3D_5s4vs")
 
 [node name="SelectorMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
-mesh = SubResource("PlaneMesh_dxhua")
-surface_material_override/0 = SubResource("ShaderMaterial_x5xbq")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.416348, 0)
+mesh = SubResource("ArrayMesh_no1fy")
+surface_material_override/0 = SubResource("ShaderMaterial_jj7ck")
 
 [node name="IconSprite" type="Sprite3D" parent="SelectorMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.18365, 0)
 billboard = 1
 texture = ExtResource("5_x5xbq")
-
-[node name="OriginalMesh2" type="CSGBox3D" parent="."]
-visible = false
-size = Vector3(15, 15, 15)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="OriginalMesh2"]
-transform = Transform3D(0.682598, 0.730794, 0, -0.730794, 0.682598, 0, 0, 0, 1, 8.95021, 7.41433, 0)
-visible = false
-operation = 2
-size = Vector3(14, 5, 14)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="OriginalMesh2"]
-transform = Transform3D(-2.98111e-08, -3.19685e-08, -1, -0.731354, 0.681998, 0, 0.681998, 0.731354, -4.37114e-08, 1.23417, 7.41433, 8.15184)
-visible = false
-operation = 2
-size = Vector3(14, 5, 14)
