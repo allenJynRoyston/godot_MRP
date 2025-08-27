@@ -302,8 +302,9 @@ var INSTANT_MONEY_LVL_1:Dictionary = {
 	"science_cost": 50,
 	"cooldown_duration":  3, 
 	"effect": func() -> bool:
-		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
-		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
+		if confirm:
+			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 3})
 		
 		return confirm,
 }

@@ -283,10 +283,10 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
 
 	# staffing
-	var show_required_staffing:bool = required_staffing.size() > 0 
-	RequiredStaffPanel.required_staffing = required_staffing
-	RequiredStaffingContainer.show() if show_required_staffing else RequiredStaffingContainer.hide()
-	
+	#var show_required_staffing:bool = required_staffing.size() > 0 
+	#RequiredStaffPanel.required_staffing = required_staffing
+	#RequiredStaffingContainer.show() if show_required_staffing else RequiredStaffingContainer.hide()
+	#
 	# economy
 	var show_economy:bool = false
 	for ref in currency_list:

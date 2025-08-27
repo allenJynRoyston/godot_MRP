@@ -1,12 +1,17 @@
 extends Node
 
 enum TYPE {
-	STARTING_PERK_1,
-	STARTING_PERK_2,
-	STARTING_PERK_3,
+	ADMIN_PERK_1,
+	ADMIN_PERK_2,
+	ADMIN_PERK_3,
+	
+	SCIENCE_PERK_1,
+	SCIENCE_PERK_2,
+	SCIENCE_PERK_3,	
 	
 	#header
 	SHOW_ECONOMY_IN_HEADER,
+	SHOW_PERSONNEL_IN_HEADER,
 	SHOW_VIBES_IN_HEADER,
 	SHOW_MTF_IN_HEADER,
 	SHOW_POWER_IN_HEADER,
@@ -27,24 +32,42 @@ enum TYPE {
 func return_data(ref:TYPE) -> Dictionary:
 	match ref:
 		# --- Starting Perks
-		TYPE.STARTING_PERK_1:
+		TYPE.ADMIN_PERK_1:
 			return {
 				"description": "Provides a random resource each turn."
 			}
-		TYPE.STARTING_PERK_2:
+		TYPE.ADMIN_PERK_2:
 			return {
-				"description": "Researching new facilities is cheaper."
+				"description": "Morale can never drop below 0."
 			}
-		TYPE.STARTING_PERK_3:
+		TYPE.ADMIN_PERK_3:
 			return {
-				"description": "Constructing new facilities is cheaper."
+				"description": "Facilities are built instantly."
 			}
+			
+		# --- Starting Perks
+		TYPE.SCIENCE_PERK_1:
+			return {
+				"description": "Containment Cells always produce RESEARCH."
+			}
+		TYPE.SCIENCE_PERK_2:
+			return {
+				"description": "R&D is cheaper."
+			}
+		TYPE.SCIENCE_PERK_3:
+			return {
+				"description": "R&D has shorter cooldown."
+			}			
 			
 		# --- Header Display Toggles
 		TYPE.SHOW_ECONOMY_IN_HEADER:
 			return {
 				"description": "Displays the Economy."
 			}
+		TYPE.SHOW_PERSONNEL_IN_HEADER:
+			return {
+				"description": "Displays Personnel data."
+			}			
 		TYPE.SHOW_VIBES_IN_HEADER:
 			return {
 				"description": "Displays the Vibes."

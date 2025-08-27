@@ -98,10 +98,18 @@ func show_details(state:bool) -> void:
 func on_is_showing_update(skip_animation:bool = false) -> void:	
 	super.on_is_showing_update()	
 	if !is_node_ready() or control_pos.is_empty():return
-
+	
 	U.tween_node_property(MainPanel, "position:x", control_pos[MainPanel].show if is_showing else control_pos[MainPanel].hide, 0 if skip_animation else 0.7)	
 # -----------------------------------------------	
 
+# -----------------------------------------------	
+func on_gameplay_conditionals_update(_gameplay_conditionals:Dictionary) -> void:
+	if !is_node_ready() or _gameplay_conditionals.is_empty():return	
+	if _gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE]:
+		ListContainer.modulate.a = 1
+	else:
+		ListContainer.modulate.a = 0
+# -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_progress_data_update(new_val:Dictionary) -> void:

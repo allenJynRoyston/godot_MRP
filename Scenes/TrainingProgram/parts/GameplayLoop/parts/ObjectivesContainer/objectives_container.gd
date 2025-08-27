@@ -74,10 +74,8 @@ func _ready() -> void:
 		
 
 	BtnControls.onDirectional = func(key:String):
-		var story_progress:Dictionary = GBL.active_user_profile.story_progress
-		
 		var total_objectives:int = objectives.size() - 1
-		var max_val:int = U.min_max(story_progress.on_chapter + 1, 0, total_objectives)
+		var max_val:int = U.min_max(STORY.get_current_objective_index() + 1, 0, total_objectives)
 
 		match key:
 			"A":
@@ -93,7 +91,7 @@ func activate() -> void:
 	# assign objectives and assign to current index
 	story_progress = GBL.active_user_profile.story_progress
 	objectives = STORY.get_objectives()
-	objective_index = story_progress.on_chapter
+	objective_index = STORY.get_current_objective_index()
 	
 	await U.tick()
 	control_pos[ObjectivePanel] = {
@@ -237,10 +235,12 @@ func check_for_next_hint(hints:Array = current_hints) -> void:
 # --------------------------------------------------------------------------------------------------	
 func on_objective_index_update() -> void:
 	if !is_node_ready():return
+	var current_objective_index:int = STORY.get_current_objective_index()
 	var current_objectives:Dictionary = objectives[objective_index]	
-	var is_upcoming:bool = objective_index > story_progress.on_chapter 
-	var is_expired:bool = objective_index < story_progress.on_chapter 
+	var is_upcoming:bool = objective_index > current_objective_index
+	var is_expired:bool = objective_index < current_objective_index
 	
+
 	Days.amount = str( U.min_max( current_objectives.complete_by_day - progress_data.day, 0, 999 ) )	
 	Days.is_negative = is_expired
 	

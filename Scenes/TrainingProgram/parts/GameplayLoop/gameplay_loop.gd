@@ -12,7 +12,7 @@ extends PanelContainer
 
 const SetupContainedPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/SetupContainer/SetupContainer.tscn")
 
-enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, NUKE_DETONATION, GAME_WON, GAME_LOST }
+enum PHASE { STARTUP, PLAYER, RESOURCE_COLLECTION, RANDOM_EVENTS, CALC_NEXT_DAY, SCHEDULED_EVENTS, CONCLUDE, NUKE_DETONATION, MET_OBJECTIVE, FAILED_OBJECTIVE }
 
 var options:Dictionary = {}
 var is_tutorial:bool = false
@@ -234,28 +234,11 @@ var initial_values:Dictionary = {
 		},
 	# ----------------------------------
 	"gameplay_conditionals": func() -> Dictionary:
-		return {
-			# ---------------------------------------------- starting
-			CONDITIONALS.TYPE.STARTING_PERK_1: false,
-			CONDITIONALS.TYPE.STARTING_PERK_2: false,
-			CONDITIONALS.TYPE.STARTING_PERK_3: false,
-			# ---------------------------------------------- header
-			CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER: false,
-			CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER: false,
-			CONDITIONALS.TYPE.SHOW_MTF_IN_HEADER: false,
-			CONDITIONALS.TYPE.SHOW_POWER_IN_HEADER: false,
-			CONDITIONALS.TYPE.SHOW_DANGERS_IN_HEADER: false,
-			# ---------------------------------------------- ui
-			CONDITIONALS.TYPE.ENABLE_TIMELINE: false,
-			CONDITIONALS.TYPE.ENABLE_OBJECTIVES: false,
-			# ---------------------------------------------- action bar
-			CONDITIONALS.TYPE.SHOW_INFO_BTN: false,
-			# ---------------------------------------------- currency
-			CONDITIONALS.TYPE.PLUS_MONEY_1: false,
-			CONDITIONALS.TYPE.PLUS_SCIENCE_1: false,
-			CONDITIONALS.TYPE.PLUS_MATERIAL_1: false,
-			CONDITIONALS.TYPE.PLUS_CORE_1: false
-		},
+		var dict:Dictionary = {}
+		for ref in CONDITIONALS.TYPE:
+			dict[CONDITIONALS.TYPE[ref]] = false
+		
+		return dict,
 	# ----------------------------------
 	"timeline_array": func() -> Array:
 		return [],
@@ -735,9 +718,7 @@ func show_only(nodes:Array = []) -> void:
 #region LOCAL FUNCS
 # -----------------------------------
 func next_day() -> void:
-	var objectives:Array = STORY.get_objectives()
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
+	var objective:Dictionary = STORY.get_current_objective()
 	var previous_location:Dictionary = current_location.duplicate(true)
 	var previous_camera_setting:Dictionary = camera_settings.duplicate(true)
 	
@@ -747,7 +728,7 @@ func next_day() -> void:
 			current_phase = PHASE.NUKE_DETONATION
 		return
 	
-	if !GAME_UTIL.are_objectives_complete() and (progress_data.day + 1) >= current_objectives.complete_by_day:
+	if !GAME_UTIL.are_objectives_complete() and (progress_data.day) >= objective.complete_by_day:
 		var res:bool = await GAME_UTIL.create_warning("OBJECTIVES NOT MET!", "Ignore warning and continue?", "res://Media/images/Defaults/stop_sign.png")
 		if res:
 			current_phase = PHASE.RESOURCE_COLLECTION
@@ -893,8 +874,8 @@ func on_current_phase_update() -> void:
 	match current_phase:
 		# ------------------------
 		PHASE.STARTUP:
-			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
+			#var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			# var chapter:Dictionary = STORY.get_chapter( STORY.get_chapter_from_day() )			
 			
 			#if chapter.has("tutorial") and is_tutorial:
 				#await GAME_UTIL.play_tutorial(chapter)
@@ -906,10 +887,8 @@ func on_current_phase_update() -> void:
 			current_phase = PHASE.PLAYER
 		# ------------------------
 		PHASE.PLAYER:
-			await restore_player_hud()			
+			await restore_player_hud()
 			GAME_UTIL.disable_taskbar(false)
-			await U.set_timeout(0.4)
-
 		# ------------------------
 		PHASE.RESOURCE_COLLECTION:
 			await show_only([Structure3dContainer, TimelineContainer])
@@ -927,17 +906,14 @@ func on_current_phase_update() -> void:
 			PhaseAnnouncement.start("RESOURCE COLLECTION")	
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
-			
-			if gameplay_conditionals[CONDITIONALS.TYPE.STARTING_PERK_1]:
+			# BONUS PERK
+			if gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_1]:
 				await GAME_UTIL.open_tally( RESOURCE_UTIL.return_extra_diff() )
 				
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
-			
-			# ADD TO PROGRESS DATA day count
-			progress_data.day += 1
 
 			# first, get list of rooms that will be completed in order of floor -> ring -> room
 			var construction_complete:Dictionary = {}
@@ -974,6 +950,7 @@ func on_current_phase_update() -> void:
 					await U.set_timeout(0.3)
 				
 				# jump to room and show the build
+				var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
 				for floor_index in construction_complete:
 					var ring_list:Dictionary = construction_complete[floor_index]
 					if !ring_list.is_empty():
@@ -985,12 +962,17 @@ func on_current_phase_update() -> void:
 								previous_ring = current_location.ring
 								var first_item:Dictionary = room_list[0]
 								SUBSCRIBE.current_location = {"floor": first_item.location.floor, "ring": first_item.location.ring, "room": 4}
-								await U.set_timeout(0.2)
+								await U.set_timeout(0.3)
 								# wait for transistion...
 								
 								# now update the state of all the rooms on that ring at once
 								for item in room_list:
-									await ROOM_UTIL.finish_construction(item.location)
+									ROOM_UTIL.finish_construction(item.location)
+
+									#WingRenderNode.complete_construction(location_copy)
+									
+									await U.tick()
+										
 								
 								# wait for animation
 								await U.set_timeout(0.3)
@@ -1016,7 +998,7 @@ func on_current_phase_update() -> void:
 					if !condition_met:
 						break
 					# then check if event is repeatable
-					var is_repeatable:bool = EVENT_UTIL.return_data(event.ref).is_repeatable
+					var is_repeatable:bool = true #EVENT_UTIL.return_data(event.ref).is_repeatable
 					
 					# check if event has not occurred yet OR it has occured but it's repeatable
 					if (event.ref not in base_states.event_record) or (event.ref in base_states.event_record and is_repeatable):
@@ -1026,7 +1008,6 @@ func on_current_phase_update() -> void:
 							GAME_UTIL.add_room_event(event.ref, facility.location)
 					
 			# update subscriptions
-			SUBSCRIBE.progress_data = progress_data
 			SUBSCRIBE.base_states = base_states
 			
 			await U.set_timeout(0.5)
@@ -1121,44 +1102,52 @@ func on_current_phase_update() -> void:
 			
 			await U.set_timeout(2.0)
 			
-			current_phase = PHASE.GAME_LOST
+			current_phase = PHASE.FAILED_OBJECTIVE
 		# ------------------------
 		PHASE.CONCLUDE:
 			# CHECK IF SCENARIO DATA IS COMPLETE
-			var objectives:Array = STORY.get_objectives()
-			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var current_objectives:Dictionary = objectives[story_progress.on_chapter]
-						
+			# var objectives:Array = STORY.get_objectives()
+			#var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var current_objectives:Dictionary = STORY.get_current_objective()
 			# check for objectivess fail/succeed on appropriate day
 			if progress_data.day >= current_objectives.complete_by_day:
-				PhaseAnnouncement.start("CHECKING OBJECTIVES")
-				await U.set_timeout(0.5)				
-
 				# CHECK FOR FAIL STATE
 				var is_complete:bool = GAME_UTIL.are_objectives_complete()
-				current_phase = PHASE.GAME_LOST if !is_complete else PHASE.GAME_WON
+				await U.tick()
+				
+				# ADD TO PROGRESS DATA day count
+				progress_data.day += 1			
+				SUBSCRIBE.progress_data = progress_data					
+				PhaseAnnouncement.start("CHECKING OBJECTIVES")				
+				await U.set_timeout(0.5)				
+				
+				current_phase = PHASE.FAILED_OBJECTIVE if !is_complete else PHASE.MET_OBJECTIVE
 				return
 			
 			# continue
+			# ADD TO PROGRESS DATA day count
+			progress_data.day += 1			
+			SUBSCRIBE.progress_data = progress_data	
 			PhaseAnnouncement.end()
 			await U.set_timeout(1.0)
 			# revert
 			SUBSCRIBE.camera_settings = camera_settings_snapshot
 			SUBSCRIBE.current_location = current_location_snapshot
 			
-			
-			await restore_player_hud()
+
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
 		# ------------------------
-		PHASE.GAME_WON:
+		PHASE.MET_OBJECTIVE:
 			PhaseAnnouncement.end()
-			
+
 			# fetch next objective, update objective
-			var story_progress:Dictionary = GBL.active_user_profile.story_progress
-			var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )			
-			if chapter.objectives.has("reward_event"):
-				priority_events.push_back( chapter.objectives.reward_event )
+			# var story_progress:Dictionary = GBL.active_user_profile.story_progress
+			var objective:Dictionary = STORY.get_previous_objective()
+			print(objective)
+
+			if objective.reward_event != -1:
+				priority_events.push_back( objective.reward_event )
 				SUBSCRIBE.priority_events = priority_events
 
 			# update story...
@@ -1169,34 +1158,30 @@ func on_current_phase_update() -> void:
 			var show_new_message:bool = "story_message" in next_chapter
 
 			#
-			# also this checkpoint ONLY ONCE
+			## also this checkpoint ONLY ONCE
 			if GBL.active_user_profile.save_profiles[GBL.active_user_profile.use_save_profile].snapshots.after_setup.is_empty():
 				create_after_setup_restore_point()
-				
-			
-			# create a restore point
-			create_checkpoint()
+			else:
+				create_checkpoint()
 			
 			# update objectives
 			PhaseAnnouncement.start("OBJECTIVES ARE BEING UPDATED...")
-			await U.set_timeout(1.5)
+			await U.set_timeout(0.5)
 			await PhaseAnnouncement.end()		
 			
 			await GAME_UTIL.open_objectives()
 			# update bookmarked objectives
 			GAME_UTIL.mark_current_objectives()
 			
-			#await quicksave(true)			
-			
 			if show_new_message:
 				ActionContainer.show_new_message_btn = true
-			
+
 			# continue game
 			restore_player_hud()			
 			current_phase = PHASE.PLAYER
 			phase_cycle_complete.emit()
 		# ------------------------
-		PHASE.GAME_LOST:
+		PHASE.FAILED_OBJECTIVE:
 			PhaseAnnouncement.start("FAILED TO MEET OBJECTIVES...")	
 			onGameOver.call()
 			return
@@ -1334,7 +1319,9 @@ func update_room_config(force_setup:bool = false) -> void:
 	# EXECUTE IN THIS ORDER
 	# zero out defaults 
 	transfer_base_states_to_room_config(new_room_config)
-	## check if room is activated
+	# setup passives
+	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
+	# check if room is activated
 	room_activation_check(new_room_config)
 	
 	# ROOM, check for effects
@@ -1342,7 +1329,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	#scp_check_for_effects(new_room_config)	
 	
 	# ROOM, setup and loop
-	# room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
+	
 	
 	# check for buffs/debuffs
 	# check_for_buffs_and_debuffs(new_room_config)		
@@ -1430,7 +1417,6 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 				# room level ability level
 				room_level.abl_lvl = room_base_state.abl_lvl
 				
-
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
 	var ring_added:Array = []
@@ -1572,11 +1558,13 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
+		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+		var is_activated:bool = room_config_data.is_activated
+		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
 		
+
 		# only for rooms that are activated
-		if room_config_data.is_activated:
-			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			
+		if is_activated:
 			# add metrics
 			for ref in room_details.metrics:
 				var amount:int = room_details.metrics[ref]
@@ -1597,6 +1585,38 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 			if !room_details.effect.is_empty():
 				if room_details.effect.has("func"):
 					new_room_config = room_details.effect.func.call( new_room_config, item )
+					
+		# passive abilities
+		if room_details.has("passive_abilities"):
+			var passive_abilities:Array = room_details.passive_abilities.call()
+			for ability_index in passive_abilities.size():
+				var ability:Dictionary = passive_abilities[ability_index]
+				var ability_uid:String = str(room_details.ref, ability_index)
+				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
+				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
+				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
+				var abl_lvl:int = ROOM_UTIL.get_room_ability_level(item.location)
+
+
+				# if not activated, remove from list
+				if !is_activated:
+					room_base_state.passives_enabled_list.erase(ability.ref)
+					
+				else:
+					
+					# else, check if it's activated and enabled
+					if room_base_state.passives_enabled[ability_uid]:
+						ring_config_data.energy.used += energy_cost
+						
+						# check for metrics
+						if "currencies" in ability: 
+							for ref in ability.currencies:
+								var amount:int = ability.currencies[ref]
+								resources_data[ref].diff += amount
+								room_config_data.currencies[ref] += amount
+
+
+
 			
 func room_check_for_after_effects(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1667,6 +1687,7 @@ func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 						if "currencies" in ability: 
 							for key in ability.currencies:
 								var amount:int = ability.currencies[key]
+								
 								#floor_config.currencies[key] += amount
 								#ring_config.currencies[key] += amount
 								#room_config.currencies[key] += amount
@@ -1699,25 +1720,24 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			#var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
 			#return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
 		#).size()
+		#
+		## auto assign if you have enough, otherwise
+		#if required_staffing.size() != assigned_to_room_count and ROOM_UTIL.can_activate_check(room_details.ref):
+			#for index in room_details.required_staffing.size():
+				#var ref:int = room_details.required_staffing[index]
+				#GAME_UTIL.auto_assign_staff(room_details.ref, index, item.location)		
 		
 		# apply is activated state if have enough staff and enough energy
-		#if energy_available >= room_details.required_energy:
-			## room_config_data.is_activated = required_staffing.size() == assigned_to_room_count
-			#ring_config_data.energy.used += room_details.required_energy
-			##room_config_data.energy_used += room_details.required_energy
-		#else:
-		room_config_data.is_activated = energy_available >= room_details.required_energy and !is_under_construction
+		if energy_available >= room_details.required_energy and !is_under_construction:
+			ring_config_data.energy.used += room_details.required_energy
+			room_config_data.is_activated = true
+		else:
+			room_config_data.is_activated = false
 		
 		# call activated/deactivated
 		room_details.on_activate.call(room_config_data.is_activated)
 
 
-		# if activated, then check if room has additional properties
-		#if room_config_data.is_activated:
-			#for key in room_details.personnel_capacity:
-				#var amount:int = room_details.personnel_capacity[key]
-				#new_room_config.base.staff_capacity[key] += amount
-		
 func room_calculate(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1726,44 +1746,7 @@ func room_calculate(new_room_config:Dictionary) -> void:
 		var floor_config_data:Dictionary = new_room_config.floor[floor]
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-
-		if room_config_data.is_activated:
-			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			#if room_details.is_core:
-				#var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
-				#for adjacent_room in adjacent_rooms.filter(func(x): return x != -1):					
-					#var adjacent_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[adjacent_room]
-					#
-					#if adjacent_config_data.is_activated:
-						#var adjacent_room_details:Dictionary = ROOM_UTIL.return_data_via_location({"floor": floor, "ring": ring, "room": adjacent_room})
-						## syphon currency from non-core rooms
-						#for ref in adjacent_room_details.currencies:
-							#if ref in adjacent_room_details.currencies:
-								#var amount:int = adjacent_room_details.currencies[ref]
-								#room_config_data.currencies[ref] += amount
-								#
-						## syphon metrics from non-core rooms
-						#for ref in adjacent_room_details.metrics:
-							#if ref in adjacent_room_details.metrics:
-								#var amount:int = adjacent_room_details.metrics[ref]
-								#room_config_data.metrics[ref] += amount
-
-			## tally their currencies
-			#for key in room_config_data.currencies:
-				#if key in room_details.currencies:
-					#var amount:int = room_details.currencies[key]
-					## add to totals
-					##floor_config_data.currencies[key] += amount
-					##ring_config_data.currencies[key] += amount
-					#room_config_data.currencies[key] += amount
-					#
-			## tally metrics
-			#for key in room_details.metrics:
-				#var amount:int = room_details.metrics[key]
-				##ring_config_data.metrics[key] += amount
-				#room_config_data.metrics[key] += amount
-		
-					
+	
 		room_config_data.room_data = {
 			"ref": item.ref,
 			"details": ROOM_UTIL.return_data(item.ref), 

@@ -165,7 +165,7 @@ func update_node(shift_val:int = 10) -> void:
 			ListContainer.add_child(new_node)
 				
 	
-	name_label_settings.font_size = 16 if room_details.is_core else 12
+	name_label_settings.font_size = 12 #16 if room_details.is_core else 12
 	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
 	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
 	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
@@ -180,8 +180,8 @@ func update_node(shift_val:int = 10) -> void:
 func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos - Vector2(self.size.x/2 - 15, self.size.y*2)
-	DownArrowIcon.position = Vector2(self.size.x/2, self.size.y - 8)
+	self.global_position = tag_pos - Vector2(self.size.x/2, self.size.y + 40)
+	DownArrowIcon.position = Vector2(self.size.x/2 - DownArrowIcon.size.x/2, self.size.y - 8)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return

@@ -410,7 +410,7 @@ var TEST_EVENT_C:Dictionary = {
 var ADMIN_SETUP:Dictionary = {
 	"is_repeatable": true,
 	"btn": {
-		"title": "ADMIN SETUP"
+		"title": "ADMIN DEPARTMENT SETUP"
 	},
 	"event_instructions": func(props:Dictionary) -> Array:
 		# admin department always installed
@@ -419,7 +419,7 @@ var ADMIN_SETUP:Dictionary = {
 			"header": "FACILITY SETUP",
 			"subheader": "A NEW DAY BEGINS",
 			"img_src": "res://Media/images/redacted.png",
-			"text": ["Before full containment operations can begin an Administration Department must be established. Select this facility's priority."],
+			"text": ["The beating heart of any bureaucracy: the Administration Department. Select its priority"],
 			"options": [
 				{
 					"header": "FINANCIAL",
@@ -428,34 +428,34 @@ var ADMIN_SETUP:Dictionary = {
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
-						"conditional": CONDITIONALS.TYPE.STARTING_PERK_1,
+						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_1,
 					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["Administration establishes strict fiscal oversight. You now receive a random economic resource each turn."] }
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_1).description] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_1, true)
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
 						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				{
-					"header": "SCIENTIFIC",
-					"title": "Pure Knowledge",
-					"description": "Gain additional science each turn from improved research oversight and documentation.",
+					"header": "DEDICATION",
+					"title": "Unwavering Support",
+					"description": "Your facility recruits only the most committed personnel driven by conviction and unwavering faith in the mission.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
-						"conditional": CONDITIONALS.TYPE.STARTING_PERK_2,
+						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_2,
 					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["Administration emphasizes research coordination. Cost of researching new facilities is reduced."] }
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_2).description] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_2, true)
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
 						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
@@ -466,15 +466,15 @@ var ADMIN_SETUP:Dictionary = {
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
-						"conditional": CONDITIONALS.TYPE.STARTING_PERK_3,
+						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_3,
 					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["Administration prioritizes logistics. Cost of constructing new facilities is reduced."] }
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_3).description] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.STARTING_PERK_3, true)
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
 						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				}					
@@ -486,10 +486,10 @@ var ADMIN_SETUP:Dictionary = {
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_A:Dictionary = {
+var SCIENCE_SETUP:Dictionary = {
 	"is_repeatable": true,
 	"btn": {
-		"title": "REWARD",
+		"title": "SCIENCE DEPARTMENT SETUP",
 		"is_disabled_check": func() -> bool:
 			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
@@ -500,51 +500,68 @@ var SELECT_STARTING_DEPARTMENTS_A:Dictionary = {
 		# admin department always installed
 		
 		var instructions_1:Array = build_event_content(props, {
-			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE ENGINE",
+			"header": "FACILITY SETUP",
+			"subheader": "A NEW DAY BEGINS",
 			"img_src": "res://Media/images/redacted.png",
-			"text": ["Two departments drive the machinery of survival:"],
+			"text": ["A Science Department is required to oversee research operations. Select its priority."],
 			"options": [
-				# ----------------------------------------- ENGINEERING
 				{
-					"header": "ENGINEERING",
-					"title": "Applied Engineering Division",
-					"description": "Keeps walls upright, locks sealed, and the lights on. When systems fail, so does containment.",
+					"header": "EXPERIMENTATION",
+					"title": "The Scientific Method in Action",
+					"description": "True science requires careful observation, controlled testing, and a willingness to confront the unknown.",
 					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
 					"impact": {
-						"currency": { RESOURCE.CURRENCY.MATERIAL: 5 }
+						"conditional": CONDITIONALS.TYPE.SCIENCE_PERK_1,
 					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["Steel does not ask questions. It only holds."] },
-							{ "response": ["Infrastructure is reinforced. Supplies are secured."] }
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.SCIENCE_PERK_1).description] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SCIENCE_PERK_1, true)
 						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
-				# ----------------------------------------- LOGISTICS
 				{
-					"header": "LOGISTICS",
-					"title": "Logistics & Supply Chain Division",
-					"description": "Moves anomalies, weapons, and resources without incident. Failure is catastrophic.",
+					"header": "KNOWLEDGE",
+					"title": "Pure Knowledge",
+					"description": "Focus on research and documentation, cataloging anomalies and expanding the Foundation's understanding.",
 					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
 					"impact": {
-						"currency": { RESOURCE.CURRENCY.MONEY: 5 }
-					},
+						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_2,
+					},					
 					"outcomes": {
 						"list": [
-							{ "response": ["A missing crate kills faster than a missing guard."] },
-							{ "response": ["Procurement chains tighten. Waste diminishes."] }
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_2).description] }
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
 						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
+				{
+					"header": "DISCOVERY",
+					"title": "Frontier Research",
+					"description": "Prioritize uncovering new anomalies and pushing the boundaries of containment and understanding.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_3,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_3).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
+						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
+						onSelected(choice),
+				}					
 			]
 		})
 		
@@ -2178,7 +2195,7 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
 	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_A: SELECT_STARTING_DEPARTMENTS_A,
+	EVT.TYPE.SCIENCE_SETUP: SCIENCE_SETUP,
 	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B: SELECT_STARTING_DEPARTMENTS_B,
 	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_C: SELECT_STARTING_DEPARTMENTS_C,
 	

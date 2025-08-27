@@ -2,8 +2,11 @@ extends Node3D
 
 @onready var SceneCamera:Camera3D = $Camera3D
 @onready var MeshRender:Node3D = $MeshRender
+@onready var Particles:Node3D = $MeshRender/Particles
 @onready var Laser:SpotLight3D = $MeshRender/Laser
 @onready var WorldEnv:WorldEnvironment = $WorldEnvironment
+@onready var BlueprintMesh:MeshInstance3D = $Camera3D/BlueprintMesh
+@onready var MeshBackdrop:MeshInstance3D = $MeshRender/MeshBackdrop
 # @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 @onready var WingRenderMesh:Node3D = $MeshRender/WingRenderMesh
 
@@ -60,10 +63,6 @@ var previous_emergency_state:bool = false
 var previous_nuke_state:bool = false
 var nuke_is_triggered:bool = false 
 var in_lockdown:bool = false
-#var is_powered:bool = false
-#var in_brownout:bool = false
-#var is_ventilated:bool  = false
-#var is_overheated:bool = false
 
 var highlight_rooms:Array = [] : 
 	set(val):
@@ -94,6 +93,8 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	set_engineering_mode(false)
+	MeshBackdrop.hide()
+	BlueprintMesh.hide()
 	
 	WorldEnv.environment = world_environment_copy
 	
@@ -118,29 +119,29 @@ func room_assign_designation(index:int, assigned_location:Dictionary) -> void:
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
 	RoomNode.assigned_location = {"floor": assigned_location.floor, "ring": assigned_location.ring, "room": index}
 
-func start_construction(use_location:Dictionary) -> void:	
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(use_location.room)
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	await RoomNode.start_construction()
-	
-func complete_construction(use_location:Dictionary) -> void:	
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(use_location.room)
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	await RoomNode.complete_construction()
-	
-func destroy_room(use_location:Dictionary) -> void:	
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(use_location.room)
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	await RoomNode.destroy_room()
-
-func construction_is_canceled(use_location:Dictionary) -> void:
-	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(use_location.room)
-	var RoomNode:Node3D = RoomContainer.get_child(actual)
-	await RoomNode.cancel_construction()	
+#func start_construction(use_location:Dictionary) -> void:	
+	#if !is_node_ready(): return
+	#var actual:int = index_to_room_lookup(use_location.room)
+	#var RoomNode:Node3D = RoomContainer.get_child(actual)
+	#await RoomNode.start_construction()
+	#
+#func complete_construction(use_location:Dictionary) -> void:	
+	#if !is_node_ready(): return
+	#var actual:int = index_to_room_lookup(use_location.room)
+	#var RoomNode:Node3D = RoomContainer.get_child(actual)
+	#await RoomNode.animate_construction()
+	#
+#func destroy_room(use_location:Dictionary) -> void:	
+	#if !is_node_ready(): return
+	#var actual:int = index_to_room_lookup(use_location.room)
+	#var RoomNode:Node3D = RoomContainer.get_child(actual)
+	#await RoomNode.destroy_room()
+#
+#func construction_is_canceled(use_location:Dictionary) -> void:
+	#if !is_node_ready(): return
+	#var actual:int = index_to_room_lookup(use_location.room)
+	#var RoomNode:Node3D = RoomContainer.get_child(actual)
+	#await RoomNode.cancel_construction()	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
@@ -217,7 +218,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
 				update_camera_size(230)
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(7.5, 45, 7.5), 0.3, 0, Tween.TRANS_SINE)
+				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 20), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_LEFT:
@@ -245,7 +246,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				Lighting.show()
 				
 				update_camera_size(180)
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(-4.5, 45, -4.5), 0.3, 0, Tween.TRANS_SINE)
+				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(5, 45, 5), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.2, 67, -15), 0.3, 0, Tween.TRANS_SINE)
 			
 			# ---------------------- ANGLE
@@ -314,24 +315,32 @@ func set_engineering_mode(state:bool) -> void:
 # --------------------------------------------------------
 signal room_animation_complete
 func animate_rooms(state:bool) -> void:
-	var spread_amount:float = 1.5
-	var animation_speed:float = 0.05
+	var spread_amount:float = 1.75
+	var animation_speed:float = 0.2
 	
-	#if state:
-		#await U.tween_node_property(RoomContainer, "position:z", -20)
-	
-	for room in RoomContainer.get_children():
-		if room.position.x != 0:
-			U.tween_node_property(room, "position:x", (room.position.x * spread_amount) if state else (room.position.x / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
-		if room.position.z != 0:
-			U.tween_node_property(room, "position:z", (room.position.z * spread_amount) if state else (room.position.z / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
-		if room.position.x != 0 or room.position.z != 0:
-			await U.set_timeout(animation_speed)	
+	if state:
+		BlueprintMesh.show()
+		await U.tween_node_property(BlueprintMesh, "position", Vector3(0, 0, BlueprintMesh.position.z), 0.7, 0, Tween.TRANS_SINE)
+		MeshBackdrop.show()
+		
+	for container in [GateContainer, RoomContainer, MarkersContainer]:
+		for room in container.get_children():
+			if room.position.x != 0:
+				U.tween_node_property(room, "position:x", (room.position.x * spread_amount) if state else (room.position.x / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
+			if room.position.z != 0:
+				U.tween_node_property(room, "position:z", (room.position.z * spread_amount) if state else (room.position.z / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
+			#if room.position.x != 0 or room.position.z != 0:
+				#await U.set_timeout(animation_speed)	
 			
-	#if !state:
-		#await U.tween_node_property(RoomContainer, "position:z", -0.1)
-					#
-	await U.set_timeout(0.2)
+	await U.set_timeout(animation_speed)
+	
+	if !state:
+		MeshBackdrop.hide()
+		await U.tween_node_property(BlueprintMesh, "position", Vector3(-500, -500, BlueprintMesh.position.z), 0.7, 0, Tween.TRANS_SINE)
+		BlueprintMesh.hide()
+		
+		
+
 	room_animation_complete.emit()
 # --------------------------------------------------------
 
@@ -339,40 +348,45 @@ func animate_rooms(state:bool) -> void:
 func set_to_build_mode(state:bool) -> void:
 	GBL.add_to_animation_queue(self)
 
-
 	if state:
+		animate_rooms(true)
 		await animation_complete
 		await U.set_timeout(0.3)
-		#WingRenderMesh.set_to_build_mode(state)
-		EditLighting.show() 
+		for room in RoomContainer.get_children():
+			room.set_blueprint_mode(state)
+						
+		EditLighting.show()
 		Lighting.hide()
 		Fog.hide()
+		Particles.hide()
 		WingRenderMesh.hide()
+		MeshBackdrop.show()
 		Labeling.hide()
 		GateContainer.hide()
 		world_environment_copy.volumetric_fog_enabled = false		
-			
-		animate_rooms(true)
 		await room_animation_complete
 			
 
 	if !state:
 		animate_rooms(false)
-		await room_animation_complete
-		#WingRenderMesh.set_to_build_mode(state)		
+		await room_animation_complete				
 		previous_floor = -1
 		previous_ring = -1
-		
-		
+
 		EditLighting.hide()
 		Lighting.show()
 		Fog.show()
+		Particles.show()
 		WingRenderMesh.show()
 		Labeling.show()
 		GateContainer.show()
+		MeshBackdrop.hide()
 		world_environment_copy.volumetric_fog_enabled = true		
+		for room in RoomContainer.get_children():
+			room.set_blueprint_mode(state)				
 		update_room_lighting()
 		await U.set_timeout(0.4)
+
 		
 		
 	GBL.remove_from_animation_queue(self)
@@ -519,12 +533,10 @@ func update_room_lighting() -> void:
 		MiasmaFog.min_density = monitor.pollution * 0.05
 		MiasmaFog.max_density = monitor.pollution * 0.2
 		
-
 		# set previous state so can turn on/off 
 		previous_billboard_state = BillboardLights.is_visible_in_tree()	
 		previous_baselights_state = BaseLights.is_visible_in_tree()
 		previous_emergency_state = EmergencyLights.is_visible_in_tree()
-		
 # --------------------------------------------------------
 
 # --------------------------------------------------------

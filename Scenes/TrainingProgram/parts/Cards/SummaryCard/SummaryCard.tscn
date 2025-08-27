@@ -395,6 +395,7 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="RequiredStaffingContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 0
 

@@ -4,8 +4,14 @@ extends Node3D
 @onready var Barrier:Node3D = $Barrier
 @onready var Gate:Node3D = $Gate
 
+@onready var Links:Node3D = $Links
+@onready var LinkLeft:MeshInstance3D = $Links/Left
+@onready var LinkRight:MeshInstance3D = $Links/Right
+@onready var LinkTop:MeshInstance3D = $Links/Top
+@onready var LinkBottom:MeshInstance3D = $Links/Bottom
+
 @onready var SelectorMesh:MeshInstance3D = $SelectorMesh
-@onready var IconSprite:Sprite3D = $SelectorMesh/IconSprite
+@onready var IconSprite:Sprite3D = $IconSprite
 
 @onready var RoomRender:MeshInstance3D = $Room/RoomRender
 @onready var ParticleEmitter:GPUParticles3D = $Room/RoomRender/GPUParticles3D
@@ -19,13 +25,14 @@ extends Node3D
 @onready var Flap3:MeshInstance3D = $Gate/Flap3
 @onready var Flap4:MeshInstance3D = $Gate/Flap4
 
+@onready var room_render_material:StandardMaterial3D = RoomRender.get("surface_material_override/0").duplicate()
+@onready var select_mesh_material:StandardMaterial3D = SelectorMesh.get("surface_material_override/0").duplicate()
+
 @export var room_type:int
 @export var skip_animation:bool = false
 
-@onready var select_shader_copy:ShaderMaterial = SelectorMesh.get("surface_material_override/0").duplicate()
-
-const RoomRenderUnderConstructionMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_UnderConstruction.tres")
-const RoomRenderBuiltMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_Built.tres")
+#const RoomRenderUnderConstructionMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_UnderConstruction.tres")
+#const RoomRenderBuiltMaterial:BaseMaterial3D = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/textures/RoomRender_Built.tres")
 const animation_speed:float = 0.2
 
 var current_location:Dictionary
@@ -47,9 +54,9 @@ var camera_viewpoint:CAMERA.VIEWPOINT :
 		camera_viewpoint = val
 		on_camera_viewpoint_update()
 
-var RoomMesh:Mesh
-var OriginalMaterial:StandardMaterial3D
-var DuplicateMaterial:StandardMaterial3D
+# var RoomMesh:Mesh
+#var OriginalMaterial:StandardMaterial3D
+#var DuplicateMaterial:StandardMaterial3D
 
 var room_render_tween:Tween
 var safety_gate_tween:Tween
@@ -75,16 +82,16 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _ready() -> void:
-	animate_under_construction(false, true)
-	animate_built(false, true)
 	reset_vars()
 	
 	on_is_selected_update()
 	on_camera_viewpoint_update()
 	
-	SelectorMesh.set("surface_material_override/0", select_shader_copy)
-	RoomMesh = RoomRender.mesh.duplicate()
-	RoomRender.mesh = RoomMesh	
+	SelectorMesh.set("surface_material_override/0", select_mesh_material)
+	RoomRender.set("surface_material_override/0", room_render_material)
+	
+	set_blueprint_mode(false)
+
 
 func reset_vars() -> void:	
 	under_construction_is_animating = false
@@ -112,20 +119,21 @@ func custom_tween_node_property(tween:Tween, node:Node, prop:String, new_val, du
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func start_construction() -> void:
-	await animate_under_construction(true)
-
-func complete_construction() -> void:
-	await animate_under_construction(false)
-	await animate_built(true)
-	
-func cancel_construction() -> void:	
-	await animate_under_construction(false)
-	reset_vars()	
-	
-func destroy_room() -> void:
-	await animate_built(false)
-	reset_vars()
+#func start_construction() -> void:
+	#await animate_under_construction(true)
+#
+#func animate_construction() -> void:
+	#
+	##await animate_under_construction(false)
+	##await animate_built(true)
+	#
+#func cancel_construction() -> void:	
+	#await animate_under_construction(false)
+	#reset_vars()	
+	#
+#func destroy_room() -> void:
+	#await animate_built(false)
+	#reset_vars()
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -186,8 +194,16 @@ func animate_under_construction(state:bool, skip_animation:bool = false) -> void
 	
 		for node in [ParticleEmitter, ConstructionOmniLight, RoomRender, SafetyLights]:
 			node.hide()
-	
-	under_construction_is_animating = false
+	#
+	#under_construction_is_animating = false
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+func set_blueprint_mode(state:bool) -> void:
+	SelectorMesh.show() if state else SelectorMesh.hide()
+	IconSprite.show() if state else IconSprite.hide()
+	Links.show() if state else Links.hide()
+	RoomNode3d.hide() if state else RoomNode3d.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -201,11 +217,11 @@ func animate_built(state:bool, skip_animation:bool = false) -> void:
 	# no animation
 	if skip_animation:
 		# hide gates, etc
-		if state:			
-			animate_under_construction(false, true)	
+		#if state:			
+			#animate_under_construction(false, true)	
 		
 		# set position
-		RoomRender.position.y = 7.0 if state else -10
+		RoomRender.position.y = 5.0 if state else -10
 		
 		# set hide/show state
 		RoomRender.show() if state else RoomRender.hide()
@@ -214,9 +230,10 @@ func animate_built(state:bool, skip_animation:bool = false) -> void:
 		build_is_animating = false
 		return
 		
-	# first animate gates
-	await animate_under_construction(false, true)	
-	
+	## first animate gates
+	#await animate_under_construction(false, true)	
+	#
+
 	# show states
 	if state:
 		RoomRender.show()
@@ -232,10 +249,6 @@ func animate_built(state:bool, skip_animation:bool = false) -> void:
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func set_texture(material:BaseMaterial3D) -> void:
-	OriginalMaterial = material.duplicate(true)
-	DuplicateMaterial = material.duplicate(true)
-
 func on_camera_viewpoint_update() -> void:
 	U.debounce(str(self, "_update_room_data"), update_room_data)
 
@@ -256,6 +269,12 @@ func on_unavailable_rooms_update(new_val:Array) -> void:
 
 func on_assigned_location_update() -> void:
 	reset_vars()	
+	
+	LinkLeft.show() if U.location_lookup(assigned_location.room, U.DIR.LEFT) != -1 else LinkLeft.hide()
+	LinkRight.show() if U.location_lookup(assigned_location.room, U.DIR.RIGHT) != -1 else LinkRight.hide()
+	LinkTop.show() if U.location_lookup(assigned_location.room, U.DIR.UP) != -1 else LinkTop.hide()
+	LinkBottom.show() if U.location_lookup(assigned_location.room, U.DIR.DOWN) != -1 else LinkBottom.hide()
+			
 	U.debounce(str(self, "_update_room_data"), update_room_data)
 
 func update_room_data() -> void:
@@ -268,47 +287,70 @@ func update_room_data() -> void:
 	var is_built:bool =  false if is_empty else !is_under_construction and is_activated
 	var skip_animation:bool = true # leave this set to true
 	var final_color:Color
+	
+	select_mesh_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	select_mesh_material.albedo_color = (Color.GREEN_YELLOW if is_empty else Color.ORANGE) if assigned_location.room == current_location.room else Color.WHITE
+	select_mesh_material.albedo_color.a = 0.5 if is_under_construction else 1
+	
+	IconSprite.texture = CACHE.fetch_svg( SVGS.TYPE.NONE if is_empty else SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN )
+	
+	if is_under_construction or is_activated:
+		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL# if is_under_construction else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+		room_render_material.albedo_color = Color.LIGHT_BLUE if is_under_construction else Color.WHITE
+		room_render_material.albedo_color.a = 0.5 if is_under_construction else 1
+		
+		Barrier.show() if is_under_construction else Barrier.hide()
+		
+		animate_under_construction(true, true)
+		animate_built(true, true)
+		return
+		
+	# HIDE ALL
+	Barrier.hide() 
+	animate_under_construction(false, true)
+	animate_built(false, true)
+	
 
 	# overhead build mode (non texture)
-	match camera_viewpoint:
-		CAMERA.VIEWPOINT.OVERHEAD:
-			set_texture(RoomRenderBuiltMaterial)
-			OriginalMaterial.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		
-			select_shader_copy.set_shader_parameter("override_color", (Color.GREEN_YELLOW if is_empty else Color.ORANGE_RED) if assigned_location.room == current_location.room else Color.WHITE)
+	#match camera_viewpoint:
+		#CAMERA.VIEWPOINT.OVERHEAD:
+			#set_texture(RoomRenderBuiltMaterial)
+			#OriginalMaterial.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		#
 			
-			if is_under_construction:		
-				final_color = Color.DARK_TURQUOISE
-			else:
-				final_color = Color.ORANGE
-			
-				
-			DuplicateMaterial.albedo_color = final_color
-			RoomMesh.surface_set_material(0, DuplicateMaterial)
-			
-			# update sprite icon
-			IconSprite.texture = CACHE.fetch_svg(SVGS.TYPE.NONE if is_empty else (SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN)  )
-			
-			# show/hide nodes
-			#RoomNode3d.hide()
-			#IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
-			##SelectorMesh.show()
-			Gate.hide()
-			Barrier.hide()	
-		
-		# normal view mode (fully textured)
-		_:
-			## check if under construction
-			if is_under_construction:
-				set_texture(RoomRenderUnderConstructionMaterial)
-				final_color = OriginalMaterial.albedo_color
-				animate_under_construction(is_under_construction, skip_animation)
-			
-			# or if it's activated
-			if !is_empty and !is_under_construction:
-				set_texture(RoomRenderBuiltMaterial)
-				final_color = OriginalMaterial.albedo_color	 if is_activated else Color.ORANGE
-				animate_built(true, skip_animation)
+			#
+			#if is_under_construction:		
+				#final_color = Color.DARK_TURQUOISE
+			#else:
+				#final_color = Color.ORANGE
+			#
+				#
+			#DuplicateMaterial.albedo_color = final_color
+			#RoomMesh.surface_set_material(0, DuplicateMaterial)
+			#
+			## update sprite icon
+			#IconSprite.texture = CACHE.fetch_svg(SVGS.TYPE.NONE if is_empty else (SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN)  )
+			#
+			## show/hide nodes
+			##RoomNode3d.hide()
+			##IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
+			###SelectorMesh.show()
+			#Gate.hide()
+			#Barrier.hide()	
+		#
+		## normal view mode (fully textured)
+		#_:
+			### check if under construction
+			#if is_under_construction:
+				#set_texture(RoomRenderUnderConstructionMaterial)
+				#final_color = OriginalMaterial.albedo_color
+				#animate_under_construction(is_under_construction, skip_animation)
+			#
+			## or if it's activated
+			#if !is_empty and !is_under_construction:
+				#set_texture(RoomRenderBuiltMaterial)
+				#final_color = OriginalMaterial.albedo_color	 if is_activated else Color.ORANGE
+				#animate_built(true, skip_animation)
 
 			## and then apply mesh and albedo
 			#if is_under_construction or !is_empty:
@@ -340,8 +382,8 @@ func update_room_data() -> void:
 			#SelectorMesh.hide()
 			#IconSprite.hide()
 			#RoomNode3d.show()
-			Gate.show()
-			Barrier.show()
+			#Gate.show()
+			#Barrier.show()
 			#
 			#if !is_empty:
 				#print("location: ", assigned_location,  "    is_under_construction: ", is_under_construction,  "    is_built: ", is_built)

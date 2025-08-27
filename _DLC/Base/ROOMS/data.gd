@@ -125,15 +125,10 @@ var ADMIN_DEPARTMENT:Dictionary = {
 		RESOURCE.CURRENCY.MONEY: 1
 	},
 	
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1),
-		],
-				
-	"passive_abilities": func() -> Array: 
-		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
-		],		
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER, state),	
+	
+
 }
 
 var ENGINEERING_DEPARTMENT:Dictionary = {
@@ -259,8 +254,8 @@ var CONTAINMENT_CELL:Dictionary = {
 	"link_categories": ROOM.CATEGORY.CONTAINMENT_LINKABLES,
 	"is_core": true,
 	
-	"name": "STANDARD_CONTAINMENT_CELL",
-	"shortname": "STANDARD_CONTAINMENT_CELL",
+	"name": "CONTAINMENT CELL",
+	"shortname": "C.CELL",
 	"img_src": "res://Media/rooms/ethics.png",
 	"description": "Attach other STANDARD_CONTAINMENT_CELL.",
 
@@ -270,29 +265,55 @@ var CONTAINMENT_CELL:Dictionary = {
 	"required_energy": 0,	
 }
 
-
 #region ADMIN linkables
 var ADMIN_LINK_1:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_1,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "DIRECTORS OFFICE",
-	"shortname": "DIRECTORS OFFICE",
-	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER).description,
+	"name": "HUMAN RESOURCES",
+	"shortname": "HR",
+	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_PERSONNEL_IN_HEADER).description,
 	"requires_unlock": false,
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE),
-		],	
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN,
+	],
+	"effect": {
+		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_PERSONNEL_IN_HEADER).description
+	},
+	"on_activate": func(state:bool) -> void:
+		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_PERSONNEL_IN_HEADER, state),
 }
+
 
 var ADMIN_LINK_2:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_2,
+	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
+	"name": "DIRECTORS OFFICE",
+	"shortname": "DIRECTORS OFFICE",
+	"description": "-",
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 1),
+		],	
+}
+
+var ADMIN_LINK_3:Dictionary = {
+	"ref": ROOM.REF.ADMIN_LINK_3,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
 	"name": "OPERATIONS",
 	"shortname": "OPERATIONS",
 	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_TIMELINE).description,
 	"requires_unlock": false,	
-	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	"costs": {
+		"unlock": 0,
+		"purchase": 1,
+	},	
 	"effect": {
 		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_TIMELINE).description
 	},
@@ -300,37 +321,33 @@ var ADMIN_LINK_2:Dictionary = {
 		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_TIMELINE, state),
 }
 
-var ADMIN_LINK_3:Dictionary = {
-	"ref": ROOM.REF.ADMIN_LINK_3,
-	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "ACCOUNTING",
-	"shortname": "ACCOUNTING",
-	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.PLUS_MONEY_1).description,
-	"requires_unlock": false,
-	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 1,
-	},
-	"effect": {
-		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.PLUS_MONEY_1).description
-	},
-	"on_activate": func(state:bool) -> void:
-		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.PLUS_MONEY_1, state)
-}
-
 var ADMIN_LINK_4:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_4,
 	"categories": [ROOM.CATEGORY.ADMIN_LINKABLE],
-	"name": "HELP OFFICE",
-	"shortname": "HELP OFFICE",
-	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_INFO_BTN).description,
+	"name": "ACCOUNTING",
+	"shortname": "ACCOUNTING",
+	"description": "-",
 	"requires_unlock": false,
-	"effect": {
-		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_INFO_BTN).description
-	},
-	"on_activate": func(state:bool) -> void:
-		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_INFO_BTN, state),
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
+	"costs": {
+		"unlock": 0,
+		"purchase": 2,
+	},	
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 1,
+	},		
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INSTANT_MONEY_LVL_1),
+		],
+				
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
+		],			
 }
-
 
 var ADMIN_LINK_5:Dictionary = {
 	"ref": ROOM.REF.ADMIN_LINK_5,
@@ -338,12 +355,17 @@ var ADMIN_LINK_5:Dictionary = {
 	"name": "INTERNAL AFFAIRS",
 	"shortname": "I.AFFAIRS",
 	"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER).description,
+	"requires_unlock": false,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.ADMIN
+	],	
 	"effect": {
 		"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER).description
 	},
 	"on_activate": func(state:bool) -> void:
 		GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER, state),
 }
+
 
 
 
@@ -817,39 +839,39 @@ var HQ:Dictionary = {
 	# ------------------------------------------				
 }
 
-var HR_DEPARTMENT:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.HR_DEPARTMENT,
-	"name": "HR DEPARTMENT",
-	"shortname": "HR",
-	"categories": [ROOM.CATEGORY.SPECIAL],
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "A one-stop shop for recruitment.",
-	# ------------------------------------------
-
-	# ------------------------------------------
-	"own_limit": 1,	
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.ADMIN
-	],
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"costs": {
-		"unlock": 1,
-		"purchase": 1,
-	},
-	# ------------------------------------------
-	
-	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.HIRE_RESEARCHERS),
-			ABL.get_ability(ABL.REF.HIRE_ADMIN),
-			ABL.get_ability(ABL.REF.HIRE_SECURITY),
-			ABL.get_ability(ABL.REF.HIRE_DCLASS),
-		],		
-}
+#var HR_DEPARTMENT:Dictionary = {
+	## ------------------------------------------
+	#"ref": ROOM.REF.HR_DEPARTMENT,
+	#"name": "HR DEPARTMENT",
+	#"shortname": "HR",
+	#"categories": [ROOM.CATEGORY.SPECIAL],
+	#"img_src": "res://Media/rooms/research_lab.png",
+	#"description": "A one-stop shop for recruitment.",
+	## ------------------------------------------
+#
+	## ------------------------------------------
+	#"own_limit": 1,	
+	#"required_staffing": [
+		#RESEARCHER.SPECIALIZATION.ADMIN
+	#],
+	## ------------------------------------------
+	#
+	## ------------------------------------------
+	#"costs": {
+		#"unlock": 1,
+		#"purchase": 1,
+	#},
+	## ------------------------------------------
+	#
+	## ------------------------------------------
+	#"abilities": func() -> Array: 
+		#return [
+			#ABL.get_ability(ABL.REF.HIRE_RESEARCHERS),
+			#ABL.get_ability(ABL.REF.HIRE_ADMIN),
+			#ABL.get_ability(ABL.REF.HIRE_SECURITY),
+			#ABL.get_ability(ABL.REF.HIRE_DCLASS),
+		#],		
+#}
 
 var OPERATIONS_SUPPORT:Dictionary = {
 	# ------------------------------------------
@@ -2044,7 +2066,7 @@ var list:Array[Dictionary] = [
 	# ---------------	SPECIALS
 	DIRECTORS_OFFICE, 
 	HQ, 
-	HR_DEPARTMENT, OPERATIONS_SUPPORT, #--- S1
+	#HR_DEPARTMENT, OPERATIONS_SUPPORT, #--- S1
 	MINIERAL_MINING, GEOTHERMAL_POWER, #--- S2
 	GENERATOR_SUBSTATION, 
 	

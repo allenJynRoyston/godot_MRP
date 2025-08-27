@@ -18,8 +18,8 @@ var chapters:Array = [
  			"Do not interfere with any equipment or attempt to disengage the system. Tampering will result in your immediate termination.",
  			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
+		"complete_by_day": 2,
 		"objectives": {
-			"complete_by_day": 7,
 			"required":[
 				{ 
 					"criteria": {
@@ -32,19 +32,19 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 10,
+						"amount": 1,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
 					},
 				},
 			],
-			"reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_A
+			"reward_event": EVT.TYPE.SCIENCE_SETUP
 		}
 	},
 	# ----------------------------------------------------------------------------------------------
 	{
+		"complete_by_day": 14,
 		"objectives": {
-			"complete_by_day": 14,
 			"required":[
 				{ 
 					"criteria": {
@@ -62,8 +62,8 @@ var chapters:Array = [
 	
 	# ----------------------------------------------------------------------------------------------
 	{
+		"complete_by_day": 21,
 		"objectives": {
-			"complete_by_day": 21,
 			"required":[
 				{ 
 					"criteria": {
@@ -96,92 +96,93 @@ var chapters:Array = [
 	#},
 	# ----------------------------------------------------------------------------------------------		
 
-	# ----------------------------------------------------------------------------------------------
-	{
-		"objectives": {
-			"title": "CONTAIN AN SCP",
-			"complete_by_day": 15,
-			"required":[
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 3,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 3,
-						"type": TYPE.SCP,
-					},
-				},
-				{
-					"custom": {
-						"title": "Survive for at least 28 days.",
-						"count_str": func(amount:int) -> String:
-							return "(Survive for %s more days." % [progress_data.day - amount],
-						"you_have": func() -> int: 
-							return progress_data.day,
-						"is_completed": func() -> bool:
-							return progress_data.day >= 28,
-						},
-					"hints": [
-						{"title": "Custom step A", "cost": 1},
-					]
-				},
-			],
-			
-		},
-	},
-	# ----------------------------------------------------------------------------------------------		
-	
-	
-	
-	# ----------------------------------------------------------------------------------------------
-	{
-		"objectives": {
-			"title": "GATHER RESOURCES",
-			"complete_by_day": 25,
-			"required":[
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1000,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.MONEY
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 500,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.SCIENCE
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 250,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.MATERIAL
-					},
-				},
-				{
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 20,
-						"type": TYPE.CURRENCY,
-						"ref": RESOURCE.CURRENCY.CORE
-					},
-				},				
-			],
-			
-		},
-	},
-	# ----------------------------------------------------------------------------------------------		
+	## ----------------------------------------------------------------------------------------------
+	#{
+		#"complete_by_day": 15,
+		#"objectives": {
+			#"title": "CONTAIN AN SCP",
+			#
+			#"required":[
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 3,
+						#"type": TYPE.BUILDING,
+						#"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL
+					#},
+				#},
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 3,
+						#"type": TYPE.SCP,
+					#},
+				#},
+				#{
+					#"custom": {
+						#"title": "Survive for at least 28 days.",
+						#"count_str": func(amount:int) -> String:
+							#return "(Survive for %s more days." % [progress_data.day - amount],
+						#"you_have": func() -> int: 
+							#return progress_data.day,
+						#"is_completed": func() -> bool:
+							#return progress_data.day >= 28,
+						#},
+					#"hints": [
+						#{"title": "Custom step A", "cost": 1},
+					#]
+				#},
+			#],
+			#
+		#},
+	#},
+	## ----------------------------------------------------------------------------------------------		
+	#
+	#
+	#
+	## ----------------------------------------------------------------------------------------------
+	#{
+		#"objectives": {
+			#"title": "GATHER RESOURCES",
+			#"complete_by_day": 25,
+			#"required":[
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 1000,
+						#"type": TYPE.CURRENCY,
+						#"ref": RESOURCE.CURRENCY.MONEY
+					#},
+				#},
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 500,
+						#"type": TYPE.CURRENCY,
+						#"ref": RESOURCE.CURRENCY.SCIENCE
+					#},
+				#},
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 250,
+						#"type": TYPE.CURRENCY,
+						#"ref": RESOURCE.CURRENCY.MATERIAL
+					#},
+				#},
+				#{
+					#"criteria": {
+						#"action": HAVE_AT_LEAST,
+						#"amount": 20,
+						#"type": TYPE.CURRENCY,
+						#"ref": RESOURCE.CURRENCY.CORE
+					#},
+				#},				
+			#],
+			#
+		#},
+	#},
+	## ----------------------------------------------------------------------------------------------		
 			
 ];
 
@@ -330,6 +331,33 @@ func check_for_current(criteria:Dictionary) -> int:
 # ----------------------------------------------------------------------------------------------		
 
 # ----------------------------------------------------------------------------------------------
+func get_previous_objective() -> Dictionary:
+	var objectives:Array = get_objectives()
+	return objectives[get_current_objective_index() - 1]
+	
+func get_current_objective() -> Dictionary:
+	var on_chapter:int = 0
+	
+	for index in chapters.size():
+		var chapter:Dictionary = chapters[index]
+		if progress_data.day <= chapter.complete_by_day:
+			on_chapter = index
+			break
+
+	var objectives:Array = get_objectives()
+	return objectives[on_chapter]
+	
+func get_current_objective_index() -> int:
+	var on_chapter:int = 0
+	
+	for index in chapters.size():
+		var chapter:Dictionary = chapters[index]
+		if progress_data.day <= chapter.complete_by_day:
+			on_chapter = index
+			break
+			
+	return on_chapter
+
 func get_objectives() -> Array:
 	var objective_list:Array = []
 	for c_index in chapters.size():
@@ -417,7 +445,8 @@ func get_objectives() -> Array:
 		objective_list.push_back({
 			"title": chapter.objectives.title if chapter.objectives.has("title") else "REDACTED",
 			"list": list,
-			"complete_by_day": chapter.objectives.complete_by_day
+			"complete_by_day": chapter.complete_by_day,
+			"reward_event": chapter.objectives.reward_event if chapter.objectives.has("reward_event") else -1
 		})	
 	
 	return objective_list

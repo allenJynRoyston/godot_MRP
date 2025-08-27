@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://b0xcdsr0gn57k"]
+[gd_scene load_steps=31 format=4 uid="uid://b0xcdsr0gn57k"]
 
 [ext_resource type="Script" uid="uid://bpamee2qemjwl" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/WingRender.gd" id="1_nn2y2"]
 [ext_resource type="PackedScene" uid="uid://q66xa2ie7ra0" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRenderMesh/WingRenderMesh.tscn" id="2_sriu8"]
@@ -13,6 +13,17 @@
 [ext_resource type="Script" uid="uid://3ojuguh0qit6" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/fog_volume.gd" id="9_ie5r3"]
 [ext_resource type="PackedScene" uid="uid://gupgijiij07d" path="res://Scenes/CellScene/lighting/SpinLights.tscn" id="9_jx7vp"]
 [ext_resource type="Script" uid="uid://b4h1wa14k1pta" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/miasma_fog.gd" id="13_yf1e1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sriu8"]
+transparency = 1
+shading_mode = 0
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0, 0.231373, 0.623529, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ojbd3"]
+material = SubResource("StandardMaterial3D_sriu8")
+size = Vector2(500, 500)
 
 [sub_resource type="Environment" id="Environment_g7dei"]
 background_mode = 1
@@ -43,6 +54,14 @@ adjustment_contrast = 1.92
 adjustment_saturation = 1.25
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_bityt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tiptr"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0.639216, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sriu8"]
+material = SubResource("StandardMaterial3D_tiptr")
+size = Vector2(200, 200)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sqqcm"]
 particle_flag_rotate_y = true
@@ -129,6 +148,11 @@ size = 145.0
 near = 0.001
 far = 250.0
 
+[node name="BlueprintMesh" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(0.707107, -1.28028e-08, -0.707107, -0.707107, -3.09086e-08, -0.707107, -1.28028e-08, 1, -3.09086e-08, 0, 0, -200)
+mesh = SubResource("PlaneMesh_ojbd3")
+skeleton = NodePath("../..")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_g7dei")
 camera_attributes = SubResource("CameraAttributesPractical_bityt")
@@ -138,6 +162,10 @@ transform = Transform3D(0.707106, -3.20375e-07, 0.707107, -0.078526, 0.993815, 0
 
 [node name="WingRenderMesh" parent="MeshRender" instance=ExtResource("2_sriu8")]
 transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 0, 0, 0)
+
+[node name="MeshBackdrop" type="MeshInstance3D" parent="MeshRender"]
+transform = Transform3D(1, 0, 2.98023e-08, -7.45058e-09, 1, 7.45058e-09, 2.98023e-08, 0, 1, 2.23517e-08, -19.8083, 5.21541e-08)
+mesh = SubResource("PlaneMesh_sriu8")
 
 [node name="Laser" type="SpotLight3D" parent="MeshRender"]
 transform = Transform3D(1, -3.57628e-07, -2.83122e-07, 0, -4.47035e-08, 0.999999, 0, -1, 2.45869e-07, 0, 20, 3.8147e-06)

@@ -45,9 +45,7 @@ func assign_nodes() -> void:
 
 # ------------------------------------------------------------------------------
 func mark_current_objectives() -> void:
-	var objectives:Array = STORY.get_objectives()
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.on_chapter]	
+	var current_objectives:Dictionary = STORY.get_current_objective()
 	var bookmarked_objectives:Array = []
 	
 	for objective in current_objectives.list:
@@ -70,11 +68,8 @@ func mark_current_objectives() -> void:
 # ------------------------------------------------------------------------------
 func are_objectives_complete() -> bool:
 	# CHECK IF SCENARIO DATA IS COMPLETE
-	var objectives:Array = STORY.get_objectives()
-	var story_progress:Dictionary = GBL.active_user_profile.story_progress
-	var current_objectives:Dictionary = objectives[story_progress.on_chapter]
+	var current_objectives:Dictionary = STORY.get_current_objective()
 	var completed_by_day:int = current_objectives.complete_by_day
-	
 					
 	# CHECK FOR FAIL STATE
 	var objective_failed:bool = false
@@ -467,7 +462,7 @@ func add_objectives_to_timeline(objectives:Array = []) -> void:
 			"title": "Objectives deadline",
 			"icon": SVGS.TYPE.INFO,
 			"description": "Objective",
-			"day": objective.complete_by_day
+			"day": objective.complete_by_day + 1
 		})
 # -----------------------------------
 
@@ -1472,9 +1467,6 @@ func increament_story() -> void:
 	
 	# ... increament story
 	GBL.active_user_profile.story_progress.on_chapter = U.min_max(GBL.active_user_profile.story_progress.on_chapter + 1, 0, STORY.get_objectives().size() - 1)	
-	
-	# then update
-	GBL.update_and_save_user_profile()	
 # ------------------------------------------------------------------------------	
 
 # -----------------------------------------------------------------------------

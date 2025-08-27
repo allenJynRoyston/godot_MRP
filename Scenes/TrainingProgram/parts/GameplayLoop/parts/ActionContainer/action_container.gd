@@ -95,7 +95,8 @@ extends GameContainer
 
 #region vars
 enum MODE { 
-	NONE,	
+	NO_INPUT,
+	ROOT,	
 	EVENT_BTN_TRIGGER,
 	
 	FABRICATION,
@@ -127,7 +128,7 @@ const portrait_img_src:Dictionary = {
 
 enum PORTRAIT {ENGINEER, SECURITY, ADMIN}
 
-var current_mode:MODE = MODE.NONE : 
+var current_mode:MODE = MODE.ROOT : 
 	set(val):
 		current_mode = val
 		on_current_mode_update()
@@ -315,14 +316,14 @@ func start() -> void:
 		await lock_actions(true)
 		current_mode = MODE.ACTIVE_MENU_OPEN	
 		await show_debug()
-		current_mode = MODE.NONE
+		current_mode = MODE.ROOT
 
 	# -------------------------------------
 	SettingsBtn.onClick = func() -> void:
 		await lock_actions(true)
 		current_mode = MODE.ACTIVE_MENU_OPEN	
 		await show_settings()
-		current_mode = MODE.NONE
+		current_mode = MODE.ROOT
 		
 	InfoBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -380,9 +381,10 @@ func show_fabrication_options() -> void:
 	# assists functions
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
 		return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref)
+		
 	var hint_func:Callable = func(x: Dictionary) -> Dictionary:
 		var description: String = x.details.description
-		var disabled_reason: String = ""
+		var disabled_reason: String = ""		
 
 		if x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
 			disabled_reason = "Insufficient funds."
@@ -1095,7 +1097,7 @@ func check_btn_states() -> void:
 	ModulesCard.use_location = current_location
 
 	match current_mode:
-		MODE.NONE:
+		MODE.ROOT:
 			# check for priority events and enable/disable the button
 			var has_priority_events:bool = !priority_events.is_empty()
 			if has_priority_events:
@@ -1117,6 +1119,7 @@ func check_btn_states() -> void:
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_powered
 			FabricationBtn.title = "FABRICATION" if rooms_in_wing_count == 0 else "FABRICATION"
+			
 			FabricationBtn.onClick = func() -> void:
 				await lock_actions(true)
 				current_mode = MODE.FABRICATION
@@ -1203,7 +1206,7 @@ func check_btn_states() -> void:
 			AdminControls.onBack = func() -> void:
 				await AdminControls.reveal(false)
 				lock_actions(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------	
 		MODE.SECURITY:
 			SecurityControls.disable_active_btn = is_room_empty
@@ -1222,7 +1225,7 @@ func check_btn_states() -> void:
 			SecurityControls.onBack = func() -> void:
 				await SecurityControls.reveal(false)
 				lock_actions(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------
 		MODE.SCIENCE:
 			ScienceControls.disable_active_btn = false #is_room_empty or !is_activated or at_max_level
@@ -1243,7 +1246,7 @@ func check_btn_states() -> void:
 			ScienceControls.onBack = func() -> void:
 				await ScienceControls.reveal(false)
 				lock_actions(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------
 		MODE.MEDICAL:			
 			MedicalControls.onAction = func() -> void:
@@ -1259,7 +1262,7 @@ func check_btn_states() -> void:
 			MedicalControls.onBack = func() -> void:
 				await MedicalControls.reveal(false)
 				lock_actions(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------
 		MODE.MEDICAL_OVERVIEW:
 			MedicalOverviewControls.onBack = func() -> void:
@@ -1312,7 +1315,7 @@ func check_btn_states() -> void:
 				reveal_telemetry(false)
 				reveal_summarycard(false)
 				await IntelControls.reveal(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------
 		MODE.INTEL_OVERSIGHT:
 			IntelOverviewControls.onBack = func() -> void:
@@ -1361,11 +1364,11 @@ func check_btn_states() -> void:
 					on_current_location_update()
 				FabricationControls.reveal(true)
 						
-			FabricationControls.onBack = func() -> void:
+			FabricationControls.onBack = func() -> void:				
 				WingRenderNode.set_to_build_mode(false)				
 				await FabricationControls.reveal(false)
 				await U.set_timeout(0.5)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 				
 		# -----------	
 		MODE.ENGINEERING:
@@ -1380,7 +1383,7 @@ func check_btn_states() -> void:
 
 			EngineeringControls.onBack = func() -> void:
 				await EngineeringControls.reveal(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------	
 		MODE.LOGISTICS:
 			LogisticsControls.disable_active_btn = is_room_empty or !is_activated or at_max_level
@@ -1397,7 +1400,7 @@ func check_btn_states() -> void:
 
 			LogisticsControls.onBack = func() -> void:
 				await LogisticsControls.reveal(false)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ETHICS:
 			EthicsControls.onAction = func() -> void:		
@@ -1412,7 +1415,7 @@ func check_btn_states() -> void:
 
 			EthicsControls.onBack = func() -> void:
 				await EthicsControls.reveal(false)
-				current_mode = MODE.NONE				
+				current_mode = MODE.ROOT				
 		# -----------	
 		MODE.ENGINEERING_CONFIG:
 			EngineeringConfigControls.onBack = func() -> void:
@@ -1450,7 +1453,7 @@ func check_btn_states() -> void:
 			InfoControls.onBack = func() -> void:
 				GameplayNode.TimelineContainer.show_details( false ) 
 				await InfoControls.reveal(false)
-				current_mode = MODE.NONE			
+				current_mode = MODE.ROOT			
 # --------------------------------------------------------------------------------------------------
 #endregion
 
@@ -1664,7 +1667,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		
 		match current_mode:
 			# --------------
-			MODE.NONE:
+			MODE.ROOT:
 				NameControl.show()
 				LocationAndDirectivesContainer.reveal(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
@@ -1695,7 +1698,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				SUBSCRIBE.priority_events = priority_events
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
 				TransistionScreen.start(0.5, true)
-				current_mode = MODE.NONE
+				current_mode = MODE.ROOT
 			# --------------
 			MODE.ADMINISTRATION:
 				NameControl.hide()
@@ -1737,7 +1740,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				IntelOverviewControls.reveal(true)
 			# --------------
 			MODE.FABRICATION:
-				NameControl.hide()
+				
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.set_to_build_mode(true)
 				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
@@ -1748,6 +1751,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_label(true, 0.4, "FABRICATION")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 				await U.set_timeout(0.5)
+				NameControl.show()
 				FabricationControls.reveal(true)
 			# --------------
 			MODE.ENGINEERING:
@@ -1859,7 +1863,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		
 
 	match current_mode:
-		MODE.NONE:
+		MODE.ROOT:
 			match key:
 				# ----------------------------
 				"W":
@@ -1981,16 +1985,16 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match key:
 				# ----------------------------
 				"W":
-					U.room_up(false, true)
+					U.room_up()
 				# ----------------------------
 				"S":
-					U.room_down(false, true)
+					U.room_down()
 				# ----------------------------
 				"D":
-					U.room_right(false, true)
+					U.room_right()
 				# ----------------------------
 				"A":
-					U.room_left(false, true)
+					U.room_left()
 		# ----------------------------
 		MODE.FABRICATION_LINKABLE:
 			match key:
@@ -2010,6 +2014,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		MODE.ADMINISTRATION_MODULES:
 			pass
 		MODE.ENGINEERING_CONFIG:
+			pass
+		MODE.EVENT_BTN_TRIGGER:
 			pass
 		# ----------------------------		
 		_:

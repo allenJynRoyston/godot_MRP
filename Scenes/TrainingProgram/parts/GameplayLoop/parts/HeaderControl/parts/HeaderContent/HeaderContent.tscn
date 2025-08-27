@@ -54,8 +54,7 @@ layout_mode = 2
 [node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_euym5")]
 layout_mode = 2
 
-[node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_6xn47")]
-visible = false
+[node name="EnergyComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
 layout_mode = 2
 
 [node name="Spacer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -73,7 +72,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_j4ms0")
 
-[node name="EnergyComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
+[node name="Personnel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_6xn47")]
 layout_mode = 2
 
 [node name="WarningComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_xq60b")]

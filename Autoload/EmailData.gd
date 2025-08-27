@@ -160,7 +160,7 @@ func get_objectives() -> Array:
 		objective_list.push_back({
 			"title": chapter.objectives.title,
 			"list": list,
-			"complete_by_day": chapter.objectives.complete_by_day
+			"complete_by_day": chapter.complete_by_day
 		})	
 				
 	

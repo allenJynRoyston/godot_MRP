@@ -13,7 +13,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
 	"img_src": "res://Media/images/redacted.png",
-	"description": "Room description.",
+	"description": "Requires description...",
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -22,7 +22,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"requires_unlock": true,	
 	"own_limit": 1,
 	"unlock_level": 0,
-	"required_staffing": [RESEARCHER.SPECIALIZATION.RESEARCHER],
+	"required_staffing": [],
 	"required_energy": 1,
 	# ------------------------------------------	
 
@@ -44,8 +44,8 @@ var ROOM_TEMPLATE:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 1,
-		"purchase": 1,
+		"unlock": 10,
+		"purchase": 5,
 	},
 	# ------------------------------------------	
 	
@@ -283,12 +283,11 @@ func add_to_unlocked_list(ref:int) -> void:
 # ------------------------------------------------------------------------------
 func add_room(ref:int, under_construction:bool, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
-	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-	WingRenderNode.start_construction(location_copy)	
-	
+
 	purchased_facility_arr.push_back({
 		"ref": ref,
-		"under_construction": true,
+		# rooms are built instantly if you have this perk
+		"under_construction": !gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_3],
 		#"linkable": linkable,
 		"location": {
 			"floor": location_copy.floor,
@@ -297,6 +296,14 @@ func add_room(ref:int, under_construction:bool, use_location:Dictionary = curren
 		}
 	})
 	
+	#print("can activate: ", ROOM_UTIL.can_activate_check(ref))
+	
+	#var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+	#for index in room_details.required_staffing.size():
+		#var staff_ref:int = room_details.required_staffing[index]
+		#GAME_UTIL.assign_researcher(staff_ref, index, use_location)
+		
+
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 # ------------------------------------------------------------------------------
 
@@ -336,25 +343,9 @@ func can_activate_check(ref:int) -> bool:
 
 # ------------------------------------------------------------------------------
 func finish_construction(use_location:Dictionary) -> void:
-	var location_copy:Dictionary = use_location.duplicate(true)	
-	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-	WingRenderNode.complete_construction(location_copy)
-	
-	await U.tick()
-	
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
-		if x.location == location_copy:
+		if x.location == use_location:
 			x.under_construction = false
-			
-			# auto activate if possible
-			var room_data:Dictionary = ROOM_UTIL.return_data(x.ref)
-			
-			# auto assign if you have enough, otherwise
-			if can_activate_check(x.ref):
-				for index in room_data.required_staffing.size():
-					var ref:int = room_data.required_staffing[index]
-					GAME_UTIL.auto_assign_staff(ref, index, location_copy)	
-					
 		return x
 	)	
 # ------------------------------------------------------------------------------
