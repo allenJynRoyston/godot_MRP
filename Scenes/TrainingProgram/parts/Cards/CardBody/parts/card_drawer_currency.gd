@@ -74,10 +74,11 @@ func on_list_update() -> void:
 		var amount:int = item.amount #if !preview_mode else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
 		var bonus_amount:int = item.bonus_amount
 		
+		
 		if (amount + bonus_amount) != 0:		
 			var new_node:Control = EconItemPreload.instantiate()
-			new_node.amount = amount + bonus_amount
-			new_node.bonus_amount = 0
+			new_node.amount = amount - bonus_amount
+			new_node.bonus_amount = bonus_amount
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon
 			new_node.icon_size = Vector2(20, 20)

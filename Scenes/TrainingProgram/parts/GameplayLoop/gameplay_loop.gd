@@ -61,7 +61,7 @@ var initial_values:Dictionary = {
 	# ----------------------------------	
 	"priority_events": func() -> Array:
 		return [
-			EVT.TYPE.ADMIN_SETUP
+			# EVT.TYPE.TEST_EVENT_A
 		],
 	# ----------------------------------
 	"current_location": func() -> Dictionary:
@@ -960,23 +960,12 @@ func on_current_phase_update() -> void:
 								# first, move camera to this floor and ring
 								previous_floor = current_location.floor
 								previous_ring = current_location.ring
-								var first_item:Dictionary = room_list[0]
-								SUBSCRIBE.current_location = {"floor": first_item.location.floor, "ring": first_item.location.ring, "room": 4}
-								await U.set_timeout(0.3)
-								# wait for transistion...
-								
+
 								# now update the state of all the rooms on that ring at once
 								for item in room_list:
 									ROOM_UTIL.finish_construction(item.location)
-
-									#WingRenderNode.complete_construction(location_copy)
 									
-									await U.tick()
-										
-								
-								# wait for animation
-								await U.set_timeout(0.3)
-						
+
 			# reduce cooldown in abilities
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
@@ -988,24 +977,7 @@ func on_current_phase_update() -> void:
 									base_states.room[room_designation].ability_on_cooldown[key] -= 1
 									if base_states.room[room_designation].ability_on_cooldown[key] == 0:
 										ToastContainer.add("[%s] is ready!" % [key])
-			
-			for facility in purchased_facility_arr:
-				var room_details:Dictionary = ROOM_UTIL.return_data(facility.ref)				
-				var room_base_state:Dictionary = GAME_UTIL.get_room_base_state(facility.location) 
-				for event in room_details.event_triggers.conditionals:
-					# first check if condition has been met
-					var condition_met:bool = event.check.call(facility.location)
-					if !condition_met:
-						break
-					# then check if event is repeatable
-					var is_repeatable:bool = true #EVENT_UTIL.return_data(event.ref).is_repeatable
-					
-					# check if event has not occurred yet OR it has occured but it's repeatable
-					if (event.ref not in base_states.event_record) or (event.ref in base_states.event_record and is_repeatable):
-						
-						# then add it to events_pending
-						if event.ref not in room_base_state.events_pending:
-							GAME_UTIL.add_room_event(event.ref, facility.location)
+
 					
 			# update subscriptions
 			SUBSCRIBE.base_states = base_states
@@ -1140,11 +1112,9 @@ func on_current_phase_update() -> void:
 		# ------------------------
 		PHASE.MET_OBJECTIVE:
 			PhaseAnnouncement.end()
-
 			# fetch next objective, update objective
 			# var story_progress:Dictionary = GBL.active_user_profile.story_progress
 			var objective:Dictionary = STORY.get_previous_objective()
-			print(objective)
 
 			if objective.reward_event != -1:
 				priority_events.push_back( objective.reward_event )
@@ -1323,11 +1293,14 @@ func update_room_config(force_setup:bool = false) -> void:
 	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
 	# check if room is activated
 	room_activation_check(new_room_config)
+
 	
 	# ROOM, check for effects
 	room_check_for_effects(new_room_config)	
 	#scp_check_for_effects(new_room_config)	
 	
+	# determine what rooms are at what level
+	apply_room_influence(new_room_config)	
 	# ROOM, setup and loop
 	
 	
@@ -1351,12 +1324,18 @@ func update_room_config(force_setup:bool = false) -> void:
 		#if "on_change" in conditional_dict:
 			#conditional_dict.on_change.call(val)
 		
-	# then go through each floor and add/sub from the diff
-	#for floor_index in new_room_config.floor.size():
-		#var floor_level:Dictionary = new_room_config.floor[floor_index]
-		#for key in floor_level.currencies:
-			#var amount:int = floor_level.currencies[key]
-			#resource_diff[key] += amount
+	# calculate final diff
+	var final_diff:Dictionary	
+	for item in purchased_facility_arr:
+		var room_detail_currencies:Dictionary = ROOM_UTIL.return_data(item.ref).currencies
+		var room_config_currencies:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].currencies
+		for ref in room_config_currencies:
+			var amount:int = room_config_currencies[ref]
+			resources_data[ref].diff += amount
+		for ref in room_detail_currencies:
+			var amount:int = room_detail_currencies[ref]
+			resources_data[ref].diff += amount
+		
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
@@ -1562,7 +1541,6 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 		var is_activated:bool = room_config_data.is_activated
 		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
 		
-
 		# only for rooms that are activated
 		if is_activated:
 			# add metrics
@@ -1579,7 +1557,7 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 						if amount > 0 and gameplay_conditionals[CONDITIONALS.TYPE.PLUS_MONEY_1]:
 							room_config_data.currencies[ref] += 1
 							amount += 1
-				resources_data[ref].diff += amount
+
 
 			# check for effect
 			if !room_details.effect.is_empty():
@@ -1612,12 +1590,8 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 						if "currencies" in ability: 
 							for ref in ability.currencies:
 								var amount:int = ability.currencies[ref]
-								resources_data[ref].diff += amount
 								room_config_data.currencies[ref] += amount
 
-
-
-			
 func room_check_for_after_effects(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1715,18 +1689,6 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		
-		#var required_staffing:Array = room_details.required_staffing
-		#var assigned_to_room_count:int = hired_lead_researchers_arr.filter(func(x): 
-			#var researcher_data:Dictionary = RESEARCHER_UTIL.get_user_object(x) 
-			#return !researcher_data.props.assigned_to_room.is_empty() and (item.location == researcher_data.props.assigned_to_room) 
-		#).size()
-		#
-		## auto assign if you have enough, otherwise
-		#if required_staffing.size() != assigned_to_room_count and ROOM_UTIL.can_activate_check(room_details.ref):
-			#for index in room_details.required_staffing.size():
-				#var ref:int = room_details.required_staffing[index]
-				#GAME_UTIL.auto_assign_staff(room_details.ref, index, item.location)		
-		
 		# apply is activated state if have enough staff and enough energy
 		if energy_available >= room_details.required_energy and !is_under_construction:
 			ring_config_data.energy.used += room_details.required_energy
@@ -1735,9 +1697,22 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			room_config_data.is_activated = false
 		
 		# call activated/deactivated
-		room_details.on_activate.call(room_config_data.is_activated)
+		room_details.on_activate.call(room_config_data.is_activated)		
+		
+func apply_room_influence(new_room_config:Dictionary) -> void:
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room		
+		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
+		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 
+		if room_config_data.is_activated and room_details.influence.range > 0:
+			if room_details.influence.effect != null and room_details.influence.effect.has("func"):
+				room_details.influence.effect.func.call(new_room_config, item.ref, item.location)
 
+			
 func room_calculate(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor

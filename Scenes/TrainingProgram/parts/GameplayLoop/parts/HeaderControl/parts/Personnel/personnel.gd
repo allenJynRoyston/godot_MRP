@@ -55,18 +55,17 @@ const tutorial_notes:Array = [
 	"I can incrase their capacity by building key rooms."
 ]
 
-
-var room_config:Dictionary
+var purchased_facility_arr:Array
 # ----------------------------------------------
 
 # ----------------------------------------------
 func _init() -> void:
 	GBL.subscribe_to_process(self)
-	SUBSCRIBE.subscribe_to_room_config(self)
+	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 
 func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
-	SUBSCRIBE.unsubscribe_to_room_config(self)
+	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _notification(what):
 	match what:
@@ -108,23 +107,25 @@ func on_dclass_update() -> void:
 # ----------------------------------------------
 
 # ----------------------------------------------
-func on_room_config_update(new_val:Dictionary = room_config) -> void:
-	room_config = new_val	
+func on_purchased_facility_arr_update(new_val:Array) -> void:
+	purchased_facility_arr = new_val
 	U.debounce(str(self, "_update_node"), update_node)
 # ----------------------------------------------
 
 # ----------------------------------------------
 func update_node() -> void:
-	if room_config.is_empty() or !is_node_ready():return
-	admin_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.ADMIN)
-	researcher_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
-	security_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.SECURITY)
-	dclass_count = RESEARCHER_UTIL.get_spec_available_count(RESEARCHER.SPECIALIZATION.DCLASS)
+	if purchased_facility_arr.is_empty() or !is_node_ready():return
+	var counts:Dictionary = ROOM_UTIL.get_personnel_counts()
 	
-	admin_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.ADMIN)
-	researcher_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
-	security_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.SECURITY)
-	dclass_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.DCLASS)	
+	admin_count = counts[RESEARCHER.SPECIALIZATION.ADMIN] if counts.has(RESEARCHER.SPECIALIZATION.ADMIN) else 0
+	researcher_count = counts[RESEARCHER.SPECIALIZATION.RESEARCHER] if counts.has(RESEARCHER.SPECIALIZATION.RESEARCHER) else 0 
+	security_count = counts[RESEARCHER.SPECIALIZATION.SECURITY] if counts.has(RESEARCHER.SPECIALIZATION.SECURITY) else 0 
+	dclass_count = counts[RESEARCHER.SPECIALIZATION.DCLASS] if counts.has(RESEARCHER.SPECIALIZATION.DCLASS) else 0 
+
+	#admin_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.ADMIN)
+	#researcher_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.RESEARCHER)
+	#security_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.SECURITY)
+	#dclass_max_count = RESEARCHER_UTIL.get_spec_capacity_count(RESEARCHER.SPECIALIZATION.DCLASS)	
 # ----------------------------------------------
 
 # -----------------------------------------------

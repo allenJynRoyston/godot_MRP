@@ -208,7 +208,7 @@ func start(_currency_diff:Dictionary, _metric_diff:Dictionary = {}) -> void:
 # -------------------------------------------------------------------------------------------------
 func initiate_currency_tally() -> void:
 	var index:int = 0
-	await U.set_timeout(0.3)
+	await U.set_timeout(0.7)
 
 	for ref in resources_data:
 		if currency_diff.has(ref):
@@ -240,7 +240,7 @@ func initiate_currency_tally() -> void:
 # -------------------------------------------------------------------------------------------------
 func initiate_metrics_tally() -> void:
 	var index:int = 0
-	await U.set_timeout(0.3)
+	await U.set_timeout(0.7)
 
 	for ref in base_states.metrics:
 		if metric_diff.has(ref):

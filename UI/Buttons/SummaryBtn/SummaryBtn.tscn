@@ -72,7 +72,6 @@ icon_color = Color(0.05, 0.05, 0.05, 0.7)
 icon_size = Vector2(15, 15)
 
 [node name="CheckboxPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3wkh5")
@@ -92,7 +91,6 @@ icon = 51
 icon_color = Color(0.05, 0.05, 0.05, 0.7)
 
 [node name="EnergyPanel" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3wkh5")
@@ -109,7 +107,7 @@ theme_override_constants/separation = -1
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer" instance=ExtResource("2_3wkh5")]
 layout_mode = 2
 size_flags_horizontal = 6
-icon = 32
+icon = 37
 icon_color = Color(0.05, 0.05, 0.05, 0.7)
 
 [node name="EnergyCostLabel" type="Label" parent="MarginContainer/HBoxContainer/EnergyPanel/MarginContainer/HBoxContainer"]
@@ -135,7 +133,7 @@ theme_override_constants/separation = 2
 [node name="CostIcon" parent="MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("2_3wkh5")]
 layout_mode = 2
 size_flags_horizontal = 6
-icon = 68
+icon = 36
 icon_color = Color(0.05, 0.05, 0.05, 0.7)
 
 [node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/CostPanel/MarginContainer/HBoxContainer"]

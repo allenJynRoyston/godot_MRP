@@ -424,7 +424,7 @@ var ADMIN_SETUP:Dictionary = {
 				{
 					"header": "FINANCIAL",
 					"title": "Fiscal Oversight",
-					"description": "Gain additional income each turn through optimized budgets and front-company revenue.",
+					"description": "Gain additional resources each turn through optimized budgets and front-company revenue.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
@@ -437,12 +437,11 @@ var ADMIN_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				{
-					"header": "DEDICATION",
-					"title": "Unwavering Support",
+					"header": "SUPPORT",
+					"title": "Unwavering Loyality",
 					"description": "Your facility recruits only the most committed personnel driven by conviction and unwavering faith in the mission.",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
@@ -456,13 +455,12 @@ var ADMIN_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				{
 					"header": "LOGISTICS",
 					"title": "Streamlined Logistics",
-					"description": "Gain additional materials each turn through tighter supply chains and requisitioning.",
+					"description": "Facilities are ready for immediate use, eliminating delays and ensuring your operations start without any waiting period",
 					"type": EVT.OUTCOME.NEUTRAL,
 					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					"impact": {
@@ -475,7 +473,6 @@ var ADMIN_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				}					
 			]
@@ -521,7 +518,6 @@ var SCIENCE_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SCIENCE_PERK_1, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				{
@@ -540,7 +536,6 @@ var SCIENCE_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				{
@@ -559,7 +554,6 @@ var SCIENCE_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				}					
 			]
@@ -605,7 +599,6 @@ var SELECT_STARTING_DEPARTMENTS_B:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 				# ----------------------------------------- SECURITY
@@ -625,7 +618,6 @@ var SELECT_STARTING_DEPARTMENTS_B:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 			]
@@ -721,7 +713,6 @@ var SELECT_STARTING_DEPARTMENTS_C:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 
@@ -741,7 +732,6 @@ var SELECT_STARTING_DEPARTMENTS_C:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
-						ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring":current_location.ring, "room": 4})
 						onSelected(choice),
 				},
 			]

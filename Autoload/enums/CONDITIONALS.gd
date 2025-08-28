@@ -34,11 +34,11 @@ func return_data(ref:TYPE) -> Dictionary:
 		# --- Starting Perks
 		TYPE.ADMIN_PERK_1:
 			return {
-				"description": "Provides a random resource each turn."
+				"description": "Provides +5 random resources each turn."
 			}
 		TYPE.ADMIN_PERK_2:
 			return {
-				"description": "Morale can never drop below 0."
+				"description": "Facilities adjacent to this one gain an extra level."
 			}
 		TYPE.ADMIN_PERK_3:
 			return {

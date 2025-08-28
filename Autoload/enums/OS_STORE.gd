@@ -22,10 +22,10 @@ func calc_starting_data() -> Dictionary:
 # ------------------------------------------------------------------------------
 var starting_data:Dictionary = {	
 	"starting_resources": {
-		RESOURCE.CURRENCY.MONEY: 3,
-		RESOURCE.CURRENCY.SCIENCE: 3,
-		RESOURCE.CURRENCY.MATERIAL: 3,
-		RESOURCE.CURRENCY.CORE: 3
+		RESOURCE.CURRENCY.MONEY: 30,
+		RESOURCE.CURRENCY.SCIENCE: 30,
+		RESOURCE.CURRENCY.MATERIAL: 30,
+		RESOURCE.CURRENCY.CORE: 10
 	},		
 	"resources": {
 		RESOURCE.CURRENCY.MONEY: 0,

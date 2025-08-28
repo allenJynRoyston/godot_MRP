@@ -366,6 +366,7 @@ signal show_build_complete
 signal linkable_action
 func show_fabrication_options() -> void:
 	const query_size:int = 100
+	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)	
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
 	var options:Array = []
 	var list:Array = []
@@ -381,7 +382,6 @@ func show_fabrication_options() -> void:
 	# assists functions
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
 		return x.details.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_availble < x.details.required_energy or ROOM_UTIL.at_own_limit(x.ref)
-		
 	var hint_func:Callable = func(x: Dictionary) -> Dictionary:
 		var description: String = x.details.description
 		var disabled_reason: String = ""		
@@ -413,19 +413,15 @@ func show_fabrication_options() -> void:
 		for item in costs:
 			var amount:int = item.amount
 			RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
-		await ROOM_UTIL.add_room(x.details.ref, false)
-		ActiveMenuNode.close()
+			
+		# add room
+		await ROOM_UTIL.add_room(x.details.ref)
 		
-	# get list of link categories of neighboring cells
-	var list_of_link_categories:Array = [
-		U.location_lookup(current_location.room, U.DIR.UP),
-		U.location_lookup(current_location.room, U.DIR.DOWN),
-		U.location_lookup(current_location.room, U.DIR.LEFT),
-		U.location_lookup(current_location.room, U.DIR.RIGHT),
-	].filter(func(x): return x != -1).map(func(x): return ROOM_UTIL.return_data_via_location({"floor": current_location.floor, "ring": current_location.ring, "room": x})).filter(func(x): return !x.is_empty()).map(func(x): return x.link_categories)
-	
+		ActiveMenuNode.close()
+	var all_link_categories:Array = ROOM_UTIL.get_all_link_catagories() 
+
 	# first, get adjacent cateogries
-	for type in list_of_link_categories.filter(func(x): return x != null):
+	for type in all_link_categories:
 		list.push_back({
 			"title": ROOM.return_category_title(type),
 			"type": type,
@@ -451,14 +447,12 @@ func show_fabrication_options() -> void:
 	})
 	
 	# ... then departments
-	#if department_count < 1:
-		#list.push_back({
-			#"title": 'DEPARTMENT', 
-			#"type": ROOM.CATEGORY.DEPARTMENT,
-			#"is_disabled_func": is_disabled_func,
-			#"hint_func": hint_func
-		#})
-
+	list.push_back({
+		"title": 'DEPARTMENT', 
+		"type": ROOM.CATEGORY.DEPARTMENT,
+		"is_disabled_func": is_disabled_func,
+		"hint_func": hint_func
+	})
 
 	for listitem in list:
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
@@ -475,6 +469,8 @@ func show_fabrication_options() -> void:
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
 		SummaryCard.preview_mode_ref = item.ref
+		# mark preview
+		WingRenderNode.mark_preview(item.ref)
 
 		# disable/enable btn
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
@@ -490,6 +486,7 @@ func show_fabrication_options() -> void:
 		}, 0 )
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
+		WingRenderNode.end_preview()
 		clear_lines()
 	
 	active_menu_is_open = true
@@ -1118,7 +1115,7 @@ func check_btn_states() -> void:
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_powered
-			FabricationBtn.title = "FABRICATION" if rooms_in_wing_count == 0 else "FABRICATION"
+			#FabricationBtn.title = "BLUEPRINT" #if rooms_in_wing_count == 0 else "FABRICATION"
 			
 			FabricationBtn.onClick = func() -> void:
 				await lock_actions(true)
@@ -1748,7 +1745,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
-				reveal_actionpanel_label(true, 0.4, "FABRICATION")
+				reveal_actionpanel_label(true, 0.4, "BLUEPRINTS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 				await U.set_timeout(0.5)
 				NameControl.show()

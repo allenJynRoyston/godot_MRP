@@ -16,6 +16,13 @@ var ROOM_TEMPLATE:Dictionary = {
 	"description": "Requires description...",
 	# ------------------------------------------
 	
+	# ------------------------------------------	
+	"influence": {
+		"range": 0,
+		"effect": null
+	},	
+	# ------------------------------------------
+	
 	# ------------------------------------------
 	"can_destroy": true,
 	"can_assign_researchers": true,
@@ -32,14 +39,8 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"event_triggers": {
-		"on_build": null,
-		"conditionals": []
-	},
-	#{
-		#"ref": EVT.TYPE.DIRECTORS_OFFICE,
-		#"day": 10
-	#},	
+	"on_before_build_event": null, 		# "on_before_build_event": EVT.TYPE.ADMIN_SETUP,
+	"on_build_complete_event": null,	# "on_build_complete_event": EVT.TYPE.TEST_EVENT_A
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -281,13 +282,18 @@ func add_to_unlocked_list(ref:int) -> void:
 ## ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func add_room(ref:int, under_construction:bool, use_location:Dictionary = current_location) -> void:
+func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
+	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+	
+	# if has before build event, trigger it
+	if room_details.on_before_build_event != null:
+		await GAME_UTIL.run_event(room_details.on_before_build_event)
 
 	purchased_facility_arr.push_back({
 		"ref": ref,
 		# rooms are built instantly if you have this perk
-		"under_construction": !gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_3],
+		"under_construction": true,
 		#"linkable": linkable,
 		"location": {
 			"floor": location_copy.floor,
@@ -296,24 +302,16 @@ func add_room(ref:int, under_construction:bool, use_location:Dictionary = curren
 		}
 	})
 	
-	#print("can activate: ", ROOM_UTIL.can_activate_check(ref))
-	
-	#var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	#for index in room_details.required_staffing.size():
-		#var staff_ref:int = room_details.required_staffing[index]
-		#GAME_UTIL.assign_researcher(staff_ref, index, use_location)
-		
-
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+	
+	if gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_3]: 
+		await ROOM_UTIL.finish_construction(use_location)
+	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func reset_room(use_location:Dictionary) -> void:
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
-		if i.location == use_location:
-			var room_details:Dictionary = return_data(i.ref)
-			room_details.is_activated.call(false)
-		
 		return !(i.location == use_location)
 	)
 # ------------------------------------------------------------------------------
@@ -343,11 +341,19 @@ func can_activate_check(ref:int) -> bool:
 
 # ------------------------------------------------------------------------------
 func finish_construction(use_location:Dictionary) -> void:
+	var room_ref:int
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.map(func(x):
 		if x.location == use_location:
 			x.under_construction = false
+			room_ref = x.ref
 		return x
 	)	
+	
+	var updated_data:Dictionary = purchased_facility_arr.filter(func(x): return x.location == use_location)[0]
+	var room_details:Dictionary = return_data(updated_data.ref)
+	## if has build event, trigger it
+	if room_details.on_build_complete_event != null:
+		await GAME_UTIL.run_event(room_details.on_build_complete_event)	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -399,7 +405,7 @@ func build_count(ref:int) -> int:
 
 # ------------------------------------------------------------------------------
 func owns(ref:int) -> bool:
-	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
 	return filter.size() > 0
 # ------------------------------------------------------------------------------	
 
@@ -421,6 +427,17 @@ func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary
 	return SHARED_UTIL.return_tier_paginated(reference_data, filter, start_at, limit)
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func get_all_link_catagories() -> Array:
+	return purchased_facility_arr.filter(func(x): 
+		return x.location.floor == current_location.floor and x.location.ring == current_location.ring
+	).map(func(x): 
+		var room_details:Dictionary = ROOM_UTIL.return_data(x.ref) 
+		return room_details.link_categories
+	).filter(func(x):
+		return x != null
+	)
+# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 func get_unlocked_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary:
 	# start list with everything that's unlocked
@@ -477,6 +494,19 @@ func at_own_limit(ref:int) -> bool:
 	return total_count >= room_data.own_limit
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+func get_personnel_counts() -> Dictionary:
+	var tally:Dictionary = {}
+	for item in purchased_facility_arr:
+		var room_details:Dictionary = return_data(item.ref) 
+		for staff_ref in room_details.required_staffing:
+			if staff_ref not in tally:
+				tally[staff_ref] = 0
+			tally[staff_ref] += 1
+		
+	return tally
+# ------------------------------------------------------------------------------	
+	
 
 # ------------------------------------------------------------------------------	
 func find_adjacent_rooms(room:int) -> Array:

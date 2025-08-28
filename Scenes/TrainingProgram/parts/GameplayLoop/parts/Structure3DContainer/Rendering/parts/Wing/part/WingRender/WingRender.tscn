@@ -374,6 +374,7 @@ transform = Transform3D(1, 6.70552e-08, 2.98023e-08, 0, 1, 0, 8.9407e-08, 3.7252
 
 [node name="Lighting" type="Node3D" parent="MeshRender"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, 0, -3.72529e-09, 1, 0, 0, 0)
+visible = false
 
 [node name="WorldLight" type="DirectionalLight3D" parent="MeshRender/Lighting"]
 transform = Transform3D(-0.805928, -0.484949, 0.339565, 0, 0.573577, 0.819152, -0.592013, 0.660178, -0.462261, 0, 39.904, 0)

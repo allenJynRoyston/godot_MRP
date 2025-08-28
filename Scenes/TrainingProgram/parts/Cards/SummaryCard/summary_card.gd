@@ -36,6 +36,10 @@ extends PanelContainer
 @onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
 @onready var EffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectLabel
 
+# influence
+@onready var InfluenceContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/InfluenceContainer
+@onready var InfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/InfluenceContainer/PanelContainer2/MarginContainer/InfluenceLabel
+
 # Description 
 @onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer/DescriptionLabel
 
@@ -248,8 +252,6 @@ func on_update() -> void:
 			ProgramComponent.room_details = room_details.details	
 		return
 
-		
-
 	fill(room_details, scp_details)
 # ------------------------------------------------------------------------------
 
@@ -267,10 +269,11 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	var required_staffing:Array = room_details.details.required_staffing
 	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
 	var room_level_currencies:Dictionary = room_config_level.currencies
-
+	
 	# added bonus levels to currencies
 	for key in currency_list:
 		currency_list[key].amount = currency_list[key].amount + room_level_currencies[key]
+	
 	
 	# assign details
 	SidePanel.show()
@@ -283,9 +286,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
 
 	# staffing
-	#var show_required_staffing:bool = required_staffing.size() > 0 
-	#RequiredStaffPanel.required_staffing = required_staffing
-	#RequiredStaffingContainer.show() if show_required_staffing else RequiredStaffingContainer.hide()
+	var show_required_staffing:bool = required_staffing.size() > 0 
+	RequiredStaffPanel.required_staffing = required_staffing
+	RequiredStaffingContainer.show() if show_required_staffing else RequiredStaffingContainer.hide()
 	#
 	# economy
 	var show_economy:bool = false
@@ -296,10 +299,10 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 			break
 	
 	#EconomyPanel.use_location = use_location	
-	EconomyPanel.list = currency_list
+	EconomyPanel.list = room_details.currency_list	
 	EconomyContainer.show() if show_economy else EconomyContainer.hide()
-
-	# vibe
+	
+		# vibe
 	var show_metrics:bool = false
 	for ref in metrics:
 		var item:Dictionary = metrics[ref]
@@ -329,7 +332,11 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	# effect
 	EffectLabel.text = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
 	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()
-
+	
+	# influence 
+	InfluenceContainer.show() if room_details.details.influence.effect != null else InfluenceContainer.hide()
+	InfluenceLabel.text = room_details.details.influence.effect.description if room_details.details.influence.effect != null else ""
+	
 	# type 
 	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.details.containment_properties) if !room_details.details.is_empty() else ""
 	ContainmentTypeContainer.show() if !room_details.details.containment_properties.is_empty() else ContainmentTypeContainer.hide()

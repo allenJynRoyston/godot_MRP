@@ -131,22 +131,22 @@ func return_category_title(ref: CATEGORY) -> String:
 			#return "Special"
 
 		CATEGORY.ADMIN_LINKABLE:
-			return "Admin subdivision"
+			return "Admin"
 		CATEGORY.ENGINEERING_LINKABLE:
-			return "Engineering subdivision"
+			return "Engineering"
 		CATEGORY.SECURITY_LINKABLE:
-			return "Security subdivision"
+			return "Security"
 		CATEGORY.SCIENCE_LINKABLE:
-			return "Science subdivision"
+			return "Science"
 		CATEGORY.MEDICAL_LINKABLE:
-			return "Medical subdivision"
+			return "Medical"
 		CATEGORY.LOGISTICS_LINKABLE:
-			return "Logistics subdivision"
+			return "Logistics"
 		CATEGORY.ETHICS_LINKABLE:
-			return "Ethics subdivision"
+			return "Ethics"
 
 		CATEGORY.CONTAINMENT_LINKABLES:
-			return "Containment support"
+			return "Containment"
 
 		_:
 			return "Unknown"

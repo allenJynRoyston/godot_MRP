@@ -96,7 +96,7 @@ alignment = 2
 
 [node name="ImageTextRect" type="TextureRect" parent="ImagePanel/MarginContainer/VBoxContainer"]
 material = SubResource("ShaderMaterial_v4jm8")
-custom_minimum_size = Vector2(600, 800)
+custom_minimum_size = Vector2(500, 800)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8

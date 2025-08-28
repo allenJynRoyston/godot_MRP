@@ -137,7 +137,8 @@ func return_extra_diff() -> Dictionary:
 		dict[key] = 0
 	
 	# adds a random resource if this perk is sele
-	dict[get_random_resource()] += 1
+	for n in range(0, 5):
+		dict[get_random_resource()] += 1
 
 	return dict	
 

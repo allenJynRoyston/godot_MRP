@@ -349,10 +349,10 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			currency_list[ref].amount += amount
 	
 	# ... finally add bonuses from room_config
-	for config in [ring_level_config, floor_level_config]:
+	for config in [room_level_config, ring_level_config, floor_level_config]:
 		for ref in config.currencies:
 			var amount:int = config.currencies[ref]		
-			currency_list[ref].bonus_amount = amount
+			currency_list[ref].bonus_amount += amount
 	
 	# check for passive and active abilities, grab their max level; that's what becomes the max level
 	var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
@@ -422,8 +422,8 @@ func reset_room(use_location:Dictionary = current_location) -> bool:
 	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
 	
 	if confirm:	
-		var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-		await WingRenderNode.destroy_room(current_location)
+		#var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
+		#await WingRenderNode.destroy_room(current_location)
 		
 		RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
@@ -446,9 +446,9 @@ func cancel_construction(use_location:Dictionary = current_location) -> bool:
 	var confirm:bool = await create_modal("Cancel construction of %s?" % room_details.name, "Construction costs will be refunded.", room_details.img_src, costs)
 	
 	if confirm:	
-		var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-		await WingRenderNode.construction_is_canceled(current_location)
-		RESEARCHER_UTIL.remove_assigned_location(use_location)
+		#var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
+		#await WingRenderNode.construction_is_canceled(current_location)
+		#RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
 
 	return confirm

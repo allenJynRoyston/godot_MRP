@@ -11,7 +11,8 @@ extends Node3D
 @onready var LinkBottom:MeshInstance3D = $Links/Bottom
 
 @onready var SelectorMesh:MeshInstance3D = $SelectorMesh
-@onready var IconSprite:Sprite3D = $IconSprite
+# @onready var BuildSprite:Sprite3D = $BuildSprite
+@onready var InfluencedSprite:Sprite3D = $InfluencedSprite
 
 @onready var RoomRender:MeshInstance3D = $Room/RoomRender
 @onready var ParticleEmitter:GPUParticles3D = $Room/RoomRender/GPUParticles3D
@@ -27,6 +28,12 @@ extends Node3D
 
 @onready var room_render_material:StandardMaterial3D = RoomRender.get("surface_material_override/0").duplicate()
 @onready var select_mesh_material:StandardMaterial3D = SelectorMesh.get("surface_material_override/0").duplicate()
+@onready var left_link_material:StandardMaterial3D = LinkLeft.get("surface_material_override/0").duplicate()
+@onready var right_link_material:StandardMaterial3D = LinkRight.get("surface_material_override/0").duplicate()
+@onready var top_link_material:StandardMaterial3D = LinkTop.get("surface_material_override/0").duplicate()
+@onready var bottom_link_material:StandardMaterial3D = LinkBottom.get("surface_material_override/0").duplicate()
+
+@onready var room_render_shader:ShaderMaterial = room_render_material.get("next_pass").duplicate()
 
 @export var room_type:int
 @export var skip_animation:bool = false
@@ -38,6 +45,16 @@ const animation_speed:float = 0.2
 var current_location:Dictionary
 var camera_settings:Dictionary
 var room_config:Dictionary
+
+var preview_room:bool = false : 
+	set(val):
+		preview_room = val
+		on_preview_room_update()
+		
+var preview_room_ref:int : 
+	set(val):
+		preview_room_ref = val
+		on_preview_room_ref_update()
 
 var is_selected:bool = true : 
 	set(val):
@@ -69,6 +86,10 @@ var previous_built_state:bool
 var unavailable_rooms:Array = []
 var under_construction_is_animating:bool = false
 var build_is_animating:bool = false
+var influenced_by:Array = [] : 
+	set(val):
+		influenced_by = val
+		on_influenced_by_update()
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -89,6 +110,12 @@ func _ready() -> void:
 	
 	SelectorMesh.set("surface_material_override/0", select_mesh_material)
 	RoomRender.set("surface_material_override/0", room_render_material)
+	LinkBottom.set("surface_material_override/0", bottom_link_material)
+	LinkTop.set("surface_material_override/0",top_link_material)
+	LinkLeft.set("surface_material_override/0", left_link_material)
+	LinkRight.set("surface_material_override/0", right_link_material)	
+	
+	room_render_material.set("next_pass", room_render_shader)
 	
 	set_blueprint_mode(false)
 
@@ -199,14 +226,6 @@ func animate_under_construction(state:bool, skip_animation:bool = false) -> void
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func set_blueprint_mode(state:bool) -> void:
-	SelectorMesh.show() if state else SelectorMesh.hide()
-	IconSprite.show() if state else IconSprite.hide()
-	Links.show() if state else Links.hide()
-	RoomNode3d.hide() if state else RoomNode3d.show()
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 func animate_built(state:bool, skip_animation:bool = false) -> void:
 	if !is_node_ready() or build_is_animating:return
 	build_is_animating = true
@@ -249,6 +268,28 @@ func animate_built(state:bool, skip_animation:bool = false) -> void:
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+var in_blueprint_mode:bool
+func set_blueprint_mode(state:bool) -> void:
+	in_blueprint_mode = state
+	for node in [SelectorMesh, Links, InfluencedSprite]:
+		if state:
+			node.show() 
+		else:
+			node.hide()
+	
+	room_render_shader.set_shader_parameter("enable_pulse", false)	
+	room_render_shader.set_shader_parameter("enable_wireframe", state)
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+
+func on_preview_room_ref_update() -> void:
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+
+func on_preview_room_update() -> void:		
+	room_render_shader.set_shader_parameter("enable_pulse", preview_room)
+	if !preview_room:
+		RoomRender.rotation.y = deg_to_rad(0)
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+
 func on_camera_viewpoint_update() -> void:
 	U.debounce(str(self, "_update_room_data"), update_room_data)
 
@@ -265,6 +306,9 @@ func on_room_config_update(new_val:Dictionary) -> void:
 
 func on_unavailable_rooms_update(new_val:Array) -> void:
 	unavailable_rooms = new_val
+	U.debounce(str(self, "_update_room_data"), update_room_data)
+	
+func on_influenced_by_update() -> void:
 	U.debounce(str(self, "_update_room_data"), update_room_data)
 
 func on_assigned_location_update() -> void:
@@ -285,134 +329,84 @@ func update_room_data() -> void:
 	var room_details:Dictionary = room_extract.room.details if !is_empty else {}
 	var is_activated:bool = false if is_empty else room_extract.room.is_activated
 	var is_built:bool =  false if is_empty else !is_under_construction and is_activated
-	var skip_animation:bool = true # leave this set to true
 	var final_color:Color
 	
+	# assign sprites	
+	InfluencedSprite.texture = CACHE.fetch_svg( SVGS.TYPE.SETTINGS if !influenced_by.is_empty() else SVGS.TYPE.NONE )
+
+	# side bars
+	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
+		material.albedo_color = Color.LIGHT_GRAY		
+					
+	
+	# assign node color
 	select_mesh_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	select_mesh_material.albedo_color = (Color.GREEN_YELLOW if is_empty else Color.ORANGE) if assigned_location.room == current_location.room else Color.WHITE
-	select_mesh_material.albedo_color.a = 0.5 if is_under_construction else 1
+	if is_built:
+		select_mesh_material.albedo_color = Color.LIGHT_GREEN
+	elif is_under_construction:
+		select_mesh_material.albedo_color = Color.LIGHT_GREEN
+	elif !influenced_by.is_empty():
+		select_mesh_material.albedo_color = Color.LIGHT_GREEN
+	elif is_empty:
+		select_mesh_material.albedo_color = Color.WHITE
+		# change adjacent connectors
+
+	# is selected
+	select_mesh_material.albedo_color = select_mesh_material.albedo_color.darkened(0.3) if assigned_location.room == current_location.room else select_mesh_material.albedo_color
 	
-	IconSprite.texture = CACHE.fetch_svg( SVGS.TYPE.NONE if is_empty else SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN )
-	
-	if is_under_construction or is_activated:
-		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL# if is_under_construction else BaseMaterial3D.SHADING_MODE_PER_PIXEL
-		room_render_material.albedo_color = Color.LIGHT_BLUE if is_under_construction else Color.WHITE
-		room_render_material.albedo_color.a = 0.5 if is_under_construction else 1
+	# is in preview mode
+	if preview_room:
+		# get preview for preview_room
+		var preview_room_details:Dictionary = ROOM_UTIL.return_data(preview_room_ref)
+		for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
+			material.albedo_color = Color.LIGHT_GREEN if preview_room_details.influence.range > 0 else Color.LIGHT_GRAY
 		
-		Barrier.show() if is_under_construction else Barrier.hide()
+		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		room_render_material.albedo_color = Color.BLACK
+		room_render_material.albedo_color.a = 0.5
+		if assigned_location.room == current_location.room:
+			select_mesh_material.albedo_color = Color.LIGHT_GREEN
+				
+		animate_built(true, true)
+		return
+
+
+		
+	#  update if not construction
+	if is_under_construction or is_activated:
+		if in_blueprint_mode:
+			room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			room_render_material.albedo_color = Color.BLACK
+			room_render_material.albedo_color.a = 0.5
+		else:			
+			room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+			room_render_material.albedo_color = Color.LIGHT_BLUE if is_under_construction else Color.WHITE
+			room_render_material.albedo_color.a = 0.5 if is_under_construction else 1
+
+		Barrier.show() if is_under_construction and !in_blueprint_mode else Barrier.hide()
 		
 		animate_under_construction(true, true)
 		animate_built(true, true)
 		return
+
 		
 	# HIDE ALL
 	Barrier.hide() 
 	animate_under_construction(false, true)
 	animate_built(false, true)
-	
-
-	# overhead build mode (non texture)
-	#match camera_viewpoint:
-		#CAMERA.VIEWPOINT.OVERHEAD:
-			#set_texture(RoomRenderBuiltMaterial)
-			#OriginalMaterial.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		#
-			
-			#
-			#if is_under_construction:		
-				#final_color = Color.DARK_TURQUOISE
-			#else:
-				#final_color = Color.ORANGE
-			#
-				#
-			#DuplicateMaterial.albedo_color = final_color
-			#RoomMesh.surface_set_material(0, DuplicateMaterial)
-			#
-			## update sprite icon
-			#IconSprite.texture = CACHE.fetch_svg(SVGS.TYPE.NONE if is_empty else (SVGS.TYPE.BUILD if is_under_construction else SVGS.TYPE.CONTAIN)  )
-			#
-			## show/hide nodes
-			##RoomNode3d.hide()
-			##IconSprite.show() if is_under_construction or !is_empty else IconSprite.hide()
-			###SelectorMesh.show()
-			#Gate.hide()
-			#Barrier.hide()	
-		#
-		## normal view mode (fully textured)
-		#_:
-			### check if under construction
-			#if is_under_construction:
-				#set_texture(RoomRenderUnderConstructionMaterial)
-				#final_color = OriginalMaterial.albedo_color
-				#animate_under_construction(is_under_construction, skip_animation)
-			#
-			## or if it's activated
-			#if !is_empty and !is_under_construction:
-				#set_texture(RoomRenderBuiltMaterial)
-				#final_color = OriginalMaterial.albedo_color	 if is_activated else Color.ORANGE
-				#animate_built(true, skip_animation)
-
-			## and then apply mesh and albedo
-			#if is_under_construction or !is_empty:
-				#match room_extract.room.details.environmental.temp:
-					## hot (blue shades)
-					#-1:
-						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.2)  
-					#-2:
-						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.5)
-					#-3:
-						#final_color = OriginalMaterial.albedo_color + Color(0, 0, 0.9)
-						#
-					## hot (red shades)
-					#1:
-						#final_color = OriginalMaterial.albedo_color + Color(0.2, 0, 0)  
-					#2:
-						#final_color = OriginalMaterial.albedo_color + Color(0.5, 0, 0)  
-					#3:
-						#final_color = OriginalMaterial.albedo_color + Color(0.9, 0, 0)  
-##
-##
-				## default color is current color
-				#final_color.a = 1 if is_selected else 0.5
-					#
-				#DuplicateMaterial.albedo_color = final_color
-				#RoomMesh.surface_set_material(0, DuplicateMaterial)
-				##return
-				#
-			#SelectorMesh.hide()
-			#IconSprite.hide()
-			#RoomNode3d.show()
-			#Gate.show()
-			#Barrier.show()
-			#
-			#if !is_empty:
-				#print("location: ", assigned_location,  "    is_under_construction: ", is_under_construction,  "    is_built: ", is_built)
-			#
-			#
-			### if room is empty, reset all
-			#if is_under_construction:
-				#animate_under_construction(true, skip_animation)
-				#animate_built(false, skip_animation)
-				#return
-			#
-			#if is_built:
-				#animate_under_construction(false, skip_animation)
-				#animate_built(true, skip_animation)
-				#return
-				#
-			#animate_under_construction(false, skip_animation)
-			#animate_built(false, skip_animation)
-
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-var time:float = 0
-var speed:float = 5.0
+var rotation_speed: float = 30.0  # degrees per second
+var current_angle: float = 0.0
+
 func _process(delta: float) -> void:
-	pass
-	#SelectorMesh.hide()
-	#if under_construction:
-		#time += delta
-		#var value:float = 3.0 + (8.0 - 3.0) * ((sin(time * speed) + 1.2) / 2.0)
-		#ConstructionOmniLight.light_energy = value
+	if !is_node_ready():
+		return
+	if preview_room:
+		# Increment angle
+		current_angle += rotation_speed * delta
+		# Keep angle in 0-360 range
+		current_angle = fmod(current_angle, 360.0)
+		RoomRender.rotation.y = deg_to_rad(current_angle)
 # ------------------------------------------------------------------------------

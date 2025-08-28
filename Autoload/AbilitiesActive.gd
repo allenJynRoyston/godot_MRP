@@ -28,6 +28,9 @@ enum REF {
 	
 	# resource gain
 	INSTANT_MONEY_LVL_1,
+	INSTANT_MONEY_LVL_2,
+	INSTANT_MONEY_LVL_3,
+	
 	INSTANT_SCIENCE_LVL_1,
 	INSTANT_MATERIAL_LVL_1,
 	INSTANT_CORE_LVL_1,
@@ -299,7 +302,7 @@ var UNHAPPY_HOUR:Dictionary = {
 var INSTANT_MONEY_LVL_1:Dictionary = {
 	"name": "INSTANT_MONEY_LVL_1", 
 	"description": "Gain +3 MONEY instantly.",
-	"science_cost": 50,
+	"science_cost": 1,
 	"cooldown_duration":  3, 
 	"effect": func() -> bool:
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
@@ -308,6 +311,33 @@ var INSTANT_MONEY_LVL_1:Dictionary = {
 		
 		return confirm,
 }
+
+var INSTANT_MONEY_LVL_2:Dictionary = {
+	"name": "INSTANT_MONEY_LVL_2", 
+	"description": "Gain +10 MONEY instantly.",
+	"science_cost": 5,
+	"cooldown_duration":  4, 
+	"effect": func() -> bool:
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
+		if confirm:
+			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 10})
+		
+		return confirm,
+}
+
+var INSTANT_MONEY_LVL_3:Dictionary = {
+	"name": "INSTANT_MONEY_LVL_3", 
+	"description": "Gain +25 MONEY instantly.",
+	"science_cost": 10,
+	"cooldown_duration":  5, 
+	"effect": func() -> bool:
+		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
+		if confirm:
+			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 25})
+		
+		return confirm,
+}
+
 
 var INSTANT_SCIENCE_LVL_1:Dictionary = {
 	"name": "INSTANT_SCIENCE_LVL_1", 
@@ -455,6 +485,11 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# -----------------------------
 		REF.INSTANT_MONEY_LVL_1:
 			ability = INSTANT_MONEY_LVL_1
+		REF.INSTANT_MONEY_LVL_2:
+			ability = INSTANT_MONEY_LVL_2
+		REF.INSTANT_MONEY_LVL_3:
+			ability = INSTANT_MONEY_LVL_3	
+			
 		REF.INSTANT_SCIENCE_LVL_1:
 			ability = INSTANT_SCIENCE_LVL_1
 		REF.INSTANT_MATERIAL_LVL_1:

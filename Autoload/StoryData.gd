@@ -38,7 +38,7 @@ var chapters:Array = [
 					},
 				},
 			],
-			"reward_event": EVT.TYPE.SCIENCE_SETUP
+			# "reward_event": EVT.TYPE.SCIENCE_SETUP
 		}
 	},
 	# ----------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ var chapters:Array = [
 					},
 				},
 			],
-			"reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B
+			# "reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B
 		}
 	},
 	# ----------------------------------------------------------------------------------------------

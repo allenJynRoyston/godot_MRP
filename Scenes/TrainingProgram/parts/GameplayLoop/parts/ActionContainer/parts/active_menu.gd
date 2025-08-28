@@ -91,7 +91,7 @@ func _ready() -> void:
 	BtnControls.onDirectional = on_key_press
 	
 	BtnControls.onAction = func() -> void:		
-		if !SelectedNode.is_disabled and !freeze_inputs:
+		if SelectedNode != null and !SelectedNode.is_disabled and !freeze_inputs:
 			freeze_inputs = true
 			await on_action()
 			# delay stops user from hitting same button and calling the action multiple times, like

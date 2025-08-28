@@ -93,6 +93,7 @@ scale = Vector2(1.2, 1.2)
 pivot_offset = Vector2(960, 540)
 
 [node name="ActionPanel" parent="." instance=ExtResource("5_lh6qf")]
+z_index = 1
 z_as_relative = false
 layout_mode = 1
 

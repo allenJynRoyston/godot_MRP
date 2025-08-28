@@ -46,6 +46,7 @@ const DEFAULT_DOOR_LIGHT_COLOR:Color = Color(1.0, 1.0, 0.663)
 
 var previous_floor:int = -1
 var previous_ring:int = -1
+var in_build_mode:bool
 
 var current_location:Dictionary
 var camera_settings:Dictionary 
@@ -171,15 +172,15 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	for index in SelectorContainer.get_child_count():
 		var Selector:MeshInstance3D = SelectorContainer.get_child(index)
 		Selector.show() if actual == index else Selector.hide()
-
-	#MeshSelector.position = Vector3(new_pos.x, MeshSelector.position.y, new_pos.z)
-	
+		
+	#print("room: ", current_location.room,  " -> actual: ", actual)
+	mark_rooms()
 	await U.tween_node_property(Laser, "position", new_pos, 0.2, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
 
 func on_purchased_facility_arr_update(new_val:Array) -> void:
 	purchased_facility_arr = new_val
 	if !is_node_ready() or purchased_facility_arr.is_empty():return
-	#U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
+
 
 func on_use_location_update() -> void:
 	if !is_node_ready() or use_location.is_empty():return
@@ -188,6 +189,7 @@ func on_use_location_update() -> void:
 	
 	for i in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 		room_assign_designation(i, use_location)
+			
 	U.debounce(str(self, "_update_vars"), update_vars)
 
 func on_room_config_update(new_val:Dictionary = room_config) -> void:
@@ -283,10 +285,8 @@ func update_vars() -> void:
 
 	U.debounce(str(self, "_update_engineering_stats"), update_engineering_stats)
 	U.debounce(str(self, "_update_billboards"), update_billboards)
-	U.debounce(str(self, "_update_room_buildings"), update_room_buildings)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
 # --------------------------------------------------------------------------------------------------		
-
 
 # --------------------------------------------------------
 func set_engineering_mode(state:bool) -> void:
@@ -347,8 +347,11 @@ func animate_rooms(state:bool) -> void:
 # --------------------------------------------------------
 func set_to_build_mode(state:bool) -> void:
 	GBL.add_to_animation_queue(self)
+	
+	# set build mode
+	in_build_mode = state	
 
-	if state:
+	if state:		
 		animate_rooms(true)
 		await animation_complete
 		await U.set_timeout(0.3)
@@ -363,10 +366,9 @@ func set_to_build_mode(state:bool) -> void:
 		MeshBackdrop.show()
 		Labeling.hide()
 		GateContainer.hide()
-		world_environment_copy.volumetric_fog_enabled = false		
+		world_environment_copy.volumetric_fog_enabled = false
 		await room_animation_complete
 			
-
 	if !state:
 		animate_rooms(false)
 		await room_animation_complete				
@@ -387,8 +389,6 @@ func set_to_build_mode(state:bool) -> void:
 		update_room_lighting()
 		await U.set_timeout(0.4)
 
-		
-		
 	GBL.remove_from_animation_queue(self)
 # --------------------------------------------------------	
 	
@@ -608,21 +608,63 @@ func on_highlight_rooms_update() -> void:
 		RoomNode.is_selected = actual in actual_list
 # --------------------------------------------------------		
 
-# --------------------------------------------------------
-func update_room_buildings() -> void:
+# --------------------------------------------------------		
+func mark_preview(room_ref:int) -> void:
 	if use_location.is_empty():return
-
-	#var empty_rooms_list:Array = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-	#
-	#for item in purchased_facility_arr:
-		#if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
-			#empty_rooms_list.erase(item.location.room)
-			#
-			#if item.under_construction:
-				#room_is_under_construction(item.location.room)
-			#else:	
-				#room_is_constructed(item.location.room)	
+	var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
 	
+	# mark influenced rooms
+	var influenced_rooms:Dictionary
+	if room_details.influence.range > 0:
+		for room_id in ROOM_UTIL.find_adjacent_rooms( current_location.room ):
+			var actual_ref:int = index_to_room_lookup(room_id)
+			if actual_ref not in influenced_rooms:
+				influenced_rooms[actual_ref] = []
+			influenced_rooms[actual_ref].push_back(room_details.ref)
+	
+	# and then pass that to the room itself
+	for index in RoomContainer.get_child_count():
+		var actual:int = index_to_room_lookup(index)	
+		var RoomNode:Node3D = RoomContainer.get_child(actual)
+		RoomNode.influenced_by = influenced_rooms[actual] if actual in influenced_rooms else []
+		RoomNode.preview_room = current_location.room == index
+		RoomNode.preview_room_ref = room_ref if current_location.room == index else -1
+# --------------------------------------------------------		
+
+# --------------------------------------------------------		
+func end_preview() -> void:
+	for index in RoomContainer.get_child_count():
+		var actual:int = index_to_room_lookup(index)	
+		var RoomNode:Node3D = RoomContainer.get_child(actual)
+		RoomNode.preview_room = false
+	
+	mark_rooms()
+# --------------------------------------------------------		
+	
+# --------------------------------------------------------
+func mark_rooms() -> void:
+	if use_location.is_empty():return
+	await U.tick()
+
+	# gets all rooms that have an influence
+	var all_influenced_rooms:Dictionary
+	for item in purchased_facility_arr:
+		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
+			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+			if room_details.influence.range > 0:
+				for room_id in ROOM_UTIL.find_adjacent_rooms( item.location.room ):
+					var room_ref:int = index_to_room_lookup(room_id)
+					if room_ref not in all_influenced_rooms:
+						all_influenced_rooms[room_ref] = []
+					all_influenced_rooms[room_ref].push_back(room_details.ref)
+	
+
+	# highlight nodes that have an influence
+	for index in RoomContainer.get_child_count():
+		var actual:int = index_to_room_lookup(index)	
+		var RoomNode:Node3D = RoomContainer.get_child(actual)
+		RoomNode.influenced_by = all_influenced_rooms[actual] if actual in all_influenced_rooms else []
+		
 # --------------------------------------------------------
 
 # --------------------------------------------------------

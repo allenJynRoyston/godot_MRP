@@ -28,6 +28,9 @@ enum REF {
 	
 	# ------------------- GENERATE
 	GENERATE_MONEY_LVL_1,
+	GENERATE_MONEY_LVL_2,
+	GENERATE_MONEY_LVL_3,
+	
 	GENERATE_SCIENCE_LVL_1,
 	GENERATE_MATERIAL_LVL_1,
 	GENERATE_CORE_LVL_1	
@@ -37,7 +40,6 @@ enum REF {
 var PREDICTIVE_TIMELINE:Dictionary = {
 	"name": "PREDICTIVE TIMELINE",
 	"description": "Show a most likely timeline of events.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
 }
@@ -45,7 +47,6 @@ var PREDICTIVE_TIMELINE:Dictionary = {
 var OBJECTIVE_ASSIST:Dictionary = {
 	"name": "OBJECTIVES ASSIST",
 	"description": "Objectives are always visible on the main screen.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"conditionals": [CONDITIONALS.TYPE.ENABLE_OBJECTIVES]
 }
@@ -54,7 +55,6 @@ var OBJECTIVE_ASSIST:Dictionary = {
 var UPGRADE_ABL_LVL:Dictionary = {
 	"name": "LVL +1",
 	"description": "Increases the ability level of ALL rooms in a wing.",
-	"lvl_required": 0,
 	"energy_cost": 4,
 	#"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
 		#new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
@@ -64,7 +64,6 @@ var UPGRADE_ABL_LVL:Dictionary = {
 var ADDITIONAL_STORE_UNLOCKS:Dictionary = {
 	"name": "ADDITIONAL STORE UNLOCKS",
 	"description": "Additional facilities can be unlocked in the store.",
-	"lvl_required": 0,
 	"energy_cost": 4,
 	#"floor_effect": func(floor_config_data:Dictionary) -> void:
 		#if floor_config_data.room_unlock_val < 1:
@@ -76,7 +75,6 @@ var ADDITIONAL_STORE_UNLOCKS:Dictionary = {
 var SUPPLY_SECURITY:Dictionary = {
 	"name": "EMPLOY SECURITY",
 	"description": "Makes SECURITY personnel available for the entire wing.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"personnel": [
 		RESOURCE.PERSONNEL.SECURITY
@@ -87,7 +85,6 @@ var SUPPLY_SECURITY:Dictionary = {
 var FIREARM_TRAINING:Dictionary = {
 	"name": "FIREARM TRAINING",
 	"description": "Increases SAFETY rating by 1.",
-	"lvl_required": 0,
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.METRICS.SAFETY: 1
@@ -98,7 +95,6 @@ var FIREARM_TRAINING:Dictionary = {
 var HEAVY_WEAPONS_TRAINING:Dictionary = {
 	"name": "HEAVY WEAPONS TRAINING",
 	"description": "Increases READINESS rating by 1.",
-	"lvl_required": 0,
 	"energy_cost": 3,
 	"metrics": {
 		RESOURCE.METRICS.READINESS: 1
@@ -109,7 +105,6 @@ var HEAVY_WEAPONS_TRAINING:Dictionary = {
 var TECH_SUPPORT:Dictionary = {
 	"name": "TECH SUPPORT",
 	"description": "Increases READINESS rating by 1.",
-	"lvl_required": 0,
 	"energy_cost": 2,
 	"metrics": {
 		RESOURCE.METRICS.READINESS: 1
@@ -121,7 +116,6 @@ var TECH_SUPPORT:Dictionary = {
 var MEMETIC_SHIELDING:Dictionary = {
 	"name": "MEMETIC SHIELDING",
 	"description": "Increases READINESS rating by 1.",
-	"lvl_required": 0,
 	"energy_cost": 3,
 	"metrics":{
 		RESOURCE.METRICS.READINESS: 1
@@ -132,7 +126,6 @@ var MEMETIC_SHIELDING:Dictionary = {
 var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
 	"name": "GENERATE RESEARCH",
 	"description": "Research into contained object generates research.",
-	"lvl_required": 0,
 	"energy_cost": 4,
 	"scp_required": true,
 	"currencies":{
@@ -143,7 +136,6 @@ var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
 var GENERATE_MONEY_FROM_SCP:Dictionary = {
 	"name": "GENERATE MONEY",
 	"description": "Research into contained object generates money.",
-	"lvl_required": 0,
 	"energy_cost": 4,
 	"scp_required": true,
 	"currencies":{
@@ -156,7 +148,6 @@ var GENERATE_MONEY_FROM_SCP:Dictionary = {
 var MTF_A:Dictionary = {
 	"name": "MTF ALPHA",
 	"description": "MTF ALPHA.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.ALPHA
 }
@@ -164,7 +155,6 @@ var MTF_A:Dictionary = {
 var MTF_B:Dictionary = {
 	"name": "MTF BRAVO",
 	"description": "MTF BRAVO.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.BRAVO
 }
@@ -172,7 +162,6 @@ var MTF_B:Dictionary = {
 var MTF_C:Dictionary = {
 	"name": "MTF CHARLIE",
 	"description": "MTF CHARLIE.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.CHARLIE
 }
@@ -180,7 +169,6 @@ var MTF_C:Dictionary = {
 var MTF_D:Dictionary = {
 	"name": "MTF DELTA",
 	"description": "MTF DELTA.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.DELTA
 }
@@ -188,7 +176,6 @@ var MTF_D:Dictionary = {
 var MTF_E:Dictionary = {
 	"name": "MTF ECHO",
 	"description": "MTF ECHO.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.ECHO
 }
@@ -196,7 +183,6 @@ var MTF_E:Dictionary = {
 var MTF_F:Dictionary = {
 	"name": "MTF FOXTROT",
 	"description": "MTF FOXTROT.",
-	"lvl_required": 0,
 	"energy_cost": 1,
 	"mtf_ref": MTF.TEAM.FOXTROT
 }
@@ -205,18 +191,36 @@ var MTF_F:Dictionary = {
 # -------------------------------------------------------------------------------------------------- GENERATE RESOURCES
 var GENERATE_MONEY_LVL_1:Dictionary = {
 	"name": "GENERATE MONEY",
-	"description": "Room generates MONEY.",
-	"lvl_required": 0,
-	"energy_cost": 2,
+	"description": "Room generates additional MONEY.",
+	"energy_cost": 1,
 	"currencies":{
 		RESOURCE.CURRENCY.MONEY: 1
 	}
 }
 
+var GENERATE_MONEY_LVL_2:Dictionary = {
+	"name": "GENERATE MONEY",
+	"description": "Room generates additional MONEY.",
+	"energy_cost": 2,
+	"currencies":{
+		RESOURCE.CURRENCY.MONEY: 2
+	}
+}
+
+
+var GENERATE_MONEY_LVL_3:Dictionary = {
+	"name": "GENERATE MONEY",
+	"description": "Room generates additional MONEY.",
+	"energy_cost": 3,
+	"currencies":{
+		RESOURCE.CURRENCY.MONEY: 3
+	}
+}
+
+
 var GENERATE_SCIENCE_LVL_1:Dictionary = {
 	"name": "GENERATE SCIENCE",
 	"description": "Room generates SCIENCE.",
-	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
 		RESOURCE.CURRENCY.SCIENCE: 1
@@ -226,7 +230,6 @@ var GENERATE_SCIENCE_LVL_1:Dictionary = {
 var GENERATE_MATERIAL_LVL_1:Dictionary = {
 	"name": "GENERATE MATERIAL",
 	"description": "Room generates MATERIAL.",
-	"lvl_required": 0,
 	"energy_cost": 2,
 	"currencies":{
 		RESOURCE.CURRENCY.MATERIAL: 1
@@ -236,7 +239,6 @@ var GENERATE_MATERIAL_LVL_1:Dictionary = {
 var GENERATE_CORE_LVL_1:Dictionary = {
 	"name": "GENERATE CORE",
 	"description": "Room generates CORE.",
-	"lvl_required": 0,
 	"energy_cost": 3,
 	"currencies":{
 		RESOURCE.CURRENCY.CORE: 1
@@ -296,6 +298,11 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		# ------------------ GENERATE
 		REF.GENERATE_MONEY_LVL_1:
 			ability = GENERATE_MONEY_LVL_1
+		REF.GENERATE_MONEY_LVL_2:
+			ability = GENERATE_MONEY_LVL_2
+		REF.GENERATE_MONEY_LVL_3:
+			ability = GENERATE_MONEY_LVL_3
+						
 		REF.GENERATE_SCIENCE_LVL_1:
 			ability = GENERATE_SCIENCE_LVL_1
 		REF.GENERATE_MATERIAL_LVL_1:

@@ -1,8 +1,10 @@
-[gd_scene load_steps=25 format=4 uid="uid://dd18gu8px7b47"]
+[gd_scene load_steps=28 format=4 uid="uid://dd18gu8px7b47"]
 
 [ext_resource type="Script" uid="uid://c50w27op4usqg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/room_render.gd" id="1_cmd18"]
 [ext_resource type="PackedScene" uid="uid://dvmu5sm7wwcjo" path="res://Scenes/CellScene/lighting/ConstructionLights.tscn" id="2_5s4vs"]
 [ext_resource type="Texture2D" uid="uid://btowjfs5c22bt" path="res://Textures/dust.png" id="3_donpq"]
+[ext_resource type="Shader" uid="uid://bo88inco5wgos" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/Structure3DContainer/Rendering/parts/Wing/part/WingRender/parts/RoomRender/Wireframe.gdshader" id="3_no1fy"]
+[ext_resource type="Texture2D" uid="uid://b8ohwda1bpvsa" path="res://SVGs/settings-svgrepo-com.svg" id="5_no1fy"]
 [ext_resource type="Texture2D" uid="uid://d1cqfjvh1kl0" path="res://SVGs/build-svgrepo-com.svg" id="5_x5xbq"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_31esl"]
@@ -66,7 +68,17 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AADwwAAA8MAAAPBAAADwQAAA8MAAAPDAAADwwAAA8MAAAPDAAADwQBG+qUCvbtZAAADwQAAA8MAAAPBAAADwQBNTjkAAAPBAAADwQAAA8MAAAPBAUWU9QBNTjkAAAPBAAADwQBNTjkAAAPBAAADwQAAA8EAAAPDAAADwQBG+qUAAAODAAADwQAAA8EAAAODAPmCuQAAA8EAAAODAAADwQAAA8EAAAPDAAADwQAAA8EAAAODAAADwQAAA8MAAAPDAAADwQBG+qUCvbtZAAADwQBG+qUAAAODAAADwQAAA8MAAAPDAAADwQBG+qUAAAODAAADwQAAA8EAAAPDAAADwwAAA8EAAAPDAPmCuQAAA8EAAAODAPmCuQAAA8ECI6pRAPmCuQAAA8EAAAODAAADwwAAA8EAAAPDAAADwQAAA8EAAAPDAAADwQAAA8MAAAPDAAADwQAAA8EAAAPDAAADwwAAA8EAAAPDAAADwQAAA8MAAAPDAAADwQAAA8MAAAPBAAADwQBG+qUCvbtZAAADwwAAA8MAAAPBAUWU9QBNTjkAAAPBAAADwQAAA8MAAAPBAAADwwAAA8MAAAPBAAADwQAAA8MAAAPBAAADwQAAA8MAAAPDAAADwwAAA8EAAAPDAPmCuQAAA8ECI6pRAD22bvwAA8ECH6pRAUWU9QBNTjkAAAPBAAADwwAAA8MAAAPBAtoG4wBNTjkAAAPBAAADwwAAA8EAAAPBAtYG4wAAA8ECH6pRAtoG4wAAA8EAAAPBAtoG4wBNTjkAAAPBAAADwwAAA8EAAAPBAtoG4wAAA8EAAAPBAAADwwAAA8MAAAPBAAADwwAAA8MAAAPDAAADwwAAA8EAAAPDAAADwwAAA8EAAAPDAD22bvwAA8ECH6pRAtYG4wAAA8ECH6pRAAADwwAAA8EAAAPDAtYG4wAAA8ECH6pRAAADwwAAA8EAAAPBAAADwQAAA8MAAAPDAAADwwAAA8EAAAPDAAADwwAAA8MAAAPDAtoG4wBNTjkAAAPBAAADwwAAA8MAAAPBAAADwwAAA8EAAAPBAAADwwAAA8EAAAPDAAADwwAAA8EAAAPBAAADwwAAA8MAAAPBAPmCuQAAA8EAAAODAAADwQAAA8EAAAODAAADwQBG+qUAAAODAAADwQBG+qUCvbtZAPmCuQAAA8ECI6pRAPmCuQAAA8EAAAODAAADwQBG+qUAAAODAAADwQBG+qUCvbtZAPmCuQAAA8EAAAODAPmCuQAAA8ECI6pRAUWU9QBNTjkAAAPBAD22bvwAA8ECH6pRAUWU9QBNTjkAAAPBAtoG4wBNTjkAAAPBAD22bvwAA8ECH6pRAtoG4wBNTjkAAAPBAtoG4wAAA8EAAAPBAtYG4wAAA8ECH6pRAtYG4wAAA8ECH6pRAD22bvwAA8ECH6pRAtoG4wBNTjkAAAPBAUWU9QBNTjkAAAPBAPmCuQAAA8ECI6pRAAADwQBG+qUCvbtZAUWU9QBNTjkAAAPBAAADwQBG+qUCvbtZAAADwQBNTjkAAAPBA/38AAP//AAD/fwAA//8AAP9/AAD//wAA////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/////f/9//n////9//3/+f////3//f/5//3//////AAD/f/////8AAP9//////wAA/3//////AAD/f/////8AAP9//////wAA/////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f///AAAAAP9//////wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//////AAD/f/////8AAP9///8AAAAA/3//////AAD/f///AAAAAP9//////wAA/////wAA/z//////AAD/P/////8AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fy5CFuH/f/9/LkIW4f9//38uQhbhLcLQvf////8twtC9/////y3C0L3/////LcLQvf////8twtC9/////y3C0L3//////3/Dvf7//7//f8O9/v//v/9/w73+//+//3/Dvf///7//f8O9////v/9/w73///+//v//f8O9///+//9/w73///7//3/Dvf///3/Dvf///7//f8O9////v/9/w73///+//3/Dvf///7//f8O9////v/9/w73///+//3/Dvf///7//f8O9////v/9/w73///+/")
 }]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jj7ck"]
+render_priority = 0
+shader = ExtResource("3_no1fy")
+shader_parameter/line_color = Color(0, 1, 1, 1)
+shader_parameter/enable_wireframe = true
+shader_parameter/enable_pulse = true
+shader_parameter/pulse_speed = 5.0
+shader_parameter/pulse_intensity = 1.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_31esl"]
+next_pass = SubResource("ShaderMaterial_jj7ck")
 transparency = 1
 
 [sub_resource type="Gradient" id="Gradient_vl5hs"]
@@ -103,7 +115,7 @@ albedo_texture = ExtResource("3_donpq")
 material = SubResource("StandardMaterial3D_6jgyh")
 
 [sub_resource type="BoxMesh" id="BoxMesh_31esl"]
-size = Vector3(4, 1, 18)
+size = Vector3(2, 1, 18)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_no1fy"]
 shading_mode = 0
@@ -181,7 +193,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2182, 0.546425, 20.0712)
 transform = Transform3D(1, 2.98023e-08, 0, -2.98023e-08, 1, 0, 0, 0, 1, -4, 0, 0)
 
 [node name="RoomRender" type="MeshInstance3D" parent="Room"]
-transform = Transform3D(-4.37114e-08, -2.98023e-08, -1, -1.3027e-15, 1, -2.98023e-08, 1, 0, -4.37114e-08, 4, -10, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8.73065, 0)
 mesh = SubResource("ArrayMesh_x5xbq")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_31esl")
@@ -235,11 +247,18 @@ mesh = SubResource("PlaneMesh_nyhco")
 skeleton = NodePath("../Gate/Flap4")
 surface_material_override/0 = SubResource("StandardMaterial3D_5s4vs")
 
-[node name="IconSprite" type="Sprite3D" parent="."]
-transform = Transform3D(1.1, 0, 0, 0, -4.80825e-08, -1.1, 0, 1.1, -4.80825e-08, 0, 1.85557, -3.82078e-07)
+[node name="BuildSprite" type="Sprite3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, -4.80825e-08, -1.1, 0, 1.1, -4.80825e-08, -0.483463, 1.85557, -0.02426)
+visible = false
 billboard = 1
 no_depth_test = true
 texture = ExtResource("5_x5xbq")
+
+[node name="InfluencedSprite" type="Sprite3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, -4.80825e-08, -1.1, 0, 1.1, -4.80825e-08, -0.570601, 1.85557, 0.0467224)
+billboard = 1
+no_depth_test = true
+texture = ExtResource("5_no1fy")
 
 [node name="SelectorMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0168586, 0)
