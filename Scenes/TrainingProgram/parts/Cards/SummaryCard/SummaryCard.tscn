@@ -822,7 +822,7 @@ horizontal_alignment = 2
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer/ModuleContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 37
+icon = 52
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(15, 15)
 
@@ -850,7 +850,7 @@ horizontal_alignment = 2
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer/ProgramContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 37
+icon = 52
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(15, 15)
 
@@ -877,7 +877,7 @@ horizontal_alignment = 2
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer/ContainmentContainer/HBoxContainer" instance=ExtResource("4_ihy8r")]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-icon = 37
+icon = 52
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(15, 15)
 

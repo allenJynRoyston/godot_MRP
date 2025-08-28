@@ -225,7 +225,13 @@ func normal_boot_sequence() -> void:
 func play_current_story_sequence() -> void:	
 	var on_chapter:int = GBL.get_current_chapter()
 	
-	StoryNarration.text_list = STORY.chapters[on_chapter].story_message 
+	if STORY.chapters[on_chapter].has("story_message"):
+		StoryNarration.text_list = STORY.chapters[on_chapter].story_message 
+	else:
+		StoryNarration.text_list = [
+			"D-Class 2477, welcome back.  Pick up where you left off."
+		]
+		
 	await StoryNarration.reveal(true)
 	await StoryNarration.on_end
 
