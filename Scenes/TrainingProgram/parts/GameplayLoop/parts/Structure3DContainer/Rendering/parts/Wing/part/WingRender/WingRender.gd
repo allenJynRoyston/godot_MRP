@@ -219,7 +219,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
-				update_camera_size(230)
+				update_camera_size(210)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 20), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
@@ -241,7 +241,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 
 				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 90, -15), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 60, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
@@ -315,7 +315,7 @@ func set_engineering_mode(state:bool) -> void:
 # --------------------------------------------------------
 signal room_animation_complete
 func animate_rooms(state:bool) -> void:
-	var spread_amount:float = 1.75
+	var spread_amount:float = 1.5
 	var animation_speed:float = 0.2
 	
 	if state:
@@ -615,8 +615,8 @@ func mark_preview(room_ref:int) -> void:
 	
 	# mark influenced rooms
 	var influenced_rooms:Dictionary
-	if room_details.influence.range > 0:
-		for room_id in ROOM_UTIL.find_adjacent_rooms( current_location.room ):
+	if room_details.influence.starting_range > 0:
+		for room_id in ROOM_UTIL.find_influenced_rooms( current_location, room_details.influence ):
 			var actual_ref:int = index_to_room_lookup(room_id)
 			if actual_ref not in influenced_rooms:
 				influenced_rooms[actual_ref] = []
@@ -651,8 +651,8 @@ func mark_rooms() -> void:
 	for item in purchased_facility_arr:
 		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
 			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			if room_details.influence.range > 0:
-				for room_id in ROOM_UTIL.find_adjacent_rooms( item.location.room ):
+			if room_details.influence.starting_range > 0:
+				for room_id in ROOM_UTIL.find_influenced_rooms( item.location, room_details.influence ):
 					var room_ref:int = index_to_room_lookup(room_id)
 					if room_ref not in all_influenced_rooms:
 						all_influenced_rooms[room_ref] = []

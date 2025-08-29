@@ -203,6 +203,11 @@ var initial_values:Dictionary = {
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
 						"abl_lvl": 0,
+						"influence": {
+							"added_range": 0,
+							"allow_horizontal": false,
+							"allow_vertical": false
+						},
 						"passives_enabled_list": [],
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
@@ -1328,13 +1333,16 @@ func update_room_config(force_setup:bool = false) -> void:
 	var final_diff:Dictionary	
 	for item in purchased_facility_arr:
 		var room_detail_currencies:Dictionary = ROOM_UTIL.return_data(item.ref).currencies
-		var room_config_currencies:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].currencies
-		for ref in room_config_currencies:
-			var amount:int = room_config_currencies[ref]
-			resources_data[ref].diff += amount
-		for ref in room_detail_currencies:
-			var amount:int = room_detail_currencies[ref]
-			resources_data[ref].diff += amount
+		var room_level_config:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]
+		var room_config_currencies:Dictionary = room_level_config.currencies
+		
+		if room_level_config.is_activated:
+			for ref in room_config_currencies:
+				var amount:int = room_config_currencies[ref]
+				resources_data[ref].diff += amount
+			for ref in room_detail_currencies:
+				var amount:int = room_detail_currencies[ref]
+				resources_data[ref].diff += amount
 		
 	
 	SUBSCRIBE.resources_data = resources_data
@@ -1395,6 +1403,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 				
 				# room level ability level
 				room_level.abl_lvl = room_base_state.abl_lvl
+				room_level.influence = room_base_state.influence
 				
 func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
 	var floor_added:Array = []
@@ -1708,7 +1717,7 @@ func apply_room_influence(new_room_config:Dictionary) -> void:
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 
-		if room_config_data.is_activated and room_details.influence.range > 0:
+		if room_config_data.is_activated and room_details.influence.starting_range > 0:
 			if room_details.influence.effect != null and room_details.influence.effect.has("func"):
 				room_details.influence.effect.func.call(new_room_config, item.ref, item.location)
 

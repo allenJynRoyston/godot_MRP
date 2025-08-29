@@ -1,6 +1,16 @@
 extends SubscribeWrapper
 
 enum REF {
+	INFLUENCE_HORIZONTAL_DISABLED,
+	INFLUENCE_VERTICAL_DISABLED,	
+	INFLUENCE_HORIZONTAL_ENABLED,
+	INFLUENCE_VERTICAL_ENABLED,
+	INFLUENCE_RANGE_ZERO,
+	INFLUENCE_RANGE_ONE,
+	INFLUENCE_RANGE_TWO,
+	INFLUENCE_RANGE_ALL,
+	
+		
 	EVAL_SCP, 
 	
 	# 
@@ -47,7 +57,7 @@ var EVAL_SCP:Dictionary = {
 	"description": "Reveal an SCP's anamolous effect.",
 	"science_cost": 0,
 	"cooldown_duration":  0, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.eval_scp(),
 }
 # ---------------------------------
@@ -58,7 +68,7 @@ var FABRICATOR:Dictionary = {
 	"description": "Build additional structures.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.eval_scp(),	
 }
 # ---------------------------------
@@ -69,7 +79,7 @@ var TRIGGER_ONSITE_NUKE:Dictionary = {
 	"description": "Triggers the onsite nuclear device, destroying the site upon detonation.  Will result in a game over.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.set_onsite_nuke(),
 }
 
@@ -78,7 +88,7 @@ var CANCEL_NUCLEAR_DETONATION:Dictionary = {
 	"description": "Cancels the onsite nuclear detonation",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.cancel_onsite_nuke(),
 }
 
@@ -87,7 +97,7 @@ var SET_NORMAL_MODE:Dictionary = {
 	"description": "Set the emergency level to NORMAL.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.set_emergency_mode_to_warning(),
 }
 
@@ -96,7 +106,7 @@ var SET_CAUTION_MODE:Dictionary = {
 	"description": "Set the emergency level to CAUTION.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.set_emergency_mode_to_caution(),
 }
 
@@ -105,7 +115,7 @@ var SET_WARNING_MODE:Dictionary = {
 	"description": "Set the emergency level to WARNING.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.set_emergency_mode_to_warning(),
 }
 
@@ -114,7 +124,7 @@ var SET_DANGER_MODE:Dictionary = {
 	"description": "Set the emergency level to DANGER.",
 	"science_cost": 0,
 	"cooldown_duration": 5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.set_emergency_mode_to_warning(),
 }
 
@@ -123,7 +133,7 @@ var UNLOCK_FACILITIES:Dictionary = {
 	"name": "UNLOCK FACILITIES", 
 	"description": "Unlock new facilities and make them available for your site.",
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.open_store(),
 }
 
@@ -131,7 +141,7 @@ var UPGRADE_FACILITY:Dictionary = {
 	"name": "UPGRADE FACILITY", 
 	"description": "Upgrade a facility and unlock additional properties.",
 	"cooldown_duration":  3, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return false
 		#return await GAME_UTIL.upgrade_facility(),	
 }
@@ -141,7 +151,7 @@ var PROMOTE_RESEARCHER:Dictionary = {
 	"name": "PROMOTE RESEARCHER",
 	"description": "Promote a researcher.",
 	"cooldown_duration":  0, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.promote_researcher(),
 }
 
@@ -149,7 +159,7 @@ var CLONE_RESEARCHER:Dictionary = {
 	"name": "CLONE RESEARCHER",
 	"description": "Clone a researcher.",
 	"cooldown_duration":  0, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		return await GAME_UTIL.clone_researcher(),
 }
 
@@ -157,7 +167,7 @@ var HIRE_RESEARCHERS:Dictionary = {
 	"name": "HIRE RESEARCHERS",
 	"description": "Hire 5 researcher (if room is available).",
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire researchers?", "You have room for X reseearchers", "", costs )
 		
@@ -173,7 +183,7 @@ var HIRE_SECURITY:Dictionary = {
 	"name": "HIRE SECURITY",
 	"description": "Hire 5 SECURITY (if room is available).",
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire SECURITY?", "You have room for X reseearchers", "", costs )
 		
@@ -189,7 +199,7 @@ var HIRE_ADMIN:Dictionary = {
 	"name": "HIRE ADMIN",
 	"description": "Hire 5 ADMIN (if room is available).",
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire ADMIN?", "You have room for X reseearchers", "", costs )
 		
@@ -205,7 +215,7 @@ var HIRE_DCLASS:Dictionary = {
 	"name": "'HIRE' DCLASS",
 	"description": "Hire 5 DCLASS (if room is available).",
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": -5, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Hire DCLASS?", "You have room for X reseearchers", "res://Media/images/dclass.jpg", costs )
 		
@@ -221,7 +231,7 @@ var TRAIN_MTF:Dictionary = {
 	"name": "TRAIN_MTF",
 	"description": "Train an MTF squad.",
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": 400, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Train an MTF squad?", "", "", costs )
 		
@@ -238,7 +248,7 @@ var ADD_TRAIT:Dictionary = {
 	"name": "ADD TRAIT",
 	"description": "Allows a researcher to gain a new trait.",
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		await U.set_timeout(0.5)
 		return true,
 }
@@ -247,7 +257,7 @@ var REMOVE_TRAIT:Dictionary = {
 	"name": "REMOVE TRAIT",
 	"description": "Allows a researcher to remove an existing trait.",
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		await U.set_timeout(0.5)
 		return true,
 }
@@ -260,7 +270,7 @@ var HAPPY_HOUR:Dictionary = {
 	"description": "Gain the HAPPY HOUR buff.",
 	"science_cost": 50,
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
 			EVT.TYPE.HAPPY_HOUR, 
 				{
@@ -282,7 +292,7 @@ var UNHAPPY_HOUR:Dictionary = {
 	"description": "Gain the HAPPY HOUR buff.",
 	"science_cost": 50,
 	"cooldown_duration":  7, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		await GAME_UTIL.trigger_event([EVENT_UTIL.run_event(
 			EVT.TYPE.UNHAPPY_HOUR, 
 				{
@@ -304,7 +314,7 @@ var INSTANT_MONEY_LVL_1:Dictionary = {
 	"description": "Gain +3 MONEY instantly.",
 	"science_cost": 1,
 	"cooldown_duration":  3, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
 		if confirm:
 			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 3})
@@ -317,7 +327,7 @@ var INSTANT_MONEY_LVL_2:Dictionary = {
 	"description": "Gain +10 MONEY instantly.",
 	"science_cost": 5,
 	"cooldown_duration":  4, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
 		if confirm:
 			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 10})
@@ -330,7 +340,7 @@ var INSTANT_MONEY_LVL_3:Dictionary = {
 	"description": "Gain +25 MONEY instantly.",
 	"science_cost": 10,
 	"cooldown_duration":  5, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "" )
 		if confirm:
 			await GAME_UTIL.open_tally({RESOURCE.CURRENCY.MONEY: 25})
@@ -344,7 +354,7 @@ var INSTANT_SCIENCE_LVL_1:Dictionary = {
 	"description": "Gain +3 SCIENCE instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
 		
@@ -356,7 +366,7 @@ var INSTANT_MATERIAL_LVL_1:Dictionary = {
 	"description": "Gain +3 MATERIAL instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
 		
@@ -368,7 +378,7 @@ var INSTANT_CORE_LVL_1:Dictionary = {
 	"description": "Gain +3 CORE instantly.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [{"amount": 3, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE)}]	
 		var confirm:bool = await GAME_UTIL.create_modal("Use this ability?", "", "", costs )
 		
@@ -381,7 +391,7 @@ var CONVERT_MONEY_INTO_SCIENCE:Dictionary = {
 	"description": "Convert MONEY into SCIENCE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [
 			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
 			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE) }
@@ -396,7 +406,7 @@ var CONVERT_MONEY_INTO_MATERIAL:Dictionary = {
 	"description": "Convert MONEY into MATERIAL",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [
 			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
 			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MATERIAL) }
@@ -411,7 +421,7 @@ var CONVERT_MONEY_INTO_CORE:Dictionary = {
 	"description": "Convert MONEY into CORE.",
 	"science_cost": 0,
 	"cooldown_duration":  1, 
-	"effect": func() -> bool:
+	"effect": func(_designation:String) -> bool:
 		var costs := [
 			{ "amount": -1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY) },
 			{ "amount": 1, "resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.CORE) }
@@ -420,6 +430,83 @@ var CONVERT_MONEY_INTO_CORE:Dictionary = {
 		
 		return confirm,
 }
+
+
+var INFLUENCE_HORIZONTAL_DISABLED:Dictionary = {
+	"name": "INFLUENCE_HORIZONTAL_DISABLED",
+	"description": "Disable influence horizontally.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func(designation:String) -> bool:
+		base_states.room[designation]
+		return true
+}
+
+var INFLUENCE_VERTICAL_DISABLED:Dictionary = {
+	"name": "INFLUENCE_VERTICAL_DISABLED",
+	"description": "Disable influence vertically.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+}
+
+var INFLUENCE_HORIZONTAL_ENABLED:Dictionary = {
+	"name": "INFLUENCE_HORIZONTAL_ENABLED",
+	"description": "Enables influence vertically.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+}
+
+var INFLUENCE_VERTICAL_ENABLED:Dictionary = {
+	"name": "INFLUENCE_VERTICAL_ENABLED",
+	"description": "Enables influence vertically.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+}
+
+var INFLUENCE_RANGE_ZERO:Dictionary = {
+	"name": "INFLUENCE_RANGE_ZERO",
+	"description": "Set the range of influence to 0.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func(designation:String) -> bool:
+		base_states.room[designation].influence.added_range = -1
+		SUBSCRIBE.base_states = base_states
+		return true	
+}
+
+var INFLUENCE_RANGE_ONE:Dictionary = {
+	"name": "INFLUENCE_RANGE_ONE",
+	"description": "Set the range of influence to 1.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func(designation:String) -> bool:
+		base_states.room[designation].influence.added_range = 1
+		SUBSCRIBE.base_states = base_states
+		return true
+}
+
+var INFLUENCE_RANGE_TWO:Dictionary = {
+	"name": "INFLUENCE_RANGE_TWO",
+	"description": "Set the range of influence to 2.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func(designation:String) -> bool:
+		base_states.room[designation].influence.added_range = 2
+		SUBSCRIBE.base_states = base_states
+		return true	
+}
+
+var INFLUENCE_RANGE_ALL:Dictionary = {
+	"name": "INFLUENCE_RANGE_ALL",
+	"description": "Set the range of influence to 2.",
+	"science_cost": 0,
+	"cooldown_duration":  1, 
+	"effect": func(designation:String) -> bool:
+		base_states.room[designation].influence.added_range = 3
+		SUBSCRIBE.base_states = base_states
+		return true	
+}
+
 # ---------------------------------
 
 
@@ -427,6 +514,23 @@ var CONVERT_MONEY_INTO_CORE:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
+		REF.INFLUENCE_HORIZONTAL_DISABLED:
+			ability = INFLUENCE_HORIZONTAL_DISABLED
+		REF.INFLUENCE_VERTICAL_DISABLED:
+			ability = INFLUENCE_VERTICAL_DISABLED
+		REF.INFLUENCE_HORIZONTAL_ENABLED:
+			ability = INFLUENCE_HORIZONTAL_ENABLED
+		REF.INFLUENCE_VERTICAL_ENABLED:
+			ability = INFLUENCE_VERTICAL_ENABLED
+		REF.INFLUENCE_RANGE_ZERO:
+			ability = INFLUENCE_RANGE_ZERO	
+		REF.INFLUENCE_RANGE_ONE:
+			ability = INFLUENCE_RANGE_ONE
+		REF.INFLUENCE_RANGE_TWO:
+			ability = INFLUENCE_RANGE_TWO
+		REF.INFLUENCE_RANGE_ALL:
+			ability = INFLUENCE_RANGE_ALL
+		# -----------------------------=	
 		REF.EVAL_SCP:
 			ability = EVAL_SCP
 		REF.FABRICATOR:

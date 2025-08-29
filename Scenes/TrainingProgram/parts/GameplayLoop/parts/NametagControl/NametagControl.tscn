@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://bdpgqenty72qq"]
+
+[ext_resource type="Script" uid="uid://dm6buhfjmmxid" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NametagControl/nametag_control.gd" id="1_jigal"]
+[ext_resource type="PackedScene" uid="uid://cp63njwa3niv7" path="res://UI/Buttons/Checkbox/Checkbox.tscn" id="2_sbd3x"]
+[ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="3_6wguc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6wguc"]
+
+[node name="NametagControl" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jigal")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6wguc")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CheckBox" parent="PanelContainer/MarginContainer" instance=ExtResource("2_sbd3x")]
+layout_mode = 2
+size_flags_horizontal = 8
+default_color = Color(1, 1, 1, 1)
+is_checked = true
+title = "DISPLAY TAGS (SHIFT)"
+
+[node name="NametagContainer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TransitionScreen" parent="." instance=ExtResource("3_6wguc")]
+layout_mode = 1
+transition_type = 0

@@ -1,9 +1,45 @@
 extends SubscribeWrapper
 
+var INFLUENCE_PRESETS:Dictionary = {
+	"MONEY": {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": true,
+		"effect": {
+			"description": "Adjacent rooms have an economic bonus applied to them.",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.currencies.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var currencies:Dictionary = room_level_config.currencies
+				
+				# add any bonuses in the room to it
+				for currency_ref in currencies:
+					var amount:int = currencies[currency_ref]
+					if currency_ref not in dict_copy:
+						dict_copy[currency_ref] = 0
+					dict_copy[currency_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					# and apply the bonus to them
+					for _ref in dict_copy:
+						var amount:int = dict_copy[_ref]
+						_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+
+				# return update config
+				return _new_room_config,			
+		},		
+	}, 
+}
+
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.DEBUG_ROOM,
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"categories": [ROOM.CATEGORY.UTILITY],
 	"is_core": true,
 	
 	"name": "DEBUG_ROOM",
@@ -11,6 +47,8 @@ var DEBUG_ROOM:Dictionary = {
 	"img_src": "res://Media/rooms/research_lab.png",
 	"description": "Debug room.",
 	"requires_unlock": false,	
+	"required_energy": 0,
+	"own_limit": 10,
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -34,9 +72,9 @@ var DEBUG_ROOM:Dictionary = {
 		RESOURCE.METRICS.READINESS: 0
 	},	
 	"environmental":{
-		"hazard": 1,
-		"temp": 1,
-		"pollution": 1
+		"hazard": 0,
+		"temp": 0,
+		"pollution": 0
 	},	
 	# ------------------------------------------
 	
@@ -103,7 +141,7 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"name": "ADMINISTRATION DEPARTMENT",
 	"shortname": "ADMIN DEPT",	
 	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Attach other ADMIN rooms for utility.",
+	"description": "Responsible for real-time monitoring, personnel management, and setting priorities to keep operations running smoothly.",
 	
 	"requires_unlock": false,	
 	"own_limit": 1,
@@ -111,45 +149,22 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"required_energy": 1,
 	
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 1
+		RESOURCE.CURRENCY.MONEY: 1,
 	},
 
-	"influence": {
-		"range": 1,
-		"effect": {
-			"description": "Adjacent rooms have an economic bonus applied to them.",
-			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
-				# self ref to get currency data
-				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-				# copy it
-				var dict_copy:Dictionary = room_details.currencies.duplicate()
-				# get room level currency (added bonuses)
-				var room_level_dict:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room].currencies
-				
-				# add any bonuses in the room to it
-				for currency_ref in room_level_dict:
-					var amount:int = room_level_dict[currency_ref]
-					if currency_ref not in dict_copy:
-						dict_copy[currency_ref] = 0
-					dict_copy[currency_ref] += amount
-
-				# now get adjacent rooms
-				for room in ROOM_UTIL.find_adjacent_rooms( location.room ):		
-					
-					# and apply the bonus to them
-					for _ref in dict_copy:
-						var amount:int = dict_copy[_ref]
-						_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount
-
-				# return update config
-				return _new_room_config,			
-		},		
-	},
+	"influence": INFLUENCE_PRESETS["MONEY"],
 	
 	"costs": {
 		"unlock": 1,
 		"purchase": 10,
 	},	
+	
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ZERO),
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ONE),
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO),
+		],		
 				
 	"passive_abilities": func() -> Array: 
 		return [
@@ -171,13 +186,72 @@ var LOGISTICS_DEPARTMENT:Dictionary = {
 	"name": "LOGISTICS_DEPARTMENT",
 	"shortname": "LOGISTICS_DEPARTMENT",
 	"img_src": "res://Media/rooms/logistics.png",
-	"description": "Attach other LOGISTICS rooms for supply chain, storage, and transport utility.",
+	"description": "Manages logistical networks and material distribution, with primary function directed toward maintaining and expanding fiscal assets.",
+
+	"costs": {
+		"unlock": 1,
+		"purchase": 10,
+	},
+	
+	"currencies": {
+		RESOURCE.CURRENCY.MONEY: 4,
+	},
+	
+	"influence": INFLUENCE_PRESETS["MONEY"],	
+	
+	"abilities": func() -> Array: 
+		return [
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ZERO),
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ONE),
+			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO),
+		],			
+
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 1,
+}
+
+var SCIENCE_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.SCIENCE_LINKABLE,
+	"is_core": true,
+	
+	"name": "SCIENCE_DEPARTMENT",
+	"shortname": "SCIENCE_DEPARTMENT",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Responsible for the acquisition and execution of research initiatives.",
 
 	"costs": {
 		"unlock": 1,
 		"purchase": 10,
 	},		
 
+	"requires_unlock": false,	
+	"own_limit": 1,
+	"required_staffing": [],
+	"required_energy": 1,
+}
+
+var SECURITY_DEPARTMENT:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.SECURITY_DEPARTMENT,		
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"link_categories": ROOM.CATEGORY.SECURITY_LINKABLE,
+	"is_core": true,
+	
+	"name": "SECURITY_DEPARTMENT",
+	"shortname": "RESEARCHER_ROOM",
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Responsible for sustaining site security and operational stability, with emphasis on personnel SAFETY and READINESS.",
+	
+	"costs": {
+		"unlock": 1,
+		"purchase": 10,
+	},		
+	
 	"requires_unlock": false,	
 	"own_limit": 1,
 	"required_staffing": [],
@@ -200,7 +274,7 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 		"description": "Nearby rooms share the same bonuses applied to this room."
 	},
 	
-	"requires_unlock": false,	
+	"requires_unlock": true,	
 	"own_limit": 1,
 	"required_staffing": [],
 	"required_energy": 1,
@@ -219,51 +293,6 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 		],
 }
 
-var SECURITY_DEPARTMENT:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.SECURITY_DEPARTMENT,		
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"link_categories": ROOM.CATEGORY.SECURITY_LINKABLE,
-	"is_core": true,
-	
-	"name": "SECURITY_DEPARTMENT",
-	"shortname": "RESEARCHER_ROOM",
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Attach other SECURITY rooms for utility.",
-	
-	"costs": {
-		"unlock": 1,
-		"purchase": 10,
-	},		
-	
-	"requires_unlock": false,	
-	"own_limit": 1,
-	"required_staffing": [],
-	"required_energy": 1,
-}
-
-var SCIENCE_DEPARTMENT:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"link_categories": ROOM.CATEGORY.SCIENCE_LINKABLE,
-	"is_core": true,
-	
-	"name": "SCIENCE_DEPARTMENT",
-	"shortname": "SCIENCE_DEPARTMENT",
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Attach other SCIENCE rooms for utility.",
-
-	"costs": {
-		"unlock": 1,
-		"purchase": 10,
-	},		
-
-	"requires_unlock": false,	
-	"own_limit": 1,
-	"required_staffing": [],
-	"required_energy": 1,
-}
 
 var MEDICAL_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
@@ -282,7 +311,7 @@ var MEDICAL_DEPARTMENT:Dictionary = {
 		"purchase": 10,
 	},		
 
-	"requires_unlock": false,	
+	"requires_unlock": true,	
 	"own_limit": 1,
 	"required_staffing": [],
 	"required_energy": 1,
@@ -305,7 +334,7 @@ var ETHICS_DEPARTMENT:Dictionary = {
 		"purchase": 10,
 	},		
 
-	"requires_unlock": false,	
+	"requires_unlock": true,	
 	"own_limit": 1,
 	"required_staffing": [],
 	"required_energy": 1,
@@ -328,7 +357,7 @@ var CONTAINMENT_CELL:Dictionary = {
 		"purchase": 25,
 	},		
 	
-	"requires_unlock": false,	
+	"requires_unlock": true,	
 	"own_limit": 20,
 	"required_staffing": [],
 	"required_energy": 0,	

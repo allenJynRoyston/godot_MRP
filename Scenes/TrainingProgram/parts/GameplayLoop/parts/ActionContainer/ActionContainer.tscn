@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=27 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://cgsv34nc422hv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/TelemetryPanel.tscn" id="8_xathl"]
 [ext_resource type="PackedScene" uid="uid://dk5255oi6br8j" path="res://Components/TransitionScreen/TransistionScreen.tscn" id="9_bk83u"]
 [ext_resource type="PackedScene" uid="uid://diewdd1a4yfp1" path="res://Components/BtnControls/BtnControls.tscn" id="10_58xi4"]
+[ext_resource type="PackedScene" uid="uid://bdpgqenty72qq" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/NametagControl/NametagControl.tscn" id="10_ah17n"]
+[ext_resource type="PackedScene" uid="uid://dsbakxgtqjmp" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BlueprintComponent/BlueprintComponent.tscn" id="10_x63m5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e5bh"]
 
@@ -609,7 +611,30 @@ theme_override_constants/margin_bottom = 20
 [node name="TelemetryComponent" parent="Telemetry/PanelContainer/MarginContainer" instance=ExtResource("8_xathl")]
 layout_mode = 2
 
-[node name="NameControl" type="Control" parent="."]
+[node name="Blueprint" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Blueprint"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
+
+[node name="MarginContainer" type="MarginContainer" parent="Blueprint/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="BlueprintComponent" parent="Blueprint/PanelContainer/MarginContainer" instance=ExtResource("10_x63m5")]
+layout_mode = 2
+
+[node name="NametagControl" parent="." instance=ExtResource("10_ah17n")]
 layout_mode = 2
 
 [node name="TransitionScreen" parent="." instance=ExtResource("9_bk83u")]

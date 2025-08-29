@@ -71,9 +71,10 @@ layout_mode = 2
 [node name="BonusAmountLabel" type="Label" parent="VBoxContainer/PanelContainer/Control"]
 visible = false
 layout_mode = 2
-offset_top = -29.0
-offset_right = 30.0
-offset_bottom = -15.0
+offset_left = -7.0
+offset_top = 17.0
+offset_right = 23.0
+offset_bottom = 31.0
 text = "0"
 label_settings = SubResource("LabelSettings_as5qf")
 horizontal_alignment = 2

@@ -1,40 +1,42 @@
+@tool
 extends Control
 
-@onready var ConstructionIcon:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ConstructionIcon
-@onready var StatusIcon:Control = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/StatusIcon
-@onready var NameLabel:Label = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NameLabel
-@onready var ListContainer:Control = $PanelContainer/MarginContainer/VBoxContainer/ListContainer
-@onready var DownArrowIcon:Control = $PanelContainer/Control/DownArrowIcon
+@onready var ContentPanel:PanelContainer = $ContentControl/PanelContainer
+@onready var ConstructionIcon:Control = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/ConstructionIcon
+@onready var StatusIcon:Control = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/StatusIcon
+@onready var NameLabel:Label = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/NameLabel
+@onready var DownArrowIcon:Control = $ArrowControl/DownArrowIcon
 
 @onready var name_label_settings:LabelSettings = NameLabel.get("label_settings").duplicate()
-
-@export var show_resource_reason:bool = false : 
-	set(val):
-		show_resource_reason = val
-		on_show_resource_reason_update()
 
 @export var index:int = -1 : 
 	set(val):
 		index = val
 		on_index_update()
 		
-@export var fade:bool = false : 
+@export var alignment:U.ALIGN = U.ALIGN.CENTER : 
 	set(val):
-		fade = val
-		on_fade_update()
-
-@export var ignore_current_location:bool = false
-
+		alignment = val
+		on_alignment_update()
+		
 const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn")
 const EcoItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
-const fade_int:float = 5
 
 var room_config:Dictionary = {}
 var current_location:Dictionary = {}
-var offset:Vector2
+
+var max_modulate_val:int = 1
 var name_str:String
-var shifted_val:int = 5
-var is_room_empty:bool 
+var shifted_val:int = 10
+var offset_x:int = 0
+var focus_on_current:bool = false : 
+	set(val):
+		focus_on_current = val
+		on_focus_on_current_update()
+var show_empty:bool = false : 
+	set(val):
+		show_empty = val
+		on_show_empty_update()
 
 var previous_ring:int
 var previous_floor:int
@@ -52,56 +54,174 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	NameLabel.set("label_settings", name_label_settings)
-	
-	#on_fade_update()
-	hide()
-	await U.tick()
-	on_index_update()
-	on_show_resource_reason_update()
-	
+	update_node()
 # --------------------------------------------
 
 # --------------------------------------------
-func on_show_resource_reason_update() -> void:
-	if !is_node_ready():return
-	pass
-# --------------------------------------------
+func change_camera_view(viewpoint:CAMERA.VIEWPOINT) -> void:
+	match viewpoint:
+		# ---------------
+		CAMERA.VIEWPOINT.OVERHEAD:
+			focus_on_current = true
+			show_empty = true
+			
+			if index in [0, 1, 3]:
+				alignment = U.ALIGN.LEFT
+			if index in [2, 4, 6]:
+				alignment = U.ALIGN.CENTER
+			if index in [5, 7, 8]:
+				alignment = U.ALIGN.RIGHT
+		# ---------------
+		CAMERA.VIEWPOINT.DISTANCE:
+			focus_on_current = true
+			show_empty = false
+		# ---------------
+		_:
+			focus_on_current = false
+			show_empty = false
+			alignment = U.ALIGN.CENTER
 
-# --------------------------------------------	
-func on_fade_update() -> void:
-	if !is_node_ready():return
-	
-	if !fade:
-		update_node()
-	
-	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0 if fade else 1), 0.1)
-	U.tween_range(fade_int if fade else 0.0, fade_int if !fade else 0.0, 0.3, func(val:float) -> void:
-		offset.x = val
-	) 			
-# --------------------------------------------
+func on_show_empty_update() -> void:
+	U.debounce(str(self.name, "_update_node"), func():update_node())
 
-# --------------------------------------------
+func on_focus_on_current_update() -> void:
+	U.debounce(str(self.name, "_update_node"), func():update_node())
+
 func on_index_update() -> void:
-	await U.tick()
-	U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
-# --------------------------------------------
+	if Engine.is_editor_hint() and index < 0:
+		NameLabel.text = "Nametag"
+	U.debounce(str(self.name, "_update_node"), func():update_node())
 
-# --------------------------------------------
+func on_room_config_update(new_val:Dictionary) -> void:
+	room_config = new_val
+	U.debounce(str(self.name, "_update_node"), func():update_node())
+
 func on_current_location_update(new_val:Dictionary) -> void:
 	current_location = new_val
 	if current_location.is_empty():return
+	
+	if focus_on_current:
+		U.debounce(str(self.name, "_update_node"), func():update_node())
 	
 	if previous_ring != current_location.ring or previous_floor != current_location.floor:
 		previous_ring = current_location.ring 
 		previous_floor = current_location.floor
 
-		U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
+		U.debounce(str(self.name, "_update_node"), func():update_node())
 
-func on_room_config_update(new_val:Dictionary) -> void:
-	room_config = new_val
+func on_alignment_update() -> void:
+	if !is_node_ready():return
+	ContentPanel.size = Vector2(1, 1)
 	await U.tick()
-	U.debounce(str(self.name, "_nametag_update_node"), func():update_node())
+	match alignment:
+		U.ALIGN.CENTER:
+			U.tween_node_property(ContentPanel, "position:x", -(ContentPanel.size.x/2) + 10, 0.3, 0, Tween.TRANS_SINE)
+			U.tween_range(offset_x, 10, 0.3, func(new_val) -> void:
+				offset_x = new_val	
+			)
+		U.ALIGN.LEFT:
+			U.tween_node_property(ContentPanel, "position:x", -ContentPanel.size.x + 30, 0.3, 0, Tween.TRANS_SINE)
+			U.tween_range(offset_x, -10, 0.3, func(new_val) -> void:
+				offset_x = new_val	
+			)
+		U.ALIGN.RIGHT:
+			U.tween_node_property(ContentPanel, "position:x", 0, 0.3, 0, Tween.TRANS_SINE)
+			U.tween_range(offset_x, 30, 0.3, func(new_val) -> void:
+				offset_x = new_val	
+			)
 
+func reveal(state:bool) -> void:
+	max_modulate_val = 1 if state else 0
+	update_node()
+
+func set_fade(state:bool) -> void:
+	U.tween_range(modulate.a, max_modulate_val if state else 0, 0.1, func(new_val) -> void:
+		modulate.a = new_val
+		DownArrowIcon.icon_color.a = new_val
+	)
+# --------------------------------------------
+
+# --------------------------------------------
+func update_node() -> void:
+	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
+	shifted_val = 10
+	
+	# get location
+	var use_location:Dictionary = current_location.duplicate()
+	use_location.room = index
+	
+	# hide/show currency icons
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
+	var is_room_empty:bool = room_extract.room.is_empty()
+
+	if is_room_empty:
+		ConstructionIcon.hide()
+		
+		StatusIcon.show()
+		StatusIcon.icon = SVGS.TYPE.DOT
+		StatusIcon.icon_color = Color.BLACK
+
+		name_label_settings.font_color = Color.BLACK
+		name_str = "Empty" if show_empty else ""
+		if show_empty and focus_on_current:
+			if current_location.room == index:
+				set_fade(true)
+			else:
+				set_fade(false)
+		else:
+			set_fade(false)
+		on_alignment_update()
+		return
+	
+	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
+	var currencies:Dictionary = room_level_config.currencies
+	var metrics:Dictionary = room_level_config.metrics
+	var is_activated:bool = room_extract.room.is_activated
+
+	#for ref in currencies:
+		#var amount:int = currencies[ref]
+		#if amount != 0:
+			#var new_node:Control = EcoItemPreload.instantiate()
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			#new_node.amount = amount
+			#new_node.icon = resource_details.icon
+			#ListContainer.add_child(new_node)
+#
+	#for ref in metrics:
+		#var amount:int = metrics[ref]
+		#if amount != 0:
+			#var new_node:Control = VibeItemPreload.instantiate()
+			#var resource_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
+			#new_node.value = amount
+			#new_node.metric = ref
+			#new_node.invert_color = true
+			#new_node.big_numbers = true
+			#ListContainer.add_child(new_node)
+				
+	
+	name_label_settings.font_size = 12 
+	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
+	
+	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
+	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
+	StatusIcon.icon = SVGS.TYPE.NONE
+	StatusIcon.icon_color = Color.DARK_GREEN if is_activated else Color.DARK_RED
+	
+	#await U.set_timeout(0.7)
+	name_str = (room_extract.room.details.shortname if !is_room_empty else "").substr(0, 13)
+	
+
+	if focus_on_current:
+		if current_location.room == index:
+			set_fade(true)
+		else:
+			set_fade(false)
+	else:
+		set_fade(true)
+
+	on_alignment_update()
 # --------------------------------------------
 
 # --------------------------------------------
@@ -115,78 +235,16 @@ func shift_string_backward(text: String, shift: int = 5) -> String:
 	return result
 # --------------------------------------------
 
-# --------------------------------------------
-func update_node(shift_val:int = 10) -> void:
-	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or index == -1:return
-	shifted_val = shift_val
-	
-	# clear list
-	for child in ListContainer.get_children():
-		child.queue_free()
-	
-	# get location
-	var use_location:Dictionary = current_location.duplicate()
-	use_location.room = index
-	
-	# hide/show currency icons
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
-	is_room_empty = room_extract.room.is_empty()
-	self.modulate = Color(1, 1, 1, 1 if !is_room_empty or !fade else 0)
-	
-	if is_room_empty:
-		hide()
-		return
-	
-	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
-	var currencies:Dictionary = room_level_config.currencies
-	var metrics:Dictionary = room_level_config.metrics
-	var is_activated:bool = room_extract.room.is_activated
-
-	for ref in currencies:
-		var amount:int = currencies[ref]
-		if amount != 0:
-			var new_node:Control = EcoItemPreload.instantiate()
-			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			new_node.amount = amount
-			new_node.icon = resource_details.icon
-			ListContainer.add_child(new_node)
-
-	for ref in metrics:
-		var amount:int = metrics[ref]
-		if amount != 0:
-			var new_node:Control = VibeItemPreload.instantiate()
-			var resource_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
-			new_node.value = amount
-			new_node.metric = ref
-			new_node.invert_color = true
-			new_node.big_numbers = true
-			ListContainer.add_child(new_node)
-				
-	
-	name_label_settings.font_size = 12 #16 if room_details.is_core else 12
-	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
-	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
-	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
-	StatusIcon.icon_color = Color.DARK_GREEN if is_activated else Color.DARK_RED
-	await U.set_timeout(0.7)
-	name_str = room_extract.room.details.shortname if !is_room_empty else ""
-	show()
-	
-# --------------------------------------------
-
 # -------------------------------------------- update location
 func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos - Vector2(self.size.x/2, self.size.y + 40)
-	DownArrowIcon.position = Vector2(self.size.x/2 - DownArrowIcon.size.x/2, self.size.y - 8)
+	self.global_position = tag_pos + Vector2(offset_x, 0)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	if shifted_val > 0:
-		shifted_val -= 1		
+		shifted_val -= 1
 		NameLabel.text = shift_string_backward(name_str, shifted_val)
-	self.size = Vector2(1, 1)	
+		ContentPanel.size = Vector2(1, 1)
 # --------------------------------------------

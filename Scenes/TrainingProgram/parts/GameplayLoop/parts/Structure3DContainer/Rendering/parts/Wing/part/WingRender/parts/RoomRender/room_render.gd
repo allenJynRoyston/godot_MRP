@@ -344,9 +344,9 @@ func update_room_data() -> void:
 	if is_built:
 		select_mesh_material.albedo_color = Color.LIGHT_GREEN
 	elif is_under_construction:
-		select_mesh_material.albedo_color = Color.LIGHT_GREEN
-	elif !influenced_by.is_empty():
-		select_mesh_material.albedo_color = Color.LIGHT_GREEN
+		select_mesh_material.albedo_color = Color.LIGHT_CORAL
+	#elif !influenced_by.is_empty():
+		#select_mesh_material.albedo_color = Color.LIGHT_GREEN
 	elif is_empty:
 		select_mesh_material.albedo_color = Color.WHITE
 		# change adjacent connectors
@@ -359,13 +359,13 @@ func update_room_data() -> void:
 		# get preview for preview_room
 		var preview_room_details:Dictionary = ROOM_UTIL.return_data(preview_room_ref)
 		for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-			material.albedo_color = Color.LIGHT_GREEN if preview_room_details.influence.range > 0 else Color.LIGHT_GRAY
+			material.albedo_color = Color.LIGHT_GREEN if preview_room_details.influence.starting_range > 0 else Color.LIGHT_GRAY
 		
 		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		room_render_material.albedo_color = Color.BLACK
 		room_render_material.albedo_color.a = 0.5
 		if assigned_location.room == current_location.room:
-			select_mesh_material.albedo_color = Color.LIGHT_GREEN
+			select_mesh_material.albedo_color = Color.LIGHT_STEEL_BLUE
 				
 		animate_built(true, true)
 		return

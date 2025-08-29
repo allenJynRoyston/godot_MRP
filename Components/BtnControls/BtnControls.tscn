@@ -90,7 +90,7 @@ size_flags_vertical = 8
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="BtnControlPanel/BtnMarginContainer"]
 custom_minimum_size = Vector2(0, 85)

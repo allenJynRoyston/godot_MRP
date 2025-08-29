@@ -1,10 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://cp63njwa3niv7"]
+[gd_scene load_steps=6 format=3 uid="uid://cp63njwa3niv7"]
 
 [ext_resource type="Script" uid="uid://bxh1yjy0l6jr5" path="res://UI/Buttons/Checkbox/checkbox.gd" id="1_wmtyv"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="2_sh7tv"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_utjfo"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_sh7tv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l7ga8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_utjfo"]
+font = ExtResource("3_sh7tv")
+font_color = Color(0.05, 0.05, 0.05, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [node name="CheckBox" type="PanelContainer"]
 offset_right = 20.0
@@ -12,7 +19,7 @@ offset_bottom = 20.0
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_l7ga8")
 script = ExtResource("1_wmtyv")
-is_negative = null
+default_color = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -26,9 +33,9 @@ layout_mode = 2
 
 [node name="SVGIcon" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_sh7tv")]
 layout_mode = 2
-icon = 50
+icon = 56
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
-text = "CHECKBOX"
-label_settings = ExtResource("3_utjfo")
+label_settings = SubResource("LabelSettings_utjfo")

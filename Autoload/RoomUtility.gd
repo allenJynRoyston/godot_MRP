@@ -18,7 +18,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	
 	# ------------------------------------------	
 	"influence": {
-		"range": 0,
+		"starting_range": 0,
 		"effect": null
 	},	
 	# ------------------------------------------
@@ -311,7 +311,26 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 
 # ------------------------------------------------------------------------------
 func reset_room(use_location:Dictionary) -> void:
+	
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
+		if i.location == use_location:
+			print( base_states.room[U.location_to_designation(use_location)] )
+			base_states.room[U.location_to_designation(use_location)] = {
+				"abl_lvl": 0,
+				"influence": {
+					"added_range": 0,
+					"allow_horizontal": false,
+					"allow_vertical": false
+				},
+				"passives_enabled_list": [],
+				"passives_enabled": {},
+				"ability_on_cooldown": {},
+				"events_pending": [],
+				"buffs": [],
+				"debuffs": [],				
+			}
+			SUBSCRIBE.base_states = base_states
+		
 		return !(i.location == use_location)
 	)
 # ------------------------------------------------------------------------------
@@ -506,7 +525,104 @@ func get_personnel_counts() -> Dictionary:
 		
 	return tally
 # ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func get_influenced_data(use_location:Dictionary = current_location) -> Dictionary:
+	var room_details:Dictionary = return_data_via_location(use_location)
+
+	# copy it
+	var dict_copy:Dictionary = {}
+	# get room level currency (added bonuses)
+	var room_level_dict:Dictionary = GAME_UTIL.get_room_level_config().currencies
+	#
+	## add any bonuses in the room to it
+	for dict in [room_level_dict]:
+		for currency_ref in room_level_dict:
+			var amount:int = room_level_dict[currency_ref]
+			if currency_ref not in dict_copy:
+				dict_copy[currency_ref] = 0
+			dict_copy[currency_ref] += amount	
 	
+	return {"currencies": dict_copy}
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func range_one(room:int, include_vertical:bool, include_horizontal:bool) -> Array:
+	var vertical_neighbors := {
+		0: [1],
+		1: [0, 3],
+		2: [4],
+		3: [1],
+		4: [2, 6],
+		5: [7],
+		6: [4],
+		7: [5, 8],
+		8: [7]
+	}
+
+	var horizontal_neighbors := {
+		0: [2],
+		2: [0, 5],
+		5: [2],
+		1: [4],
+		4: [1, 7],
+		7: [4],
+		3: [6],
+		6: [3, 8],
+		8: [6]
+	}	
+	
+	var neighbors := []
+	if include_vertical and vertical_neighbors.has(room):
+		neighbors.append_array(vertical_neighbors[room])
+	if include_horizontal and horizontal_neighbors.has(room):
+		neighbors.append_array(horizontal_neighbors[room])
+	return neighbors
+
+func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Array:
+	var vertical_neighbors := {
+		0: [1, 3],
+		1: [0, 3],
+		2: [4, 6],
+		3: [1, 0],
+		4: [2, 6],
+		5: [7, 8],
+		6: [4, 2],
+		7: [5, 8],
+		8: [5, 7]
+	}
+
+	var horizontal_neighbors := {
+		0: [2, 5],
+		2: [0, 5],
+		5: [0, 2],
+		1: [4, 7],
+		4: [1, 7],
+		7: [1, 4],
+		3: [6, 8],
+		6: [3, 8],
+		8: [3, 6]
+	}	
+
+	var neighbors := []
+	if include_vertical and vertical_neighbors.has(room):
+		neighbors.append_array(vertical_neighbors[room])
+	if include_horizontal and horizontal_neighbors.has(room):
+		neighbors.append_array(horizontal_neighbors[room])
+		
+	return neighbors
+
+
+func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:
+	var include_vertical:bool = influence_data.vertical if influence_data.has("vertical") else false
+	var include_horizontal:bool = influence_data.horizontal if influence_data.has("horizontal") else false
+	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var range:int = U.min_max(0 if room_config_level.influence.added_range == -1 else influence_data.starting_range + room_config_level.influence.added_range, 0, 2)
+
+	
+	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
+	return neighbors
+# ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
 func find_adjacent_rooms(room:int) -> Array:

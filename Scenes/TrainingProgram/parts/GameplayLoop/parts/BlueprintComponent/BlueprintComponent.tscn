@@ -1,0 +1,138 @@
+[gd_scene load_steps=9 format=3 uid="uid://dsbakxgtqjmp"]
+
+[ext_resource type="Script" uid="uid://dki4lkk52npow" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BlueprintComponent/blueprint_component.gd" id="1_wuj0y"]
+[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_r3s2j"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_5xmsx"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_4qbcm"]
+[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="6_r3s2j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbxtp"]
+bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_yr4tm"]
+font = ExtResource("3_5xmsx")
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[node name="BlueprintComponent" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
+script = ExtResource("1_wuj0y")
+
+[node name="Control" type="Control" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="DetectedPanel" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_left = -244.0
+offset_top = 129.0
+offset_right = -86.0
+offset_bottom = 198.0
+theme_override_styles/panel = ExtResource("2_r3s2j")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/DetectedPanel"]
+layout_mode = 2
+
+[node name="Header" type="PanelContainer" parent="Control/DetectedPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/DetectedPanel/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Control/DetectedPanel/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "?"
+label_settings = SubResource("LabelSettings_yr4tm")
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="Control/DetectedPanel"]
+layout_mode = 2
+
+[node name="SVGIcon" parent="Control/DetectedPanel/Control" instance=ExtResource("4_4qbcm")]
+custom_minimum_size = Vector2(10, 20)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 61.0
+offset_bottom = 81.0
+icon = 42
+icon_color = Color(1, 0.74902, 0.2, 1)
+icon_size = Vector2(10, 20)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Income" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBoxContainer/Income"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Income/Header/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Income/Header/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BONUS"
+label_settings = SubResource("LabelSettings_yr4tm")
+horizontal_alignment = 2
+
+[node name="Content" type="PanelContainer" parent="VBoxContainer/Income"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = ExtResource("2_r3s2j")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="NoBonusLabel" type="Label" parent="VBoxContainer/Income/Content/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "NO BONUSES"
+label_settings = ExtResource("6_r3s2j")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CurrencyList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1

@@ -1,6 +1,7 @@
 @tool
 extends SubscribeWrapper
 
+enum ALIGN {LEFT, RIGHT, CENTER}
 enum DIR {UP, DOWN, LEFT, RIGHT}
 
 var debounce_timers := {}

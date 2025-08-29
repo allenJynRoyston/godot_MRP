@@ -384,7 +384,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use_location:Dictionary) -> void:
 	var designation:String = U.location_to_designation(use_location)
 	var ability_uid:String = str(room_ref, ability_index)
-	var apply_cooldown:bool = await ability.effect.call()
+	var apply_cooldown:bool = await ability.effect.call(designation)
 	
 	if ability_uid not in base_states.room[designation].ability_on_cooldown:
 		base_states.room[designation].ability_on_cooldown[ability_uid] = 0		
@@ -422,9 +422,6 @@ func reset_room(use_location:Dictionary = current_location) -> bool:
 	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
 	
 	if confirm:	
-		#var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-		#await WingRenderNode.destroy_room(current_location)
-		
 		RESEARCHER_UTIL.remove_assigned_location(use_location)
 		ROOM_UTIL.reset_room(use_location)
 

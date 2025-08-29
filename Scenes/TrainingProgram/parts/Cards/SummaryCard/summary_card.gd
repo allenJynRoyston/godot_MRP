@@ -156,6 +156,7 @@ func on_update() -> void:
 		InfoContainer.show()
 		var preview_data:Dictionary = {}
 		var room_details:Dictionary = ROOM_UTIL.return_data(preview_mode_ref)
+		var influenced_data:Dictionary = ROOM_UTIL.get_influenced_data()
 		
 		# get baseline of currency list
 		var currency_list:Dictionary = {}
@@ -163,14 +164,12 @@ func on_update() -> void:
 			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
 			currency_list[ref] = {
 				"icon": resource_details.icon, 
-				"amount": 0,
-				"bonus_amount": 0
+				# ... then get all currency from room
+				"amount": room_details.currencies[ref] if ref in room_details.currencies else 0,
+				# ... add bonuses from influenced state
+				"bonus_amount": influenced_data.currencies[ref] if ref in influenced_data.currencies else 0
 			}		
 			
-		# ... then get all currency from room
-		for ref in room_details.currencies:
-			var amount:int = room_details.currencies[ref]
-			currency_list[ref].amount += amount
 
 		# get baseline for metrics
 		var metrics:Dictionary = {}
@@ -273,7 +272,6 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	# added bonus levels to currencies
 	for key in currency_list:
 		currency_list[key].amount = currency_list[key].amount + room_level_currencies[key]
-	
 	
 	# assign details
 	SidePanel.show()

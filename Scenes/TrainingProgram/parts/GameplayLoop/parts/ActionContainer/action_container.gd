@@ -4,7 +4,7 @@ extends GameContainer
 #  ---------------------------------------
 # SPECIAL NODES
 @onready var Backdrop:ColorRect = $Backdrop
-@onready var NameControl:Control = $NameControl
+@onready var NametagControl:Control = $NametagControl
 @onready var TransistionScreen:Control = $TransitionScreen
 @onready var LocationAndDirectivesContainer:Control = $LocationAndDirectivesContainer
 #  ---------------------------------------
@@ -57,6 +57,10 @@ extends GameContainer
 @onready var TelemetryPanel:PanelContainer = $Telemetry/PanelContainer
 @onready var TelemetryMargin:MarginContainer = $Telemetry/PanelContainer/MarginContainer 
 @onready var TelemetryComponent:Control = $Telemetry/PanelContainer/MarginContainer/TelemetryComponent
+
+@onready var BlueprintPanel:PanelContainer = $Blueprint/PanelContainer
+@onready var BlueprintMargin:MarginContainer = $Blueprint/PanelContainer/MarginContainer
+@onready var BlueprintComponent:Control = $Blueprint/PanelContainer/MarginContainer/BlueprintComponent
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -117,7 +121,6 @@ enum MODE {
 
 const KeyBtnPreload:PackedScene = preload("res://UI/Buttons/KeyBtn/KeyBtn.tscn")
 const TraitCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/TRAIT/TraitCard.tscn")
-const NametagPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/Nametag.tscn")
 const ActiveMenuPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/ActiveMenu.tscn")
 
 const portrait_img_src:Dictionary = {
@@ -177,11 +180,7 @@ func _ready() -> void:
 		]:
 		node.reveal(false)
 
-	# CREATE NAMETAGS AND ADD THEM TO SCENE
-	for index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-		var new_node:Control = NametagPreload.instantiate()
-		new_node.index = index
-		NameControl.add_child(new_node)
+
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
@@ -234,15 +233,20 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": NotificationMargin.size.x
 	}
 	
+	control_pos[BlueprintPanel] = {
+		"show": 0,
+		"hide": -BlueprintMargin.size.y
+	}
+		
+	
 	# for elements in the bottom left corner
 	control_pos[ActionPanel] = {
 		"show": 0, 
 		"hide": ActionMargin.size.x
 	}	
 	
-	for node in [WingRootPanel]: 
+	for node in [WingRootPanel, BlueprintPanel]: 
 		node.position.y = control_pos[node].hide
-
 
 	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel]: 
 		node.position.x = control_pos[node].hide
@@ -430,7 +434,7 @@ func show_fabrication_options() -> void:
 		})
 
 	# ... then general other categories
-	for type in [ROOM.CATEGORY.ENERGY]:
+	for type in [ROOM.CATEGORY.ENERGY, ROOM.CATEGORY.UTILITY]:
 		list.push_back({
 			"title": ROOM.return_category_title(type),
 			"type": type,
@@ -913,13 +917,7 @@ func show_settings() -> void:
 	
 	var is_fullscreen_checked:Callable = func() -> bool:
 		return GBL.is_fullscreen
-		
-	var is_enable_nametags_checked:Callable = func() -> bool:
-		return true
-		
-	var is_ability_hints_checked:Callable = func() -> bool:
-		return true
-	
+
 	var options:Array = [
 		{
 			"title": "GRAPHICS",
@@ -1052,6 +1050,11 @@ func before_scp_selection() -> void:
 
 func after_scp_selection() -> void:
 	AdminModulesControls.reveal(true)
+
+func change_camera_viewpoint(new_viewpoint:CAMERA.VIEWPOINT) -> void:
+	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
+	NametagControl.change_camera_view(new_viewpoint)
+	await WingRenderNode.change_camera_view(new_viewpoint)	
 
 func change_camera_to(type:CAMERA.TYPE) -> void:
 	camera_settings.type = type
@@ -1281,7 +1284,8 @@ func check_btn_states() -> void:
 				reveal_summarycard(false)
 				reveal_telemetry(false)
 				TransistionScreen.start(0.5, true)
-				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				await change_camera_viewpoint(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				
 				
 				# get triggerable event
 				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
@@ -1289,7 +1293,8 @@ func check_btn_states() -> void:
 				GAME_UTIL.remove_room_event_at_index(0)
 				#trigger event
 				await GAME_UTIL.run_event(event_ref)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
+				
 				
 				reveal_telemetry(true)
 				reveal_summarycard(true, false)
@@ -1361,8 +1366,9 @@ func check_btn_states() -> void:
 					on_current_location_update()
 				FabricationControls.reveal(true)
 						
-			FabricationControls.onBack = func() -> void:				
-				WingRenderNode.set_to_build_mode(false)				
+			FabricationControls.onBack = func() -> void:
+				reveal_blueprint(false)
+				WingRenderNode.set_to_build_mode(false)	
 				await FabricationControls.reveal(false)
 				await U.set_timeout(0.5)
 				current_mode = MODE.ROOT
@@ -1587,7 +1593,20 @@ func reveal_telemetry(state:bool, duration:float = 0.3) -> void:
 		TelemetryPanel.hide()		
 # --------------------------------------------------------------------------------------------------		
 
-
+# --------------------------------------------------------------------------------------------------		
+func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
+	if !is_node_ready():return
+	
+	if state:
+		BlueprintComponent.start()
+		BlueprintPanel.show()
+	
+	await U.tween_node_property(BlueprintPanel, "position:y", control_pos[BlueprintPanel].show if state else control_pos[BlueprintPanel].hide, duration)
+	
+	if !state:
+		BlueprintComponent.end()
+		BlueprintPanel.hide()		
+# --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
 var previous_lock_states:Dictionary = {}
@@ -1665,12 +1684,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		match current_mode:
 			# --------------
 			MODE.ROOT:
-				NameControl.show()
+				NametagControl.show()
 				LocationAndDirectivesContainer.reveal(true)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				RenderingNode.set_shader_strength(0)
 				reveal_actionpanel_label(false)			
 				reveal_actionpanel_image(false)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.ANGLE_NEAR)
 				
 				LocationAndDirectivesContainer.reveal(true)
 				GameplayNode.show_marked_objectives = false
@@ -1682,37 +1701,38 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				SUBSCRIBE.current_location =  {"floor": current_location.floor, "ring": current_location.ring, "room": 4}
 			# --------------
 			MODE.EVENT_BTN_TRIGGER:
-				NameControl.hide()
+				#NameControl.hide()
 				reveal_actionpanel_image(false)
 				reveal_summarycard(false)
 				reveal_telemetry(false)
 				TransistionScreen.start(0.5, true)
-				await WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				await change_camera_viewpoint(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
+				
 				
 				#trigger event
 				await GAME_UTIL.run_event( 	priority_events[0] )
 				priority_events.remove_at(0)
-				SUBSCRIBE.priority_events = priority_events
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				SUBSCRIBE.priority_events = priority_events				
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				TransistionScreen.start(0.5, true)
 				current_mode = MODE.ROOT
 			# --------------
 			MODE.ADMINISTRATION:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				GameplayNode.show_timeline = false					
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, true)
 				reveal_actionpanel_label(true, 0.4, "ADMINISTRATIVE")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 				AdminControls.reveal(true)
 			# --------------
 			MODE.ADMINISTRATION_MODULES:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				RenderingNode.set_shader_strength(0)
 				AdminModulesControls.reveal(true)
 
@@ -1720,12 +1740,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				AdminModulesControls.item_index = 0				
 			# -------------
 			MODE.INTEL:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				#telemetry_count = 0
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)				
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, false)
 				reveal_telemetry(true)
 				reveal_actionpanel_label(true, 0.4, "INTEL")
@@ -1737,49 +1757,49 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				IntelOverviewControls.reveal(true)
 			# --------------
 			MODE.FABRICATION:
-				
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.set_to_build_mode(true)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.OVERHEAD)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.OVERHEAD)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				reveal_summarycard(true, false)
+				reveal_blueprint(true)
 				reveal_actionpanel_label(true, 0.4, "BLUEPRINTS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 				await U.set_timeout(0.5)
-				NameControl.show()
+				# NameControl.show()
 				FabricationControls.reveal(true)
 			# --------------
 			MODE.ENGINEERING:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "ENGINEERING")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				EngineeringControls.reveal(true)
 			# --------------
 			MODE.ETHICS:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "ETHICS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 				EthicsControls.reveal(true)				
 			# --------------
 			MODE.LOGISTICS:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "LOGISTICS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 				LogisticsControls.reveal(true)
@@ -1790,40 +1810,40 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
 				GBL.find_node(REFS.WING_RENDER).set_engineering_mode(true)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.ANGLE_NEAR)
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.SHIFT_RIGHT)	
+				change_camera_viewpoint(CAMERA.VIEWPOINT.ANGLE_NEAR)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.SHIFT_RIGHT)
 				EngineeringConfigControls.reveal(true)
 			# --------------
 			MODE.SECURITY:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_summarycard(true, false)
 				reveal_actionpanel_label(true, 0.4, "SECURITY")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.SECURITY])				
 				SecurityControls.reveal(true)
 			# -----------	
 			MODE.SCIENCE:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				#reveal_summarycard(false, false)
 				reveal_actionpanel_label(true, 0.4, "RESEARCH")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 				ScienceControls.reveal(true)
 			# -----------	
 			MODE.MEDICAL:
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false					
-				WingRenderNode.change_camera_view(CAMERA.VIEWPOINT.DISTANCE)
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "MEDICAL")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 				MedicalControls.reveal(true)
@@ -1835,14 +1855,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			# -----------	
 			MODE.ACTIVE_MENU_OPEN:
 				set_backdrop_state(true)
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
 			# -----------	
 			MODE.INFO:
 				set_backdrop_state(true)
-				NameControl.hide()
+				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.TimelineContainer.show_details( true ) 
 				GameplayNode.show_marked_objectives = true
