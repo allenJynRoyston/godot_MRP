@@ -57,7 +57,7 @@ func on_room_config_update(new_val:Dictionary) -> void:
 func update_node() -> void:
 	if !is_node_ready() or room_config.is_empty():return
 	var metrics:Dictionary = room_config.base.metrics
-	
+
 	# update vibes
 	Morale.value = metrics[RESOURCE.METRICS.MORALE]
 	Safety.value = metrics[RESOURCE.METRICS.SAFETY]

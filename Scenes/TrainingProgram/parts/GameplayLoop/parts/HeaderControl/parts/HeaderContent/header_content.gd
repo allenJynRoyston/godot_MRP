@@ -34,8 +34,8 @@ func _ready() -> void:
 func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
 	Economy.show() #if new_val[CONDITIONALS.TYPE.SHOW_ECONOMY_IN_HEADER] else Economy.hide()
-	Personnel.show() if new_val[CONDITIONALS.TYPE.SHOW_PERSONNEL_IN_HEADER] else Personnel.hide()
-	Vibes.show() if new_val[CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER] else Vibes.hide()
+	Personnel.show() # if new_val[CONDITIONALS.TYPE.SHOW_PERSONNEL_IN_HEADER] else Personnel.hide()
+	Vibes.show() # if new_val[CONDITIONALS.TYPE.SHOW_VIBES_IN_HEADER] else Vibes.hide()
 	MTFComponent.show() if new_val[CONDITIONALS.TYPE.SHOW_MTF_IN_HEADER] else MTFComponent.hide()
 	WarningComponent.show() if new_val[CONDITIONALS.TYPE.SHOW_DANGERS_IN_HEADER] else WarningComponent.hide()
 	EnergyComponent.show() #if new_val[CONDITIONALS.TYPE.SHOW_POWER_IN_HEADER] else EnergyComponent.hide()

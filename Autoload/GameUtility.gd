@@ -324,12 +324,12 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			for ref in dict.metrics:
 				var amount:int = dict.metrics[ref]
 				metrics[ref].amount += amount
-				
+
 	# ... finally add bonuses from room_config
-	for config in [ring_level_config, floor_level_config]:
+	for config in [room_level_config, ring_level_config, floor_level_config]:
 		for ref in config.metrics:
 			var amount:int = config.metrics[ref]
-			metrics[ref].bonus_amount = amount
+			metrics[ref].bonus_amount += amount
 				
 	
 	# get baseline of currency list
@@ -357,7 +357,7 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	# check for passive and active abilities, grab their max level; that's what becomes the max level
 	var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
 	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
-
+	
 	return {
 		# -----------
 		"room": {

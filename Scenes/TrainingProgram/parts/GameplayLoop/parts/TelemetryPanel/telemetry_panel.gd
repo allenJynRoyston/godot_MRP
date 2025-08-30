@@ -72,17 +72,20 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or !is_active:return
+	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)		
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)
-	var room_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * GBL.game_resolution 
 	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state(current_location)	
-	var has_room:bool = !room_level_config.room_data.is_empty()
+	
+	var room_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * GBL.game_resolution 
+	var has_room:bool = !room_extract.room.is_empty()
 	var is_activated:bool = room_level_config.is_activated
 	var damage_val:int = room_level_config.damage_val
-	var metrics:Dictionary = room_level_config.metrics
-	var currencies:Dictionary = room_level_config.currencies
-	var energy_used:int = room_level_config.energy_used
+	var metrics:Dictionary = room_extract.room.metrics if has_room else {}
+	var currency_list:Dictionary = room_extract.room.currency_list if has_room else {}
 	var effect:Dictionary = room_level_config.room_data.details.effect if has_room else {}
+	var energy_used:int = room_level_config.energy_used	
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction(current_location)
+	
 	
 	# set flag
 	has_event = !room_base_states.events_pending.is_empty()
@@ -103,25 +106,36 @@ func update_node() -> void:
 	for listnode in [VibeList, ProductionList]:
 		for node in listnode.get_children():
 			node.free()
-	
-	# add currencies
-	for ref in currencies:
-		var amount:int = currencies[ref]
-		if amount != 0:
+
+	# currencies
+	for ref in currency_list:
+		var item:Dictionary = currency_list[ref] 
+		var amount:int = item.amount 
+		var bonus_amount:int = item.bonus_amount
+		var total_amount:int = amount + bonus_amount
+		if total_amount != 0:
 			var new_label:Label = Label.new()
 			var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
 			new_label.set("label_settings", new_label_settings)			
 			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
+			if bonus_amount != 0:
+				new_label.text += "(+%s BONUS)" % [bonus_amount]
 			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			ProductionList.add_child(new_label)
-
+	
+	# metric 
 	for ref in metrics:
-		var amount:int = metrics[ref]
-		if amount != 0:
+		var item:Dictionary = metrics[ref] 
+		var amount:int = item.amount 
+		var bonus_amount:int = item.bonus_amount
+		var total_amount:int = amount + bonus_amount
+		if total_amount != 0:
 			var new_label:Label = Label.new()
 			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
 			new_label.set("label_settings", new_label_settings)			
 			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
+			if bonus_amount != 0:
+				new_label.text += "(+%s BONUS)" % [bonus_amount]
 			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			VibeList.add_child(new_label)			
 

@@ -1328,23 +1328,40 @@ func update_room_config(force_setup:bool = false) -> void:
 		#var val = conditional_dict.val
 		#if "on_change" in conditional_dict:
 			#conditional_dict.on_change.call(val)
-		
-	# calculate final diff
-	var final_diff:Dictionary	
-	for item in purchased_facility_arr:
-		var room_detail_currencies:Dictionary = ROOM_UTIL.return_data(item.ref).currencies
-		var room_level_config:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]
-		var room_config_currencies:Dictionary = room_level_config.currencies
-		
-		if room_level_config.is_activated:
-			for ref in room_config_currencies:
-				var amount:int = room_config_currencies[ref]
-				resources_data[ref].diff += amount
-			for ref in room_detail_currencies:
-				var amount:int = room_detail_currencies[ref]
-				resources_data[ref].diff += amount
-		
 	
+
+	# calculate final diff	
+	var metric_diff:Dictionary
+	for item in purchased_facility_arr:
+		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+		var room_level_config:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]
+		var ring_level_config:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring]
+		var floor_level_config:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring]
+
+		if room_level_config.is_activated:
+			# get currencies from room details
+			for ref in room_details.currencies:
+				var amount:int = room_details.currencies[ref]
+				resources_data[ref].diff += amount
+			
+			# get metrics from room detdaails
+			for ref in room_details.metrics:
+				var amount:int = room_details.metrics[ref]
+				new_room_config.base.metrics[ref] += amount
+			
+			# then from all other layers
+			for config in [room_level_config, ring_level_config, floor_level_config]:
+				# add bonus amount from currencies
+				for ref in config.currencies:
+					var amount:int = config.currencies[ref]
+					resources_data[ref].diff += amount
+					
+				# then metrics...
+				for ref in config.metrics:
+					var amount:int = config.metrics[ref]
+					new_room_config.base.metrics[ref] += amount	
+
+
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	
@@ -1552,12 +1569,7 @@ func room_check_for_effects(new_room_config:Dictionary) -> void:
 		
 		# only for rooms that are activated
 		if is_activated:
-			# add metrics
-			for ref in room_details.metrics:
-				var amount:int = room_details.metrics[ref]
-				new_room_config.base.metrics[ref] = U.min_max(new_room_config.base.metrics[ref] + amount, -10, 10)
-			
-			# add income
+			# add income (CONDITIONAL CHECKS ONLY)
 			for ref in room_details.currencies:
 				var amount:int = room_details.currencies[ref]
 				match ref:
@@ -1720,6 +1732,8 @@ func apply_room_influence(new_room_config:Dictionary) -> void:
 		if room_config_data.is_activated and room_details.influence.starting_range > 0:
 			if room_details.influence.effect != null and room_details.influence.effect.has("func"):
 				room_details.influence.effect.func.call(new_room_config, item.ref, item.location)
+		
+
 
 			
 func room_calculate(new_room_config:Dictionary) -> void:
@@ -1727,8 +1741,6 @@ func room_calculate(new_room_config:Dictionary) -> void:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
-		var floor_config_data:Dictionary = new_room_config.floor[floor]
-		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 	
 		room_config_data.room_data = {

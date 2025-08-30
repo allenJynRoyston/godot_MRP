@@ -1,12 +1,19 @@
 extends SubscribeWrapper
 
+enum INFTYPE {	
+	MONEY, SCIENCE, MATERIAL, CORE,
+	MORALE, SECURITY, READINESS,
+	EXTRA_LEVEL,
+}
+
 var INFLUENCE_PRESETS:Dictionary = {
-	"MONEY": {
+	# --------------------
+	INFTYPE.MONEY: {
 		"starting_range": 1,
 		"horizontal": true, 
-		"vertical": true,
+		"vertical": false,
 		"effect": {
-			"description": "Adjacent rooms have an economic bonus applied to them.",
+			"description": "Description goes here...",
 			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
 				# self ref to get currency data
 				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
@@ -27,13 +34,172 @@ var INFLUENCE_PRESETS:Dictionary = {
 				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
 					# and apply the bonus to them
 					for _ref in dict_copy:
-						var amount:int = dict_copy[_ref]
-						_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+						if _ref == RESOURCE.CURRENCY.MONEY:
+							var amount:int = dict_copy[_ref]
+							_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
 
 				# return update config
 				return _new_room_config,			
 		},		
 	}, 
+	INFTYPE.SCIENCE: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "Description goes here...",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.currencies.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var currencies:Dictionary = room_level_config.currencies
+				
+				# add any bonuses in the room to it
+				for currency_ref in currencies:
+					var amount:int = currencies[currency_ref]
+					if currency_ref not in dict_copy:
+						dict_copy[currency_ref] = 0
+					dict_copy[currency_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					# and apply the bonus to them
+					for _ref in dict_copy:
+						if _ref == RESOURCE.CURRENCY.SCIENCE:
+							var amount:int = dict_copy[_ref]
+							_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+
+				# return update config
+				return _new_room_config,			
+		},		
+	}, 
+	INFTYPE.MATERIAL: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "Description goes here...",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.currencies.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var currencies:Dictionary = room_level_config.currencies
+				
+				# add any bonuses in the room to it
+				for currency_ref in currencies:
+					var amount:int = currencies[currency_ref]
+					if currency_ref not in dict_copy:
+						dict_copy[currency_ref] = 0
+					dict_copy[currency_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					# and apply the bonus to them
+					for _ref in dict_copy:
+						if _ref == RESOURCE.CURRENCY.MATERIAL:
+							var amount:int = dict_copy[_ref]
+							_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+
+				# return update config
+				return _new_room_config,			
+		},		
+	}, 
+	INFTYPE.CORE: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "Description goes here...",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.currencies.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var currencies:Dictionary = room_level_config.currencies
+				
+				# add any bonuses in the room to it
+				for currency_ref in currencies:
+					var amount:int = currencies[currency_ref]
+					if currency_ref not in dict_copy:
+						dict_copy[currency_ref] = 0
+					dict_copy[currency_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					# and apply the bonus to them
+					for _ref in dict_copy:
+						if _ref == RESOURCE.CURRENCY.CORE:
+							var amount:int = dict_copy[_ref]
+							_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+
+				# return update config
+				return _new_room_config,			
+		},		
+	},
+	# --------------------	
+	INFTYPE.MORALE: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "MORALE BOOST",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.metrics.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var vibe_metrics:Dictionary = room_level_config.metrics
+
+
+				## add any bonuses in the room to it
+				for vibe_ref in vibe_metrics:
+					var amount:int = vibe_metrics[vibe_ref]
+					if vibe_ref not in dict_copy:
+						dict_copy[vibe_ref] = 0
+					dict_copy[vibe_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					for _ref in dict_copy:
+						match _ref:
+							RESOURCE.METRICS.MORALE:
+								var amount:int = dict_copy[_ref]								
+								_new_room_config.floor[location.floor].ring[location.ring].room[room].metrics[_ref] += amount
+
+				# return update config
+				return _new_room_config,			
+		},		
+	},
+	
+	# --------------------
+	INFTYPE.EXTRA_LEVEL: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "Description goes here...",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					_new_room_config.floor[location.floor].ring[location.ring].room[room].abl_lvl += 1
+				# return update config
+				return _new_room_config,			
+		},		
+	},	
 }
 
 var DEBUG_ROOM:Dictionary = {
@@ -149,10 +315,15 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"required_energy": 1,
 	
 	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 1,
+		RESOURCE.CURRENCY.MONEY: 5,
+		RESOURCE.CURRENCY.MATERIAL: 10,
+	},
+	
+	"metrics": {
+		RESOURCE.METRICS.MORALE: 3, 
 	},
 
-	"influence": INFLUENCE_PRESETS["MONEY"],
+	"influence": INFLUENCE_PRESETS[INFTYPE.MORALE],
 	
 	"costs": {
 		"unlock": 1,
@@ -197,7 +368,7 @@ var LOGISTICS_DEPARTMENT:Dictionary = {
 		RESOURCE.CURRENCY.MONEY: 4,
 	},
 	
-	"influence": INFLUENCE_PRESETS["MONEY"],	
+	"influence": INFLUENCE_PRESETS[INFTYPE.MONEY],	
 	
 	"abilities": func() -> Array: 
 		return [

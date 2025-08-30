@@ -67,11 +67,11 @@ func on_metrics_update() -> void:
 		var bonus_amount:int = item.bonus_amount
 		match ref:
 			RESOURCE.METRICS.MORALE:
-				VibeMorale.value = amount
+				VibeMorale.value = amount + bonus_amount
 				VibeMorale.show() if (amount + bonus_amount != 0) else VibeMorale.hide()
 			RESOURCE.METRICS.SAFETY:
-				VibeSafety.value = amount
+				VibeSafety.value = amount + bonus_amount
 				VibeSafety.show() if (amount + bonus_amount != 0) else VibeSafety.hide()
 			RESOURCE.METRICS.READINESS:
-				VibeReadiness.value = amount
+				VibeReadiness.value = amount + bonus_amount
 				VibeReadiness.show() if (amount + bonus_amount != 0) else VibeReadiness.hide()

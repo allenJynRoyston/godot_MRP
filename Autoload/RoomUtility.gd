@@ -613,14 +613,17 @@ func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Arra
 	return neighbors
 
 
-func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:
-	var include_vertical:bool = influence_data.vertical if influence_data.has("vertical") else false
-	var include_horizontal:bool = influence_data.horizontal if influence_data.has("horizontal") else false
+func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:	
+	# requires a quick check
 	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	if room_config_level.is_empty():
+		return []
+		
+	var include_vertical:bool = influence_data.vertical if influence_data.has("vertical") else false
+	var include_horizontal:bool = influence_data.horizontal if influence_data.has("horizontal") else false		
 	var range:int = U.min_max(0 if room_config_level.influence.added_range == -1 else influence_data.starting_range + room_config_level.influence.added_range, 0, 2)
-
-	
 	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
+	
 	return neighbors
 # ------------------------------------------------------------------------------	
 

@@ -143,18 +143,19 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 	U.debounce(str(self, "_on_update"), on_update)
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------	
+# -----------------------------------------------bb-------------------------------	
 func on_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
 	if preview_mode and preview_mode_ref != -1:
 		ConstructionCostPanel.show()
-		LvlTag.hide()
+		LvlTag.show()
 		
 		# hide all nodes
 		for node in node_list:
 			node.hide()
 		InfoContainer.show()
 		var preview_data:Dictionary = {}
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
 		var room_details:Dictionary = ROOM_UTIL.return_data(preview_mode_ref)
 		var influenced_data:Dictionary = ROOM_UTIL.get_influenced_data()
 		
@@ -194,7 +195,7 @@ func on_update() -> void:
 		preview_data.metrics = metrics
 		preview_data.is_under_construction = false
 		preview_data.is_activated = true
-		preview_data.abl_lvl = 0
+		preview_data.abl_lvl = room_level_config.abl_lvl
 		preview_data.max_upgrade_lvl = 0
 
 		fill(preview_data)
@@ -277,7 +278,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	SidePanel.show()
 	InfoContainer.show()
 	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
-	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "★"]
+	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl]
 	DescriptionLabel.text = room_details.details.description
 	EnergyCostLabel.text = str(room_details.details.required_energy)
 	ConstructionCostTag.text = str(room_details.details.costs.purchase)
@@ -300,14 +301,14 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	EconomyPanel.list = room_details.currency_list	
 	EconomyContainer.show() if show_economy else EconomyContainer.hide()
 	
-		# vibe
+	# vibe
 	var show_metrics:bool = false
 	for ref in metrics:
 		var item:Dictionary = metrics[ref]
 		if (item.amount + item.bonus_amount) != 0:
 			show_metrics = true
 			break
-			
+
 	VibePanel.metrics = metrics
 	VibeContainer.show() if show_metrics else VibeContainer.hide()
 	
