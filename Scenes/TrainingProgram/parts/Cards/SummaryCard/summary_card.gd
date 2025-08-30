@@ -257,7 +257,7 @@ func on_update() -> void:
 
 # ------------------------------------------------------------------------------
 func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
-	var metrics:Dictionary = room_details.metrics
+	var metric_list:Dictionary = room_details.metric_list
 	var currency_list:Dictionary = room_details.currency_list	
 	var is_under_construction:bool = room_details.is_under_construction
 	var is_activated:bool = room_details.is_activated	
@@ -303,13 +303,13 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	
 	# vibe
 	var show_metrics:bool = false
-	for ref in metrics:
-		var item:Dictionary = metrics[ref]
+	for ref in metric_list:
+		var item:Dictionary = metric_list[ref]
 		if (item.amount + item.bonus_amount) != 0:
 			show_metrics = true
 			break
 
-	VibePanel.metrics = metrics
+	VibePanel.metrics = metric_list
 	VibeContainer.show() if show_metrics else VibeContainer.hide()
 	
 	# capacity

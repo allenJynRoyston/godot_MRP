@@ -309,10 +309,10 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
 	
 	# get baseline for metrics
-	var metrics:Dictionary = {}
+	var metric_list:Dictionary = {}
 	for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
 		var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
-		metrics[ref] = {
+		metric_list[ref] = {
 			"metric_data": metric_data,
 			"amount": 0, 
 			"bonus_amount": 0
@@ -323,13 +323,13 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 		if "metrics" in dict:
 			for ref in dict.metrics:
 				var amount:int = dict.metrics[ref]
-				metrics[ref].amount += amount
+				metric_list[ref].amount += amount
 
 	# ... finally add bonuses from room_config
 	for config in [room_level_config, ring_level_config, floor_level_config]:
 		for ref in config.metrics:
 			var amount:int = config.metrics[ref]
-			metrics[ref].bonus_amount += amount
+			metric_list[ref].bonus_amount += amount
 				
 	
 	# get baseline of currency list
@@ -364,10 +364,11 @@ func extract_room_details(use_location:Dictionary = current_location, use_config
 			"details": room_details,
 			"is_under_construction": ROOM_UTIL.is_under_construction(use_location),
 			"is_activated": ROOM_UTIL.is_room_activated(use_location),
-			"metrics": metrics,
 			"max_upgrade_lvl": max_upgrade_lvl,
 			"abl_lvl": abl_lvl,		
-			"currency_list": currency_list
+			"currency_list": currency_list,
+			"metric_list": metric_list,
+			
 		} if !is_room_empty else {},
 		
 		# -----------

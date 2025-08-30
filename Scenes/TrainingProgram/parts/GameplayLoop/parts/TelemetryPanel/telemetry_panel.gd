@@ -80,7 +80,7 @@ func update_node() -> void:
 	var has_room:bool = !room_extract.room.is_empty()
 	var is_activated:bool = room_level_config.is_activated
 	var damage_val:int = room_level_config.damage_val
-	var metrics:Dictionary = room_extract.room.metrics if has_room else {}
+	var metric_list:Dictionary = room_extract.room.metric_list if has_room else {}
 	var currency_list:Dictionary = room_extract.room.currency_list if has_room else {}
 	var effect:Dictionary = room_level_config.room_data.details.effect if has_room else {}
 	var energy_used:int = room_level_config.energy_used	
@@ -124,8 +124,8 @@ func update_node() -> void:
 			ProductionList.add_child(new_label)
 	
 	# metric 
-	for ref in metrics:
-		var item:Dictionary = metrics[ref] 
+	for ref in metric_list:
+		var item:Dictionary = metric_list[ref] 
 		var amount:int = item.amount 
 		var bonus_amount:int = item.bonus_amount
 		var total_amount:int = amount + bonus_amount
