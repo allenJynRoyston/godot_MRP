@@ -704,19 +704,30 @@ func get_influenced_data(use_location:Dictionary = current_location) -> Dictiona
 	var room_details:Dictionary = return_data_via_location(use_location)
 
 	# copy it
-	var dict_copy:Dictionary = {}
+	var currency_list:Dictionary = {}
+	var metric_list:Dictionary = {}
 	# get room level currency (added bonuses)
-	var room_level_dict:Dictionary = GAME_UTIL.get_room_level_config().currencies
-	#
-	## add any bonuses in the room to it
-	for dict in [room_level_dict]:
-		for currency_ref in room_level_dict:
-			var amount:int = room_level_dict[currency_ref]
-			if currency_ref not in dict_copy:
-				dict_copy[currency_ref] = 0
-			dict_copy[currency_ref] += amount	
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
+	var currencies:Dictionary = room_level_config.currencies
+	var metrics:Dictionary
 	
-	return {"currencies": dict_copy}
+	
+	## add any bonuses in the room to it
+	for dict in [room_level_config]:
+		for currency_ref in dict.currencies:
+			var amount:int = dict.currencies[currency_ref]
+			if currency_ref not in currency_list:
+				currency_list[currency_ref] = 0
+			currency_list[currency_ref] += amount	
+			
+		for metrics_ref in dict.metrics:
+			var amount:int = dict.metrics[metrics_ref]
+			if metrics_ref not in metric_list:
+				metric_list[metrics_ref] = 0
+			metric_list[metrics_ref] += amount				
+			
+
+	return {"currency_list": currency_list, "metric_list": metric_list}
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

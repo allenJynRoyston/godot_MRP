@@ -22,7 +22,6 @@ var is_researched:bool = true
 var preview_mode:bool = false
 var room_config:Dictionary = {}
 
-const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
 var OrangePanelPreload:StyleBoxFlat = preload("res://Styles/OrangePanel.tres").duplicate()
 
 # -------------------------------

@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsbakxgtqjmp"]
+[gd_scene load_steps=10 format=3 uid="uid://dsbakxgtqjmp"]
 
 [ext_resource type="Script" uid="uid://dki4lkk52npow" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BlueprintComponent/blueprint_component.gd" id="1_wuj0y"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_r3s2j"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_5xmsx"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_4qbcm"]
+[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="6_5xmsx"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="6_r3s2j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
@@ -136,3 +137,11 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
+
+[node name="MetricList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PanelContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer/MetricList" instance=ExtResource("6_5xmsx")]
+layout_mode = 2

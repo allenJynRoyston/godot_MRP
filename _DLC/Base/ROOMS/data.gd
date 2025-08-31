@@ -4,6 +4,7 @@ enum INFTYPE {
 	CURRENCIES, MONEY, SCIENCE, MATERIAL, CORE,
 	METRICS, MORALE, SAFETY, READINESS,
 	EXTRA_LEVEL,
+	ENERGY,
 }
 
 var INFLUENCE_PRESETS:Dictionary = {
@@ -332,6 +333,7 @@ var INFLUENCE_PRESETS:Dictionary = {
 				return _new_room_config,			
 		},		
 	},	
+	# --------------------
 }
 
 var DEBUG_ROOM:Dictionary = {
@@ -429,6 +431,7 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------		
 }
 
+#region DEPARTMENTS
 var ADMIN_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.ADMIN_DEPARTMENT,		
@@ -457,7 +460,7 @@ var ADMIN_DEPARTMENT:Dictionary = {
 		RESOURCE.METRICS.READINESS: 3, 
 	},
 
-	"influence": INFLUENCE_PRESETS[INFTYPE.METRICS],
+	"influence": INFLUENCE_PRESETS[INFTYPE.MONEY],
 	
 	"costs": {
 		"unlock": 1,
@@ -668,6 +671,7 @@ var CONTAINMENT_CELL:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 0,	
 }
+#endregion
 
 #region ADMIN linkables
 var ADMIN_LINK_1:Dictionary = {
@@ -1125,7 +1129,6 @@ var CONTAINMENT_LINK_4:Dictionary = {
 		]
 }
 #endregion
-
 
 #region SPECIALS
 # ------------------------------------------------------------------------------ SPECIALS
@@ -2101,21 +2104,23 @@ var MONEY_CONVERTER:Dictionary = {
 #endregion
 
 #region ENERGY
-var ENERGY_STORAGE:Dictionary = {
+var ENERGY_CAPACITOR_1:Dictionary = {
 	# ------------------------------------------
-	"ref": ROOM.REF.ENERGY_STORAGE,
-	"name": "ENERGY STORAGE",
-	"shortname": "E.STORAGE",
+	"ref": ROOM.REF.ENERGY_CAPACITOR_1,
+	"name": "ENERGY_CAPACITOR_1",
+	"shortname": "E.CAPACITOR_1",
 	"categories": [ROOM.CATEGORY.ENERGY],
 	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Utilize technicians to increase safety and readiness.",
+	"description": "Increases energy for the entire wing by 5.",
 	# ------------------------------------------
 	
 	# ------------------------------------------
+	"requires_unlock": false,	
 	"required_energy": 0,
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.RESEARCHER
 	],	
+	"own_limit": 10,	
 	# ------------------------------------------	
 	
 	# ------------------------------------------
@@ -2124,7 +2129,7 @@ var ENERGY_STORAGE:Dictionary = {
 		"purchase": 1,
 	},
 	# ------------------------------------------
-	
+
 	# ------------------------------------------
 	"effect": {
 		"description": "Adds +5 available energy to the wing.",
@@ -2138,13 +2143,88 @@ var ENERGY_STORAGE:Dictionary = {
 	},
 	# ------------------------------------------
 	
-	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			
-		],	
-	# ------------------------------------------	
 }
+
+var ENERGY_CAPACITOR_2:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ENERGY_CAPACITOR_2,
+	"name": "ENERGY_CAPACITOR_2",
+	"shortname": "E.CAPACITOR_2",
+	"categories": [ROOM.CATEGORY.ENERGY],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Increases energy for the entire wing by 10.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"requires_unlock": false,	
+	"required_energy": 0,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	"own_limit": 10,	
+	# ------------------------------------------	
+	
+	# ------------------------------------------
+	"costs": {
+		"unlock": 1,
+		"purchase": 1,
+	},
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"effect": {
+		"description": "Adds +10 available energy to the wing.",
+		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			var floor:int = _item.location.floor
+			var ring:int = _item.location.ring
+			var room:int = _item.location.room
+			var ring_config_data:Dictionary = _new_room_config.floor[floor].ring[ring]
+			_new_room_config.floor[floor].ring[ring].energy.available += 10
+			return _new_room_config,
+	},
+	# ------------------------------------------
+}
+
+var ENERGY_CAPACITOR_3:Dictionary = {
+	# ------------------------------------------
+	"ref": ROOM.REF.ENERGY_CAPACITOR_3,
+	"name": "ENERGY_CAP3ACITOR_3",
+	"shortname": "E.CAPACITOR_3",
+	"categories": [ROOM.CATEGORY.ENERGY],
+	"img_src": "res://Media/rooms/research_lab.png",
+	"description": "Increases energy for the entire wing by 15.",
+	# ------------------------------------------
+	
+	# ------------------------------------------
+	"requires_unlock": false,	
+	"required_energy": 0,
+	"required_staffing": [
+		RESEARCHER.SPECIALIZATION.RESEARCHER
+	],	
+	"own_limit": 10,	
+	# ------------------------------------------	
+	
+	# ------------------------------------------
+	"costs": {
+		"unlock": 1,
+		"purchase": 1,
+	},
+	# ------------------------------------------
+
+	# ------------------------------------------
+	"effect": {
+		"description": "Adds +15 available energy to the wing.",
+		"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
+			var floor:int = _item.location.floor
+			var ring:int = _item.location.ring
+			var room:int = _item.location.room
+			var ring_config_data:Dictionary = _new_room_config.floor[floor].ring[ring]
+			_new_room_config.floor[floor].ring[ring].energy.available += 15
+			return _new_room_config,
+	},
+	# ------------------------------------------
+}
+
 
 var ENERGY_SYPHON:Dictionary = {
 	# ------------------------------------------
@@ -2153,7 +2233,7 @@ var ENERGY_SYPHON:Dictionary = {
 	"shortname": "E.SYPHON",
 	"categories": [ROOM.CATEGORY.ENERGY],
 	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Any unused energy from the corresponding wing is available for this wing.  (0 <- 1, 1 <- 2, etc)",
+	"description": "Any unused energy from the corresponding wing is available for this wing.  (0 <- 1, 1 <- 2, etc)",	
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -2443,8 +2523,6 @@ var SP_CLINIC:Dictionary = {
 #endregion
 
 
-
-
 # -----------------------------------	
 var list:Array[Dictionary] = [
 	DEBUG_ROOM,
@@ -2502,7 +2580,11 @@ var list:Array[Dictionary] = [
 	MTF_BARRICKS,
 	
 	# --------------- ENERGY
-	ENERGY_STORAGE, ENERGY_SYPHON,
+	ENERGY_CAPACITOR_1, 
+	ENERGY_CAPACITOR_2,
+	ENERGY_CAPACITOR_3,
+	
+	ENERGY_SYPHON,
 	
 	# --------------- UTILITY
 	UI_ASSIST, WEAPONS_RANGE, SCRANTON_REALITY_ANCHOR,

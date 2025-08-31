@@ -166,9 +166,9 @@ func on_update() -> void:
 			currency_list[ref] = {
 				"icon": resource_details.icon, 
 				# ... then get all currency from room
-				"amount": room_details.currencies[ref] if ref in room_details.currencies else 0,
+				"amount": room_details.currency_list[ref] if ref in room_details.currencies else 0,
 				# ... add bonuses from influenced state
-				"bonus_amount": influenced_data.currencies[ref] if ref in influenced_data.currencies else 0
+				"bonus_amount": influenced_data.currency_list[ref] if ref in influenced_data.currencies else 0
 			}		
 			
 

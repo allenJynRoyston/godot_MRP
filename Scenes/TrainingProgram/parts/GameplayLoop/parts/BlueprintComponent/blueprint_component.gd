@@ -2,8 +2,10 @@ extends SubscribeWrapper
 
 @onready var NoBonusLabel:Label = $VBoxContainer/Income/Content/MarginContainer/NoBonusLabel
 @onready var CurrencyList:HBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/CurrencyList
+@onready var MetricList:HBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/MetricList
 
 const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
+const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn")
 
 var modulate_tween:Tween
 var position_tween:Tween
@@ -47,16 +49,18 @@ func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or !is_active:return
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)
 	
-	for node in CurrencyList.get_children():
-		node.queue_free()
+	for list in [MetricList, CurrencyList]:
+		for node in list.get_children():
+			node.queue_free()
 	
 	if current_location.room in all_influenced_rooms:
 		NoBonusLabel.hide()
 		var influenced_data:Dictionary = ROOM_UTIL.get_influenced_data(current_location)
-		var currencies:Dictionary = influenced_data.currencies
+		var currency_list:Dictionary = influenced_data.currency_list
+		var metric_list:Dictionary = influenced_data.metric_list
 		
-		for ref in currencies:
-			var amount:int = currencies[ref]
+		for ref in currency_list:
+			var amount:int = currency_list[ref]
 			if amount != 0:
 				var new_node:Control = EconItemPreload.instantiate()
 				var currency_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
@@ -67,6 +71,16 @@ func update_node() -> void:
 				new_node.invert_colors = false
 				new_node.horizontal_mode = false
 				CurrencyList.add_child(new_node)
+		
+		for ref in metric_list:
+			var amount:int = metric_list[ref]
+			if amount != 0:
+				var new_node:Control = VibeItemPreload.instantiate()
+				var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
+				new_node.metric = ref
+				new_node.value = amount
+				new_node.invert_color = true
+				MetricList.add_child(new_node)
 		return
 	
 	NoBonusLabel.show()
