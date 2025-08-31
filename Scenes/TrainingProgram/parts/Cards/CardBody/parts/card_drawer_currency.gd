@@ -48,13 +48,6 @@ func on_current_location_update(new_val:Dictionary) -> void:
 func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
 	U.debounce(str(self.name, "_update_nodes"), on_list_update)
-	
-func get_is_activated() -> bool:
-	if !use_location.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		return false if extract_data.room.is_empty() else extract_data.room.is_activated		
-		
-	return false	
 # -----------------------------
 
 # -----------------------------
@@ -67,17 +60,14 @@ func on_list_update() -> void:
 		
 	if list.is_empty():return
 	
-
 	for ref in list:
 		var item:Dictionary = list[ref]
-		# gets the amount of just the room, but the room_config contains values of any passives and bonuses also applied
-		var amount:int = item.amount #if !preview_mode else room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].currencies[item.ref]
+		var amount:int = item.amount
 		var bonus_amount:int = item.bonus_amount
-		
-		
+
 		if (amount + bonus_amount) != 0:		
 			var new_node:Control = EconItemPreload.instantiate()
-			new_node.amount = amount - bonus_amount
+			new_node.amount = amount
 			new_node.bonus_amount = bonus_amount
 			new_node.is_negative = amount < 0
 			new_node.icon = item.icon

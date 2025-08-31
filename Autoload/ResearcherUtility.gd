@@ -363,32 +363,6 @@ func get_spec_capacity_count(ref:RESEARCHER.SPECIALIZATION) -> int:
 	return room_config.base.staff_capacity[ref] + OS_STORE.starting_data.starting_personnel_capacity[ref] + GameplayNode.starting_data.personnel_capacity[ref]
 # ------------------------------------------------------------------------------
 	
-# ------------------------------------------------------------------------------	
-func get_details_from_extract(location:Dictionary) -> Dictionary:
-	if !location.is_empty():
-		var room_extract:Dictionary = GAME_UTIL.extract_room_details(location)			
-		
-		return {
-			"researchers": room_extract.researchers,			
-			"room": {
-				"is_empty": room_extract.room.is_empty(),
-				"ref": -1 if room_extract.room.is_empty() else room_extract.room.details.ref,	
-				"is_activated": false if room_extract.room.is_empty() else room_extract.room.is_activated, 
-			},
-			"scp": {
-				"is_empty": room_extract.scp.is_empty(),
-				"ref": -1 if room_extract.scp.is_empty() else room_extract.scp.details.ref,
-				"is_contained": false if room_extract.scp.is_empty() else room_extract.scp.is_contained,
-			}			
-		}
-		
-	return {
-		"researchers": [],
-		"room_ref": -1,
-		"scp_ref": -1
-	}		
-# ------------------------------------------------------------------------------	
-
 # ------------------------------------------------------------------------------		
 func sort_ascending(a:Dictionary, b:Dictionary) -> bool:
 	return a.level > b.level

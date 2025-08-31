@@ -113,63 +113,7 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 
 # --------------------------------------------------------------------------------------------------
 func update_display() -> void:
-	var data:Dictionary = completed_build_items[on_item]
-	
-	has_more = on_item + 1 < completed_build_items.size() 
-	
-	for child in DescriptionList.get_children():
-		child.queue_free()
-		
-	for btn in RightSideBtnList.get_children():
-		btn.is_disabled = false		
-		
-		
-	match data.action:
-		# ------------------------------------------------------------------------------------------
-		ACTION.AQ.BUILD_ITEM:
-			# update
-			purchased_facility_arr.push_back({
-				"type_ref": data.type_ref if "type_ref" in data.type_ref else null,
-				"location": data.location.duplicate()
-			})
-			SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
-			# wait for data to update
-			await U.tick()
-			
-			# now extract and populate
-			var extract_data:Dictionary = GAME_UTIL.extract_room_details(data.location)
-			var details:Dictionary = extract_data.room.details
-			var can_activate:bool = extract_data.can_activate
-			var activation_requirements:Array = ROOM_UTIL.return_activation_cost(data.ref)
-			
-			StatusLabel.text = "CONSTRUCTION COMPLETE"
-			TitleLabel.text = "%s" % [details.name]
-			ImageContainer.texture = CACHE.fetch_image(details.img_src)
-			
-			for item in activation_requirements:
-				var current_amount:int = resources_data[item.resource.ref].amount
-				var has_enough:bool = current_amount + item.amount < 0
-				var new_node:Control = CheckboxBtnPreload.instantiate()
-				new_node.is_hoverable = false
-				new_node.no_bg = true
-				new_node.is_checked = !has_enough
-				new_node.modulate = Color(1, 0, 0, 1) if has_enough else Color(1, 1, 1, 1)
-				new_node.title =  "%s REQUIRED: %s (YOU HAVE %s)" % [item.resource.name, abs(item.amount), current_amount]
-				DescriptionList.add_child(new_node)
-				
-			ActivateBtn.onClick = func() -> void:
-				# GAME_UTIL.activate_room(data.location, true)
-				on_next()				
-						
-			SkipBtn.show()
-			ActivateBtn.show()
-			DescriptionList.hide() if activation_requirements.size() == 0 else DescriptionList.show()
-			
-			ActivateBtn.is_disabled = !can_activate
-
-					
-	if "location" in data:
-		SUBSCRIBE.current_location = data.location
+	pass
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------		

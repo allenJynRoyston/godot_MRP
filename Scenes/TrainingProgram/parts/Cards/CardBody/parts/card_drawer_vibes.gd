@@ -42,13 +42,6 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	room_config = new_val
 	U.debounce(str(self.name, "_on_metrics_update"), on_metrics_update, 0.1)
 	
-func get_is_activated() -> bool:
-	if !use_location.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		return false if extract_data.room.is_empty() else extract_data.room.is_activated		
-		
-	return true		
-	
 func on_hollow_update() -> void:
 	if !is_node_ready():return
 	

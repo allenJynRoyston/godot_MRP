@@ -61,13 +61,9 @@ func on_ref_update() -> void:
 
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	var is_locked:bool = false
-	var is_activated:bool = true
+	var is_activated:bool = ROOM_UTIL.is_room_activated()
 	var no_passives:bool = false
 	var no_abilities:bool = false
-	
-	if !use_location.is_empty():
-		var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": use_location.floor, "ring": use_location.ring, "room": use_location.room})
-		is_activated = extract_data.room.is_activated
 	
 	#DeactivatedPanel.hide() if is_activated else DeactivatedPanel.show()
 	for node in [CardDrawerActiveAbilities, CardDrawerPassiveAbilities]:

@@ -74,27 +74,6 @@ func setup_gridselect() -> void:
 		node.is_hoverable = true
 		node.check_for_promotions = check_for_promotions
 		
-		if check_for_compatability:
-			var extract_data:Dictionary = GAME_UTIL.extract_room_details(use_location)
-			node.is_incompatable = data.specialization.ref != filter_for_type 
-			node.assigned_elsewhere_data = {} if data.props.assigned_to_room.is_empty() else GAME_UTIL.extract_room_details(data.props.assigned_to_room)
-			node.is_assigned_elsewhere = !data.props.assigned_to_room.is_empty() and data.uid not in assigned_uids
-			node.is_already_assigned = data.uid in assigned_uids
-		else:
-			node.is_incompatable = false
-			node.is_assigned_elsewhere = false
-			node.is_already_assigned = false
-			node.can_be_promoted = RESEARCHER_UTIL.can_be_promoted(data.uid)
-			
-		
-
-				
-		#node.onHover = func() -> void:
-			#if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			#GridSelect.grid_index = index
-			#DetailPanel.researcher_uid = data.uid
-			#SummaryImage.texture = CACHE.fetch_image(data.img_src)
-			
 		node.onClick = func() -> void:
 			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or !node.is_clickable():return
 			

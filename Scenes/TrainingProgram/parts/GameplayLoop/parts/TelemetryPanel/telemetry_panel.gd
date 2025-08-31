@@ -72,20 +72,18 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or !is_active:return
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)		
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)
-	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state(current_location)	
 	
 	var room_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * GBL.game_resolution 
-	var has_room:bool = !room_extract.room.is_empty()
-	var is_activated:bool = room_level_config.is_activated
-	var damage_val:int = room_level_config.damage_val
-	var metric_list:Dictionary = room_extract.room.metric_list if has_room else {}
-	var currency_list:Dictionary = room_extract.room.currency_list if has_room else {}
-	var effect:Dictionary = room_level_config.room_data.details.effect if has_room else {}
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
+	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state()		
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty()
+	var is_activated:bool = ROOM_UTIL.is_room_activated()
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction()	
+	var metric_list:Dictionary = ROOM_UTIL.get_room_metric_list() 	
+	var currency_list:Dictionary = ROOM_UTIL.get_room_currency_list() 
+	var effect:Dictionary = ROOM_UTIL.get_room_effect()
 	var energy_used:int = room_level_config.energy_used	
-	var is_under_construction:bool = ROOM_UTIL.is_under_construction(current_location)
-	
+	var damage_val:int = room_level_config.damage_val
 	
 	# set flag
 	has_event = !room_base_states.events_pending.is_empty()
@@ -138,6 +136,7 @@ func update_node() -> void:
 				new_label.text += "(+%s BONUS)" % [bonus_amount]
 			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			VibeList.add_child(new_label)			
+	
 
 	# is empty production list
 	if ProductionList.get_child_count() == 0:
@@ -161,11 +160,11 @@ func update_node() -> void:
 			tween.stop()
 			
 	DetectedPanel.modulate.a = 0
-	DetectedPanel.global_position = room_pos - Vector2(0, 120 if has_room else 80)
+	DetectedPanel.global_position = room_pos - Vector2(0, 120 if !is_room_empty else 80)
 	
 	# show correct content
-	Empty.show() if !has_room else Empty.hide()
-	Stats.show() if has_room else Stats.hide()	
+	Empty.show() if is_room_empty else Empty.hide()
+	Stats.show() if !is_room_empty else Stats.hide()	
 	Income.hide() if (VibeList.get_child_count() == 0 and ProductionList.get_child_count() == 0) else Income.show()
 		
 	

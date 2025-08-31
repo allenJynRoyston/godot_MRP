@@ -283,103 +283,104 @@ func get_metric_val(use_location:Dictionary, metric_ref:RESOURCE.METRICS) -> int
 	return floor_val + ring_val + room_val	
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
-	if use_config.is_empty():return {}
-	var designation:String = U.location_to_designation(use_location)
-	var floor:int = use_location.floor
-	var ring:int = use_location.ring
-	var room:int = use_location.room
-	
-	var floor_level_config:Dictionary = use_config.floor[floor]
-	var ring_level_config:Dictionary = use_config.floor[floor].ring[ring]
-	var room_level_config:Dictionary = use_config.floor[floor].ring[ring].room[room]
-	
-	var is_room_empty:bool = room_level_config.room_data.is_empty()
-	var is_scp_empty:bool = room_level_config.scp_data.is_empty()
-	
-	var room_details:Dictionary = {} if is_room_empty else room_level_config.room_data.details 
-	var scp_details:Dictionary = {} if is_scp_empty else room_level_config.scp_data.details
-	
-	var researchers:Array = hired_lead_researchers_arr.filter(func(x):
-		var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
-		if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
-			return true
-		return false	
-	).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
-	
-	# get baseline for metrics
-	var metric_list:Dictionary = {}
-	for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
-		var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
-		metric_list[ref] = {
-			"metric_data": metric_data,
-			"amount": 0, 
-			"bonus_amount": 0
-		}
-	
-	# ...then get all metrics from room/scp
-	for dict in [room_details, scp_details]:
-		if "metrics" in dict:
-			for ref in dict.metrics:
-				var amount:int = dict.metrics[ref]
-				metric_list[ref].amount += amount
-
-	# ... finally add bonuses from room_config
-	for config in [room_level_config, ring_level_config, floor_level_config]:
-		for ref in config.metrics:
-			var amount:int = config.metrics[ref]
-			metric_list[ref].bonus_amount += amount
-				
-	
-	# get baseline of currency list
-	var currency_list:Dictionary = {}
-	for ref in [RESOURCE.CURRENCY.MONEY, RESOURCE.CURRENCY.SCIENCE, RESOURCE.CURRENCY.MATERIAL, RESOURCE.CURRENCY.CORE]:
-		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-		currency_list[ref] = {
-			"icon": resource_details.icon, 
-			"amount": 0,
-			"bonus_amount": 0
-		}
-	
-	# ... then get all currency from room
-	if !room_details.is_empty():
-		for ref in room_details.currencies:
-			var amount:int = room_details.currencies[ref]
-			currency_list[ref].amount += amount
-	
-	# ... finally add bonuses from room_config
-	for config in [room_level_config, ring_level_config, floor_level_config]:
-		for ref in config.currencies:
-			var amount:int = config.currencies[ref]		
-			currency_list[ref].bonus_amount += amount
-	
-	# check for passive and active abilities, grab their max level; that's what becomes the max level
-	var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
-	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
-	
-	return {
-		# -----------
-		"room": {
-			"details": room_details,
-			"is_under_construction": ROOM_UTIL.is_under_construction(use_location),
-			"is_activated": ROOM_UTIL.is_room_activated(use_location),
-			"max_upgrade_lvl": max_upgrade_lvl,
-			"abl_lvl": abl_lvl,		
-			"currency_list": currency_list,
-			"metric_list": metric_list,
-			
-		} if !is_room_empty else {},
-		
-		# -----------
-		"scp": {
-			"details": scp_details,
-		} if !is_scp_empty else {},
-		
-		# -----------
-		"researchers": researchers
-	}
-# ------------------------------------------------------------------------------	
+## ------------------------------------------------------------------------------
+#func extract_room_details(use_location:Dictionary = current_location, use_config:Dictionary = room_config) -> Dictionary:
+	#if use_config.is_empty():return {}
+	#var designation:String = U.location_to_designation(use_location)
+	#var floor:int = use_location.floor
+	#var ring:int = use_location.ring
+	#var room:int = use_location.room
+	#
+	#var floor_level_config:Dictionary = use_config.floor[floor]
+	#var ring_level_config:Dictionary = use_config.floor[floor].ring[ring]
+	#var room_level_config:Dictionary = use_config.floor[floor].ring[ring].room[room]
+	#
+	#var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
+	#var is_scp_empty:bool = ROOM_UTIL.is_scp_empty(use_location)
+	#
+	#var room_details:Dictionary = {} if is_room_empty else room_level_config.room_data.details 
+	#var scp_details:Dictionary = {} if is_scp_empty else room_level_config.scp_data.details
+	#
+	#var researchers:Array = hired_lead_researchers_arr.filter(func(x):
+		#var details:Dictionary = RESEARCHER_UTIL.return_data_with_uid(x[0])
+		#if (!details.props.assigned_to_room.is_empty() and U.location_to_designation(details.props.assigned_to_room) == designation):
+			#return true
+		#return false	
+	#).map(func(x):return RESEARCHER_UTIL.return_data_with_uid(x[0]))
+	#
+	## get baseline for metrics
+	#var metric_list:Dictionary = {}
+	#for ref in [RESOURCE.METRICS.MORALE, RESOURCE.METRICS.SAFETY, RESOURCE.METRICS.READINESS]:
+		#var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
+		#metric_list[ref] = {
+			#"metric_data": metric_data,
+			#"amount": 0, 
+			#"bonus_amount": 0
+		#}
+	#
+	## ...then get all metrics from room/scp
+	#for dict in [room_details, scp_details]:
+		#if "metrics" in dict:
+			#for ref in dict.metrics:
+				#var amount:int = dict.metrics[ref]
+				#metric_list[ref].amount += amount
+#
+	## ... finally add bonuses from room_config
+	#for config in [room_level_config, ring_level_config, floor_level_config]:
+		#for ref in config.metrics:
+			#var amount:int = config.metrics[ref]
+			#metric_list[ref].bonus_amount += amount
+				#
+	#
+	## get baseline of currency list
+	#var currency_list:Dictionary = {}
+	#for ref in [RESOURCE.CURRENCY.MONEY, RESOURCE.CURRENCY.SCIENCE, RESOURCE.CURRENCY.MATERIAL, RESOURCE.CURRENCY.CORE]:
+		#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		#currency_list[ref] = {
+			#"icon": resource_details.icon, 
+			#"amount": 0,
+			#"bonus_amount": 0
+		#}
+	#
+	## ... then get all currency from room
+	#if !room_details.is_empty():
+		#for ref in room_details.currencies:
+			#var amount:int = room_details.currencies[ref]
+			#currency_list[ref].amount += amount
+	#
+	## ... finally add bonuses from room_config
+	#for config in [room_level_config, ring_level_config, floor_level_config]:
+		#for ref in config.currencies:
+			#var amount:int = config.currencies[ref]		
+			#currency_list[ref].bonus_amount += amount
+	#
+	## check for passive and active abilities, grab their max level; that's what becomes the max level
+	#var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
+	#var max_upgrade_lvl:int = ROOM_UTIL.get_max_level(-1 if is_room_empty else room_details.ref)
+	#
+#
+	#return {
+		## -----------
+		#"room": {
+			#"details": room_details,
+			#"is_under_construction": ROOM_UTIL.is_under_construction(use_location),
+			#"is_activated": ROOM_UTIL.is_room_activated(use_location),
+			#"max_upgrade_lvl": max_upgrade_lvl,
+			#"abl_lvl": abl_lvl,	
+			#"currency_list": currency_list,
+			#"metric_list": metric_list,
+			#
+		#} if !is_room_empty else {},
+		#
+		## -----------
+		#"scp": {
+			#"details": scp_details,
+		#} if !is_scp_empty else {},
+		#
+		## -----------
+		#"researchers": researchers
+	#}
+## ------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func use_active_ability(ability:Dictionary, room_ref:int, ability_index:int, use_location:Dictionary) -> void:
@@ -1314,34 +1315,7 @@ func upgrade_scp_level(from_location:Dictionary, scp_ref:int) -> bool:
 	var scp_details:Dictionary = SCP_UTIL.return_data(scp_ref)
 	#var testing_index:int = scp_data.contained_list[contained_data.index].testing_completed
 	
-	#if testing_index >= scp_details.testing_options.size():
-		#ConfirmModal.set_props("There's no additional test scenarios available.")
-		#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-		#await ConfirmModal.user_response
-		#GameplayNode.restore_showing_state()	
-		#return true
-	#
-	#var testing_event:Dictionary = scp_details.testing_options[testing_index]
-	#ConfirmModal.activation_requirements = SCP_UTIL.return_testing_requirements(scp_ref, testing_index)
-	#ConfirmModal.set_props("Begin testing on %s?" % [scp_details.name], "THERE ARE RISKS ASSOCIATED WITH TESTING.", scp_details.img_src)
-	#await GameplayNode.show_only([ConfirmModal, Structure3dContainer])	
-	#var confirm:bool = await ConfirmModal.user_response
-	
-	#TODO: ADD EVENT 	
-	#if confirm:
-		#SUBSCRIBE.resources_data = SCP_UTIL.calculate_testing_costs(scp_ref, testing_index)
-		#var extract_data:Dictionary = GAME_UTIL.extract_room_details(from_location)		
-		#GameplayNode.event_data = [{"event_instructions": testing_event.event_instructions.call(extract_data, 0)}]
-		#await GameplayNode.on_events_complete
-		## increament and save
-		#scp_data.contained_list[contained_data.index].testing_completed = U.min_max( contained_data.data.testing_completed + 1, 0, scp_details.testing_options.size())
-		#SUBSCRIBE.scp_data = scp_data		
-		## need to restore hud here
-		#await U.tick()
-		#GameplayNode.restore_player_hud()
-		#
-	#else:
-		#GameplayNode.restore_showing_state()	
+
 	#
 	#return confirm
 	return false

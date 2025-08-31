@@ -213,10 +213,11 @@ func on_unavailable_rooms_update(new_val:Array = unavailable_rooms) -> void:
 # --------------------------------------------------------------------------------------------------	
 func build_room_details() -> void:
 	if room_config.is_empty() or current_location.is_empty() or ref_index == -1 or room_ref == "":return
-	var data:Dictionary = room_config.floor[assigned_floor].ring[assigned_wing].room[ref_index]
-	var extract_data:Dictionary = GAME_UTIL.extract_room_details({"floor": assigned_floor, "ring": assigned_wing, "room": ref_index})
-	var is_room_empty:bool = extract_data.room.is_empty()
-	var is_scp_empty:bool = extract_data.scp.is_empty()
+	var use_location:Dictionary = {"floor": assigned_floor, "ring": assigned_wing, "room": ref_index}
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
+	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty(use_location)
+	var is_room_activated:bool = ROOM_UTIL.is_room_activated(use_location)
 	var mesh_duplicate = MainMesh.mesh.duplicate()
 	var material_copy = RoomMaterialBuilt.duplicate() 
 	material_copy.albedo_color = Color.SLATE_GRAY
@@ -232,21 +233,21 @@ func build_room_details() -> void:
 		ActivationIndicatorLight.omni_attenuation = 1.0
 		ActivationIndicatorLight.light_color = Color.TRANSPARENT
 	else:
-		DoorLabel.text = extract_data.room.details.shortname		
+		DoorLabel.text = room_details.shortname		
 		#match extract_data.room_category:
 			#ROOM.CATEGORY.CONTAINMENT_CELL:
 				#material_copy.albedo_color = special_color if extract_data.is_directors_office else scp_color
 			#ROOM.CATEGORY.FACILITY:
 				#material_copy.albedo_color = special_color if extract_data.is_directors_office else room_color
 		ActivationIndicatorLight.omni_attenuation = 6.5
-		ActivationIndicatorLight.light_color = Color.GREEN if extract_data.room.is_activated else Color.ORANGE_RED
+		ActivationIndicatorLight.light_color = Color.GREEN if is_room_activated else Color.ORANGE_RED
 	
 	if is_scp_empty:
 		ScpIndicatorLight.omni_attenuation = 0.0
 		ScpIndicatorLight.light_color = Color.TRANSPARENT
 		is_pulsing = false
 	else:
-		DoorLabel.text = extract_data.scp.details.name
+		DoorLabel.text = "SCP DATA NAME"
 		ScpIndicatorLight.show()
 		ScpIndicatorLight.omni_attenuation = 6.5
 		ScpIndicatorLight.light_color = Color.MEDIUM_PURPLE

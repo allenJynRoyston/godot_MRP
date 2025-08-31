@@ -151,9 +151,11 @@ func update_node() -> void:
 	use_location.room = index
 	
 	# hide/show currency icons
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(use_location)
-	var is_room_empty:bool = room_extract.room.is_empty()
-
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
+	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location)
+	
 	if is_room_empty:
 		ConstructionIcon.hide()
 		
@@ -173,46 +175,20 @@ func update_node() -> void:
 		on_alignment_update()
 		return
 	
-	var room_details:Dictionary = ROOM_UTIL.return_data(room_extract.room.details.ref)
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
-	var currencies:Dictionary = room_level_config.currencies
-	var metrics:Dictionary = room_level_config.metrics
-	var is_activated:bool = room_extract.room.is_activated
 
-	#for ref in currencies:
-		#var amount:int = currencies[ref]
-		#if amount != 0:
-			#var new_node:Control = EcoItemPreload.instantiate()
-			#var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			#new_node.amount = amount
-			#new_node.icon = resource_details.icon
-			#ListContainer.add_child(new_node)
-#
-	#for ref in metrics:
-		#var amount:int = metrics[ref]
-		#if amount != 0:
-			#var new_node:Control = VibeItemPreload.instantiate()
-			#var resource_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
-			#new_node.value = amount
-			#new_node.metric = ref
-			#new_node.invert_color = true
-			#new_node.big_numbers = true
-			#ListContainer.add_child(new_node)
-				
-	
+	# update label
 	name_label_settings.font_size = 12 
 	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
 	
+	# icons
 	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
 	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
 	StatusIcon.icon = SVGS.TYPE.NONE
 	StatusIcon.icon_color = Color.DARK_GREEN if is_activated else Color.DARK_RED
 	
-	#await U.set_timeout(0.7)
-	name_str = (room_extract.room.details.shortname if !is_room_empty else "").substr(0, 13)
+	# name
+	name_str = room_details.shortname.substr(0, 13)
 	
-
 	if focus_on_current:
 		if current_location.room == index:
 			set_fade(true)

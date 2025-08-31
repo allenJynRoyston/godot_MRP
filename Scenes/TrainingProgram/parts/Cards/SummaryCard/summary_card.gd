@@ -145,7 +145,7 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 
 # -----------------------------------------------bb-------------------------------	
 func on_update() -> void:
-	if !is_node_ready() or room_config.is_empty() or base_states.is_empty():return
+	if !is_node_ready() or room_config.is_empty() or base_states.is_empty() or use_location.is_empty():return
 	if preview_mode and preview_mode_ref != -1:
 		ConstructionCostPanel.show()
 		LvlTag.show()
@@ -191,25 +191,18 @@ func on_update() -> void:
 		
 		# shape for preview
 		preview_data.details = ROOM_UTIL.return_data(preview_mode_ref)
-		preview_data.currency_list = currency_list
-		preview_data.metrics = metrics
-		preview_data.is_under_construction = false
-		preview_data.is_activated = true
-		preview_data.abl_lvl = room_level_config.abl_lvl
-		preview_data.max_upgrade_lvl = 0
-
-		fill(preview_data)
+		fill( ROOM_UTIL.return_data(preview_mode_ref), {}, true )
 		show()		
 		return
 	
-	
-	if use_location.is_empty():return
-	var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
-	var room_details:Dictionary = extract_room_data.room
-	var scp_details:Dictionary = extract_room_data.scp
+	#var extract_room_data:Dictionary = GAME_UTIL.extract_room_details()
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty()
+	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty()
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(use_location)
 	
 	# no room
-	if extract_room_data.room.is_empty():
+	if is_room_empty:
 		hide()
 		return
 	
@@ -219,76 +212,69 @@ func on_update() -> void:
 	for node in node_list:
 		node.hide()
 	
-	
 	# show
 	show()
-	
 	if modules_only:
 		SidePanel.hide()
 		InfoContainer.hide()
 		ModuleComponent.room_details = {}
 		
 		# show containment
-		ContainmentContainer.show() if room_details.details.can_contain else ContainmentContainer.hide()
+		ContainmentContainer.show() if room_details.can_contain else ContainmentContainer.hide()
 		ContainmentComponent.use_location = use_location				
-		ContainmentComponent.room_details = room_details.details
+		ContainmentComponent.room_details = room_details
 		
 		# passives
-		if room_details.details.passive_abilities.call().is_empty():
+		if room_details.passive_abilities.call().is_empty():
 			ModuleContainer.hide()
 			ModuleComponent.room_details = {}
 		else:
 			ModuleContainer.show()
 			ModuleComponent.use_location = use_location		
-			ModuleComponent.room_details = room_details.details
+			ModuleComponent.room_details = room_details
 		
 		# assign programs
-		if room_details.details.abilities.call().is_empty():
+		if room_details.abilities.call().is_empty():
 			ProgramContainer.hide()
 			ProgramComponent.room_details = {}
 		else:
 			ProgramContainer.show()
 			ProgramComponent.use_location = use_location			
-			ProgramComponent.room_details = room_details.details	
+			ProgramComponent.room_details = room_details	
 		return
 
-	fill(room_details, scp_details)
+	fill(room_details, scp_details, false)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
-	var metric_list:Dictionary = room_details.metric_list
-	var currency_list:Dictionary = room_details.currency_list	
-	var is_under_construction:bool = room_details.is_under_construction
-	var is_activated:bool = room_details.is_activated	
-	var lvl:int = room_details.abl_lvl 
-	var max_upgrade_lvl:int = room_details.max_upgrade_lvl 
+func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool = false) -> void:
+	var currency_list:Dictionary = ROOM_UTIL.get_room_currency_list(use_location, is_preview)
+	var metric_list:Dictionary = ROOM_UTIL.get_room_metric_list(use_location, is_preview)
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
+	var is_under_construction:bool = false if is_preview else ROOM_UTIL.is_under_construction(use_location) 
+	var is_activated:bool = true if is_preview else ROOM_UTIL.is_room_activated(use_location)
+	var can_contain:bool = ROOM_UTIL.room_can_contain(use_location)
+	var lvl:int = ROOM_UTIL.get_room_lvl(use_location)
+	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level( -1 if is_room_empty else room_details.ref ) 
 	var at_max_level:bool = lvl >= max_upgrade_lvl
-	var can_contain:bool = room_details.details.can_contain		
-	var personnel_capacity:Dictionary = room_details.details.personnel_capacity	
-	var required_staffing:Array = room_details.details.required_staffing
-	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	var room_level_currencies:Dictionary = room_config_level.currencies
-	
-	# added bonus levels to currencies
-	for key in currency_list:
-		currency_list[key].amount = currency_list[key].amount + room_level_currencies[key]
+	var personnel_capacity:Dictionary = room_details.personnel_capacity	
+	var required_staffing:Array = room_details.required_staffing
 	
 	# assign details
 	SidePanel.show()
 	InfoContainer.show()
-	NameTag.text = room_details.details.name if scp_details.is_empty() else str(room_details.details.name, "\n(", scp_details.details.name, ")")
+	NameTag.text = room_details.name if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl]
-	DescriptionLabel.text = room_details.details.description
-	EnergyCostLabel.text = str(room_details.details.required_energy)
-	ConstructionCostTag.text = str(room_details.details.costs.purchase)
-	ImageTextureRect.texture = CACHE.fetch_image(room_details.details.img_src) 
+	DescriptionLabel.text = room_details.description
+	EnergyCostLabel.text = str(room_details.required_energy)
+	ConstructionCostTag.text = str(room_details.costs.purchase)
+	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
 
 	# staffing
 	var show_required_staffing:bool = required_staffing.size() > 0 
 	RequiredStaffPanel.required_staffing = required_staffing
 	RequiredStaffingContainer.show() if show_required_staffing else RequiredStaffingContainer.hide()
-	#
+	
 	# economy
 	var show_economy:bool = false
 	for ref in currency_list:
@@ -297,8 +283,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 			show_economy = true
 			break
 	
-	#EconomyPanel.use_location = use_location	
-	EconomyPanel.list = room_details.currency_list	
+	EconomyPanel.list = currency_list	
 	EconomyContainer.show() if show_economy else EconomyContainer.hide()
 	
 	# vibe
@@ -323,22 +308,22 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	
 	# program preview
 	var program_list_as_string:String = ""
-	var program_list: Array = room_details.details.abilities.call()
+	var program_list: Array = room_details.abilities.call()
 	program_list_as_string = "\n".join(program_list.map(func(i): return i.name))
 	HasProgramLabel.text = program_list_as_string
-	HasProgramsContainer.hide() if room_details.details.abilities.call().is_empty() else HasProgramsContainer.show()
+	HasProgramsContainer.hide() if room_details.abilities.call().is_empty() else HasProgramsContainer.show()
 
 	# effect
-	EffectLabel.text = room_details.details.effect.description if !room_details.details.effect.is_empty() else ""
-	EffectContainer.show() if !room_details.details.effect.is_empty() else EffectContainer.hide()
+	EffectLabel.text = room_details.effect.description if !room_details.effect.is_empty() else ""
+	EffectContainer.show() if !room_details.effect.is_empty() else EffectContainer.hide()
 	
 	# influence 
-	InfluenceContainer.show() if room_details.details.influence.effect != null else InfluenceContainer.hide()
-	InfluenceLabel.text = room_details.details.influence.effect.description if room_details.details.influence.effect != null else ""
+	InfluenceContainer.show() if room_details.influence.effect != null else InfluenceContainer.hide()
+	InfluenceLabel.text = room_details.influence.effect.description if room_details.influence.effect != null else ""
 	
 	# type 
-	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.details.containment_properties) if !room_details.details.is_empty() else ""
-	ContainmentTypeContainer.show() if !room_details.details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
+	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.containment_properties) if !room_details.is_empty() else ""
+	ContainmentTypeContainer.show() if !room_details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 	
 	# scp
 	#ScpTitleLabel.text = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
@@ -350,9 +335,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}) -> void:
 	ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
 	
 	# environmental
-	PollutionLabel.text = str(room_details.details.environmental.pollution)
-	TempLabel.text = str(room_details.details.environmental.temp)
-	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP
+	PollutionLabel.text = str(room_details.environmental.pollution)
+	TempLabel.text = str(room_details.environmental.temp)
+	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP
 	
 	# under construction
 	if is_under_construction:

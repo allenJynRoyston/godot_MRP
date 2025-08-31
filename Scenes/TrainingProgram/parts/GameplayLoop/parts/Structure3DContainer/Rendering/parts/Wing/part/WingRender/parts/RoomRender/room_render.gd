@@ -323,12 +323,12 @@ func on_assigned_location_update() -> void:
 
 func update_room_data() -> void:
 	if !is_node_ready() or room_config.is_empty() or current_location.is_empty() or assigned_location.is_empty():return
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(assigned_location)
-	var is_under_construction:bool = false if room_extract.room.is_empty() else room_extract.room.is_under_construction	
-	var is_empty:bool = room_extract.room.is_empty()
-	var room_details:Dictionary = room_extract.room.details if !is_empty else {}
-	var is_activated:bool = false if is_empty else room_extract.room.is_activated
-	var is_built:bool =  false if is_empty else !is_under_construction and is_activated
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction(assigned_location)
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty(assigned_location)
+	var is_activated:bool = ROOM_UTIL.is_room_activated(assigned_location)
+	var is_room_under_construction:bool = ROOM_UTIL.is_under_construction(assigned_location)	
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(assigned_location)
+	var is_built:bool =  false if is_room_empty else !is_room_under_construction and is_activated
 	var final_color:Color
 	
 	# assign sprites	
@@ -347,7 +347,7 @@ func update_room_data() -> void:
 		select_mesh_material.albedo_color = Color.LIGHT_CORAL
 	#elif !influenced_by.is_empty():
 		#select_mesh_material.albedo_color = Color.LIGHT_GREEN
-	elif is_empty:
+	elif is_room_empty:
 		select_mesh_material.albedo_color = Color.WHITE
 		# change adjacent connectors
 

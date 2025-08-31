@@ -1,6 +1,9 @@
 extends Node
 
 enum REF {
+	# ---
+	ENABLE_ADMIN_SUBDIVISON,
+	
 	# --- DIRECTORS OFFICE
 	PREDICTIVE_TIMELINE,
 	OBJECTIVE_ASSIST,
@@ -37,6 +40,13 @@ enum REF {
 }
 
 # ---------------------------------
+var ENABLE_ADMIN_SUBDIVISON:Dictionary = {
+	"name": "ENABLE_ADMIN_SUBDIVISON",
+	"description": "Can build an Admin Subdivion.",
+	"energy_cost": 1,
+	"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
+}
+
 var PREDICTIVE_TIMELINE:Dictionary = {
 	"name": "PREDICTIVE TIMELINE",
 	"description": "Show a most likely timeline of events.",
@@ -250,6 +260,10 @@ var GENERATE_CORE_LVL_1:Dictionary = {
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
 	match ref:
+		# ------------------
+		REF.ENABLE_ADMIN_SUBDIVISON:
+			ability = ENABLE_ADMIN_SUBDIVISON
+			
 		# ------------------
 		REF.PREDICTIVE_TIMELINE:
 			ability = PREDICTIVE_TIMELINE

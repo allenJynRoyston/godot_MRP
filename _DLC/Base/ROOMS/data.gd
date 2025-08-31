@@ -1,13 +1,46 @@
 extends SubscribeWrapper
 
 enum INFTYPE {	
-	MONEY, SCIENCE, MATERIAL, CORE,
-	MORALE, SECURITY, READINESS,
+	CURRENCIES, MONEY, SCIENCE, MATERIAL, CORE,
+	METRICS, MORALE, SAFETY, READINESS,
 	EXTRA_LEVEL,
 }
 
 var INFLUENCE_PRESETS:Dictionary = {
 	# --------------------
+	INFTYPE.CURRENCIES: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "Description goes here...",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.currencies.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var currencies:Dictionary = room_level_config.currencies
+				
+				# add any bonuses in the room to it
+				for currency_ref in currencies:
+					var amount:int = currencies[currency_ref]
+					if currency_ref not in dict_copy:
+						dict_copy[currency_ref] = 0
+					dict_copy[currency_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					# and apply the bonus to them
+					for _ref in dict_copy:
+						var amount:int = dict_copy[_ref]
+						_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+
+				# return update config
+				return _new_room_config,			
+		},		
+	}, 	
 	INFTYPE.MONEY: {
 		"starting_range": 1,
 		"horizontal": true, 
@@ -145,6 +178,38 @@ var INFLUENCE_PRESETS:Dictionary = {
 		},		
 	},
 	# --------------------	
+	INFTYPE.METRICS: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "METRICS BOOST",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.metrics.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var vibe_metrics:Dictionary = room_level_config.metrics
+
+				## add any bonuses in the room to it
+				for vibe_ref in vibe_metrics:
+					var amount:int = vibe_metrics[vibe_ref]
+					if vibe_ref not in dict_copy:
+						dict_copy[vibe_ref] = 0
+					dict_copy[vibe_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					for _ref in dict_copy:
+						var amount:int = dict_copy[_ref]								
+						_new_room_config.floor[location.floor].ring[location.ring].room[room].metrics[_ref] += amount
+
+				# return update config
+				return _new_room_config,			
+		},		
+	},			
 	INFTYPE.MORALE: {
 		"starting_range": 1,
 		"horizontal": true, 
@@ -180,7 +245,74 @@ var INFLUENCE_PRESETS:Dictionary = {
 				return _new_room_config,			
 		},		
 	},
-	
+	INFTYPE.SAFETY: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "SAFETY BOOST",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.metrics.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var vibe_metrics:Dictionary = room_level_config.metrics
+
+				## add any bonuses in the room to it
+				for vibe_ref in vibe_metrics:
+					var amount:int = vibe_metrics[vibe_ref]
+					if vibe_ref not in dict_copy:
+						dict_copy[vibe_ref] = 0
+					dict_copy[vibe_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					for _ref in dict_copy:
+						match _ref:
+							RESOURCE.METRICS.SAFETY:
+								var amount:int = dict_copy[_ref]								
+								_new_room_config.floor[location.floor].ring[location.ring].room[room].metrics[_ref] += amount
+
+				# return update config
+				return _new_room_config,			
+		},		
+	},	
+	INFTYPE.READINESS: {
+		"starting_range": 1,
+		"horizontal": true, 
+		"vertical": false,
+		"effect": {
+			"description": "READINESS BOOST",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# self ref to get currency data
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				# copy it
+				var dict_copy:Dictionary = room_details.metrics.duplicate()
+				# get room level currency (added bonuses)
+				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
+				var vibe_metrics:Dictionary = room_level_config.metrics
+
+				## add any bonuses in the room to it
+				for vibe_ref in vibe_metrics:
+					var amount:int = vibe_metrics[vibe_ref]
+					if vibe_ref not in dict_copy:
+						dict_copy[vibe_ref] = 0
+					dict_copy[vibe_ref] += amount
+
+				# now get adjacent rooms
+				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
+					for _ref in dict_copy:
+						match _ref:
+							RESOURCE.METRICS.READINESS:
+								var amount:int = dict_copy[_ref]								
+								_new_room_config.floor[location.floor].ring[location.ring].room[room].metrics[_ref] += amount
+
+				# return update config
+				return _new_room_config,			
+		},		
+	},
 	# --------------------
 	INFTYPE.EXTRA_LEVEL: {
 		"starting_range": 1,
@@ -320,10 +452,12 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	},
 	
 	"metrics": {
-		RESOURCE.METRICS.MORALE: 3, 
+		RESOURCE.METRICS.MORALE: 1, 
+		RESOURCE.METRICS.SAFETY: 2, 
+		RESOURCE.METRICS.READINESS: 3, 
 	},
 
-	"influence": INFLUENCE_PRESETS[INFTYPE.MORALE],
+	"influence": INFLUENCE_PRESETS[INFTYPE.METRICS],
 	
 	"costs": {
 		"unlock": 1,
@@ -342,6 +476,7 @@ var ADMIN_DEPARTMENT:Dictionary = {
 			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
 			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_2, 2),
 			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_3, 3),
+			ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_SUBDIVISON, 5),
 		],
 	
 	"on_before_build_event": EVT.TYPE.ADMIN_SETUP,

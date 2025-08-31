@@ -376,8 +376,7 @@ func show_fabrication_options() -> void:
 	var list:Array = []
 	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config()
 	var energy_availble:int = ring_level_config.energy.available - ring_level_config.energy.used
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	var is_room_empty:bool = room_extract.room.is_empty()
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty()
 	var department_count:int = purchased_facility_arr.filter(func(x): 
 		var room_details:Dictionary = ROOM_UTIL.return_data(x.ref)
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring and ROOM.CATEGORY.DEPARTMENT in room_details.categories
@@ -1065,27 +1064,21 @@ func check_btn_states() -> void:
 	if current_location.is_empty() or room_config.is_empty():return
 	# update room details control
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
-	#var has_one_floor_activated:bool = GAME_UTIL.get_activated_floor_count()	> 0
-	var has_generator_prerequisite:bool = ROOM_UTIL.owns_and_is_active(ROOM.REF.GENERATOR_SUBSTATION)		
-	var room_extract:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	var nuke_activated:bool = room_config.base.onsite_nuke.triggered
-	var is_powered:bool = room_config.floor[current_location.floor].ring[current_location.ring].power_distribution.energy > 1
-	var room_base_state:Dictionary = base_states.room[U.location_to_designation(current_location)]
-
-	var in_lockdown:bool = room_config.floor[current_location.floor].in_lockdown
-	var is_room_empty:bool = room_extract.room.is_empty()
-	var is_scp_empty:bool = room_extract.scp.is_empty()
-	var abilities:Array = [] if is_room_empty else room_extract.room.details.abilities.call()
-	var passive_abilities:Array = [] if is_room_empty else room_extract.room.details.passive_abilities.call()
-	var is_activated:bool = false if is_room_empty else room_extract.room.is_activated
-	var can_contain:bool = false if is_room_empty else room_extract.room.details.can_contain
-	var can_assign_researchers:bool = false if is_room_empty else room_extract.room.details.can_assign_researchers
-	var can_take_action:bool = (is_powered and !in_lockdown)
-	var can_deconstruct:bool = false if is_room_empty else room_extract.room.details.can_destroy 
-	var is_under_construction:bool = false if is_room_empty else ROOM_UTIL.is_under_construction(current_location)
+	var is_activated:bool = ROOM_UTIL.is_room_activated()	
+	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty()
+	var is_room_empty:bool = ROOM_UTIL.is_room_empty()	
+	var is_nuke_active:bool = ROOM_UTIL.is_nuke_active()	
+	var is_ring_powered:bool = ROOM_UTIL.is_ring_powered()
+	var in_lockdown:bool = ROOM_UTIL.is_floor_in_lockdown()
+	var abilities:Array = ROOM_UTIL.return_room_abilities()
+	var passive_abilities:Array = ROOM_UTIL.return_room_passive_abilities()
+	var can_contain:bool = ROOM_UTIL.room_can_contain()
+	var can_deconstruct:bool = ROOM_UTIL.room_can_deconstruct()
+	var is_under_construction:bool = ROOM_UTIL.is_under_construction()
+	var can_take_action:bool = (is_ring_powered and !in_lockdown)
+	var lvl:int = ROOM_UTIL.get_room_lvl()
+	var max_upgrade_lvl:int = ROOM_UTIL.get_room_max_level()
 	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
-	var lvl:int = -1 if is_room_empty else room_extract.room.abl_lvl 
-	var max_upgrade_lvl:int = -1 if is_room_empty else room_extract.room.max_upgrade_lvl 
 	var at_max_level:bool = lvl >= max_upgrade_lvl
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
@@ -1105,7 +1098,7 @@ func check_btn_states() -> void:
 				if event_data.has("btn"):
 					var event_btn_data:Dictionary = event_data.btn
 					HasEventBtn.title = event_btn_data.title
-					HasEventBtn.is_disabled = event_btn_data.is_disabled_check.call() if event_btn_data.has("is_disabled_check") else !is_powered
+					HasEventBtn.is_disabled = event_btn_data.is_disabled_check.call() if event_btn_data.has("is_disabled_check") else !is_ring_powered
 
 			# show only starting/info if new game
 			HasEventBtn.show() if has_priority_events else HasEventBtn.hide()
@@ -1117,7 +1110,7 @@ func check_btn_states() -> void:
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
-			FabricationBtn.is_disabled = !is_powered
+			FabricationBtn.is_disabled = !is_ring_powered
 			#FabricationBtn.title = "BLUEPRINT" #if rooms_in_wing_count == 0 else "FABRICATION"
 			
 			FabricationBtn.onClick = func() -> void:

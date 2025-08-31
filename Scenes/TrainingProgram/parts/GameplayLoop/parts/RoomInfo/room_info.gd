@@ -110,20 +110,19 @@ func merge_metric_data(arr:Array) -> Array:
 # -----------------------------------------------
 func update_details_panel() -> void:	
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or resources_data.is_empty():return
-	var extract_data:Dictionary = GAME_UTIL.extract_room_details(current_location)
-	var is_room_empty:bool = extract_data.room.is_empty()
-	var is_scp_empty:bool = extract_data.scp.is_empty()
-	var is_activated:bool = false if is_room_empty else extract_data.room.is_activated
-
-	RoomDetailsPanel.extract_data = extract_data	
-	Abilities.extract_data = extract_data
-	
-	if !is_scp_empty:
-		ScpPanel.ref = extract_data.scp.details.ref
-	
-	ScpPanel.hide() if is_scp_empty else ScpPanel.show()
-	StaffingPanel.show() if is_activated else StaffingPanel.hide()
-	Abilities.show() if is_activated else Abilities.hide()
+	#var is_room_empty:bool = ROOM_UTIL.is_room_empty()
+	#var is_scp_empty:bool = extract_data.scp.is_empty()
+	#var is_activated:bool = false if is_room_empty else extract_data.room.is_activated
+#
+	#RoomDetailsPanel.extract_data = extract_data	
+	#Abilities.extract_data = extract_data
+	#
+	#if !is_scp_empty:
+		#ScpPanel.ref = extract_data.scp.details.ref
+	#
+	#ScpPanel.hide() if is_scp_empty else ScpPanel.show()
+	#StaffingPanel.show() if is_activated else StaffingPanel.hide()
+	#Abilities.show() if is_activated else Abilities.hide()
 # -----------------------------------------------
 
 # -----------------------------------------------
