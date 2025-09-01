@@ -11,29 +11,32 @@ var INFLUENCE_PRESETS:Dictionary = {
 		"horizontal": true,
 		"vertical": true,
 		"effect": {
-			"description": "Rooms adjacent to this lose all MONEY.",
+			"description": "Rooms adjacent cannot produce any ECONOMY.",
 			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
 				# self ref to get currency data
-				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-				# copy it
-				var dict_copy:Dictionary = room_details.currencies.duplicate()
-				# get room level currency (added bonuses)
-				var room_level_config:Dictionary = _new_room_config.floor[location.floor].ring[location.ring].room[location.room]
-				var currencies:Dictionary = room_level_config.currencies
-				
-				# add any bonuses in the room to it
-				for currency_ref in currencies:
-					var amount:int = currencies[currency_ref]
-					if currency_ref not in dict_copy:
-						dict_copy[currency_ref] = 0
-					dict_copy[currency_ref] += amount
+				var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 
 				# now get adjacent rooms
-				for room in ROOM_UTIL.find_influenced_rooms( location, room_details.influence ):		
-					# and apply the bonus to them
-					for _ref in dict_copy:
-						var amount:int = dict_copy[_ref]
-						_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] += amount				
+				for room in ROOM_UTIL.find_influenced_rooms( location, scp_details.influence ):		
+					var use_location:Dictionary = {"floor": location.floor, "ring": location.ring, "room": room}
+					# get room details and remove their bonuses
+					var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+					if !room_details.is_empty():
+						var room_level_config:Dictionary = _new_room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+						# copy room currency metrics
+						var dict_copy:Dictionary = room_details.currencies.duplicate()
+						# ... then room level currencies
+						var currencies:Dictionary = room_level_config.currencies
+						# ... add it to the dict_copy
+						for currency_ref in currencies:
+							var amount:int = currencies[currency_ref]
+							if currency_ref not in dict_copy:
+								dict_copy[currency_ref] = 0
+							dict_copy[currency_ref] += amount
+						# ... then lastly add the negative amount to nullify
+						for _ref in dict_copy:
+							var amount:int = dict_copy[_ref]
+							_new_room_config.floor[location.floor].ring[location.ring].room[room].currencies[_ref] = -amount
 
 				# return update config
 				return _new_room_config,			

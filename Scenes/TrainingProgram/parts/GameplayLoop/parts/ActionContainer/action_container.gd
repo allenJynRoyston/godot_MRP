@@ -238,7 +238,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	
 	control_pos[BlueprintPanel] = {
 		"show": 0,
-		"hide": -BlueprintMargin.size.y
+		"hide": BlueprintMargin.size.x
 	}
 		
 	
@@ -248,10 +248,10 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": ActionMargin.size.x
 	}	
 	
-	for node in [WingRootPanel, BlueprintPanel]: 
+	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel, BlueprintPanel]: 
 		node.position.x = control_pos[node].hide
 		node.hide()
 	
@@ -1636,7 +1636,7 @@ func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
 		BlueprintComponent.start()
 		BlueprintPanel.show()
 	
-	await U.tween_node_property(BlueprintPanel, "position:y", control_pos[BlueprintPanel].show if state else control_pos[BlueprintPanel].hide, duration)
+	await U.tween_node_property(BlueprintPanel, "position:x", control_pos[BlueprintPanel].show if state else control_pos[BlueprintPanel].hide, duration)
 	
 	if !state:
 		BlueprintComponent.end()

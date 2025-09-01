@@ -721,14 +721,15 @@ func get_influenced_data(use_location:Dictionary = current_location) -> Dictiona
 
 	# get description of influence
 	var list_of_effects:Array = []
-	for item in all_influenced_rooms[use_location.room]:
-		if item.has("room_ref"):
-			var room_details:Dictionary = return_data(item.room_ref)
-			list_of_effects.push_back({"room_ref": item.room_ref, "influence_description": room_details.influence.effect.description})
-		if item.has("scp_ref"):
-			var scp_details:Dictionary = SCP_UTIL.return_data(item.scp_ref)
-			list_of_effects.push_back({"scp_ref": item.scp_ref, "influence_description": scp_details.influence.effect.description})
-		
+	if use_location.room in all_influenced_rooms:
+		for item in all_influenced_rooms[use_location.room]:
+			if item.has("room_ref"):
+				var room_details:Dictionary = return_data(item.room_ref)
+				list_of_effects.push_back({"room_ref": item.room_ref, "influence_description": room_details.influence.effect.description})
+			if item.has("scp_ref"):
+				var scp_details:Dictionary = SCP_UTIL.return_data(item.scp_ref)
+				list_of_effects.push_back({"scp_ref": item.scp_ref, "influence_description": scp_details.influence.effect.description})
+			
 	# add any bonuses in the room to it
 	var currency_list:Dictionary = {}
 	var metric_list:Dictionary = {}	
@@ -823,7 +824,7 @@ func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Arra
 func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:	
 	# requires a quick check
 	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	if room_config_level.is_empty():
+	if room_config_level.is_empty() or influence_data.is_empty():
 		return []
 		
 	var include_vertical:bool = influence_data.vertical if influence_data.has("vertical") else false
@@ -832,8 +833,6 @@ func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -
 	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
 	
 	return neighbors
-
-
 
 func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 	var all_influenced_rooms:Dictionary
@@ -846,15 +845,29 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 		# add influence from room details
 		if !room_details.is_empty():
 			if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
+				# now add self
+				var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
+				if center_room not in all_influenced_rooms:
+					all_influenced_rooms[center_room] = []
+				all_influenced_rooms[center_room].push_back({"room_ref": room_details.ref})
+				# add adjacent rooms
 				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, room_details.influence ):
 					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
 					if room_id not in all_influenced_rooms:
 						all_influenced_rooms[room_id] = []
 					all_influenced_rooms[room_id].push_back({"room_ref": room_details.ref})
+					
+
 	
 		# add influnence from scp details
 		if !scp_details.is_empty():
 			if !scp_details.influence.is_empty() and scp_details.influence.starting_range > 0:
+				# now add self
+				var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
+				if center_room not in all_influenced_rooms:
+					all_influenced_rooms[center_room] = []
+				all_influenced_rooms[center_room].push_back({"scp_ref": scp_details.ref})
+								
 				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, scp_details.influence ):
 					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
 					if room_id not in all_influenced_rooms:

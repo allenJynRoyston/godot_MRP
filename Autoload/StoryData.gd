@@ -18,7 +18,7 @@ var chapters:Array = [
  			"Do not interfere with any equipment or attempt to disengage the system. Tampering will result in your immediate termination.",
  			"Remain compliant. Further instructions will be provided at the conclusion of your session."
 		],
-		"complete_by_day": 2,
+		"complete_by_day": 7,
 		"objectives": {
 			"required":[
 				{ 

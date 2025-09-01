@@ -8,13 +8,25 @@ extends PanelContainer
 @onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
 
+# sidepanel
+@onready var SidePanel:VBoxContainer = $Control/SidePanel
+
 # cost
-@onready var ConstructionCostPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel
+@onready var CostPanel:PanelContainer = $Control/SidePanel/CostPanel
+@onready var CostLabel:Label = $Control/SidePanel/CostPanel/MarginContainer/HBoxContainer/CostLabel
+
+# temp
+@onready var TempPanel:PanelContainer = $Control/SidePanel/TempPanel
 @onready var TempIcon:Control = $Control/SidePanel/TempPanel/MarginContainer/HBoxContainer/TempIcon
 @onready var TempLabel:Label = $Control/SidePanel/TempPanel/MarginContainer/HBoxContainer/TempLabel
+
+# pollution
+@onready var PollutionPanel:PanelContainer = $Control/SidePanel/PollutionPanel
 @onready var PollutionLabel:Label = $Control/SidePanel/PollutionPanel/MarginContainer/HBoxContainer/PollutionLabel
-@onready var EnergyCostLabel:Label = $Control/SidePanel/LevelAndEnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
-@onready var SidePanel:VBoxContainer = $Control/SidePanel
+
+# energy
+@onready var EnergyPanel:PanelContainer = $Control/SidePanel/EnergyPanel
+@onready var EnergyCostLabel:Label = $Control/SidePanel/EnergyPanel/MarginContainer/HBoxContainer/EnergyCostLabel
 
 # status
 @onready var StatusOverlay:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay
@@ -56,11 +68,14 @@ extends PanelContainer
 @onready var ContainmentTypeLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ContainmentTypeContainer/PanelContainer2/MarginContainer/ContainmentTypeLabel
 
 # scpcontainer
-@onready var ScpContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer
-@onready var ScpImage:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/ScpImage
-@onready var ScpTitleLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpTitleLabel
-@onready var ScpEffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpEffectLabel
+@onready var ScpContainer:HBoxContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer
+@onready var ScpNameLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpNameLabel
 
+@onready var ScpEffectContainer:HBoxContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPEffectContainer
+@onready var ScpEffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPEffectContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpEffectLabel
+
+@onready var ScpInfluenceContainer:HBoxContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPInfluenceContainer
+@onready var ScpInfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SCPInfluenceContainer/PanelContainer2/MarginContainer/VBoxContainer/ScpInfluenceLabel
 
 # modules
 @onready var ModuleContainer:VBoxContainer = $MarginContainer/VBoxContainer/ModuleContainer
@@ -74,7 +89,7 @@ extends PanelContainer
 @onready var ContainmentContainer:VBoxContainer = $MarginContainer/VBoxContainer/ContainmentContainer
 @onready var ContainmentComponent:PanelContainer = $MarginContainer/VBoxContainer/ContainmentContainer/ContainmentComponent
 
-@onready var node_list:Array = [StatusOverlay, ModuleContainer, ProgramContainer, ScpContainer, ContainmentContainer]
+@onready var node_list:Array = [StatusOverlay, ModuleContainer, ProgramContainer, ScpContainer, ScpEffectContainer, ScpInfluenceContainer, ContainmentContainer]
 
 @onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
 
@@ -149,13 +164,10 @@ func on_hired_lead_researchers_arr_update(new_val:Array) -> void:
 func on_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or base_states.is_empty() or use_location.is_empty():return
 	if preview_mode and preview_mode_ref != -1:
-		ConstructionCostPanel.show()
-		LvlTag.show()
-		
 		# hide all nodes
 		for node in node_list:
 			node.hide()
-		InfoContainer.show()
+
 		var preview_data:Dictionary = {}
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
 		var room_details:Dictionary = ROOM_UTIL.return_data(preview_mode_ref)
@@ -209,16 +221,20 @@ func on_update() -> void:
 		return
 	
 	# hide all nodes
-	ConstructionCostPanel.hide()
+	CostPanel.hide()
 	LvlTag.show()
+	
+	# fill image
+	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 	
 	for node in node_list:
 		node.hide()
 	
 	# show
 	show()
+	
 	if modules_only:
 		SidePanel.hide()
-		InfoContainer.hide()
+		InfoContainer.hide()		
 		ModuleComponent.room_details = {}
 		
 		# show containment
@@ -244,7 +260,7 @@ func on_update() -> void:
 			ProgramComponent.use_location = use_location			
 			ProgramComponent.room_details = room_details	
 		return
-
+	
 	fill(room_details, scp_details, false)
 # ------------------------------------------------------------------------------
 
@@ -265,12 +281,31 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	# assign details
 	SidePanel.show()
 	InfoContainer.show()
+	
+	# basics
 	NameTag.text = room_details.name #if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl]
 	DescriptionLabel.text = room_details.description
-	EnergyCostLabel.text = str(room_details.required_energy)
-	ConstructionCostTag.text = str(room_details.costs.purchase)
+	
+	# fill image
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
+	
+	# energy
+	EnergyCostLabel.text = str(room_details.required_energy)
+	EnergyPanel.show() if room_details.required_energy > 0 else EnergyPanel.hide()
+	
+	# cost
+	CostLabel.text = str(room_details.costs.purchase)
+	CostPanel.show() if room_details.costs.purchase > 0 and is_preview else CostPanel.hide()		
+	
+	# pollution
+	PollutionLabel.text = str(room_details.environmental.pollution)
+	PollutionPanel.show() if room_details.environmental.pollution else PollutionPanel.hide()
+	
+	# temp
+	TempLabel.text = str(room_details.environmental.temp)
+	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP	
+	TempPanel.show() if room_details.environmental.temp != 0 else TempPanel.hide()
 
 	# staffing
 	var show_required_staffing:bool = required_staffing.size() > 0 
@@ -328,18 +363,16 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	ContainmentTypeContainer.show() if !room_details.containment_properties.is_empty() else ContainmentTypeContainer.hide()
 	
 	# scp
-	#ScpTitleLabel.text = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
-	#ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)	
-	#ScpEffectLabel.text = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
-#
-	#ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
-	#ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
-	#ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
+	ScpContainer.show() if !scp_details.is_empty() else ScpContainer.hide()
+	ScpNameLabel.text = scp_details.name if !scp_details.is_empty() else ""
 	
-	# environmental
-	PollutionLabel.text = str(room_details.environmental.pollution)
-	TempLabel.text = str(room_details.environmental.temp)
-	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP
+	ScpEffectContainer.show() if !scp_details.is_empty() and !scp_details.effect.is_empty() else ScpEffectContainer.hide()
+	ScpEffectLabel.text = scp_details.effect.description if !scp_details.is_empty() and scp_details.effect.has("description") else ""
+	
+	ScpInfluenceContainer.show() if !scp_details.is_empty() and !scp_details.influence.is_empty() else ScpInfluenceContainer.hide()
+	ScpInfluenceLabel.text = scp_details.influence.effect.description if !scp_details.is_empty() and !scp_details.influence.effect.is_empty() else ""
+	if !scp_details.is_empty() and !scp_details.influence.is_empty():
+		print( scp_details.influence )
 	
 	# under construction
 	if is_under_construction:
