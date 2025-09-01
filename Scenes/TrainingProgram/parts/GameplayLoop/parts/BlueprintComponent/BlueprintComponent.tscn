@@ -1,11 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dsbakxgtqjmp"]
+[gd_scene load_steps=9 format=3 uid="uid://dsbakxgtqjmp"]
 
 [ext_resource type="Script" uid="uid://dki4lkk52npow" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BlueprintComponent/blueprint_component.gd" id="1_wuj0y"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_r3s2j"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_5xmsx"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_4qbcm"]
-[ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="6_5xmsx"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="6_r3s2j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
 
@@ -20,12 +18,16 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
+[sub_resource type="LabelSettings" id="LabelSettings_x26ft"]
+font = ExtResource("3_5xmsx")
+font_color = Color(1, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
 [node name="BlueprintComponent" type="PanelContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 150.0
+offset_bottom = 92.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yr4tm")
 script = ExtResource("1_wuj0y")
 
@@ -77,8 +79,6 @@ icon_size = Vector2(10, 20)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
 theme_override_constants/separation = 10
 alignment = 1
 
@@ -89,7 +89,7 @@ theme_override_constants/separation = 0
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer/Income"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gbxtp")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/Header"]
@@ -110,7 +110,7 @@ label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 2
 
 [node name="Content" type="PanelContainer" parent="VBoxContainer/Income"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(275, 68)
 layout_mode = 2
 size_flags_vertical = 2
 theme_override_styles/panel = ExtResource("2_r3s2j")
@@ -125,13 +125,14 @@ theme_override_constants/margin_bottom = 10
 [node name="NoBonusLabel" type="Label" parent="VBoxContainer/Income/Content/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-text = "NO BONUSES"
-label_settings = ExtResource("6_r3s2j")
+text = "NO BONUS"
+label_settings = SubResource("LabelSettings_x26ft")
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
+alignment = 1
 
 [node name="CurrencyList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -143,5 +144,5 @@ layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="PanelContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer/MetricList" instance=ExtResource("6_5xmsx")]
+[node name="EffectList" type="VBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
 layout_mode = 2

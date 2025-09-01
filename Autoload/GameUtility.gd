@@ -415,43 +415,23 @@ func toggle_passive_ability(room_ref:int, ability_index:int, use_location:Dictio
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reset_room(use_location:Dictionary = current_location) -> bool:
-	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
-
-	if room_details.is_empty():
-		return false
-
-	var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
-	
-	if confirm:	
-		RESEARCHER_UTIL.remove_assigned_location(use_location)
-		ROOM_UTIL.reset_room(use_location)
-
-	return confirm
+#func reset_room(use_location:Dictionary = current_location) -> bool:
+	#
+	#var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
+##
+	#if is_room_empty:
+		#return false
+#
+	#var confirm:bool = await create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
+	##
+	##if confirm:	
+		##RESEARCHER_UTIL.remove_assigned_location(use_location)
+		##ROOM_UTIL.reset_room(use_location)
+##
+	##return confirm
 # --------------------------------------------------------------------------------------------------		
 
-# --------------------------------------------------------------------------------------------------		
-func cancel_construction(use_location:Dictionary = current_location) -> bool:
-	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
 
-	if room_details.is_empty():
-		return false
-
-	var refund_val:int = floori(room_details.costs.purchase)
-	var costs:Array = [{
-		"amount": refund_val, 
-		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
-	}]	
-	var confirm:bool = await create_modal("Cancel construction of %s?" % room_details.name, "Construction costs will be refunded.", room_details.img_src, costs)
-	
-	if confirm:	
-		#var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)		
-		#await WingRenderNode.construction_is_canceled(current_location)
-		#RESEARCHER_UTIL.remove_assigned_location(use_location)
-		ROOM_UTIL.reset_room(use_location)
-
-	return confirm
-# --------------------------------------------------------------------------------------------------		
 
 
 # -----------------------------------
@@ -792,9 +772,9 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	#}
 	
 	# Check for initial breach event
-	var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
-		return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
-	)
+	#var researchers:Array = hired_lead_researchers_arr.map(func(x): return RESEARCHER_UTIL.return_data_with_uid(x[0])).filter(func(x): 
+		#return false if x.props.assigned_to_room.is_empty() else x.props.assigned_to_room == scp_data[scp_ref].location
+	#)
 
 	# set emergency mode
 	var previous_emergency_mode:int = base_states.ring[str(current_location.floor, current_location.ring)].emergency_mode
@@ -804,18 +784,19 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	await U.set_timeout(1.5)	
 	GameplayNode.show_only([])
 	await SplashNode.zero()	
-
-	if !DEBUG.get_val(DEBUG.GAMEPLAY_EVENTS_SKIP_INITIAL_CONTAINMENT):
-		var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
-			EVT.TYPE.SCP_ON_CONTAINMENT, 
-				{
-					"room_details": ROOM_UTIL.return_data_via_location(current_location),
-					"scp_details": scp_details,
-					"scp_entry": scp_data[scp_ref],
-					"researchers": researchers
-				}
-			)
-		])
+	
+	await U.set_timeout(1.0)
+	#if !DEBUG.get_val(DEBUG.GAMEPLAY_EVENTS_SKIP_INITIAL_CONTAINMENT):
+		#var res:Dictionary = await trigger_event([EVENT_UTIL.run_event(
+			#EVT.TYPE.SCP_ON_CONTAINMENT, 
+				#{
+					#"room_details": ROOM_UTIL.return_data_via_location(current_location),
+					#"scp_details": scp_details,
+					#"scp_entry": scp_data[scp_ref],
+					## "researchers": researchers
+				#}
+			#)
+		#])
 	
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
@@ -1572,9 +1553,16 @@ func get_floor_base_state(use_location:Dictionary = current_location) -> Diction
 
 func get_metrics() -> Dictionary:
 	return base_states.metrics
+
+func get_energy_available() -> int:
+	var ring_level_config:Dictionary = get_ring_level_config()
+	return ring_level_config.energy.available - ring_level_config.energy.used	
 # -----------------------------------------------------------------------------		
 
 # -----------------------------------------------------------------------------	
+func is_conditional_active(ref:CONDITIONALS.TYPE) -> bool:
+	return gameplay_conditionals[ref]
+	
 func set_conditional(ref:CONDITIONALS.TYPE, state:bool) -> void:
 	gameplay_conditionals[ref] = state
 	SUBSCRIBE.gameplay_conditionals = gameplay_conditionals

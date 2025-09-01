@@ -291,8 +291,20 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "SECURITY"
-assigned_key = "C"
+assigned_key = "Y"
 icon = 48
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
+
+[node name="ContainBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
+title = "CONTAIN"
+assigned_key = "C"
+icon = 20
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -437,6 +449,16 @@ layout_mode = 2
 a_btn_title = "INVESTIGATE"
 c_btn_title = "OVERVIEW"
 hide_c_btn = false
+
+[node name="ContainControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "CONTAIN HERE"
+c_btn_title = "OVERVIEW"
+
+[node name="ContainControls2" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "CONTAIN HERE"
+c_btn_title = "OVERVIEW"
 
 [node name="LocationAndDirectivesContainer" parent="." instance=ExtResource("4_xathl")]
 layout_mode = 2
@@ -625,9 +647,9 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_ah17n")
 
 [node name="MarginContainer" type="MarginContainer" parent="Blueprint/PanelContainer"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 200
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 

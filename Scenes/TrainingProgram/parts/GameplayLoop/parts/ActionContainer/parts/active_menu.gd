@@ -113,8 +113,6 @@ func _ready() -> void:
 				SelectedNode = node
 				onUpdate.call(options_list[tab_index].items[index])	
 				
-				
-	
 	BtnControls.directional_pref = "UD"
 # ------------------------------------------------------------------------------
 

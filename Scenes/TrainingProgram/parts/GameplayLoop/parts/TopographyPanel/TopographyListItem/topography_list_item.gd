@@ -35,33 +35,36 @@ func on_index_update() -> void:
 	
 func on_room_level_config_update() -> void:
 	if !is_node_ready() or room_level_config.is_empty():return
-	var no_room:bool = room_level_config.room_data.is_empty()
-	if no_room:
-		RoomNameLabel.text = "UNALLOCATED"
-		RoomStatus.text = "INACTIVE"
-		ImageRect.texture = PlaceholderTexture2D.new()
-		ImageRect.material = StaticMaterialPreload
-		# -------------
-		StaffCountComponent.is_negative = true
-		StaffCountComponent.amount = 0
-		# -------------
-		ActivatedIcon.icon_color = Color.BLACK
-		room_status_label_settings.font_color = Color.DARK_SLATE_GRAY
-		room_title_label_settings.font_color = Color.DARK_SLATE_GRAY
-		return
 	
-	var room_data:Dictionary = room_level_config.room_data	
-	RoomNameLabel.text = room_data.details.shortname
-	RoomStatus.text = "ACTIVATED" if room_level_config.is_activated else "INACTIVE"
-	
-	ImageRect.texture = CACHE.fetch_image(room_data.details.img_src)
-	ImageRect.material = null
-	# -------------	
-	StaffCountComponent.is_negative = !room_level_config.is_activated
-	StaffCountComponent.amount = room_data.details.required_staffing.size() if room_level_config.is_activated else 0
-	# -------------
-	ActivatedIcon.icon_color = Color(0.0, 0.534, 0.129) if room_level_config.is_activated else Color(0.994, 0.205, 0.199)
-	room_status_label_settings.font_color = ActivatedIcon.icon_color
-	room_title_label_settings.font_color = Color.BLACK
+	#var is_room_activated:bool = ROOM_UTIL.is_room_activated()
+	#var is_room_empty:bool = ROOM_UTIL.is_room_empty()
+
+	#if is_room_empty:
+		#RoomNameLabel.text = "UNALLOCATED"
+		#RoomStatus.text = "INACTIVE"
+		#ImageRect.texture = PlaceholderTexture2D.new()
+		#ImageRect.material = StaticMaterialPreload
+		## -------------
+		#StaffCountComponent.is_negative = true
+		#StaffCountComponent.amount = 0
+		## -------------
+		#ActivatedIcon.icon_color = Color.BLACK
+		#room_status_label_settings.font_color = Color.DARK_SLATE_GRAY
+		#room_title_label_settings.font_color = Color.DARK_SLATE_GRAY
+		#return
+		
+	#var room_details:Dictionary = ROOM_UTIL.return_data( room_level_config.room_data.ref )
+	#RoomNameLabel.text = room_details.shortname
+	#RoomStatus.text = "ACTIVATED" if room_level_config.is_activated else "INACTIVE"
+	#
+	#ImageRect.texture = CACHE.fetch_image(room_details.img_src)
+	#ImageRect.material = null
+	## -------------	
+	#StaffCountComponent.is_negative = !room_level_config.is_activated
+	#StaffCountComponent.amount = room_details.required_staffing.size() if is_room_activated else 0
+	## -------------
+	#ActivatedIcon.icon_color = Color(0.0, 0.534, 0.129) if room_level_config.is_activated else Color(0.994, 0.205, 0.199)
+	#room_status_label_settings.font_color = ActivatedIcon.icon_color
+	#room_title_label_settings.font_color = Color.BLACK
 	
 	

@@ -44,7 +44,7 @@ var ENABLE_ADMIN_SUBDIVISON:Dictionary = {
 	"name": "ENABLE_ADMIN_SUBDIVISON",
 	"description": "Can build an Admin Subdivion.",
 	"energy_cost": 1,
-	"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
+	"conditionals": [CONDITIONALS.TYPE.ENABLE_ADMIN_SUBDIVISON]
 }
 
 var PREDICTIVE_TIMELINE:Dictionary = {

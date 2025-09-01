@@ -2,16 +2,19 @@ extends PanelContainer
 
 @onready var TextureRectImg:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
-@onready var BreachLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer/MarginContainer/HBoxContainer/BreachLabel
 
 @onready var DescriptionContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer
-@onready var DescriptionPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/DescriptionPanel
-
-@onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
-@onready var EffectPanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectPanel
+@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/DescriptionLabel
 
 @onready var TypeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer
-@onready var TypePanel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer/TypePanel
+@onready var TypeLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer/TypeLabel
+
+@onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
+@onready var EffectLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectLabel
+
+@onready var InfluenceContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence
+@onready var InfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2/MarginContainer/InfluenceLabel
+
 
 @export var ref:int = -1: 
 	set(val):
@@ -53,14 +56,15 @@ func update_card() -> void:
 	var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 	NameTag.text = "%s\n(%s)" % [scp_details.name, scp_details.nickname]
 	TextureRectImg.texture = CACHE.fetch_image(scp_details.img_src) 
-	BreachLabel.text = str( "BREACH CHANCE ", SCP_UTIL.get_breach_event_chance(ref, use_location), "%" )
 	
-	DescriptionPanel.content = scp_details.abstract.call(scp_details)
-	EffectPanel.content = scp_details.effect.description if scp_details.effect.has("description") else ""
-	EffectContainer.show() if scp_details.effect.has("description") else EffectContainer.hide()
+	DescriptionLabel.text = scp_details.abstract.call(scp_details)
 	
-	TypePanel.content = SCP_UTIL.get_containment_type_str(scp_details.containment_requirements)
+	TypeLabel.text = SCP_UTIL.get_containment_type_str(scp_details.containment_requirements)
 	TypeContainer.show() if !scp_details.containment_requirements.is_empty() else TypeContainer.hide()
 	
-	
+	EffectLabel.text = scp_details.effect.description if scp_details.effect.has("description") else ""
+	EffectContainer.show() if scp_details.effect.has("description") else EffectContainer.hide()
+
+	InfluenceContainer.show() if !scp_details.influence.is_empty() else InfluenceContainer.hide()
+	InfluenceLabel.text = scp_details.influence.effect.description if !scp_details.influence.is_empty() else ""
 # ------------------------------------------------------------------------------

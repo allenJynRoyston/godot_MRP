@@ -8,7 +8,6 @@ var ROOM_TEMPLATE:Dictionary = {
 	"ref": null,
 	"categories": [],
 	"link_categories": null,
-	"is_core": false,
 		
 	"name": "FULL NAME",
 	"shortname": "SHORTNAME",
@@ -17,10 +16,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------	
-	"influence": {
-		"starting_range": 0,
-		"effect": null
-	},	
+	"influence": {},	
 	# ------------------------------------------
 	
 	# ------------------------------------------
@@ -177,11 +173,11 @@ func return_data_via_location(use_location:Dictionary = current_location) -> Dic
 	return {}
 
 func return_scp_data_via_location(use_location:Dictionary = current_location) -> Dictionary:
-	for item in purchased_facility_arr:
-		if use_location == item.location:
-			var room_level_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-			return room_level_config.scp_data
-	return {}	
+	var room_level_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	if !room_level_config.scp_data.is_empty():
+		return SCP_UTIL.return_data(room_level_config.scp_data.ref)
+		
+	return {}
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -309,29 +305,48 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func reset_room(use_location:Dictionary) -> void:
+func reset_room(use_location:Dictionary) -> bool:
+	var room_details:Dictionary = return_data_via_location(use_location)
+	var confirm:bool = await GAME_UTIL.create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
 	
-	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
-		if i.location == use_location:
-			base_states.room[U.location_to_designation(use_location)] = {
-				"abl_lvl": 0,
-				"influence": {
-					"added_range": 0,
-					"allow_horizontal": false,
-					"allow_vertical": false
-				},
-				"passives_enabled_list": [],
-				"passives_enabled": {},
-				"ability_on_cooldown": {},
-				"events_pending": [],
-				"buffs": [],
-				"debuffs": [],				
-			}
-			SUBSCRIBE.base_states = base_states
+	if confirm:
+		# remove base
+		SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
+			return !(i.location == use_location)
+		)
 		
-		return !(i.location == use_location)
-	)
+		# reset any base state effects
+		var base_state_room:Dictionary = base_states.room[U.location_to_designation(use_location)]
+		base_state_room.abl_lvl = 0
+		base_state_room.influence = {
+				"added_range": 0,
+				"allow_horizontal": false,
+				"allow_vertical": false
+			}
+		base_state_room.passives_enabled_list = []
+		base_state_room.passives_enabled = {}
+		base_state_room.events_pending = []
+		base_state_room.buffs = []
+		SUBSCRIBE.base_states = base_states
+		
+	return confirm
 # ------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------		
+func cancel_construction(use_location:Dictionary = current_location) -> bool:
+	var room_details:Dictionary = return_data_via_location(use_location)
+	var refund_val:int = floori(room_details.costs.purchase)
+	var costs:Array = [{
+		"amount": refund_val, 
+		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
+	}]	
+	var confirm:bool = await GAME_UTIL.create_modal("Cancel construction of %s?" % room_details.name, "Construction costs will be refunded.", room_details.img_src, costs)
+	
+	if confirm:	
+		reset_room(use_location)
+
+	return confirm
+# --------------------------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------
 func can_activate_check(ref:int) -> bool:
@@ -397,7 +412,7 @@ func is_room_empty(use_location:Dictionary = current_location) -> bool:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
-func is_scp_empty(use_location:Dictionary = current_location) -> bool:
+func is_scp_empty(use_location:Dictionary = current_location) -> bool:	
 	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].scp_data.is_empty()
 # ------------------------------------------------------------------------------	
 
@@ -416,8 +431,8 @@ func room_can_contain(use_location:Dictionary = current_location) -> bool:
 	var is_room_empty:bool = is_room_empty(use_location)
 	if is_room_empty:
 		return false
-		
-	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.details.can_contain
+	var room_details:Dictionary = return_data(room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.ref) 
+	return room_details.can_contain
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------		
@@ -425,8 +440,8 @@ func room_can_deconstruct(use_location:Dictionary = current_location) -> bool:
 	var is_room_empty:bool = is_room_empty(use_location)
 	if is_room_empty:
 		return false
-		
-	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.details.can_destroy
+	var room_details:Dictionary = return_data(room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.ref) 		
+	return room_details.can_destroy
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------		
@@ -539,8 +554,8 @@ func get_room_effect(use_location:Dictionary = current_location) -> Dictionary:
 	if is_room_empty:
 		return {}
 
-	var room_level_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]	
-	return room_level_config.room_data.details.effect
+	var room_details:Dictionary = return_data( room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.ref ) 		
+	return room_details.effect
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		
@@ -548,8 +563,8 @@ func return_room_abilities(use_location:Dictionary = current_location) -> Array:
 	var is_room_empty:bool = is_room_empty(use_location)
 	if is_room_empty:
 		return []	
-	var room_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data
-	return room_data.details.abilities.call()
+	var room_details:Dictionary = return_data( room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.ref ) 		
+	return room_details.abilities.call()
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------			
@@ -557,8 +572,8 @@ func return_room_passive_abilities(use_location:Dictionary = current_location) -
 	var is_room_empty:bool = is_room_empty(use_location)
 	if is_room_empty:
 		return []	
-	var room_data:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data
-	return room_data.details.passive_abilities.call()
+	var room_details:Dictionary = return_data( room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.ref ) 		
+	return room_details.passive_abilities.call()
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------
@@ -701,18 +716,22 @@ func get_personnel_counts() -> Dictionary:
 
 # ------------------------------------------------------------------------------	
 func get_influenced_data(use_location:Dictionary = current_location) -> Dictionary:
-	var room_details:Dictionary = return_data_via_location(use_location)
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var all_influenced_rooms:Dictionary = ROOM_UTIL.find_all_influenced_rooms()	
 
-	# copy it
+	# get description of influence
+	var list_of_effects:Array = []
+	for item in all_influenced_rooms[use_location.room]:
+		if item.has("room_ref"):
+			var room_details:Dictionary = return_data(item.room_ref)
+			list_of_effects.push_back({"room_ref": item.room_ref, "influence_description": room_details.influence.effect.description})
+		if item.has("scp_ref"):
+			var scp_details:Dictionary = SCP_UTIL.return_data(item.scp_ref)
+			list_of_effects.push_back({"scp_ref": item.scp_ref, "influence_description": scp_details.influence.effect.description})
+		
+	# add any bonuses in the room to it
 	var currency_list:Dictionary = {}
-	var metric_list:Dictionary = {}
-	# get room level currency (added bonuses)
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
-	var currencies:Dictionary = room_level_config.currencies
-	var metrics:Dictionary
-	
-	
-	## add any bonuses in the room to it
+	var metric_list:Dictionary = {}	
 	for dict in [room_level_config]:
 		for currency_ref in dict.currencies:
 			var amount:int = dict.currencies[currency_ref]
@@ -724,10 +743,14 @@ func get_influenced_data(use_location:Dictionary = current_location) -> Dictiona
 			var amount:int = dict.metrics[metrics_ref]
 			if metrics_ref not in metric_list:
 				metric_list[metrics_ref] = 0
-			metric_list[metrics_ref] += amount				
+			metric_list[metrics_ref] += amount
 			
 
-	return {"currency_list": currency_list, "metric_list": metric_list}
+	return {
+		"currency_list": currency_list, 
+		"metric_list": metric_list, 
+		"list_of_effects": list_of_effects
+	}
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
@@ -809,9 +832,51 @@ func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -
 	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
 	
 	return neighbors
+
+
+
+func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
+	var all_influenced_rooms:Dictionary
+
+	for room in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var use_location:Dictionary = {"floor": current_location.floor, "ring": current_location.ring, "room": room}
+		var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
+		var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(use_location)
+
+		# add influence from room details
+		if !room_details.is_empty():
+			if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
+				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, room_details.influence ):
+					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
+					if room_id not in all_influenced_rooms:
+						all_influenced_rooms[room_id] = []
+					all_influenced_rooms[room_id].push_back({"room_ref": room_details.ref})
+	
+		# add influnence from scp details
+		if !scp_details.is_empty():
+			if !scp_details.influence.is_empty() and scp_details.influence.starting_range > 0:
+				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, scp_details.influence ):
+					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
+					if room_id not in all_influenced_rooms:
+						all_influenced_rooms[room_id] = []
+					all_influenced_rooms[room_id].push_back({"scp_ref": scp_details.ref})
+						
+	return all_influenced_rooms
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
+func index_to_room_lookup(val:int) -> int:
+	match val:
+		0: return 2
+		1: return 1
+		2: return 5
+		4: return 4
+		5: return 8
+		6: return 3
+		7: return 7
+		8: return 6
+	return 0
+	
 func find_adjacent_rooms(room:int) -> Array:
 	match room:
 		0:

@@ -49,38 +49,38 @@ func update_node() -> void:
 	var is_activated:bool = room_config_data.is_activated	
 	var is_room_empty:bool = room_config_data.room_data.is_empty()
 	var is_scp_empty:bool = room_config_data.scp_data.is_empty()	
-	var scp_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.details
+	#var scp_details:Dictionary = {} if is_scp_empty else room_config_data.scp_data.details
 	
-
-	SummaryBtn.ref_data = {
-		"type": 'scp',
-		"data": scp_details,
-		"is_disabled":  !is_activated 
-	}
-
-	SummaryBtn.hint_title = "HINT"
-	SummaryBtn.hint_icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
-	SummaryBtn.hint_description = "Requires activation" if !is_activated else ("Containment cell is empty." if is_scp_empty else scp_details.abstract.call(scp_details))
-	
-	SummaryBtn.icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
-	SummaryBtn.use_alt = is_scp_empty and is_activated
-	SummaryBtn.is_disabled = !is_activated
-	SummaryBtn.title = "UNAVAILABLE" if !is_activated else  "ASSIGN SCP" if is_scp_empty else scp_details.name 
-	SummaryBtn.onClick = func() -> void:
-		if !is_scp_empty:return
-		
-		onLock.call()
-		await ActionContainerNode.before_scp_selection()
-		
-		var scp_ref:int = await GAME_UTIL.select_scp()
-		
-		if scp_ref != -1:
-			await GAME_UTIL.trigger_initial_containment_event(scp_ref)
-		
-		await ActionContainerNode.after_scp_selection()	
-		
-		# unlocks
-		onUnlock.call()				
+#
+	#SummaryBtn.ref_data = {
+		#"type": 'scp',
+		#"data": scp_details,
+		#"is_disabled":  !is_activated 
+	#}
+#
+	#SummaryBtn.hint_title = "HINT"
+	#SummaryBtn.hint_icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
+	#SummaryBtn.hint_description = "Requires activation" if !is_activated else ("Containment cell is empty." if is_scp_empty else scp_details.abstract.call(scp_details))
+	#
+	#SummaryBtn.icon = SVGS.TYPE.WARNING if is_scp_empty else SVGS.TYPE.CONTAIN
+	#SummaryBtn.use_alt = is_scp_empty and is_activated
+	#SummaryBtn.is_disabled = !is_activated
+	#SummaryBtn.title = "UNAVAILABLE" if !is_activated else  "ASSIGN SCP" if is_scp_empty else scp_details.name 
+	#SummaryBtn.onClick = func() -> void:
+		#if !is_scp_empty:return
+		#
+		#onLock.call()
+		#await ActionContainerNode.before_scp_selection()
+		#
+		#var scp_ref:int = await GAME_UTIL.select_scp()
+		#
+		#if scp_ref != -1:
+			#await GAME_UTIL.trigger_initial_containment_event(scp_ref)
+		#
+		#await ActionContainerNode.after_scp_selection()	
+		#
+		## unlocks
+		#onUnlock.call()				
 
 
 

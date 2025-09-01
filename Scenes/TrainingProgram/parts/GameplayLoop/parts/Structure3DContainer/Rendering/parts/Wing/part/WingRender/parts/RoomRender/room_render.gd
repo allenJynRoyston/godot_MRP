@@ -328,11 +328,9 @@ func update_room_data() -> void:
 	var is_activated:bool = ROOM_UTIL.is_room_activated(assigned_location)
 	var is_room_under_construction:bool = ROOM_UTIL.is_under_construction(assigned_location)	
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(assigned_location)
+	var all_influenced_rooms:Dictionary = ROOM_UTIL.find_all_influenced_rooms(true)
 	var is_built:bool =  false if is_room_empty else !is_room_under_construction and is_activated
 	var final_color:Color
-	
-	# assign sprites	
-	InfluencedSprite.texture = CACHE.fetch_svg( SVGS.TYPE.SETTINGS if !influenced_by.is_empty() else SVGS.TYPE.NONE )
 
 	# side bars
 	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
@@ -354,12 +352,31 @@ func update_room_data() -> void:
 	# is selected
 	select_mesh_material.albedo_color = select_mesh_material.albedo_color.darkened(0.3) if assigned_location.room == current_location.room else select_mesh_material.albedo_color
 	
+	# assign influence sprite
+	var has_room_influence:bool = false
+	var has_scp_influence:bool = false
+	var use_icon:SVGS.TYPE = SVGS.TYPE.NONE
+	if assigned_location.room in all_influenced_rooms:		
+			for item in all_influenced_rooms[assigned_location.room]:
+				if item.has("room_ref"):
+					has_room_influence = true
+			for item in all_influenced_rooms[assigned_location.room]:
+				if item.has("scp_ref"):
+					has_scp_influence = true
+	if has_room_influence:
+		use_icon = SVGS.TYPE.SETTINGS
+	if has_scp_influence:
+		use_icon = SVGS.TYPE.CONTAIN
+	if has_room_influence and has_scp_influence:
+		use_icon = SVGS.TYPE.LAYERS
+	InfluencedSprite.texture = CACHE.fetch_svg( use_icon ) 	
+	
 	# is in preview mode
 	if preview_room:
 		# get preview for preview_room
 		var preview_room_details:Dictionary = ROOM_UTIL.return_data(preview_room_ref)
 		for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-			material.albedo_color = Color.LIGHT_GREEN if preview_room_details.influence.starting_range > 0 else Color.LIGHT_GRAY
+			material.albedo_color = Color.LIGHT_GREEN if !preview_room_details.influence.is_empty() and preview_room_details.influence.starting_range > 0 else Color.LIGHT_GRAY
 		
 		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		room_render_material.albedo_color = Color.BLACK
@@ -370,8 +387,6 @@ func update_room_data() -> void:
 		animate_built(true, true)
 		return
 
-
-		
 	#  update if not construction
 	if is_under_construction or is_activated:
 		if in_blueprint_mode:

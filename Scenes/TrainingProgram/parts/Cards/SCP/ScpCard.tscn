@@ -1,12 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://dmgj730nihsve"]
+[gd_scene load_steps=16 format=3 uid="uid://dmgj730nihsve"]
 
 [ext_resource type="Script" uid="uid://d1bxee1l27t34" path="res://Scenes/TrainingProgram/parts/Cards/SCP/scp_card.gd" id="1_ppy2u"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_w1mgs"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="3_aydr2"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_a1y1b"]
 [ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_50nll"]
-[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="5_aydr2"]
-[ext_resource type="PackedScene" uid="uid://b51r528fxi561" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerTitle.tscn" id="11_y252v"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="8_a1y1b"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qha80"]
 
@@ -22,32 +21,25 @@ outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_50nll"]
-bg_color = Color(1, 0.74902, 0.2, 1)
-corner_radius_top_right = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_1pgoi"]
-font = ExtResource("4_a1y1b")
-font_size = 12
-font_color = Color(0.162066, 0.162066, 0.162066, 1)
-outline_color = Color(0, 0, 0, 0.615686)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3cc3l"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbv36"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aydr2"]
-bg_color = Color(1, 1, 1, 0)
+[sub_resource type="LabelSettings" id="LabelSettings_aydr2"]
+font = ExtResource("8_a1y1b")
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1y1b"]
-bg_color = Color(1, 1, 1, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y252v"]
-bg_color = Color(1, 1, 1, 0)
+[sub_resource type="LabelSettings" id="LabelSettings_3cc3l"]
+font = ExtResource("8_a1y1b")
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvhpf"]
 bg_color = Color(0.06, 0.06, 0.06, 0.690196)
@@ -133,43 +125,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "SCP NAME"
 label_settings = SubResource("LabelSettings_y252v")
-horizontal_alignment = 1
 autowrap_mode = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BreachOddsContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_50nll")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="SVGIcon" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer/MarginContainer/HBoxContainer" instance=ExtResource("5_aydr2")]
-custom_minimum_size = Vector2(15, 15)
-layout_mode = 2
-icon = 20
-icon_color = Color(0, 0, 0, 1)
-icon_size = Vector2(15, 15)
-
-[node name="BreachLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/BreachOddsContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "BREACH CHANCE 25%"
-label_settings = SubResource("LabelSettings_1pgoi")
-metadata/_edit_group_ = true
 
 [node name="DescriptionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -207,33 +163,30 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="DescriptionPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 0)
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_aydr2")
-hollow = true
-is_small = true
-content = "SCP Description"
-center_text = false
-title = ""
-border_color = Color(0.3672, 0.378, 0.9, 1)
+text = "PROGRAM NAME"
+label_settings = SubResource("LabelSettings_aydr2")
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="TypeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(82, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -254,33 +207,30 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 0
 
-[node name="TypePanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 40)
+[node name="TypeLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_a1y1b")
-hollow = true
-is_small = true
-content = "Effect description"
-center_text = false
-title = ""
-border_color = Color(0.3672, 0.378, 0.9, 1)
+text = "Type description"
+label_settings = SubResource("LabelSettings_3cc3l")
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="EffectContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(82, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_bottom = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
@@ -301,17 +251,57 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 0
 
-[node name="EffectPanel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer" instance=ExtResource("11_y252v")]
-custom_minimum_size = Vector2(0, 40)
+[node name="EffectLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_y252v")
-hollow = true
-is_small = true
-content = "Effect description"
-center_text = false
-title = ""
-border_color = Color(0.3672, 0.378, 0.9, 1)
+text = "Effect description"
+label_settings = SubResource("LabelSettings_3cc3l")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Influence" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence"]
+custom_minimum_size = Vector2(82, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "INFLUENCE"
+label_settings = ExtResource("5_50nll")
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="InfluenceLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "Influence description"
+label_settings = SubResource("LabelSettings_3cc3l")
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="StatusOverlay" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer"]
 visible = false

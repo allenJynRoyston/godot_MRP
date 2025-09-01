@@ -76,6 +76,8 @@ extends PanelContainer
 
 @onready var node_list:Array = [StatusOverlay, ModuleContainer, ProgramContainer, ScpContainer, ContainmentContainer]
 
+@onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
+
 @export var modules_only:bool = false 
 
 @export var preview_mode:bool = false : 
@@ -166,9 +168,9 @@ func on_update() -> void:
 			currency_list[ref] = {
 				"icon": resource_details.icon, 
 				# ... then get all currency from room
-				"amount": room_details.currency_list[ref] if ref in room_details.currencies else 0,
+				"amount": room_details.currencies[ref] if room_details.currencies.has("ref") else 0,
 				# ... add bonuses from influenced state
-				"bonus_amount": influenced_data.currency_list[ref] if ref in influenced_data.currencies else 0
+				"bonus_amount": influenced_data.currency_list[ref] if influenced_data.currency_list.has("ref") else 0
 			}		
 			
 
@@ -254,7 +256,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	var is_under_construction:bool = false if is_preview else ROOM_UTIL.is_under_construction(use_location) 
 	var is_activated:bool = true if is_preview else ROOM_UTIL.is_room_activated(use_location)
 	var can_contain:bool = ROOM_UTIL.room_can_contain(use_location)
-	var lvl:int = ROOM_UTIL.get_room_lvl(use_location)
+	var lvl:int = 0 if is_preview else ROOM_UTIL.get_room_lvl(use_location)
 	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level( -1 if is_room_empty else room_details.ref ) 
 	var at_max_level:bool = lvl >= max_upgrade_lvl
 	var personnel_capacity:Dictionary = room_details.personnel_capacity	
@@ -263,7 +265,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	# assign details
 	SidePanel.show()
 	InfoContainer.show()
-	NameTag.text = room_details.name if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
+	NameTag.text = room_details.name #if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl]
 	DescriptionLabel.text = room_details.description
 	EnergyCostLabel.text = str(room_details.required_energy)
@@ -318,8 +320,8 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	EffectContainer.show() if !room_details.effect.is_empty() else EffectContainer.hide()
 	
 	# influence 
-	InfluenceContainer.show() if room_details.influence.effect != null else InfluenceContainer.hide()
-	InfluenceLabel.text = room_details.influence.effect.description if room_details.influence.effect != null else ""
+	InfluenceContainer.show() if !room_details.influence.is_empty() else InfluenceContainer.hide()
+	InfluenceLabel.text = room_details.influence.effect.description if !room_details.influence.is_empty() else ""
 	
 	# type 
 	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.containment_properties) if !room_details.is_empty() else ""
@@ -327,12 +329,12 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	# scp
 	#ScpTitleLabel.text = "NOTHING" if scp_details.is_empty() else str(scp_details.details.name, "\n(", scp_details.details.nickname, ")")
-	ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)	
-	ScpEffectLabel.text = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
-
-	ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
-	ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
-	ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
+	#ScpImage.texture = null if scp_details.is_empty() else CACHE.fetch_image(scp_details.details.img_src)	
+	#ScpEffectLabel.text = "" if scp_details.is_empty() else "No effect." if scp_details.details.effect.is_empty() else scp_details.details.effect.description
+#
+	#ScpImage.hide() if scp_details.is_empty() else ScpImage.show()
+	#ScpEffectLabel.hide() if scp_details.is_empty() else ScpEffectLabel.show()
+	#ScpContainer.show() if can_contain and !scp_details.is_empty() else ScpContainer.hide()
 	
 	# environmental
 	PollutionLabel.text = str(room_details.environmental.pollution)

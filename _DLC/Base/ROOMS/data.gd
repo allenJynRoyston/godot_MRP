@@ -44,8 +44,8 @@ var INFLUENCE_PRESETS:Dictionary = {
 	}, 	
 	INFTYPE.MONEY: {
 		"starting_range": 1,
-		"horizontal": true, 
-		"vertical": false,
+		"horizontal": false, 
+		"vertical": true,
 		"effect": {
 			"description": "Description goes here...",
 			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
@@ -340,7 +340,6 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.DEBUG_ROOM,
 	"categories": [ROOM.CATEGORY.UTILITY],
-	"is_core": true,
 	
 	"name": "DEBUG_ROOM",
 	"shortname": "DEBUG_ROOM",
@@ -437,7 +436,6 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.ADMIN_DEPARTMENT,		
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,
-	"is_core": true,
 	
 	"name": "ADMINISTRATION DEPARTMENT",
 	"shortname": "ADMIN DEPT",	
@@ -476,10 +474,10 @@ var ADMIN_DEPARTMENT:Dictionary = {
 				
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_2, 2),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_3, 3),
-			ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_SUBDIVISON, 5),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_1),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_2, 2),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_LVL_3, 3),
+			ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_SUBDIVISON, 0),
 		],
 	
 	"on_before_build_event": EVT.TYPE.ADMIN_SETUP,
@@ -490,7 +488,6 @@ var LOGISTICS_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.LOGISTICS_DEPARTMENT,
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.LOGISTICS_LINKABLE,
-	"is_core": true,
 	
 	"name": "LOGISTICS_DEPARTMENT",
 	"shortname": "LOGISTICS_DEPARTMENT",
@@ -526,7 +523,6 @@ var SCIENCE_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.SCIENCE_LINKABLE,
-	"is_core": true,
 	
 	"name": "SCIENCE_DEPARTMENT",
 	"shortname": "SCIENCE_DEPARTMENT",
@@ -549,7 +545,6 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.SECURITY_DEPARTMENT,		
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.SECURITY_LINKABLE,
-	"is_core": true,
 	
 	"name": "SECURITY_DEPARTMENT",
 	"shortname": "RESEARCHER_ROOM",
@@ -572,7 +567,6 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.ENGINEERING_DEPARTMENT,		
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.ENGINEERING_LINKABLE,
-	"is_core": true,
 	
 	"name": "ENGINEERING_DEPARTMENT",
 	"shortname": "ENGINEERING_DEPARTMENT",
@@ -608,7 +602,6 @@ var MEDICAL_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.MEDICAL_DEPARTMENT,
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.MEDICAL_LINKABLE,
-	"is_core": true,
 	
 	"name": "MEDICAL_DEPARTMENT",
 	"shortname": "MEDICAL_DEPARTMENT",
@@ -631,7 +624,6 @@ var ETHICS_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.ETHICS_DEPARTMENT,
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"link_categories": ROOM.CATEGORY.ETHICS_LINKABLE,
-	"is_core": true,
 	
 	"name": "ETHICS_DEPARTMENT",
 	"shortname": "ETHICS_DEPARTMENT",
@@ -654,19 +646,19 @@ var CONTAINMENT_CELL:Dictionary = {
 	"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,
 	"categories": [ROOM.CATEGORY.CONTAINMENT],
 	"link_categories": ROOM.CATEGORY.CONTAINMENT_LINKABLES,
-	"is_core": true,
 	
 	"name": "CONTAINMENT CELL",
 	"shortname": "C.CELL",
 	"img_src": "res://Media/rooms/ethics.png",
 	"description": "Attach other STANDARD_CONTAINMENT_CELL.",
-
+	"can_contain": true,
+	
 	"costs": {
 		"unlock": 1,
 		"purchase": 25,
 	},		
 	
-	"requires_unlock": true,	
+	"requires_unlock": false,	
 	"own_limit": 20,
 	"required_staffing": [],
 	"required_energy": 0,	
@@ -738,10 +730,12 @@ var ADMIN_LINK_4:Dictionary = {
 	"required_staffing": [
 		RESEARCHER.SPECIALIZATION.ADMIN
 	],	
+	"own_limit": 5,	
 	"costs": {
 		"unlock": 0,
 		"purchase": 2,
 	},	
+	"influence": INFLUENCE_PRESETS[INFTYPE.MONEY],	
 	"currencies": {
 		RESOURCE.CURRENCY.MONEY: 1,
 	},		
@@ -1503,18 +1497,13 @@ var ADMIN_OFFICE:Dictionary = {
 	"name": "ADMIN OFFICE",
 	"shortname": "A.OFFICE",
 	"categories": [ROOM.CATEGORY.RECRUITMENT],
+	"link_categories": ROOM.CATEGORY.ADMIN_LINKABLE,	
 	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "A prisoner block designed specifically to house D-Class personel.",
+	"description": "Allows the use of administrative functions.",
 	# ------------------------------------------
 
 	# ------------------------------------------
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.ADMIN, 
-		RESEARCHER.SPECIALIZATION.RESEARCHER
-	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
+	"own_limit": 10,	
 	"costs": {
 		"unlock": 1,
 		"purchase": 1,
@@ -1698,50 +1687,50 @@ var GEOTHERMAL_POWER:Dictionary = {
 
 #region CONTAINMENT
 # ------------------------------------------------------------------------------ CONTAINMENTS
-var STANDARD_CONTAINMENT_CELL:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,		
-	"name": "STANDARD CONTAINMENT",
-	"shortname": "S.CONTAINMENT",
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Containment cell used to house anamolous objects.",
-		
-	# ------------------------------------------
-	"requires_unlock": false,
-	"can_contain": true,
-	"can_destroy": false,
-	"containment_properties": [
-		SCP.CONTAINMENT_TYPES.PHYSICAL
-	],
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER, 
-		RESEARCHER.SPECIALIZATION.SECURITY
-	],	
-	# ------------------------------------------
-
-	# ------------------------------------------
-	"costs": {
-		"unlock": 1,
-		"purchase": 1,
-	},
-	# ------------------------------------------
-		
-	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-
-		],	
-	# ------------------------------------------	
-	
-	# ------------------------------------------
-	"passive_abilities": func() -> Array: 
-		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_RESEARCH_FROM_SCP, 0),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_FROM_SCP, 1)
-		],	
-	# ------------------------------------------			
-}
+#var STANDARD_CONTAINMENT_CELL:Dictionary = {
+	## ------------------------------------------
+	#"ref": ROOM.REF.STANDARD_CONTAINMENT_CELL,		
+	#"name": "STANDARD CONTAINMENT",
+	#"shortname": "S.CONTAINMENT",
+	#"categories": [ROOM.CATEGORY.DEPARTMENT],
+	#"img_src": "res://Media/rooms/research_lab.png",
+	#"description": "Containment cell used to house anamolous objects.",
+		#
+	## ------------------------------------------
+	#"requires_unlock": false,
+	#"can_contain": true,
+	#"can_destroy": false,
+	#"containment_properties": [
+		#SCP.CONTAINMENT_TYPES.PHYSICAL
+	#],
+	#"required_staffing": [
+		#RESEARCHER.SPECIALIZATION.RESEARCHER, 
+		#RESEARCHER.SPECIALIZATION.SECURITY
+	#],	
+	## ------------------------------------------
+#
+	## ------------------------------------------
+	#"costs": {
+		#"unlock": 1,
+		#"purchase": 1,
+	#},
+	## ------------------------------------------
+		#
+	## ------------------------------------------
+	#"abilities": func() -> Array: 
+		#return [
+#
+		#],	
+	## ------------------------------------------	
+	#
+	## ------------------------------------------
+	#"passive_abilities": func() -> Array: 
+		#return [
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_RESEARCH_FROM_SCP, 0),
+			#ABL_P.get_ability(ABL_P.REF.GENERATE_MONEY_FROM_SCP, 1)
+		#],	
+	## ------------------------------------------			
+#}
 # ------------------------------------------------------------------------------ 
 #endregion
 

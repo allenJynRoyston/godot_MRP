@@ -174,7 +174,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 		Selector.show() if actual == index else Selector.hide()
 		
 	#print("room: ", current_location.room,  " -> actual: ", actual)
-	mark_rooms()
+	# mark_rooms()
 	await U.tween_node_property(Laser, "position", new_pos, 0.2, 0, Tween.TRANS_SINE, Tween.EASE_OUT)
 
 func on_purchased_facility_arr_update(new_val:Array) -> void:
@@ -219,7 +219,7 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 		match val:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.OVERHEAD:				
-				update_camera_size(210)
+				update_camera_size(250)
 				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 20), 0.3, 0, Tween.TRANS_SINE)
 				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
@@ -240,8 +240,8 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 				Lighting.show()
 
 				update_camera_size(250)
-				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(2.5, 45, 2.5), 0.3, 0, Tween.TRANS_SINE)
-				await U.tween_node_property(SceneCamera, "position", Vector3(8.5, 60, -15), 0.3, 0, Tween.TRANS_SINE)
+				U.tween_node_property(MeshRender, "rotation_degrees", Vector3(0, 90, 20), 0.3, 0, Tween.TRANS_SINE)
+				await U.tween_node_property(SceneCamera, "position", Vector3(5.3, 65, -15), 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- ANGLE
 			CAMERA.VIEWPOINT.ANGLE_NEAR:
 				Laser.hide()
@@ -615,7 +615,7 @@ func mark_preview(room_ref:int) -> void:
 	
 	# mark influenced rooms
 	var influenced_rooms:Dictionary
-	if room_details.influence.starting_range > 0:
+	if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
 		for room_id in ROOM_UTIL.find_influenced_rooms( current_location, room_details.influence ):
 			var actual_ref:int = index_to_room_lookup(room_id)
 			if actual_ref not in influenced_rooms:
@@ -638,33 +638,31 @@ func end_preview() -> void:
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
 		RoomNode.preview_room = false
 	
-	mark_rooms()
+#	mark_rooms()
 # --------------------------------------------------------		
 	
 # --------------------------------------------------------
-func mark_rooms() -> void:
-	if use_location.is_empty():return
-	await U.tick()
-
-	# gets all rooms that have an influence
-	var all_influenced_rooms:Dictionary
-	for item in purchased_facility_arr:
-		if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
-			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			if room_details.influence.starting_range > 0:
-				for room_id in ROOM_UTIL.find_influenced_rooms( item.location, room_details.influence ):
-					var room_ref:int = index_to_room_lookup(room_id)
-					if room_ref not in all_influenced_rooms:
-						all_influenced_rooms[room_ref] = []
-					all_influenced_rooms[room_ref].push_back(room_details.ref)
-	
-
-	# highlight nodes that have an influence
-	for index in RoomContainer.get_child_count():
-		var actual:int = index_to_room_lookup(index)	
-		var RoomNode:Node3D = RoomContainer.get_child(actual)
-		RoomNode.influenced_by = all_influenced_rooms[actual] if actual in all_influenced_rooms else []
-		
+#func mark_rooms() -> void:
+	#if use_location.is_empty():return
+	#await U.tick()
+#
+	## gets all rooms that have an influence
+	#var all_influenced_rooms:Dictionary
+	#for item in purchased_facility_arr:
+		#if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
+			#var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
+			#if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
+				#for room_id in ROOM_UTIL.find_influenced_rooms( item.location, room_details.influence ):
+					#var room_ref:int = index_to_room_lookup(room_id)
+					#if room_ref not in all_influenced_rooms:
+						#all_influenced_rooms[room_ref] = []
+					#all_influenced_rooms[room_ref].push_back(room_details.ref)
+	#
+	## highlight nodes that have an influence
+	#for index in RoomContainer.get_child_count():
+		#var actual:int = index_to_room_lookup(index)	
+		#var RoomNode:Node3D = RoomContainer.get_child(actual)
+		#RoomNode.influenced_by = all_influenced_rooms[actual] if actual in all_influenced_rooms else []
 # --------------------------------------------------------
 
 # --------------------------------------------------------

@@ -3,7 +3,9 @@ extends SubscribeWrapper
 @onready var NoBonusLabel:Label = $VBoxContainer/Income/Content/MarginContainer/NoBonusLabel
 @onready var CurrencyList:HBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/CurrencyList
 @onready var MetricList:HBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/MetricList
+@onready var EffectList:VBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/EffectList
 
+const font_1_black_preload:LabelSettings = preload("res://Fonts/font_1_black.tres")
 const EconItemPreload:PackedScene = preload("res://UI/EconItem/EconItem.tscn")
 const VibeItemPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn")
 
@@ -28,11 +30,9 @@ func _ready() -> void:
 
 func start() -> void:
 	is_active = true
-	mark_influenced_rooms()
 	update_node()
 	
 func end() -> void:
-	all_influenced_rooms = {}
 	is_active = false
 # ------------------------------------------
 
@@ -48,8 +48,9 @@ func on_purchased_facility_arr_update(new_val:Array) -> void:
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or !is_active:return
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)
+	var all_influenced_rooms:Dictionary = ROOM_UTIL.find_all_influenced_rooms(true)
 	
-	for list in [MetricList, CurrencyList]:
+	for list in [MetricList, CurrencyList, EffectList]:
 		for node in list.get_children():
 			node.queue_free()
 	
@@ -58,7 +59,9 @@ func update_node() -> void:
 		var influenced_data:Dictionary = ROOM_UTIL.get_influenced_data(current_location)
 		var currency_list:Dictionary = influenced_data.currency_list
 		var metric_list:Dictionary = influenced_data.metric_list
+		var list_of_effects:Array = influenced_data.list_of_effects
 		
+		var has_currency:bool = false
 		for ref in currency_list:
 			var amount:int = currency_list[ref]
 			if amount != 0:
@@ -71,7 +74,9 @@ func update_node() -> void:
 				new_node.invert_colors = false
 				new_node.horizontal_mode = false
 				CurrencyList.add_child(new_node)
+				has_currency = true
 		
+		var has_metric:bool = false
 		for ref in metric_list:
 			var amount:int = metric_list[ref]
 			if amount != 0:
@@ -81,22 +86,27 @@ func update_node() -> void:
 				new_node.value = amount
 				new_node.invert_color = true
 				MetricList.add_child(new_node)
+				has_metric = true
+		
+		
+		for item in list_of_effects:
+			var new_label:Label = Label.new()
+			new_label.label_settings = font_1_black_preload.duplicate()
+			new_label.text = item.influence_description
+			new_label.custom_minimum_size = Vector2(1, 1)
+			
+			EffectList.add_child(new_label)
+	
+		print("has_currency: ", has_currency)
+		print("has_metric: ", has_metric)
+		
+		CurrencyList.hide() if !has_currency else CurrencyList.show()
+		MetricList.hide() if !has_metric else MetricList.show()
+		EffectList.hide() if list_of_effects.is_empty() else EffectList.show()
+			
 		return
 	
 	NoBonusLabel.show()
-
-
-func mark_influenced_rooms() -> void:
-	# gets all rooms that have an influence
-	for item in purchased_facility_arr:
-		if item.location.floor == current_location.floor and item.location.ring == current_location.ring:
-			var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			if room_details.influence.starting_range > 0:
-				for room_ref in ROOM_UTIL.find_influenced_rooms( item.location, room_details.influence ):
-					if room_ref not in all_influenced_rooms:
-						all_influenced_rooms[room_ref] = []
-					all_influenced_rooms[room_ref].push_back(room_details.ref)
-	
 
 
 func show_warning() -> void:

@@ -9,6 +9,8 @@ enum TYPE {
 	SCIENCE_PERK_2,
 	SCIENCE_PERK_3,	
 	
+	ENABLE_ADMIN_SUBDIVISON,
+	
 	#header
 	SHOW_ECONOMY_IN_HEADER,
 	SHOW_PERSONNEL_IN_HEADER,
@@ -57,8 +59,13 @@ func return_data(ref:TYPE) -> Dictionary:
 		TYPE.SCIENCE_PERK_3:
 			return {
 				"description": "R&D has shorter cooldown."
-			}			
-			
+			}
+		
+		TYPE.ENABLE_ADMIN_SUBDIVISON:
+			return {
+				"description": "Can construct ADMINISTRATION subdivisons."
+			}
+		
 		# --- Header Display Toggles
 		TYPE.SHOW_ECONOMY_IN_HEADER:
 			return {
