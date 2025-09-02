@@ -1077,7 +1077,7 @@ func change_camera_to(type:CAMERA.TYPE) -> void:
 	await TransistionScreen.start(0.3, true)									
 
 func check_btn_states() -> void:
-	if current_location.is_empty() or room_config.is_empty():return
+	if current_location.is_empty() or room_config.is_empty() or gameplay_conditionals.is_empty():return
 	# update room details control
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
 	var is_activated:bool = ROOM_UTIL.is_room_activated()	
@@ -1344,7 +1344,10 @@ func check_btn_states() -> void:
 				current_mode = MODE.INTEL
 		# -----------	
 		MODE.FABRICATION:	
+			var can_rush:bool = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION]
+			
 			FabricationControls.a_btn_title = "RUSH" if is_under_construction else "BUILD HERE"
+			FabricationControls.hide_a_btn = is_under_construction and !can_rush
 			FabricationControls.disable_active_btn = !is_under_construction and !is_room_empty
 			FabricationControls.c_btn_title = "REMOVE or RECYCLE"
 			FabricationControls.hide_c_btn = false			
@@ -1692,15 +1695,16 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 	room_config = new_val
 	U.debounce(str(self, "_check_btn_states"), check_btn_states)
 
+func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
+	gameplay_conditionals = new_val
+	U.debounce(str(self, "_check_btn_states"), check_btn_states)
+
+
 func on_base_states_update(new_val:Dictionary) -> void:
 	base_states = new_val
 	if !is_node_ready() or base_states.is_empty():return
 	var pending_events_count:int = GAME_UTIL.get_pending_events_count()
 	IntelBtn.is_flashing = pending_events_count > 0
-
-func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
-	if !is_node_ready() or new_val.is_empty():return	
-	IntelBtn.show() if new_val[CONDITIONALS.TYPE.SHOW_INFO_BTN] else IntelBtn.hide()
 # --------------------------------------------------------------------------------------------------		
 	
 

@@ -1,13 +1,14 @@
 extends Node
 
 enum INFTYPE {	
-	CURRENCIES
+	ECONOMY,
+	FREE_BUILD,
 }
 
 
 static var INFLUENCE_PRESETS:Dictionary = {
 	# --------------------
-	INFTYPE.CURRENCIES: {
+	INFTYPE.ECONOMY: {
 		"starting_range": 1,
 		"horizontal": true, 
 		"vertical": false,
@@ -40,6 +41,18 @@ static var INFLUENCE_PRESETS:Dictionary = {
 				return _new_room_config,			
 		},		
 	}, 	
+	# --------------------
+	INFTYPE.FREE_BUILD: {
+		"starting_range": 1,
+		"horizontal": false, 
+		"vertical": true,
+		"effect": {
+			"description": "Anything built here has no CONSTRUCTION cost.",
+			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
+				# return update config
+				return _new_room_config,			
+		},		
+	}, 		
 }
 
 static func get_room_data(ref:ROOM.REF) -> Dictionary:
@@ -65,7 +78,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESOURCE.CURRENCY.MATERIAL: 5,
 				},
 				
-				"influence": INFLUENCE_PRESETS[INFTYPE.CURRENCIES], 
+				"influence": INFLUENCE_PRESETS[INFTYPE.ECONOMY], 
 				
 				"costs": {
 					"unlock": 1,
@@ -113,7 +126,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				},				
 			}
 		# ----------------------------------------------------------------------			
-		ROOM.REF.ADMIN_LINK_2:
+		ROOM.REF.LOGISTICS_LINK_2:
 			room_data = {
 				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
 				"name": "ADMIN_LINK_2",
@@ -121,16 +134,19 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"description": "L2 description...",
 				"requires_unlock": false,
 				"required_staffing": [
-					RESEARCHER.SPECIALIZATION.RESEARCHER
+					RESEARCHER.SPECIALIZATION.RESEARCHER,
+					RESEARCHER.SPECIALIZATION.ADMIN,
 				],	
-				"own_limit": 1,
+				"influence": INFLUENCE_PRESETS[INFTYPE.FREE_BUILD], 
+								
+				"own_limit": 5,
 				"costs": {
 					"unlock": 0,
-					"purchase": 50,
+					"purchase": 10,
 				},
 			}		
 		# ----------------------------------------------------------------------
-		ROOM.REF.ADMIN_LINK_3:
+		ROOM.REF.LOGISTICS_LINK_3:
 			room_data = {
 				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
 				"name": "ADMIN_LINK_3",
@@ -143,17 +159,16 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"own_limit": 1,
 				"costs": {
 					"unlock": 0,
-					"purchase": 50,
+					"purchase": 10,
 				},
-				"abilities": func() -> Array: 
-					return [
-					],	
-				"passive_abilities": func() -> Array: 
-					return [
-					],					
+				"effect": {
+					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION).description
+				},
+				"on_activate": func(state:bool) -> void:
+					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION, state),
 			}								
 		# ----------------------------------------------------------------------
-		ROOM.REF.ADMIN_LINK_4:
+		ROOM.REF.LOGISTICS_LINK_4:
 			room_data = {
 				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
 				"name": "ADMIN_LINK_4",
@@ -166,17 +181,16 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"own_limit": 1,
 				"costs": {
 					"unlock": 0,
-					"purchase": 50,
+					"purchase": 10,
 				},
-				"abilities": func() -> Array: 
-					return [
-					],	
-				"passive_abilities": func() -> Array: 
-					return [
-					],					
+				"effect": {
+					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_RECYCLE).description
+				},
+				"on_activate": func(state:bool) -> void:
+					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_RECYCLE, state),
 			}
 		## ----------------------------------------------------------------------		
-		ROOM.REF.ADMIN_LINK_5:
+		ROOM.REF.LOGISTICS_LINK_5:
 			room_data = {
 				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
 				"name": "ADMIN_LINK_5",

@@ -29,6 +29,11 @@ enum TYPE {
 	# ui
 	ENABLE_TIMELINE,
 	ENABLE_OBJECTIVES,
+	
+	# logistics
+	ENABLE_RUSH_CONSTRUCTION,
+	ENABLE_RECYCLE,
+	
 	# actoin bar
 	SHOW_INFO_BTN,
 	
@@ -126,8 +131,18 @@ func return_data(ref:TYPE) -> Dictionary:
 			return {
 				"description": "Enables the objectives interface."
 			}
+		
 			
 		# --- Action Bar
+		TYPE.ENABLE_RUSH_CONSTRUCTION:
+			return {
+				"description": "Enables facilities under construction to be RUSHED."
+			}
+		TYPE.ENABLE_RECYCLE:
+			return {
+				"description": "Facilities that are destroyed are recycled instead (half of cost is refunded)."
+			}
+			
 		TYPE.SHOW_INFO_BTN:
 			return {
 				"description": "Displays the information button in the action bar."
