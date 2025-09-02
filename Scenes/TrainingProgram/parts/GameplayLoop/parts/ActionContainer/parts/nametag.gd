@@ -28,6 +28,7 @@ var current_location:Dictionary = {}
 var max_modulate_val:int = 1
 var name_str:String
 var shifted_val:int = 10
+var offset_y:int = 0
 var offset_x:int = 0
 var focus_on_current:bool = false : 
 	set(val):
@@ -64,7 +65,7 @@ func change_camera_view(viewpoint:CAMERA.VIEWPOINT) -> void:
 		CAMERA.VIEWPOINT.OVERHEAD:
 			focus_on_current = true
 			show_empty = true
-			
+			offset_y = 90
 			if index in [0, 1, 3]:
 				alignment = U.ALIGN.LEFT
 			if index in [2, 4, 6]:
@@ -73,10 +74,12 @@ func change_camera_view(viewpoint:CAMERA.VIEWPOINT) -> void:
 				alignment = U.ALIGN.RIGHT
 		# ---------------
 		CAMERA.VIEWPOINT.DISTANCE:
+			offset_y = 90
 			focus_on_current = true
 			show_empty = false
 		# ---------------
 		_:
+			offset_y = 100
 			focus_on_current = false
 			show_empty = false
 			alignment = U.ALIGN.CENTER
@@ -215,7 +218,7 @@ func shift_string_backward(text: String, shift: int = 5) -> String:
 func on_process_update(delta:float, _time_passed:float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return
 	var tag_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(index) * GBL.game_resolution 
-	self.global_position = tag_pos + Vector2(offset_x, 0)
+	self.global_position = tag_pos + Vector2(offset_x, offset_y)
 
 func _physics_process(delta: float) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or index == -1:return

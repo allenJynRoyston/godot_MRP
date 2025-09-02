@@ -4,6 +4,8 @@ extends Control
 @onready var TextureOutput:TextureRect = $TextureRect
 @onready var WingRender:Node3D = $SubViewport/WingRender
 
+@onready var texture_rect_shader:ShaderMaterial = TextureOutput.material.duplicate()
+
 var previous_floor:int = -1
 var previous_ring:int = -1
 
@@ -24,6 +26,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_camera_settings(self)
 
 func _ready() -> void:
+	TextureOutput.set("material", texture_rect_shader)
 	on_assigned_location_update()
 # --------------------------------------------------------
 
@@ -49,7 +52,6 @@ func set_current_location(new_val:Dictionary = current_location) -> void:
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
 	if !is_node_ready() or camera_settings.is_empty():return
-	var material_duplicate:ShaderMaterial =  TextureOutput.material.duplicate()
 	var outline_color:Color = Color.WHITE
 	
 	match camera_settings.type:
@@ -62,10 +64,14 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 		# ----------------------
 		CAMERA.TYPE.WING_SELECT:
 			outline_color = Color.WHITE
-			
-	material_duplicate.set_shader_parameter("outline_color", outline_color )
-	TextureOutput.material = material_duplicate
+	
+	texture_rect_shader.set_shader_parameter("outline_color", outline_color )
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func set_outline(state:bool) -> void:
+	texture_rect_shader.set_shader_parameter("outline_thickness", 10 if state else 0 )
+# --------------------------------------------------------------------------------------------------			
 
 # --------------------------------------------------------
 func on_assigned_location_update(new_val:Dictionary = assigned_location) -> void:

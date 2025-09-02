@@ -20,11 +20,6 @@ extends Control
 @onready var WingCurrentFloor:Control = $SubViewport/Rendering/WingScene/SubViewport/WingCurrentFloor
 @onready var WingSpriteA:Sprite3D = $SubViewport/Rendering/WingScene/SpriteA
 @onready var WingSpriteB:Sprite3D = $SubViewport/Rendering/WingScene/SpriteB
-#
-#@onready var GeneratorScene:Node3D = $SubViewport/Rendering/GeneratorScene
-#@onready var GeneratorCamera:Camera3D = $SubViewport/Rendering/GeneratorScene/GenCamera
-#@onready var GeneratorSubviewport:SubViewport = $SubViewport/Rendering/GeneratorScene/SubViewport
-#@onready var GeneratorNode:Control = $SubViewport/Rendering/GeneratorScene/SubViewport/Generator
 
 @onready var main_viewport_texture_material_duplicate:ShaderMaterial = MainViewportTexture.material.duplicate(true)
 @onready var material_rect_duplicate:ShaderMaterial = MaterialRect.material.duplicate(true)
@@ -172,7 +167,6 @@ func on_room_config_update(new_val:Dictionary) -> void:
 	
 	U.debounce(str(self, "_check_for_conditions"), check_for_conditions)
 # ------------------------------------------------
-
 	
 # ------------------------------------------------
 func check_for_conditions() -> void:
@@ -206,12 +200,18 @@ func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 			enable_wing(true)			
 			enable_overview(false)
 			set_shader_strength(1)
+
 		# --------------------		
 		CAMERA.TYPE.ROOM_SELECT:
 			transition()
 			enable_wing(true)			
 			enable_overview(false)
 			set_shader_strength(0)
+# ------------------------------------------------
+
+# ------------------------------------------------
+func set_outline(state:bool) -> void:
+	WingCurrentFloor.set_outline(state)
 # ------------------------------------------------
 
 # ------------------------------------------------

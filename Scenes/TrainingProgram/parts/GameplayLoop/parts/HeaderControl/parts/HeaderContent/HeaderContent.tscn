@@ -48,13 +48,13 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
+[node name="EnergyComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
+layout_mode = 2
+
 [node name="Economy" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_u7b4y")]
 layout_mode = 2
 
 [node name="Vibes" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_euym5")]
-layout_mode = 2
-
-[node name="EnergyComponent" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
 layout_mode = 2
 
 [node name="Spacer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]

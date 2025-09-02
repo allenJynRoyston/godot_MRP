@@ -511,6 +511,7 @@ func show_fabrication_options() -> void:
 		current_mode = MODE.FABRICATION
 		SummaryCard.preview_mode_ref = -1
 		SummaryCard.preview_mode = false		
+		reveal_blueprint(true)
 		await reveal_summarycard(false)
 		active_menu_is_open = false
 		show_build_complete.emit()
@@ -522,6 +523,7 @@ func show_fabrication_options() -> void:
 	# summary card
 	SummaryCard.preview_mode = true	
 	reveal_summarycard(true, false)	
+	reveal_blueprint(false)
 
 	# ACTIVATE NODE	
 	add_child(ActiveMenuNode)
@@ -1152,7 +1154,9 @@ func check_btn_states() -> void:
 			
 			EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
 			EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)
-						
+
+			ContainBtn.show() if ROOM_UTIL.ring_contains(ROOM.REF.CONTAINMENT_CELL) else ContainBtn.hide()
+			
 			#OperationsBtn.hide()
 			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 			
@@ -1167,11 +1171,6 @@ func check_btn_states() -> void:
 		MODE.ADMINISTRATION_MODULES:
 			AdminModulesControls.reveal(true)
 
-			AdminModulesControls.itemlist = ModulesCard.get_ability_btns()
-			AdminModulesControls.item_index = 0							
-			AdminModulesControls.directional_pref = "UD"
-			AdminModulesControls.offset = ModulesCard.global_position
-			
 			AdminModulesControls.onBack = func() -> void:
 				ModulesCard.deselect_btns()
 				await AdminModulesControls.reveal(false)
@@ -1382,7 +1381,6 @@ func check_btn_states() -> void:
 				reveal_blueprint(false)
 				WingRenderNode.set_to_build_mode(false)	
 				await FabricationControls.reveal(false)
-				await U.set_timeout(0.5)
 				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ENGINEERING:
@@ -1764,7 +1762,11 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		
 			# --------------
 			MODE.ADMINISTRATION_MODULES:
-				# NameControl.hide()
+				AdminModulesControls.itemlist = ModulesCard.get_ability_btns()
+				AdminModulesControls.item_index = 0							
+				AdminModulesControls.directional_pref = "UD"
+				AdminModulesControls.offset = ModulesCard.global_position
+				
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(0)
 				

@@ -67,6 +67,7 @@ color = Color(0, 0, 0, 1)
 
 [node name="AudioVisualizer" parent="." instance=ExtResource("2_lh6qf")]
 layout_mode = 1
+force_show = true
 
 [node name="ColorRect" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_kgjio")
@@ -140,7 +141,6 @@ texture = SubResource("ViewportTexture_urwmy")
 
 [node name="WingScene" type="Node3D" parent="SubViewport/Rendering"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 2.89305, 0, 0)
-visible = false
 
 [node name="WingCamera" type="Camera3D" parent="SubViewport/Rendering/WingScene"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0488782, 0, 0)

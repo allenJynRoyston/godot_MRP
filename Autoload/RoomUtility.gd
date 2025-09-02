@@ -611,6 +611,12 @@ func build_count(ref:int) -> int:
 	return filter.size()
 # ------------------------------------------------------------------------------	
 
+# ------------------------------------------------------------------------------	
+func ring_contains(ref:int) -> bool:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
+	return filter.size() > 0
+# ------------------------------------------------------------------------------		
+	
 # ------------------------------------------------------------------------------
 func owns(ref:int) -> bool:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
@@ -846,19 +852,17 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 		if !room_details.is_empty():
 			if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
 				# now add self
-				var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
-				if center_room not in all_influenced_rooms:
-					all_influenced_rooms[center_room] = []
-				all_influenced_rooms[center_room].push_back({"room_ref": room_details.ref})
+				#var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
+				#if center_room not in all_influenced_rooms:
+					#all_influenced_rooms[center_room] = []
+				#all_influenced_rooms[center_room].push_back({"room_ref": room_details.ref})
 				# add adjacent rooms
 				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, room_details.influence ):
 					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
 					if room_id not in all_influenced_rooms:
 						all_influenced_rooms[room_id] = []
 					all_influenced_rooms[room_id].push_back({"room_ref": room_details.ref})
-					
 
-	
 		# add influnence from scp details
 		if !scp_details.is_empty():
 			if !scp_details.influence.is_empty() and scp_details.influence.starting_range > 0:
@@ -875,6 +879,15 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 					all_influenced_rooms[room_id].push_back({"scp_ref": scp_details.ref})
 						
 	return all_influenced_rooms
+	
+func find_refs_of_adjuacent_rooms(use_location:Dictionary) -> Array: 
+	var adjacent_rooms:Array = find_adjacent_rooms(use_location.room)
+	var refs:Array = []
+	for room in adjacent_rooms:
+		var room_details:Dictionary = return_data_via_location({"floor": use_location.floor, "ring": use_location.ring, "room": room})
+		if !room_details.is_empty():
+			refs.push_back(room_details.ref)
+	return refs
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

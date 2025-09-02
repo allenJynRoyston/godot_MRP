@@ -1,11 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://ckywdp1o7nc2i"]
+[gd_scene load_steps=7 format=3 uid="uid://ckywdp1o7nc2i"]
 
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_o1lms"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_rodcg"]
-[ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="4_rodcg"]
+[ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_o1lms"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1lms"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rcgg0"]
+font = ExtResource("4_o1lms")
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [node name="Nametag" type="PanelContainer"]
 offset_right = 246.0
@@ -52,16 +59,17 @@ layout_mode = 2
 [node name="NameLabel" type="Label" parent="ContentControl/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "operations"
-label_settings = ExtResource("4_rodcg")
+label_settings = SubResource("LabelSettings_rcgg0")
 
 [node name="ArrowControl" type="Control" parent="."]
 layout_mode = 2
 
 [node name="DownArrowIcon" parent="ArrowControl" instance=ExtResource("3_o1lms")]
 layout_mode = 0
-offset_left = 3.0
-offset_top = 20.0
-offset_right = 23.0
-offset_bottom = 40.0
+offset_left = 15.0
+offset_top = -11.0
+offset_right = 35.0
+offset_bottom = 9.0
 icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)
+flip_v = true

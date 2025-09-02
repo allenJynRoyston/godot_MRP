@@ -15,8 +15,8 @@ extends Node3D
 @onready var InfluencedSprite:Sprite3D = $InfluencedSprite
 
 @onready var RoomRender:MeshInstance3D = $Room/RoomRender
-@onready var ParticleEmitter:GPUParticles3D = $Room/RoomRender/GPUParticles3D
-@onready var ConstructionOmniLight:OmniLight3D = $Room/RoomRender/OmniLight3D
+@onready var ParticleEmitter:GPUParticles3D = $ConstructionFX/GPUParticles3D
+@onready var ConstructionOmniLight:OmniLight3D = $ConstructionFX/OmniLight3D
 
 @onready var SafetyGate:MeshInstance3D = $Barrier/SafetyGate
 @onready var SafetyLights:Node3D = $Barrier/SafetyGate/SafetyLights
@@ -45,16 +45,6 @@ const animation_speed:float = 0.2
 var current_location:Dictionary
 var camera_settings:Dictionary
 var room_config:Dictionary
-
-var preview_room:bool = false : 
-	set(val):
-		preview_room = val
-		on_preview_room_update()
-		
-var preview_room_ref:int : 
-	set(val):
-		preview_room_ref = val
-		on_preview_room_ref_update()
 
 var is_selected:bool = true : 
 	set(val):
@@ -86,6 +76,17 @@ var previous_built_state:bool
 var unavailable_rooms:Array = []
 var under_construction_is_animating:bool = false
 var build_is_animating:bool = false
+
+var preview_room:bool = false : 
+	set(val):
+		preview_room = val
+		on_preview_room_update()
+		
+var preview_room_ref:int : 
+	set(val):
+		preview_room_ref = val
+		on_preview_room_ref_update()
+
 var influenced_by:Array = [] : 
 	set(val):
 		influenced_by = val
@@ -334,7 +335,7 @@ func update_room_data() -> void:
 
 	# side bars
 	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-		material.albedo_color = Color.LIGHT_GRAY		
+		material.albedo_color = Color.GHOST_WHITE		
 					
 	
 	# assign node color
@@ -356,13 +357,17 @@ func update_room_data() -> void:
 	var has_room_influence:bool = false
 	var has_scp_influence:bool = false
 	var use_icon:SVGS.TYPE = SVGS.TYPE.NONE
+	
+
+	has_room_influence = !influenced_by.is_empty()
+	
 	if assigned_location.room in all_influenced_rooms:		
-			for item in all_influenced_rooms[assigned_location.room]:
-				if item.has("room_ref"):
-					has_room_influence = true
-			for item in all_influenced_rooms[assigned_location.room]:
-				if item.has("scp_ref"):
-					has_scp_influence = true
+		for item in all_influenced_rooms[assigned_location.room]:
+			if item.has("room_ref"):
+				has_room_influence = true
+		for item in all_influenced_rooms[assigned_location.room]:
+			if item.has("scp_ref"):
+				has_scp_influence = true
 	if has_room_influence:
 		use_icon = SVGS.TYPE.SETTINGS
 	if has_scp_influence:
@@ -375,9 +380,6 @@ func update_room_data() -> void:
 	if preview_room:
 		# get preview for preview_room
 		var preview_room_details:Dictionary = ROOM_UTIL.return_data(preview_room_ref)
-		for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-			material.albedo_color = Color.LIGHT_GREEN if !preview_room_details.influence.is_empty() and preview_room_details.influence.starting_range > 0 else Color.LIGHT_GRAY
-		
 		room_render_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		room_render_material.albedo_color = Color.BLACK
 		room_render_material.albedo_color.a = 0.5

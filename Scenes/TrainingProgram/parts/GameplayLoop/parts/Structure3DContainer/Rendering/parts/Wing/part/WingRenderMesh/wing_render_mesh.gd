@@ -249,7 +249,7 @@ func update_sra_mesh() -> void:
 
 # -----------------------------------------------
 func highligh_item(item: Dictionary, power_distribution:Dictionary) -> void:
-	const energy_levels:Array = [0, 5, 10, 15]
+	const energy_levels:Array = [5, 10, 15, 20]
 
 	edit_heating = false
 	edit_cooling = false

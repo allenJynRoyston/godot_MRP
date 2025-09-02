@@ -53,7 +53,7 @@ extends PanelContainer
 @onready var InfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/InfluenceContainer/PanelContainer2/MarginContainer/InfluenceLabel
 
 # Description 
-@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/PanelContainer2/MarginContainer/DescriptionLabel
+@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/Description/PanelContainer/MarginContainer/DescriptionLabel
 
 # has programs
 @onready var HasProgramsContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer
@@ -366,13 +366,13 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	ScpContainer.show() if !scp_details.is_empty() else ScpContainer.hide()
 	ScpNameLabel.text = scp_details.name if !scp_details.is_empty() else ""
 	
+	# scp effect	
 	ScpEffectContainer.show() if !scp_details.is_empty() and !scp_details.effect.is_empty() else ScpEffectContainer.hide()
 	ScpEffectLabel.text = scp_details.effect.description if !scp_details.is_empty() and scp_details.effect.has("description") else ""
 	
+	# scp influence
 	ScpInfluenceContainer.show() if !scp_details.is_empty() and !scp_details.influence.is_empty() else ScpInfluenceContainer.hide()
 	ScpInfluenceLabel.text = scp_details.influence.effect.description if !scp_details.is_empty() and !scp_details.influence.effect.is_empty() else ""
-	if !scp_details.is_empty() and !scp_details.influence.is_empty():
-		print( scp_details.influence )
 	
 	# under construction
 	if is_under_construction:

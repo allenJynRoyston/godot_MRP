@@ -197,7 +197,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "BLUEPRINT"
-assigned_key = "B"
+assigned_key = "U"
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -650,7 +650,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 140
+theme_override_constants/margin_top = 160
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 

@@ -97,7 +97,7 @@ layout_mode = 2
 [node name="CheckBox" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer" instance=ExtResource("2_f8eie")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_axmus")
-is_negative = false
+default_color = Color(0.05, 0.05, 0.05, 1)
 
 [node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Name/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(25, 25)

@@ -1284,7 +1284,6 @@ func update_room_config(force_setup:bool = false) -> void:
 	if !setup_complete:return
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
-	var new_gameplay_conditionals:Dictionary = initial_values.gameplay_conditionals.call()		
 	var resource_diff:Dictionary = initial_values.resource_diff.call()
 
 	# add to starting diff to resources_diff
@@ -1296,10 +1295,12 @@ func update_room_config(force_setup:bool = false) -> void:
 	transfer_base_states_to_room_config(new_room_config)
 	
 	# setup passives
-	room_setup_passives_and_ability_level(new_room_config, new_gameplay_conditionals)
+	room_setup_passives_and_ability_level(new_room_config)
 	
 	# check if room is activated
 	room_activation_check(new_room_config)
+	# influence	
+	apply_influence_before_effect(new_room_config)		
 	
 	# ROOM, check for effects
 	apply_conditionals(new_room_config)
@@ -1318,13 +1319,12 @@ func update_room_config(force_setup:bool = false) -> void:
 	calculate_final(new_room_config)
 	
 	# update conditionals, resource data and room config
-	SUBSCRIBE.gameplay_conditionals = new_gameplay_conditionals
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.room_config = new_room_config	
 	
 func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	# energy availble per levels
-	const energy_levels:Array = [0, 5, 10, 15]
+	const energy_levels:Array = [5, 10, 15, 20]
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
@@ -1482,33 +1482,29 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 										#room_level.metrics[key] += amount								
 				## --------------------------------------------------------------				
 				
-func room_setup_passives_and_ability_level(new_room_config:Dictionary, new_gameplay_conditionals:Dictionary) -> void:
+func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
 		var room:int = item.location.room
-		var floor_config_data:Dictionary = new_room_config.floor[floor]
+		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
 		
-		# FIRST, set default passives abilities
-		var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
 		if "passive_abilities" in room_data:
 			var passive_abilities:Array = room_data.passive_abilities.call()
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_data.ref, ability_index)
+				
 				# creates default state if it doesn't exist
 				if ability_uid not in room_base_state.passives_enabled:
 					room_base_state.passives_enabled[ability_uid] = false
-				
+				# resets mtf
 				if room_base_state.passives_enabled[ability_uid]:
 					if "mtf_ref" in ability:
 						ring_config_data.mtf.push_back(ability.mtf_ref)
-					if "conditionals" in ability:
-						for conditional in ability.conditionals:
-							new_gameplay_conditionals[conditional] = true
 
 func room_activation_check(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1529,7 +1525,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 			room_config_data.is_activated = false
 		
 		# call activated/deactivated
-		room_details.on_activate.call(room_config_data.is_activated)		
+		room_details.on_activate.call(room_config_data.is_activated)
 		
 func apply_conditionals(new_room_config:Dictionary) -> void:
 	# ----------------- CHECK AND APPLY EFFECTS FROM SCP
@@ -1569,7 +1565,7 @@ func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
 		# check for effect
 		if !room_details.effect.is_empty() and is_activated:
 			if room_details.effect.has("func"):
-				new_room_config = room_details.effect.func.call( new_room_config, item )
+				room_details.effect.func.call( new_room_config, resources_data, item )
 				
 		# passive abilities
 		if room_details.has("passive_abilities"):
@@ -1582,15 +1578,17 @@ func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
 				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
 				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
 				var current_lvl:int = floor_abl_lvl  + wing_abl_lvl + room_abl_lvl
-
+				# admin perk 2 - start at an additional level
+				if gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_2]:
+					current_lvl += 1
+				
 				# if not activated or not at the required level, remove from list and dactivate it
 				if !is_activated or ability.lvl_required > current_lvl:
 					room_base_state.passives_enabled_list.erase(ability.ref)
 				else:
-					# else, check if it's activated and enabled
+					# is enabled...
 					if room_base_state.passives_enabled[ability_uid]:
 						ring_config_data.energy.used += energy_cost
-
 						# check for metrics
 						if "currencies" in ability: 
 							for ref in ability.currencies:
@@ -1600,26 +1598,20 @@ func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
 							for ref in ability.metrics:
 								var amount:int = ability.metrics[ref]
 								room_config_data.metrics[ref] += amount
-									
+						if "conditionals" in ability:
+							for conditional in ability.conditionals:
+								GAME_UTIL.set_conditional(conditional, true)
+						if "effect" in ability:
+							ability.effect.call(new_room_config, resources_data, item.location)
+							
+					
+					# not enabled...
+					else:
+						if "conditionals" in ability:
+							for conditional in ability.conditionals:
+								GAME_UTIL.set_conditional(conditional, false)
 									
 
-
-#func room_check_for_after_effects(new_room_config:Dictionary) -> void:
-	#for item in purchased_facility_arr:
-		#var floor:int = item.location.floor
-		#var ring:int = item.location.ring
-		#var room:int = item.location.room
-		#var floor_config_data:Dictionary = new_room_config.floor[floor]
-		#var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
-		#var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
-		#var room_base_state:Dictionary = base_states.room[str(floor, ring, room)]
-		#var room_config:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-		#var is_activated:bool = room_config.is_activated
-	#
-		#var room_data:Dictionary = ROOM_UTIL.return_data(item.ref)		
-		#if !room_data.effect.is_empty() and is_activated:
-			#if room_data.effect.has("after_func"):
-				#new_room_config = room_data.effect.after_func.call( new_room_config, item )			
 		#
 #func room_passive_check_for_effect(new_room_config:Dictionary) -> void:
 	## NEXT check for passives in rooms
@@ -1690,23 +1682,6 @@ func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
 					## ability not active, remove from list
 					#room_base_state.passives_enabled_list.erase(ability.ref)
 
-#func scp_check_for_effects(new_room_config:Dictionary) -> void:
-	#for ref in scp_data:
-		#var sdata:Dictionary = scp_data[ref]
-		#if !sdata.location.is_empty():
-			#var floor:int = sdata.location.floor
-			#var ring:int = sdata.location.ring
-			#var room:int = sdata.location.room
-			#
-			#var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-			#var is_activated:bool = room_config_data.is_activated
-			#var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-			#
-			##print(scp_details)
-			#
-			#if !scp_details.effect.is_empty():				
-				#if scp_details.effect.has("func"):					
-					#new_room_config = scp_details.effect.func.call( new_room_config, sdata )
 
 func apply_scp_effects(new_room_config:Dictionary) -> void:
 	# ----------------- CHECK AND APPLY EFFECTS FROM SCP
@@ -1726,6 +1701,33 @@ func apply_scp_effects(new_room_config:Dictionary) -> void:
 				if scp_details.effect.has("func"):					
 					new_room_config = scp_details.effect.func.call( new_room_config, sdata )
 
+func apply_influence_before_effect(new_room_config:Dictionary) -> void:
+	# ----------------- check for rooms
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room		
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
+		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
+
+		if room_config_data.is_activated and !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
+			if !room_details.influence.is_empty() and room_details.influence.effect.has("before_func"):
+				room_details.influence.effect.before_func.call(new_room_config, item.ref, item.location)
+				
+	# ----------------- check for scp
+	for ref in scp_data:
+		var sdata:Dictionary = scp_data[ref]
+		if !sdata.location.is_empty():
+			var floor:int = sdata.location.floor
+			var ring:int = sdata.location.ring
+			var room:int = sdata.location.room
+			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
+			
+			if room_config_data.is_activated and !scp_details.influence.is_empty() and scp_details.influence.starting_range > 0:
+				if !scp_details.influence.is_empty() and scp_details.influence.effect.has("before_func"):
+					scp_details.influence.effect.before_func.call(new_room_config, ref, sdata.location)
+					
 func apply_influence_effect(new_room_config:Dictionary) -> void:
 	# ----------------- check for rooms
 	for item in purchased_facility_arr:
@@ -1755,11 +1757,7 @@ func apply_influence_effect(new_room_config:Dictionary) -> void:
 			
 func assign_refs(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
-		var floor:int = item.location.floor
-		var ring:int = item.location.ring
-		var room:int = item.location.room
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-	
+		var room_config_data:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]
 		room_config_data.room_data = {
 			"ref": item.ref
 		}				
@@ -1767,12 +1765,7 @@ func assign_refs(new_room_config:Dictionary) -> void:
 	for ref in scp_data:
 		var sdata:Dictionary = scp_data[ref]
 		if !sdata.location.is_empty():
-			var floor:int = sdata.location.floor
-			var ring:int = sdata.location.ring
-			var room:int = sdata.location.room	
-			
-			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-
+			var room_config_data:Dictionary = new_room_config.floor[sdata.location.floor].ring[sdata.location.ring].room[sdata.location.room]
 			room_config_data.scp_data = {
 				"ref": ref,
 			}			

@@ -5,8 +5,8 @@ extends Node3D
 @onready var Particles:Node3D = $MeshRender/Particles
 @onready var Laser:SpotLight3D = $MeshRender/Laser
 @onready var WorldEnv:WorldEnvironment = $WorldEnvironment
-@onready var BlueprintMesh:MeshInstance3D = $Camera3D/BlueprintMesh
-@onready var MeshBackdrop:MeshInstance3D = $MeshRender/MeshBackdrop
+#@onready var BlueprintMesh:MeshInstance3D = $Camera3D/BlueprintMesh
+
 # @onready var MeshSelector:MeshInstance3D = $MeshRender/MeshSelector
 @onready var WingRenderMesh:Node3D = $MeshRender/WingRenderMesh
 
@@ -93,10 +93,6 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 
 func _ready() -> void:
-	set_engineering_mode(false)
-	MeshBackdrop.hide()
-	BlueprintMesh.hide()
-	
 	WorldEnv.environment = world_environment_copy
 	
 	for child in SelectorContainer.get_children():
@@ -105,60 +101,26 @@ func _ready() -> void:
 	if !Engine.is_editor_hint():
 		for node in [Lighting, Fog, RoomContainer, GateContainer]:
 			node.show()
+			
+	
+	set_engineering_mode(false)	
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func room_change_viewpoint(index:int, assigned_location:Dictionary, camera_viewpoint:CAMERA.VIEWPOINT) -> void:
 	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(index)	
+	var actual:int = ROOM_UTIL.index_to_room_lookup(index)	
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
 	RoomNode.camera_viewpoint = camera_viewpoint
 	
 func room_assign_designation(index:int, assigned_location:Dictionary) -> void:
 	if !is_node_ready(): return
-	var actual:int = index_to_room_lookup(index)	
+	var actual:int = ROOM_UTIL.index_to_room_lookup(index)	
 	var RoomNode:Node3D = RoomContainer.get_child(actual)
 	RoomNode.assigned_location = {"floor": assigned_location.floor, "ring": assigned_location.ring, "room": index}
-
-#func start_construction(use_location:Dictionary) -> void:	
-	#if !is_node_ready(): return
-	#var actual:int = index_to_room_lookup(use_location.room)
-	#var RoomNode:Node3D = RoomContainer.get_child(actual)
-	#await RoomNode.start_construction()
-	#
-#func complete_construction(use_location:Dictionary) -> void:	
-	#if !is_node_ready(): return
-	#var actual:int = index_to_room_lookup(use_location.room)
-	#var RoomNode:Node3D = RoomContainer.get_child(actual)
-	#await RoomNode.animate_construction()
-	#
-#func destroy_room(use_location:Dictionary) -> void:	
-	#if !is_node_ready(): return
-	#var actual:int = index_to_room_lookup(use_location.room)
-	#var RoomNode:Node3D = RoomContainer.get_child(actual)
-	#await RoomNode.destroy_room()
-#
-#func construction_is_canceled(use_location:Dictionary) -> void:
-	#if !is_node_ready(): return
-	#var actual:int = index_to_room_lookup(use_location.room)
-	#var RoomNode:Node3D = RoomContainer.get_child(actual)
-	#await RoomNode.cancel_construction()	
 # --------------------------------------------------------
 
-# --------------------------------------------------------
-func index_to_room_lookup(val:int) -> int:
-	match val:
-		0: return 2
-		1: return 1
-		2: return 5
-		4: return 4
-		5: return 8
-		6: return 3
-		7: return 7
-		8: return 6
-		
-	return 0
-# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 func on_current_location_update(new_val:Dictionary) -> void:
@@ -166,7 +128,7 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or current_location.is_empty():return
 	update_mesh_values()
 	
-	var actual:int = index_to_room_lookup(current_location.room)
+	var actual:int = ROOM_UTIL.index_to_room_lookup(current_location.room)
 	var marker:Marker3D = MarkersContainer.get_child(actual)
 	var new_pos:Vector3 = Vector3( marker.position.x, Laser.position.y, marker.position.z)
 	for index in SelectorContainer.get_child_count():
@@ -210,6 +172,7 @@ func on_base_states_update(new_base_state:Dictionary) -> void:
 # --------------------------------------------------------------------------------------------------		
 var previous_camera_view:CAMERA.VIEWPOINT = -1
 func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
+	
 	if previous_camera_view != val:
 		previous_camera_view = val
 		
@@ -225,15 +188,13 @@ func change_camera_view(val:CAMERA.VIEWPOINT) -> void:
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_LEFT:
 				Lighting.show()	
-				
-				U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)
+				await U.tween_node_property(SceneCamera, "position:x", -40, 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.SHIFT_RIGHT:
 				Lighting.show()	
-				
-				U.tween_node_property(SceneCamera, "position:x", 62, 0.3, 0, Tween.TRANS_SINE)
 				update_camera_size(180)				
+				await U.tween_node_property(SceneCamera, "position:x", 62, 0.3, 0, Tween.TRANS_SINE)
 			# ---------------------- 
 			CAMERA.VIEWPOINT.DISTANCE:
 				Laser.show()
@@ -279,10 +240,6 @@ func update_vars() -> void:
 	in_lockdown = room_config.floor[use_location.floor].in_lockdown
 	emergency_mode = room_config.floor[use_location.floor].ring[use_location.ring].emergency_mode		
 	
-	#is_powered = power_distribution.energy > 1
-	#is_ventilated = power_distribution.ventilation > 1
-	#is_overheated = false # TODO REVIST THIS
-
 	U.debounce(str(self, "_update_engineering_stats"), update_engineering_stats)
 	U.debounce(str(self, "_update_billboards"), update_billboards)
 	U.debounce(str(self, "_update_room_lighting"), update_room_lighting)
@@ -313,68 +270,52 @@ func set_engineering_mode(state:bool) -> void:
 # --------------------------------------------------------
 
 # --------------------------------------------------------
-signal room_animation_complete
 func animate_rooms(state:bool) -> void:
 	var spread_amount:float = 1.5
 	var animation_speed:float = 0.2
-	
-	if state:
-		BlueprintMesh.show()
-		await U.tween_node_property(BlueprintMesh, "position", Vector3(0, 0, BlueprintMesh.position.z), 0.7, 0, Tween.TRANS_SINE)
-		MeshBackdrop.show()
-		
+
 	for container in [GateContainer, RoomContainer, MarkersContainer]:
 		for room in container.get_children():
 			if room.position.x != 0:
 				U.tween_node_property(room, "position:x", (room.position.x * spread_amount) if state else (room.position.x / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
 			if room.position.z != 0:
 				U.tween_node_property(room, "position:z", (room.position.z * spread_amount) if state else (room.position.z / spread_amount), animation_speed, 0, Tween.TRANS_SINE)
-			#if room.position.x != 0 or room.position.z != 0:
-				#await U.set_timeout(animation_speed)	
-			
-	await U.set_timeout(animation_speed)
-	
-	if !state:
-		MeshBackdrop.hide()
-		await U.tween_node_property(BlueprintMesh, "position", Vector3(-500, -500, BlueprintMesh.position.z), 0.7, 0, Tween.TRANS_SINE)
-		BlueprintMesh.hide()
-		
-		
 
-	room_animation_complete.emit()
+	await U.set_timeout(animation_speed)
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 func set_to_build_mode(state:bool) -> void:
+	var RenderingNode:Control = GBL.find_node(REFS.RENDERING)	
 	GBL.add_to_animation_queue(self)
-	
+
 	# set build mode
 	in_build_mode = state	
 
-	if state:		
+	if state:			
+		await U.set_timeout(0.2)
+		RenderingNode.transition()
 		animate_rooms(true)
-		await animation_complete
-		await U.set_timeout(0.3)
+		RenderingNode.set_outline(false)
 		for room in RoomContainer.get_children():
-			room.set_blueprint_mode(state)
-						
+			room.set_blueprint_mode(state)		
+	
 		EditLighting.show()
 		Lighting.hide()
 		Fog.hide()
 		Particles.hide()
 		WingRenderMesh.hide()
-		MeshBackdrop.show()
 		Labeling.hide()
 		GateContainer.hide()
 		world_environment_copy.volumetric_fog_enabled = false
-		await room_animation_complete
 			
 	if !state:
 		animate_rooms(false)
-		await room_animation_complete				
-		previous_floor = -1
-		previous_ring = -1
-
+		RenderingNode.transition()
+		RenderingNode.set_outline(true)
+		for room in RoomContainer.get_children():
+			room.set_blueprint_mode(state)				
+		
 		EditLighting.hide()
 		Lighting.show()
 		Fog.show()
@@ -382,13 +323,14 @@ func set_to_build_mode(state:bool) -> void:
 		WingRenderMesh.show()
 		Labeling.show()
 		GateContainer.show()
-		MeshBackdrop.hide()
+		
 		world_environment_copy.volumetric_fog_enabled = true		
-		for room in RoomContainer.get_children():
-			room.set_blueprint_mode(state)				
+		previous_floor = -1
+		previous_ring = -1		
+		
 		update_room_lighting()
-		await U.set_timeout(0.4)
 
+	
 	GBL.remove_from_animation_queue(self)
 # --------------------------------------------------------	
 	
@@ -417,7 +359,6 @@ func update_engineering_stats(stat:Dictionary = engineering_stats) -> void:
 			WingRenderMesh.edit_ventilation = true
 		"energy":
 			WingRenderMesh.edit_powergrid = true
-	
 	
 	previous_floor = -1 # required to update correctly
 	previous_ring = -1
@@ -556,23 +497,6 @@ func update_billboards() -> void:
 		right_billboard_text = "SHELTER IN PLACE"
 		altered = true
 		
-	#if !is_ventilated and !altered:
-		#left_billboard_text = "STAY OUT"
-		#right_billboard_text = "MIASMA DETECTED"
-		#altered = true
-		#
-	#if is_overheated and !altered:		
-		#left_billboard_text = "STAY OUT"
-		#right_billboard_text = "DANGEROUS TEMPERATURE DETECTED"
-		#altered = true
-		#
-	#if !is_powered and !altered:
-		#left_billboard_text = "NO POWER"
-		#right_billboard_text = "NO POWER"
-		#altered = true
-		
-
-		
 	if !altered:
 		match emergency_mode:
 			ROOM.EMERGENCY_MODES.DANGER:
@@ -587,9 +511,6 @@ func update_billboards() -> void:
 				left_billboard_text = "CAUTION"
 				right_billboard_text = "CAUTION"
 
-
-	#LeftBillbordLabel.text = left_billboard_text
-	#RightBillboardLabel.text = right_billboard_text
 # --------------------------------------------------------
 
 # --------------------------------------------------------	
@@ -600,10 +521,10 @@ func on_highlight_rooms_update() -> void:
 			node.is_selected = true
 		return
 	
-	var actual_list:Array = highlight_rooms.map(func(x): return index_to_room_lookup(x))
+	var actual_list:Array = highlight_rooms.map(func(x): return ROOM_UTIL.index_to_room_lookup(x))
 
 	for index in RoomContainer.get_child_count():
-		var actual:int = index_to_room_lookup(index)
+		var actual:int = ROOM_UTIL.index_to_room_lookup(index)
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
 		RoomNode.is_selected = actual in actual_list
 # --------------------------------------------------------		
@@ -616,15 +537,16 @@ func mark_preview(room_ref:int) -> void:
 	# mark influenced rooms
 	var influenced_rooms:Dictionary
 	if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
+		# now add self
 		for room_id in ROOM_UTIL.find_influenced_rooms( current_location, room_details.influence ):
-			var actual_ref:int = index_to_room_lookup(room_id)
+			var actual_ref:int = ROOM_UTIL.index_to_room_lookup(room_id)
 			if actual_ref not in influenced_rooms:
 				influenced_rooms[actual_ref] = []
 			influenced_rooms[actual_ref].push_back(room_details.ref)
 	
 	# and then pass that to the room itself
 	for index in RoomContainer.get_child_count():
-		var actual:int = index_to_room_lookup(index)	
+		var actual:int = ROOM_UTIL.index_to_room_lookup(index)	
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
 		RoomNode.influenced_by = influenced_rooms[actual] if actual in influenced_rooms else []
 		RoomNode.preview_room = current_location.room == index
@@ -634,43 +556,19 @@ func mark_preview(room_ref:int) -> void:
 # --------------------------------------------------------		
 func end_preview() -> void:
 	for index in RoomContainer.get_child_count():
-		var actual:int = index_to_room_lookup(index)	
+		var actual:int = ROOM_UTIL.index_to_room_lookup(index)	
 		var RoomNode:Node3D = RoomContainer.get_child(actual)
 		RoomNode.preview_room = false
-	
-#	mark_rooms()
+		RoomNode.preview_room_ref = -1
+		RoomNode.influenced_by = []
 # --------------------------------------------------------		
 	
-# --------------------------------------------------------
-#func mark_rooms() -> void:
-	#if use_location.is_empty():return
-	#await U.tick()
-#
-	## gets all rooms that have an influence
-	#var all_influenced_rooms:Dictionary
-	#for item in purchased_facility_arr:
-		#if item.location.floor == use_location.floor and item.location.ring == use_location.ring:
-			#var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
-			#if !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
-				#for room_id in ROOM_UTIL.find_influenced_rooms( item.location, room_details.influence ):
-					#var room_ref:int = index_to_room_lookup(room_id)
-					#if room_ref not in all_influenced_rooms:
-						#all_influenced_rooms[room_ref] = []
-					#all_influenced_rooms[room_ref].push_back(room_details.ref)
-	#
-	## highlight nodes that have an influence
-	#for index in RoomContainer.get_child_count():
-		#var actual:int = index_to_room_lookup(index)	
-		#var RoomNode:Node3D = RoomContainer.get_child(actual)
-		#RoomNode.influenced_by = all_influenced_rooms[actual] if actual in all_influenced_rooms else []
-# --------------------------------------------------------
-
 # --------------------------------------------------------
 func get_room_position(room_index:int) -> Vector2:
 	if !is_node_ready():
 		return Vector2(-1, -1)
 
-	var marker:Marker3D = MarkersContainer.get_child( index_to_room_lookup(room_index) ) 
+	var marker:Marker3D = MarkersContainer.get_child( ROOM_UTIL.index_to_room_lookup(room_index) ) 
 	var viewport := SceneCamera.get_viewport()
 	var screen_position := SceneCamera.unproject_position(marker.global_position)
 
@@ -694,8 +592,7 @@ func _process(delta: float) -> void:
 	elif val > 0:
 		toggle_ready = true
 	
-	#var fluct_val: float = 0.85 + 0.25 * sin(time * 0.5)  # Oscillates between 0.6 and 1.1
-	#WorldLight.light_energy = fluct_val
 	if emergency_mode == ROOM.EMERGENCY_MODES.DANGER:
 		EmergencyFlareLight.light_energy = val
 		EmergencyFlareLight.light_color = Color.ROYAL_BLUE if toggle_color else Color.ORANGE_RED
+# --------------------------------------------------------

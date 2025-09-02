@@ -9,6 +9,8 @@ extends PanelContainer
 @onready var OffsetIcon:Control = $MarginContainer/VBoxContainer/Offset/MarginContainer2/OffsetIcon
 @onready var OffsetAmountLabel:Label = $MarginContainer/VBoxContainer/Offset/AmountLabel
 
+@onready var title_label_settings:LabelSettings = TitleLabel.get("label_settings").duplicate()
+@onready var value_label_settings:LabelSettings = ValueLabel.get("label_settings").duplicate()
 @onready var offset_amount_label_setting:LabelSettings = OffsetAmountLabel.get("label_settings").duplicate()
 
 @export var metric:RESOURCE.METRICS : 
@@ -47,6 +49,8 @@ var hint_icon:SVGS.TYPE = SVGS.TYPE.INFO
 
 # --------------------------------------
 func _ready() -> void:
+	TitleLabel.set("label_settings", title_label_settings)
+	ValueLabel.set("label_settings", value_label_settings) 
 	OffsetAmountLabel.set("label_settings", offset_amount_label_setting)
 	
 	on_title_update()
@@ -95,21 +99,15 @@ func on_big_numbers_update() -> void:
 func update_node() -> void:
 	if !is_node_ready():return
 	ValueLabel.text = str(value)
+
+	title_label_settings.font_color = Color.BLACK if invert_color else Color.WHITE
+	title_label_settings.outline_color = title_label_settings.font_color
+	title_label_settings.outline_color.a = 0.2
 	
-	var label_setting_copy:LabelSettings = ValueLabel.label_settings.duplicate()
-	label_setting_copy.font_color = COLORS.disabled_color if value < 0 else COLORS.primary_black
-	ValueLabel.label_settings = label_setting_copy
-	
-	var title_label_font_settings:LabelSettings = TitleLabel.label_settings.duplicate()
-	title_label_font_settings.font_color = Color.BLACK if invert_color else Color.WHITE
-	title_label_font_settings.outline_color = Color(title_label_font_settings.font_color.r, title_label_font_settings.font_color.g, title_label_font_settings.font_color.b, 0.2)	
-	TitleLabel.label_settings = title_label_font_settings
-	
-	var value_label_font_settings:LabelSettings = ValueLabel.label_settings.duplicate()
-	value_label_font_settings.font_size = 24 if big_numbers else 16
-	value_label_font_settings.font_color = Color.BLACK if invert_color else Color.WHITE
-	value_label_font_settings.outline_color = Color(value_label_font_settings.font_color.r, value_label_font_settings.font_color.g, value_label_font_settings.font_color.b, 0.2)
-	ValueLabel.label_settings = value_label_font_settings
+	value_label_settings.font_size = 24 if big_numbers else 16
+	value_label_settings.font_color = Color.RED if value < 0 else (Color.BLACK if invert_color else Color.WHITE)
+	value_label_settings.outline_color = value_label_settings.font_color
+	value_label_settings.outline_color.a = 0.2
 
 	Offset.hide() if offset_amount == 0 else Offset.show()	
 	OffsetAmountLabel.text = str( value + offset_amount )

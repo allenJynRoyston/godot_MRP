@@ -9,15 +9,18 @@ enum TYPE {
 	SCIENCE_PERK_2,
 	SCIENCE_PERK_3,	
 	
+	# SUBDIVISONS
 	ENABLE_ADMIN_SUBDIVISON,
 	
-	#header
-	SHOW_ECONOMY_IN_HEADER,
-	SHOW_PERSONNEL_IN_HEADER,
-	SHOW_VIBES_IN_HEADER,
-	SHOW_MTF_IN_HEADER,
-	SHOW_POWER_IN_HEADER,
-	SHOW_DANGERS_IN_HEADER,
+	# UI
+	UI_ENABLE_ECONOMY,
+	UI_ENABLE_VIBES,
+	UI_ENABLE_PERSONNEL,
+	UI_ENABLE_DANGERS,
+	UI_ENABLE_MTF,
+	UI_ENABLE_ENERGY,
+			
+
 	# ui
 	ENABLE_TIMELINE,
 	ENABLE_OBJECTIVES,
@@ -36,11 +39,11 @@ func return_data(ref:TYPE) -> Dictionary:
 		# --- Starting Perks
 		TYPE.ADMIN_PERK_1:
 			return {
-				"description": "Provides +5 random resources each turn."
+				"description": "Provides +10 random resources each turn."
 			}
 		TYPE.ADMIN_PERK_2:
 			return {
-				"description": "Facilities adjacent to this one gain an extra level."
+				"description": "All facilities start at level 1."
 			}
 		TYPE.ADMIN_PERK_3:
 			return {
@@ -67,27 +70,27 @@ func return_data(ref:TYPE) -> Dictionary:
 			}
 		
 		# --- Header Display Toggles
-		TYPE.SHOW_ECONOMY_IN_HEADER:
+		TYPE.UI_ENABLE_ECONOMY:
 			return {
 				"description": "Displays the Economy."
 			}
-		TYPE.SHOW_PERSONNEL_IN_HEADER:
+		TYPE.UI_ENABLE_PERSONNEL:
 			return {
 				"description": "Displays Personnel data."
 			}			
-		TYPE.SHOW_VIBES_IN_HEADER:
+		TYPE.UI_ENABLE_VIBES:
 			return {
 				"description": "Displays the Vibes."
 			}
-		TYPE.SHOW_MTF_IN_HEADER:
+		TYPE.UI_ENABLE_MTF:
 			return {
 				"description": "Displays Mobile Task Force status."
 			}
-		TYPE.SHOW_POWER_IN_HEADER:
+		TYPE.UI_ENABLE_ENERGY:
 			return {
 				"description": "Displays power usage."
 			}
-		TYPE.SHOW_DANGERS_IN_HEADER:
+		TYPE.UI_ENABLE_DANGERS:
 			return {
 				"description": "Displays danger levels."
 			}

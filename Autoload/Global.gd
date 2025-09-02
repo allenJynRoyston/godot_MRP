@@ -236,7 +236,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		for node in control_input_subscriptions:
 			if "on_control_input_update" in node:
 				var key:String = ""
-
+				
 				match event.keycode:
 					# --------------
 					48:
@@ -287,6 +287,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 						key = "F"
 					82:
 						key = "R"
+					85:
+						key = "U"
 					# --------------
 					71:
 						key = "G"
