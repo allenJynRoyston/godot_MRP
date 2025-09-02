@@ -480,6 +480,80 @@ var ADMIN_SETUP:Dictionary = {
 
 		return instructions_1
 }
+
+var LOGISTIC_SETUP:Dictionary = {
+	"is_repeatable": true,
+	"btn": {
+		"title": "LOGISTIC DEPARTMENT SETUP"
+	},
+	"event_instructions": func(props:Dictionary) -> Array:
+		# admin department always installed
+		
+		var instructions_1:Array = build_event_content(props, {
+			"header": "FACILITY SETUP",
+			"subheader": "BEANS AND BULLETS",
+			"img_src": "res://Media/images/logistic_section.png",
+			"text": ["Select its priority"],
+			"options": [
+				{
+					"header": "PERK 1",
+					"title": "Perk 1 title",
+					"description": "Perk description 1.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
+						onSelected(choice),
+				},
+				{
+					"header": "PERK 2",
+					"title": "Perk 2 title",
+					"description": "Perk description 2.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
+						onSelected(choice),
+				},
+				{
+					"header": "PERK 3",
+					"title": "Perk 3 title",
+					"description": "Perk description 3.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						onSelected(choice),
+				},				
+			]
+		})
+
+		return instructions_1
+}
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------
@@ -2185,6 +2259,7 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
 	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
+	EVT.TYPE.LOGISTIC_SETUP: LOGISTIC_SETUP,
 	EVT.TYPE.SCIENCE_SETUP: SCIENCE_SETUP,
 	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B: SELECT_STARTING_DEPARTMENTS_B,
 	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_C: SELECT_STARTING_DEPARTMENTS_C,

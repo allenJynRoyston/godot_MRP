@@ -3,6 +3,7 @@ extends Node
 enum REF {
 	# SUBDIVISIONS
 	ENABLE_ADMIN_SUBDIVISON,
+	ENABLE_LOGISTIC_SUBDIVISON,
 	
 	# UI
 	UI_ENABLE_ECONOMY,
@@ -166,6 +167,14 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"energy_cost": 1,
 				"conditionals": [CONDITIONALS.TYPE.ENABLE_ADMIN_SUBDIVISON]
 			}
+			
+		REF.ENABLE_LOGISTIC_SUBDIVISON:
+			ability = {
+				"name": "ENABLE_LOGISTIC_SUBDIVISON",
+				"description": "Can build an Logistics Subdivion.",
+				"energy_cost": 1,
+				"conditionals": [CONDITIONALS.TYPE.ENABLE_LOGISTIC_SUBDIVISON]
+			}			
 		#endregion
 		
 		#region UI

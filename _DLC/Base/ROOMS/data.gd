@@ -1,5 +1,6 @@
 extends SubscribeWrapper
-var ADMIN = preload("res://_DLC/Base/ROOMS/admin.gd")
+var ADMIN:Script = preload("res://_DLC/Base/ROOMS/admin.gd")
+var LOGISTICS:Script = preload("res://_DLC/Base/ROOMS/logistics.gd")
 
 
 enum INFTYPE {	
@@ -447,41 +448,56 @@ var ADMIN_LINK_5:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_LINK_5)
 #endregion
 
 #region DEPARTMENTS
-var LOGISTICS_DEPARTMENT:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"link_categories": ROOM.CATEGORY.LOGISTICS_LINKABLE,
-	
-	"name": "LOGISTICS_DEPARTMENT",
-	"shortname": "LOGISTICS_DEPARTMENT",
-	"img_src": "res://Media/rooms/logistics.png",
-	"description": "Manages logistical networks and material distribution, with primary function directed toward maintaining and expanding fiscal assets.",
+var LOGISTICS_DEPARTMENT:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_DEPARTMENT)
 
-	"costs": {
-		"unlock": 1,
-		"purchase": 10,
-	},
-	
-	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 4,
-	},
-	
-	"influence": INFLUENCE_PRESETS[INFTYPE.MONEY],	
-	
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ZERO),
-			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ONE),
-			ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO),
-		],			
+var LOGISTICS_LINK_1:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_LINK_1)
 
-	"requires_unlock": false,	
-	"own_limit": 1,
-	"required_staffing": [],
-	"required_energy": 1,
-}
+var LOGISTICS_LINK_2:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_LINK_2)
 
+var LOGISTICS_LINK_3:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_LINK_3)
+
+var LOGISTICS_LINK_4:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_LINK_4)
+
+var LOGISTICS_LINK_5:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_LINK_5)
+
+#
+#var LOGISTICS_LINK_2:Dictionary = {
+	#"ref": ROOM.REF.LOGISTICS_LINK_2,
+	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"name": "LOGISTICS_LINK_2",
+	#"shortname": "LOGISTICS_LINK_2",
+	#"img_src": "res://Media/rooms/vehicle_bay.png",
+	#"description": "Transport Hub – coordinates vehicle fleets and rapid deployment.",
+#}
+#
+#var LOGISTICS_LINK_3:Dictionary = {
+	#"ref": ROOM.REF.LOGISTICS_LINK_3,
+	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"name": "LOGISTICS_LINK_3",
+	#"shortname": "LOGISTICS_LINK_3",
+	#"img_src": "res://Media/rooms/armory.png",
+	#"description": "Armory Annex – maintains weapons and gear for response teams.",
+	#"metrics": {
+		#RESOURCE.METRICS.READINESS: 2
+	#},
+#}
+#
+#var LOGISTICS_LINK_4:Dictionary = {
+	#"ref": ROOM.REF.LOGISTICS_LINK_4,
+	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"name": "LOGISTICS_LINK_4",
+	#"shortname": "LOGISTICS_LINK_4",
+	#"img_src": "res://Media/rooms/distribution_center.png",
+	#"description": "Distribution Center – optimizes allocation of resources across the site.",
+	#"abilities": func() -> Array:
+		#return [
+			##ABL.get_ability(ABL.REF.INCREASE_SUPPLY),
+			##ABL.get_ability(ABL.REF.REDUCE_COST, 1),
+		#]
+#}
+#endregion
+
+#region SCIENCE
 var SCIENCE_DEPARTMENT:Dictionary = {
 	# ------------------------------------------
 	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
@@ -630,7 +646,7 @@ var CONTAINMENT_CELL:Dictionary = {
 #endregion
 
 #
-##region ENGINEERING linkables
+#region ENGINEERING linkables
 #var ENGINEERING_LINK_1:Dictionary = {
 	#"ref": ROOM.REF.ENGINEERING_LINK_1,
 	#"categories": [ROOM.CATEGORY.ENGINEERING_LINKABLE],
@@ -2374,9 +2390,13 @@ var CONTAINMENT_CELL:Dictionary = {
 # -----------------------------------	
 var list:Array[Dictionary] = [
 	DEBUG_ROOM,
-	# --------------	ADMIN ROOMS
+	# ADMIN ROOMS
 	ADMIN_DEPARTMENT, 
 	ADMIN_LINK_1, ADMIN_LINK_2, ADMIN_LINK_3, ADMIN_LINK_4, ADMIN_LINK_5,
+	
+	# LOGISTICS
+	LOGISTICS_DEPARTMENT,
+	LOGISTICS_LINK_1, LOGISTICS_LINK_2, LOGISTICS_LINK_3, LOGISTICS_LINK_4, LOGISTICS_LINK_5,
 	
 	## --------------	ENGINEERING ROOMS
 	#ENGINEERING_DEPARTMENT, 

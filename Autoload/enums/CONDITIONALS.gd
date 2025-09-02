@@ -5,12 +5,17 @@ enum TYPE {
 	ADMIN_PERK_2,
 	ADMIN_PERK_3,
 	
+	LOGISTIC_PERK_1, 
+	LOGISTIC_PERK_2,
+	LOGISTIC_PERK_3,
+	
 	SCIENCE_PERK_1,
 	SCIENCE_PERK_2,
 	SCIENCE_PERK_3,	
 	
 	# SUBDIVISONS
 	ENABLE_ADMIN_SUBDIVISON,
+	ENABLE_LOGISTIC_SUBDIVISON,
 	
 	# UI
 	UI_ENABLE_ECONOMY,
@@ -50,6 +55,19 @@ func return_data(ref:TYPE) -> Dictionary:
 				"description": "Facilities are built instantly."
 			}
 			
+		TYPE.LOGISTIC_PERK_1:
+			return {
+				"description": "PERK 1 DESCRIPTION."
+			}			
+		TYPE.LOGISTIC_PERK_2:
+			return {
+				"description": "PERK 2 DESCRIPTION."
+			}
+		TYPE.LOGISTIC_PERK_3:
+			return {
+				"description": "PERK 3 DESCRIPTION."
+			}			
+			
 		# --- Starting Perks
 		TYPE.SCIENCE_PERK_1:
 			return {
@@ -68,6 +86,10 @@ func return_data(ref:TYPE) -> Dictionary:
 			return {
 				"description": "Can construct ADMINISTRATION subdivisons."
 			}
+		TYPE.ENABLE_LOGISTIC_SUBDIVISON:
+			return {
+				"description": "Can construct LOGISTIC subdivisons."
+			}			
 		
 		# --- Header Display Toggles
 		TYPE.UI_ENABLE_ECONOMY:
