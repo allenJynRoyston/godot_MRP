@@ -437,12 +437,12 @@ func show_fabrication_options() -> void:
 
 		
 		
-	var all_room_categories:Array = ROOM_UTIL.get_all_room_catagories() 
 
 	var options:Array = []
 	var list:Array = []
 	
 	# first, get adjacent cateogries
+	var all_room_categories:Array = ROOM_UTIL.get_all_room_catagories() 	
 	for type in all_room_categories:
 		list.push_back({
 			"title": ROOM.return_category_title(type),
@@ -452,13 +452,13 @@ func show_fabrication_options() -> void:
 		})
 
 	# ... then general other categories
-	#for type in [ROOM.CATEGORY.ENERGY, ROOM.CATEGORY.UTILITY, ROOM.CATEGORY.CONTAINMENT, ROOM.CATEGORY.DEPARTMENT]:
-		#list.push_back({
-			#"title": ROOM.return_category_title(type),
-			#"type": type,
-			#"is_disabled_func": is_disabled_func,
-			#"hint_func": hint_func
-		#})
+	for type in [ROOM.CATEGORY.DEPARTMENT, ROOM.CATEGORY.UTILITY]:
+		list.push_back({
+			"title": ROOM.return_category_title(type),
+			"type": type,
+			"is_disabled_func": is_disabled_func,
+			"hint_func": hint_func
+		})
 	
 	for listitem in list:
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
@@ -471,7 +471,9 @@ func show_fabrication_options() -> void:
 					"items": items,
 					"footer": "%s / %s" % [index + 1, items.size() ],
 				})
-				
+	
+	# then add branches?
+	# TODO: THERE has to be a better way to do this
 	var subdivision_list:Array = []
 	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH):
 		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.ADMIN_BRANCH)
