@@ -13,6 +13,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"shortname": "SHORTNAME",
 	"img_src": "res://Media/images/redacted.png",
 	"description": "Requires description...",
+	"quote": "Quote...",
 	# ------------------------------------------
 	
 	# ------------------------------------------	
@@ -420,7 +421,7 @@ func is_scp_empty(use_location:Dictionary = current_location) -> bool:
 
 # ------------------------------------------------------------------------------	
 func is_ring_powered(use_location:Dictionary = current_location) -> bool:
-	return room_config.floor[use_location.floor].ring[use_location.ring].power_distribution.energy > 1
+	return true #room_config.floor[use_location.floor].ring[use_location.ring].power_distribution.energy > 1
 # ------------------------------------------------------------------------------		
 
 # ------------------------------------------------------------------------------		

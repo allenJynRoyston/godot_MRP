@@ -16,6 +16,7 @@ enum TYPE {
 	# SUBDIVISONS
 	ENABLE_ADMIN_BRANCH,
 	ENABLE_LOGISTIC_BRANCH,
+	ENABLE_ENGINEERING_BRANCH,
 	
 	# UI	
 	UI_ENABLE_VIBES,
@@ -89,13 +90,17 @@ func return_data(ref:TYPE) -> Dictionary:
 		
 		TYPE.ENABLE_ADMIN_BRANCH:
 			return {
-				"description": "Can construct ADMINISTRATION subdivisons."
+				"description": "Can construct ADMINISTRATION branch."
 			}
 		TYPE.ENABLE_LOGISTIC_BRANCH:
 			return {
-				"description": "Can construct LOGISTIC subdivisons."
+				"description": "Can construct LOGISTIC branch."
 			}			
-		
+		TYPE.ENABLE_ENGINEERING_BRANCH:
+			return {
+				"description": "Can construct ENGINEERING branch."
+			}			
+			
 		# --- Header Display Toggles
 		TYPE.SHOW_ECONOMY_BUDGET:
 			return {

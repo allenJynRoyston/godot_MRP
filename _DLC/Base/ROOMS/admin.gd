@@ -70,10 +70,11 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"link_categories": ROOM.CATEGORY.ADMIN,
 				
 				"name": "ADMINISTRATION DEPARTMENT",
-				"shortname": "ADMIN DEPT",	
-				"description": "The heart of the Site beats in paperwork and protocols.",
+				"shortname": "ADMIN DEPT", 	
+				"description": "Central hub that boosts ADMIN influence and resources.",
+				"quote": "The heart of the Site beats in paperwork and protocols.",
 
-				"requires_unlock": false,	
+				"requires_unlock": false, 	
 				"own_limit": 1,
 				"required_staffing": [],
 				"required_energy": 1,
@@ -89,21 +90,21 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"costs": {
 					"unlock": 1,
 					"purchase": 10,
-				},	
+				}, 	
 				
 				"abilities": func() -> Array: 
 					return [
 						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ONE),
 						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO, 1),
-					],		
-							
+					], 	
+								
 				"passive_abilities": func() -> Array: 
 					return [
 						ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_BRANCH),
 					],
 
 				"events": {
-					"build_complete": EVT.TYPE.ADMIN_SETUP
+					"build_complete": EVT.TYPE.ADMIN_PERK_SETUP
 				}
 			}
 		# ----------------------------------------------------------------------
@@ -114,7 +115,8 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"name": "ADMIN BRANCH",
 				"shortname": "A.BRANCH",
 				"img_src": "res://Media/rooms/research_lab.png",
-				"description": "Allows the use of administrative functions.",
+				"description": "Provides administrative linkage for branch expansion.",
+				"quote": "Allows the use of administrative functions.",
 				"own_limit": 4,
 			}
 		# ----------------------------------------------------------------------
@@ -123,29 +125,30 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "DIRECTORS OFFICE",
 				"shortname": "D.OFFICE",
-				"description": "The most dangerous object on-site is the Director’s pen.",
+				"description": "Unlocks strategic control functions and morale boosts.",
+				"quote": "The most dangerous object on-site is the Director’s pen.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
-				],	
+				], 	
 				"own_limit": 1,
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
-				},					
+				}, 					
 				"metrics": {
 					RESOURCE.METRICS.MORALE: 1,
 				},
 				"abilities": func() -> Array: 
 					return [
 						ABL.get_ability(ABL.REF.TRIGGER_ONSITE_NUKE, 2),
-					],	
+					], 	
 				"passive_abilities": func() -> Array: 
 					return [
 						ABL_P.get_ability(ABL_P.REF.UI_ENABLE_VIBES, 0),
 						ABL_P.get_ability(ABL_P.REF.UI_ENABLE_PERSONNEL, 0),
 						ABL_P.get_ability(ABL_P.REF.UI_ENABLE_DANGERS, 0),
-					],					
+					], 					
 			}
 		# ----------------------------------------------------------------------			
 		ROOM.REF.ADMIN_ROOM_2:
@@ -153,7 +156,8 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "HUMAN RESOURCES",
 				"shortname": "HR",
-				"description": "Loyalty is mandatory. Morale is optional.",
+				"description": "Provides staffing bonuses across all departments.",
+				"quote": "Loyalty is mandatory. Morale is optional.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN,
@@ -162,7 +166,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
-				},	
+				}, 	
 								
 				"passive_abilities": func() -> Array: 
 					return [
@@ -178,16 +182,17 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "OPERATIONS",
 				"shortname": "OPERATIONS",
-				"description": "Operations turns chaos into a calendar.",
-				"requires_unlock": false,	
+				"description": "Unlocks and manages the site-wide operational timeline.",
+				"quote": "Operations turns chaos into a calendar.",
+				"requires_unlock": false, 	
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
-				],	
+				], 	
 				"own_limit": 1,
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
-				},	
+				}, 	
 				"effect": {
 					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_TIMELINE).description
 				},
@@ -200,36 +205,37 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "ACCOUNTING",
 				"shortname": "ACCOUNTING",
-				"description": "In the end, anomalies aren’t secured with steel, but with spreadsheets.",
+				"description": "Generates extra MONEY when placed next to other ACCOUNTING rooms.",
+				"quote": "In the end, anomalies aren’t secured with steel, but with spreadsheets.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
-				],	
-				"own_limit": 5,	
+				], 	
+				"own_limit": 5, 	
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
-				},	
-				#"influence": INFLUENCE_PRESETS[INFTYPE.MONEY],
+				}, 	
 				"effect": {
 					"description": "Additional income when placed next to other ACCOUNTING offices",
 					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
 						var count:int = ROOM_UTIL.find_refs_of_adjuacent_rooms(_room_data.location).filter(func(x): return x == ROOM.REF.ADMIN_ROOM_4).size()
 						var room_level_config:Dictionary = _new_room_config.floor[_room_data.location.floor].ring[_room_data.location.ring].room[_room_data.location.room]
 						room_level_config.currencies[RESOURCE.CURRENCY.MONEY] += count * 5,
-				},				
+				}, 				
 			}
-		## ----------------------------------------------------------------------		
+		## ---------------------------------------------------------------------- 		
 		ROOM.REF.ADMIN_ROOM_5:
 			room_data = {
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "INTERNAL AFFAIRS",
 				"shortname": "I.AFFAIRS",
-				"description": "The quietest rooms often contain the loudest control.",
+				"description": "Improves SAFETY and grants oversight abilities.",
+				"quote": "The quietest rooms often contain the loudest control.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
-				],	
+				], 	
 				"metrics": {
 					RESOURCE.METRICS.SAFETY: 1,
 				},
@@ -238,25 +244,116 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 						ABL_P.get_ability(ABL_P.REF.IA_LEVEL_1, 0),
 						ABL_P.get_ability(ABL_P.REF.IA_LEVEL_2, 1),
 						ABL_P.get_ability(ABL_P.REF.IA_LEVEL_3, 2)
-					],				
+					], 				
 			}
-		## ----------------------------------------------------------------------		
+		## ---------------------------------------------------------------------- 		
 		ROOM.REF.ADMIN_ROOM_6:
 			room_data = {
 				"categories": [ROOM.CATEGORY.ADMIN],
 				"name": "BUDGETING OFFICE",
 				"shortname": "BUDGETING",
-				"description": "Where accounting is 10% math, 90% plausible deniability.",
+				"description": "Reveals and manages the site economy budget.",
+				"quote": "Where accounting is 10% math, 90% plausible deniability.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
-				],	
+				], 	
 				"effect": {
 					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET).description
 				},
 				"on_activate": func(state:bool) -> void:
-					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET, state),				
+					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET, state), 				
 			}			
+		# ----------------------------------------------------------------------
+		ROOM.REF.ADMIN_ROOM_7:
+			room_data = {
+				"categories": [ROOM.CATEGORY.ADMIN],
+				"name": "INTERNAL COMMUNICATIONS",
+				"shortname": "INT COMMS",
+				"description": "Improves READINESS and enables communication-based UI functions.",
+				"quote": "Keeping everyone informed keeps the chaos manageable.",
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN
+				],
+				"own_limit": 2,
+				"costs": {
+					"unlock": 0,
+					"purchase": 5,
+				}, 	
+				"metrics": {
+					RESOURCE.METRICS.READINESS: 1,
+				},
+				"passive_abilities": func() -> Array: 
+					return [
+						ABL_P.get_ability(ABL_P.REF.UI_ENABLE_VIBES, 0),
+						ABL_P.get_ability(ABL_P.REF.UI_ENABLE_PERSONNEL, 0),
+					],
+			}
+		# ----------------------------------------------------------------------
+		ROOM.REF.ADMIN_ROOM_8:
+			room_data = {
+				"categories": [ROOM.CATEGORY.ADMIN],
+				"name": "AUDIT DEPARTMENT",
+				"shortname": "AUDIT",
+				"description": "Generates additional MONEY and SAFETY for adjacent ADMIN rooms.",
+				"quote": "We track everything, including mistakes.",
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN
+				],
+				"own_limit": 2,
+				"costs": {
+					"unlock": 0,
+					"purchase": 5,
+				}, 	
+				"effect": {
+					"description": "Generates additional MONEY and SAFETY for adjacent ADMIN rooms."
+				},
+			}
+		# ----------------------------------------------------------------------
+		ROOM.REF.ADMIN_ROOM_9:
+			room_data = {
+				"categories": [ROOM.CATEGORY.ADMIN],
+				"name": "LEGAL OFFICE",
+				"shortname": "LEGAL",
+				"description": "Improves SAFETY for adjacent ADMIN rooms.",
+				"quote": "Every decision has a clause, every action a contract.",
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN
+				],
+				"own_limit": 1,
+				"costs": {
+					"unlock": 0,
+					"purchase": 5,
+				}, 	
+				"effect": {
+					"description": "Improves SAFETY for adjacent ADMIN rooms.",
+				},
+			}
+		# ----------------------------------------------------------------------
+		ROOM.REF.ADMIN_ROOM_10:
+			room_data = {
+				"categories": [ROOM.CATEGORY.ADMIN],
+				"name": "EXECUTIVE SUITE",
+				"shortname": "EXEC SUITE",
+				"description": "High-level office that increases READINESS.",
+				"quote": "The higher-ups decide everything… quietly.",
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN
+				],
+				"own_limit": 1,
+				"costs": {
+					"unlock": 0,
+					"purchase": 10,
+				}, 	
+				"metrics": {
+					RESOURCE.METRICS.READINESS: 1,
+				},
+			}
+		# ----------------------------------------------------------------------
 
 	room_data.img_src = "res://Media/rooms/admin_section.png"
 	room_data.ref = ref

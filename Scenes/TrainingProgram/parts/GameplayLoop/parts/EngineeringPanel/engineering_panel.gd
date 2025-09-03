@@ -2,7 +2,7 @@ extends SubscribeWrapper
 
 @onready var UpgradeControl:Control = $Upgrade
 @onready var UpgradePanel:PanelContainer = $Upgrade/PanelContainer
-@onready var UpgradeCountLabel:Label = $Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/UpgradeCountLabel
+@onready var EnergyCountLabel:Label = $Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/EnergyCountLabel
 
 @onready var TempMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/TempMonitor
 @onready var RealityMonitor:PanelContainer = $VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2/HBoxContainer/RealityMonitor
@@ -25,8 +25,8 @@ extends SubscribeWrapper
 	{"node": Cooling, "prop": "cooling", "description": "Keeps temperatures cool and pleasant."}, 
 	{"node": Ventilation, "prop": "ventilation", "description": "Circulates fresh air throughout the wing."}, 
 	{"node": SRA, "prop": "sra", "description": "Set strength of localized Scranton Reality Anchors."}, 
-	{"node": Energy, "prop": "energy", "description": "Set the available energy for the wing."}, 
-	{"node": Logistics, "prop": "logistics", "description": "Support more rooms with higher logistics rating."}, 
+	#{"node": Energy, "prop": "energy", "description": "Set the available energy for the wing."}, 
+	#{"node": Logistics, "prop": "logistics", "description": "Support more rooms with higher logistics rating."}, 
 ]
 
 var control_pos:Dictionary = {}
@@ -99,26 +99,29 @@ func update_node() -> void:
 	var power_distribution:Dictionary = ring_config_data.power_distribution
 	var energy_data:Dictionary = ring_config_data.energy
 	var monitor:Dictionary = room_config.floor[current_location.floor].ring[current_location.ring].monitor
-
+	var energy_available:int = GAME_UTIL.get_energy_available()
+	
+	
 	# monitors
 	TempMonitor.slider_val = monitor.temp
 	RealityMonitor.slider_val = monitor.reality
 	PollutionMonitor.slider_val = monitor.pollution
 	
+	EnergyCountLabel.text = str(energy_available)
 	# update labels
-	UpgradeCountLabel.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
-	EnergyItem.amount = energy_data.used 
-	EnergyItem.max_amount = energy_data.available
-	EnergyItem.is_negative = energy_data.used > energy_data.available
+	#EnergyCountLabel.text = str(resources_data[RESOURCE.CURRENCY.CORE].amount)
+	#EnergyItem.amount = energy_data.used 
+	#EnergyItem.max_amount = energy_data.available
+	#EnergyItem.is_negative = energy_data.used > energy_data.available
 
 	# update values
 	Heating.active_level = power_distribution.heating
 	Cooling.active_level = power_distribution.cooling
 	Ventilation.active_level = power_distribution.ventilation
 	SRA.active_level = power_distribution.sra
-	Energy.active_level = power_distribution.energy
-	Logistics.active_level = power_distribution.logistics
-	
+	#Energy.active_level = power_distribution.energy
+	#Logistics.active_level = power_distribution.logistics
+	#
 	# check if they have the correct buildings to enable
 	#Heating.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_1)
 	#Cooling.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_2)
@@ -150,8 +153,10 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		return
 
 	var key:String = input_data.key
+	var energy_available:int = GAME_UTIL.get_energy_available()	
 	var power_distribution:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)].power_distribution
 	var prop_val:int = power_distribution[component_list[component_index].prop]
+	print("prop_val: ", prop_val)
 	
 	match key:
 		"W":
@@ -159,19 +164,19 @@ func on_control_input_update(input_data:Dictionary) -> void:
 		"S":
 			component_index = U.min_max( component_index + 1, 0, component_list.size() - 1, true )
 		"A":
-			if ActiveNode.is_disabled:return
-			if prop_val > 1:
-				resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount + 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
-				base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] -= 1
+			if ActiveNode.is_disabled or prop_val <= 0:
+				return
 				
-				SUBSCRIBE.base_states = base_states
-				SUBSCRIBE.resources_data = resources_data
+			#if prop_val > 1:
+				#resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount + 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
+			base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] -= 1
+			SUBSCRIBE.base_states = base_states
 		"D":
-			if ActiveNode.is_disabled:return
-			if resources_data[RESOURCE.CURRENCY.CORE].amount > 0 and prop_val < 4:
-				resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount - 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
-				base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] += 1
+			if ActiveNode.is_disabled or energy_available <= 0 or prop_val >= 4:
+				return
 				
-				SUBSCRIBE.base_states = base_states
-				SUBSCRIBE.resources_data = resources_data
+			#if resources_data[RESOURCE.CURRENCY.CORE].amount > 0 and prop_val < 4:
+				#resources_data[RESOURCE.CURRENCY.CORE].amount = U.min_max(resources_data[RESOURCE.CURRENCY.CORE].amount - 1, 0, resources_data[RESOURCE.CURRENCY.CORE].capacity)
+			base_states.ring[str(current_location.floor, current_location.ring)].power_distribution[component_list[component_index].prop] += 1
+			SUBSCRIBE.base_states = base_states
 # ------------------------------------------	

@@ -4,6 +4,7 @@ enum REF {
 	# BRANCHES
 	ENABLE_ADMIN_BRANCH,
 	ENABLE_LOGISTIC_BRANCH,
+	ENABLE_ENGINEERING_BRANCH,
 	
 	# UI
 	#UI_ENABLE_ECONOMY,
@@ -174,7 +175,15 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": "Can build an Logistics Branch.",
 				"energy_cost": 5,
 				"conditionals": [CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH]
-			}			
+			}
+			
+		REF.ENABLE_ENGINEERING_BRANCH:
+			ability = {
+				"name": "ENABLE_ENGINEERING_BRANCH",
+				"description": "Can build an Engineering Branch.",
+				"energy_cost": 5,
+				"conditionals": [CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH]
+			}
 		#endregion
 		
 		#region UI

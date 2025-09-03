@@ -53,6 +53,7 @@ func build_event_content(props:Dictionary, content:Dictionary) -> Array:
 		]
 # ------------------------------------------------------------------------
 
+#region TEST SCENARIOS
 # ------------------------------------------------------------------------
 var TEST_EVENT_A:Dictionary = {
 	"is_repeatable": true,
@@ -405,9 +406,11 @@ var TEST_EVENT_C:Dictionary = {
 		})
 }
 # ------------------------------------------------------------------------
+#endregion
 
+#region PERK SETUP
 # ------------------------------------------------------------------------
-var ADMIN_SETUP:Dictionary = {
+var ADMIN_PERK_SETUP:Dictionary = {
 	"is_repeatable": true,
 	"btn": {
 		"title": "ADMIN DEPARTMENT SETUP"
@@ -470,7 +473,7 @@ var ADMIN_SETUP:Dictionary = {
 		return instructions_1
 }
 
-var LOGISTIC_SETUP:Dictionary = {
+var LOGISTIC_PERK_SETUP:Dictionary = {
 	"is_repeatable": true,
 	"btn": {
 		"title": "LOGISTIC DEPARTMENT SETUP"
@@ -551,11 +554,92 @@ var LOGISTIC_SETUP:Dictionary = {
 
 		return instructions_1
 }
+
+var ENGINEERING_PERK_SETUP:Dictionary = {
+	"is_repeatable": true,
+	"btn": {
+		"title": "ENGINEERING DEPARTMENT SETUP"
+	},
+	"event_instructions": func(props:Dictionary) -> Array:
+		# admin department always installed
+		
+		var instructions_1:Array = build_event_content(props, {
+			"header": "FACILITY SETUP",
+			"subheader": "ENGINEERING...",
+			"img_src": "res://Media/images/logistic_section.png",
+			"text": ["Select its priority"],
+			"options": [
+				{
+					"header": "PERK 1",
+					"title": "Perk 1 title",
+					"description": "Perk description 1.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
+						onSelected(choice),
+				},
+				{
+					"header": "PERK 2",
+					"title": "Perk 2 title",
+					"description": "Perk description 2.",
+					"type": EVT.OUTCOME.NEUTRAL,
+					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					"impact": {
+						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
+					},					
+					"outcomes": {
+						"list": [
+							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
+						]
+					},
+					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
+						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
+						onSelected(choice),
+				},
+				#{
+					#"header": "PERK 3",
+					#"title": "Perk 3 title",
+					#"description": "Perk description 3.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"impact": {
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+					#},					
+					#"outcomes": {
+						#"list": [
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						#onSelected(choice),
+				#},				
+			]
+		})
+
+		return instructions_1
+}
 # ------------------------------------------------------------------------
+#endregion
 
-
-
-
+#region STORY 
 # ------------------------------------------------------------------------
 var MYSTERY_MEAT_1:Dictionary = {
 	"is_repeatable": false,
@@ -817,7 +901,9 @@ var MYSTERY_MEAT_3:Dictionary = {
 		})
 }
 # ------------------------------------------------------------------------
+#endregion
 
+#region PENDING...
 # ------------------------------------------------------------------------
 var FACILITY_RAID_1:Dictionary = {
 	"is_repeatable": true,		
@@ -1990,50 +2076,51 @@ var SCP_CONTAINMENT_AWARD_EVENT:Dictionary = {
 		],
 }
 # ------------------------------------------------------------------------
-
+#endregion
 
 var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_A: TEST_EVENT_A,
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
-	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
-	EVT.TYPE.LOGISTIC_SETUP: LOGISTIC_SETUP,
-
+	EVT.TYPE.ADMIN_PERK_SETUP: ADMIN_PERK_SETUP,
+	EVT.TYPE.LOGISTIC_PERK_SETUP: LOGISTIC_PERK_SETUP,
+	EVT.TYPE.ENGINEERING_PERK_SETUP: ENGINEERING_PERK_SETUP,
 	
-	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
-	EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,
-	# ------------------
-	EVT.TYPE.GAME_OVER: GAME_OVER,
-	# ------------------
 	
-	# ------------------ 	
-	EVT.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE_EVENT,
-	
-	# ------------------ 
-	EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,
-	EVT.TYPE.SCP_BREACH_EVENT_1: SCP_BREACH_EVENT_1,
-	EVT.TYPE.SCP_CONTAINED_EVENT: SCP_CONTAINED_EVENT,
-	EVT.TYPE.SCP_NO_STAFF_EVENT: SCP_NO_STAFF_EVENT,
-	EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT: SCP_CONTAINMENT_AWARD_EVENT,
-	
-	# ------------------
-	EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,
-	EVT.TYPE.CLONE_RESEARCHER: CLONE_RESEARCHER,
-	EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER,
-	#EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,	
-	# ------------------
-	
-	# ------------------
-	EVT.TYPE.OBJECTIVE_REWARD: OBJECTIVE_REWARD,
-	# ------------------
-	
-	# ------------------
-	EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
-	EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR,
-	EVT.TYPE.MYSTERY_MEAT_1: MYSTERY_MEAT_1,
-	EVT.TYPE.MYSTERY_MEAT_2: MYSTERY_MEAT_2,
-	EVT.TYPE.MYSTERY_MEAT_3: MYSTERY_MEAT_3
+	#EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
+	#EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,
+	## ------------------
+	#EVT.TYPE.GAME_OVER: GAME_OVER,
+	## ------------------
+	#
+	## ------------------ 	
+	#EVT.TYPE.DIRECTORS_OFFICE: DIRECTORS_OFFICE_EVENT,
+	#
+	## ------------------ 
+	#EVT.TYPE.SCP_ON_CONTAINMENT: SCP_ON_CONTAINMENT,
+	#EVT.TYPE.SCP_BREACH_EVENT_1: SCP_BREACH_EVENT_1,
+	#EVT.TYPE.SCP_CONTAINED_EVENT: SCP_CONTAINED_EVENT,
+	#EVT.TYPE.SCP_NO_STAFF_EVENT: SCP_NO_STAFF_EVENT,
+	#EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT: SCP_CONTAINMENT_AWARD_EVENT,
+	#
+	## ------------------
+	#EVT.TYPE.HIRE_RESEARCHER: HIRE_RESEARCHER,
+	#EVT.TYPE.CLONE_RESEARCHER: CLONE_RESEARCHER,
+	#EVT.TYPE.PROMOTE_RESEARCHER: PROMOTE_RESEARCHER,
+	##EVT.TYPE.DISMISS_RESEARCHER: DISMISS_RESEARCHER,	
+	## ------------------
+	#
+	## ------------------
+	#EVT.TYPE.OBJECTIVE_REWARD: OBJECTIVE_REWARD,
+	## ------------------
+	#
+	## ------------------
+	#EVT.TYPE.HAPPY_HOUR: HAPPY_HOUR,
+	#EVT.TYPE.UNHAPPY_HOUR: UNHAPPY_HOUR,
+	#EVT.TYPE.MYSTERY_MEAT_1: MYSTERY_MEAT_1,
+	#EVT.TYPE.MYSTERY_MEAT_2: MYSTERY_MEAT_2,
+	#EVT.TYPE.MYSTERY_MEAT_3: MYSTERY_MEAT_3
 	# ------------------
 }
 

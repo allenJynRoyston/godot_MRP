@@ -375,7 +375,7 @@ func update_mesh_values() -> void:
 	WingRenderMesh.cooling_val = power_distribution.cooling
 	WingRenderMesh.sra_val = power_distribution.sra
 	WingRenderMesh.ventilation_val = power_distribution.ventilation	
-	WingRenderMesh.power_val = power_distribution.energy	
+	#WingRenderMesh.power_val = power_distribution.energy	
 # --------------------------------------------------------
 
 # --------------------------------------------------------

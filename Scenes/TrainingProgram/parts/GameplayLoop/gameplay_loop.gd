@@ -190,18 +190,17 @@ var initial_values:Dictionary = {
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
+					"energy_level": 0,
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
 					"buffs": [],
 					"debuffs": [],
 					"level": 0,
 					"power_distribution": {
-						"heating": 2 if floor_index in [5, 6] else 0,
+						"heating": 0,
 						"cooling": 0,
-						"ventilation": 1,
-						"sra": 1,
-						"energy": 2 if floor_index in [0, 1] else 1,
-						"logistics": 0
+						"ventilation": 0,
+						"sra": 0,
 					}
 				}
 				
@@ -619,7 +618,6 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 			"cooling": 0,
 			"ventilation": 0,
 			"sra": 0,
-			"energy": 0
 		},
 		# --------------
 		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,		
@@ -951,7 +949,7 @@ func on_current_phase_update() -> void:
 						var filtered:Array = purchased_facility_arr.filter(func(x):
 							if x.location.floor == floor_index and x.location.ring == ring_index and x.location.room == room_index:
 								var floor_base_state:Dictionary = base_states.floor[str(x.location.floor)]
-								return power_distribution.energy > 0 and x.under_construction
+								return x.under_construction
 							return false
 						)
 						if !filtered.is_empty():
@@ -1349,21 +1347,25 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	for floor_index in new_room_config.floor.size():
 		var floor_base_state:Dictionary = base_states.floor[str(floor_index)]
 		var floor_level:Dictionary = new_room_config.floor[floor_index]
-		
-		# set is_powered state
-		#floor_level.is_powered = floor_base_state.is_powered
-		
+
 		# RING LEVEL ------------- 
 		for ring_index in new_room_config.floor[floor_index].ring.size():
 			var ring_base_state:Dictionary = base_states.ring[str(floor_index, ring_index)]			
 			var ring_level_config:Dictionary = new_room_config.floor[floor_index].ring[ring_index]
-
-			# setup initial energy
-			ring_level_config.energy.available = energy_levels[ring_base_state.power_distribution.energy - 1] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
-			ring_level_config.energy.used = 0
 			
+
 			# transfer power_distribution
+			var energy_used:int = 0
 			ring_level_config.power_distribution = ring_base_state.power_distribution
+			for ref in ring_base_state.power_distribution:
+				var amount:int = ring_level_config.power_distribution[ref]
+				energy_used += amount
+			
+			# setup initial energy
+			ring_level_config.energy.available = energy_levels[ring_base_state.energy_level] if !DEBUG.get_val(DEBUG.GAMEPLAY_MAX_ENERGY) else 99
+			ring_level_config.energy.used = energy_used
+			
+
 			
 			# get environmental count
 			var ring_temp_total:int = 0

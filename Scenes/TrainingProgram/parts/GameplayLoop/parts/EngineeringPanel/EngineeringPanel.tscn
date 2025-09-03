@@ -61,9 +61,9 @@ layout_mode = 2
 [node name="PanelContainer" type="PanelContainer" parent="DescriptionControl"]
 custom_minimum_size = Vector2(456, 0)
 layout_mode = 2
-offset_top = 348.0
-offset_right = 325.0
-offset_bottom = 398.0
+offset_top = 286.0
+offset_right = 456.0
+offset_bottom = 336.0
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ctfup")
 
@@ -166,6 +166,7 @@ color = Color(0.51476, 0.344315, 1, 1)
 is_disabled = true
 
 [node name="Energy" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("4_1m6fd")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 title = "ENERGY"
@@ -173,6 +174,7 @@ active_level = 4
 color = Color(0.864543, 0.586489, 0.281442, 1)
 
 [node name="Logistics" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("4_1m6fd")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 title = "Logistics"
@@ -204,6 +206,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
@@ -234,6 +237,7 @@ max_amount = 10
 icon_size = Vector2(20, 20)
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
@@ -285,7 +289,7 @@ theme_override_constants/margin_bottom = 10
 [node name="Label" type="Label" parent="Upgrade/PanelContainer/VBoxContainer/Header/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ALLOCATE"
+text = "ENERGY"
 label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 1
 
@@ -319,11 +323,11 @@ theme_override_constants/separation = 5
 [node name="SVGIcon" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" instance=ExtResource("7_n8h5w")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-icon = 44
+icon = 37
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(25, 25)
 
-[node name="UpgradeCountLabel" type="Label" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+[node name="EnergyCountLabel" type="Label" parent="Upgrade/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "99"

@@ -1167,7 +1167,11 @@ func check_btn_states() -> void:
 			LogisticsBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH])) and !has_priority_events else LogisticsBtn.hide()
 			LogisticsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT)
 			
-			EngineeringBtn.hide()
+			EngineeringBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ENGINEERING_BRANCH])) and !has_priority_events else EngineeringBtn.hide()
+			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
+						
+			
+			#EngineeringBtn.hide()
 			ScienceBtn.hide()
 			MedicalBtn.hide()
 			SecurityBtn.hide()
@@ -1886,12 +1890,14 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			MODE.ENGINEERING_CONFIG:
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
-				RenderingNode.set_engineering_mode(true)
 				
 				reveal_actionpanel_label(false)
-				reveal_engineering(true)
 				change_camera_viewpoint(CAMERA.VIEWPOINT.ANGLE_NEAR)
-				change_camera_viewpoint(CAMERA.VIEWPOINT.SHIFT_RIGHT)
+				await change_camera_viewpoint(CAMERA.VIEWPOINT.SHIFT_RIGHT)
+				await reveal_engineering(true)
+
+				WingRenderNode.set_engineering_mode(true)
+				EngineeringComponent.start()
 			# --------------
 			MODE.SECURITY:
 				LocationAndDirectivesContainer.reveal(false)

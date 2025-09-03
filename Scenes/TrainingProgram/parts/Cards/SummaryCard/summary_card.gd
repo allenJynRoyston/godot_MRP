@@ -53,7 +53,7 @@ extends PanelContainer
 @onready var InfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/InfluenceContainer/PanelContainer2/MarginContainer/InfluenceLabel
 
 # Description 
-@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/Description/PanelContainer/MarginContainer/DescriptionLabel
+@onready var QuoteLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/Quote/PanelContainer/MarginContainer/QuoteLabel
 
 # priority
 @onready var DepartmentPriorityContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer
@@ -300,7 +300,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	# basics
 	NameTag.text = room_details.name #if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
 	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl] if !is_preview else ""
-	DescriptionLabel.text = '"%s"' % room_details.description
+	QuoteLabel.text = '"%s"' % room_details.quote
 	
 	# fill image
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
@@ -367,8 +367,6 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	#TODO : ADD A "BENEFITS FROM "ADMIN", "LOGISTICS", if the room can has a module/program
 
 	# priority
-	print("base_states.base.department_perk: ", base_states.base.department_perk)
-	print("room_details.ref: ", room_details.ref)
 	DepartmentPriorityContainer.show() if base_states.base.department_perk.has(room_details.ref) else DepartmentPriorityContainer.hide()
 	if base_states.base.department_perk.has(room_details.ref) and base_states.base.department_perk[room_details.ref] == -1:
 		DepartmentPriorityLabel.text = "No priority selected"

@@ -1,6 +1,7 @@
 extends SubscribeWrapper
 var ADMIN:Script = preload("res://_DLC/Base/ROOMS/admin.gd")
 var LOGISTICS:Script = preload("res://_DLC/Base/ROOMS/logistics.gd")
+var ENGINEERING:Script = preload("res://_DLC/Base/ROOMS/engineering.gd")
 
 
 enum INFTYPE {	
@@ -433,57 +434,52 @@ var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------		
 }
 
-#region ADMIN rooms
+#region ADMIN
 var ADMIN_DEPARTMENT:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_DEPARTMENT)
-
 var ADMIN_BRANCH:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_BRANCH)
 
 var ADMIN_ROOM_1:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_1)
-
 var ADMIN_ROOM_2:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_2)
-
 var ADMIN_ROOM_3:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_3)
-
 var ADMIN_ROOM_4:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_4)
-
 var ADMIN_ROOM_5:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_5)
-
 var ADMIN_ROOM_6:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_6)
-
 var ADMIN_ROOM_7:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_7)
-
 var ADMIN_ROOM_8:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_8)
-
 var ADMIN_ROOM_9:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_9)
-
 var ADMIN_ROOM_10:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_10)
 #endregion
 
-#region DEPARTMENTS
+#region LOGISTICS
 var LOGISTICS_DEPARTMENT:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_DEPARTMENT)
-
 var LOGISTICS_BRANCH:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_BRANCH)
 
 var LOGISTICS_ROOM_1:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_1)
-
 var LOGISTICS_ROOM_2:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_2)
-
 var LOGISTICS_ROOM_3:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_3)
-
 var LOGISTICS_ROOM_4:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_4)
-
 var LOGISTICS_ROOM_5:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_5)
-
 var LOGISTICS_ROOM_6:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_6)
-
 var LOGISTICS_ROOM_7:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_7)
-
 var LOGISTICS_ROOM_8:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_8)
-
 var LOGISTICS_ROOM_9:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_9)
-
 var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_10)
 
+#region ENGINEERING
+var ENGINEERING_DEPARTMENT:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENGINEERING_DEPARTMENT)
+var ENGINEERING_BRANCH:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENGINEERING_BRANCH)
+
+var ENG_ROOM_1:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_1)
+var ENG_ROOM_2:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_2)
+var ENG_ROOM_3:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_3)
+var ENG_ROOM_4:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_4)
+var ENG_ROOM_5:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_5)
+var ENG_ROOM_6:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_6)
+var ENG_ROOM_7:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_7)
+var ENG_ROOM_8:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_8)
+var ENG_ROOM_9:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_9)
+var ENG_ROOM_10:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_10)
+#endregion
 
 #
 #var LOGISTICS_ROOM_2:Dictionary = {
@@ -2424,6 +2420,11 @@ var list:Array[Dictionary] = [
 	LOGISTICS_DEPARTMENT, LOGISTICS_BRANCH,
 	LOGISTICS_ROOM_1, LOGISTICS_ROOM_2, LOGISTICS_ROOM_3, LOGISTICS_ROOM_4, LOGISTICS_ROOM_5,
 	LOGISTICS_ROOM_6, LOGISTICS_ROOM_7, LOGISTICS_ROOM_8, LOGISTICS_ROOM_9, LOGISTICS_ROOM_10,
+	
+	# ENGINEERING
+	ENGINEERING_DEPARTMENT, ENGINEERING_BRANCH,
+	ENG_ROOM_1, ENG_ROOM_2, ENG_ROOM_3, ENG_ROOM_4, ENG_ROOM_5,
+	ENG_ROOM_6, ENG_ROOM_7, ENG_ROOM_8, ENG_ROOM_9, ENG_ROOM_10,
 	
 	## --------------	ENGINEERING ROOMS
 	#ENGINEERING_DEPARTMENT, 
