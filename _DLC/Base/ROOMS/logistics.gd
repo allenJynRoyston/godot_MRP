@@ -13,7 +13,8 @@ static var INFLUENCE_PRESETS:Dictionary = {
 		"horizontal": true, 
 		"vertical": false,
 		"effect": {
-			"description": "Adjacent facilities have the same ECONOMY as this facility.",
+			"description": func() -> String:
+				return "Adjacent facilities have the same ECONOMY as this facility.",
 			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
 				# self ref to get currency data
 				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
@@ -47,7 +48,8 @@ static var INFLUENCE_PRESETS:Dictionary = {
 		"horizontal": false, 
 		"vertical": true,
 		"effect": {
-			"description": "Anything built here has no CONSTRUCTION cost.",
+			"description": func() -> String:
+				return "Anything built here has no CONSTRUCTION cost.",
 			"func": func(_new_room_config:Dictionary, ref:int, location:Dictionary) -> Dictionary:
 				# return update config
 				return _new_room_config,			
@@ -62,7 +64,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 		ROOM.REF.LOGISTICS_DEPARTMENT:
 			room_data = {
 				"categories": [ROOM.CATEGORY.DEPARTMENT],
-				"link_categories": ROOM.CATEGORY.LOGISTICS_LINKABLE,
+				"link_categories": ROOM.CATEGORY.LOGISTICS,
 				
 				"name": "LOGISTICS DEPARTMENT",
 				"shortname": "LOGISTICS DEPT",	
@@ -88,22 +90,35 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"abilities": func() -> Array: 
 					return [
 						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_ONE),
-						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO, 1),
+						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO),
 					],		
 							
 				"passive_abilities": func() -> Array: 
 					return [
-						ABL_P.get_ability(ABL_P.REF.ENABLE_LOGISTIC_SUBDIVISON, 1),
+						ABL_P.get_ability(ABL_P.REF.ENABLE_LOGISTIC_BRANCH),
 					],
 				
-				"on_before_build_event": EVT.TYPE.LOGISTIC_SETUP,
+				"events": {
+					"build_complete": EVT.TYPE.LOGISTIC_SETUP
+				}
 			}
 		# ----------------------------------------------------------------------
-		ROOM.REF.LOGISTICS_LINK_1:
+		ROOM.REF.LOGISTICS_BRANCH:
 			room_data = {
-				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
-				"name": "SUPPLY HUB",
-				"shortname": "S.HUB",
+				"categories": [ROOM.CATEGORY.BRANCH],
+				"link_categories": ROOM.CATEGORY.LOGISTICS,
+				"name": "LOGISTICS BRANCH",
+				"shortname": "L.BRANCH",
+				"img_src": "res://Media/rooms/research_lab.png",
+				"description": "Allows the use of LOGISTICS functions.",
+				"own_limit": 4,
+			}
+		# ----------------------------------------------------------------------
+		ROOM.REF.LOGISTICS_ROOM_1:
+			room_data = {
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "SUPPLY DEPOT",
+				"shortname": "S.DEPOT",
 				"description": "Efficiency is its own reward.",
 				"requires_unlock": false,
 				"required_staffing": [
@@ -114,104 +129,180 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					"unlock": 0,
 					"purchase": 10,
 				},
-				"currencies": {
-					RESOURCE.CURRENCY.MATERIAL: 1,
-				},
 				"effect": {
 					"description": "Additional MATERIAL when placed next to other SUPPLY HUBS.",
 					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
-						var count:int = ROOM_UTIL.find_refs_of_adjuacent_rooms(_room_data.location).filter(func(x): return x == ROOM.REF.LOGISTICS_LINK_1).size()
+						var count:int = ROOM_UTIL.find_refs_of_adjuacent_rooms(_room_data.location).filter(func(x): return x == ROOM.REF.LOGISTICS_ROOM_1).size()
 						var room_level_config:Dictionary = _new_room_config.floor[_room_data.location.floor].ring[_room_data.location.ring].room[_room_data.location.room]
 						room_level_config.currencies[RESOURCE.CURRENCY.MATERIAL] += count * 5,
 				},				
 			}
 		# ----------------------------------------------------------------------			
-		ROOM.REF.LOGISTICS_LINK_2:
+		ROOM.REF.LOGISTICS_ROOM_2:
 			room_data = {
-				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
-				"name": "ADMIN_LINK_2",
-				"shortname": "L2",
-				"description": "L2 description...",
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "PROCUREMENT OFFICE",
+				"shortname": "PROCUREMENT",
+				"description": "You’d be surprised what you can get with the right clearance level.",
 				"requires_unlock": false,
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.RESEARCHER,
 					RESEARCHER.SPECIALIZATION.ADMIN,
 				],	
 				"influence": INFLUENCE_PRESETS[INFTYPE.FREE_BUILD], 
-								
+				"own_limit": 1,
+				"costs": {
+					"unlock": 0,
+					"purchase": 10,
+				},
+				"abilities": func() -> Array: 
+					return [
+						ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_SCIENCE),
+						ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_MATERIAL),
+						ABL.get_ability(ABL.REF.CONVERT_MONEY_INTO_CORE),
+					],
+			}		
+		# ----------------------------------------------------------------------
+		ROOM.REF.LOGISTICS_ROOM_3:
+			room_data = {
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "EMERGENCY PROVISIONS",
+				"shortname": "E.PROVISIONS",
+				"description": "Morale starts with a full stomach and a working respirator.",
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.SECURITY
+				],	
 				"own_limit": 5,
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
 				},
-			}		
-		# ----------------------------------------------------------------------
-		ROOM.REF.LOGISTICS_LINK_3:
-			room_data = {
-				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
-				"name": "ADMIN_LINK_3",
-				"shortname": "L3",
-				"description": "L3 description...",
-				"requires_unlock": false,
-				"required_staffing": [
-					RESEARCHER.SPECIALIZATION.RESEARCHER
-				],	
-				"own_limit": 1,
-				"costs": {
-					"unlock": 0,
-					"purchase": 10,
+				"metrics": {
+					RESOURCE.METRICS.READINESS: 1
 				},
-				"effect": {
-					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION).description
-				},
-				"on_activate": func(state:bool) -> void:
-					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION, state),
 			}								
 		# ----------------------------------------------------------------------
-		ROOM.REF.LOGISTICS_LINK_4:
+		ROOM.REF.LOGISTICS_ROOM_4:
 			room_data = {
-				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
-				"name": "ADMIN_LINK_4",
-				"shortname": "L4",
-				"description": "L4 description...",
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "LOGISTICS LIASON",
+				"shortname": "L.LIASON",
+				"description": "Bridging decisions with action.",
 				"requires_unlock": false,
 				"required_staffing": [
-					RESEARCHER.SPECIALIZATION.RESEARCHER
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.SECURITY
 				],	
-				"own_limit": 1,
+				"own_limit": 5,
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
 				},
 				"effect": {
-					"description": CONDITIONALS.return_data(CONDITIONALS.TYPE.ENABLE_RECYCLE).description
-				},
-				"on_activate": func(state:bool) -> void:
-					GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ENABLE_RECYCLE, state),
+					"description": "Additional MATERIALS if next to a DEPARTMENT.",
+					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
+						var departments:Array = ROOM_UTIL.get_department_refs()
+						var count:int = ROOM_UTIL.find_refs_of_adjuacent_rooms(_room_data.location).filter(func(x): return x in departments).size()
+						var room_level_config:Dictionary = _new_room_config.floor[_room_data.location.floor].ring[_room_data.location.ring].room[_room_data.location.room]
+						room_level_config.currencies[RESOURCE.CURRENCY.MATERIAL] += count * 25,
+				},				
 			}
 		## ----------------------------------------------------------------------		
-		ROOM.REF.LOGISTICS_LINK_5:
+		ROOM.REF.LOGISTICS_ROOM_5:
 			room_data = {
-				"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
-				"name": "ADMIN_LINK_5",
-				"shortname": "L5",
-				"description": "L5 description...",
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "SPECIAL AQUISITIONS",
+				"shortname": "SPECIAL.A",
+				"description": "If it bleeds, glows, or argues... it’s probably ours.",
 				"requires_unlock": false,
 				"required_staffing": [
-					RESEARCHER.SPECIALIZATION.RESEARCHER
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.RESEARCHER,
 				],	
-				"own_limit": 1,
+				"own_limit": 5,
 				"costs": {
 					"unlock": 0,
-					"purchase": 50,
+					"purchase": 10,
 				},
 				"abilities": func() -> Array: 
 					return [
-					],	
-				"passive_abilities": func() -> Array: 
-					return [
-					],					
+						ABL.get_ability(ABL.REF.INSTANT_SCIENCE_LVL_1),
+					],
 			}
+		## ----------------------------------------------------------------------		
+		ROOM.REF.LOGISTICS_ROOM_6:
+			room_data = {
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "COLD STORAGE",
+				"shortname": "COLD.S",
+				"description": "Stores equipment requiring low temperatures for safe containment.",
+				"temp_required": [-2, -1],
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.RESEARCHER,
+				],	
+				"own_limit": 5,
+				"costs": {
+					"unlock": 0,
+					"purchase": 10,
+				},
+				"effect": {
+					"description": "Yields MATERIALS the colder the environment is (not set-up)",
+					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
+						pass,
+				},				
+			}
+		## ----------------------------------------------------------------------		
+		ROOM.REF.LOGISTICS_ROOM_7:
+			room_data = {
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "THERMAL STORAGE",
+				"shortname": "THERMAL.S",
+				"description": "Stores equipment requiring high temperatures for safe containment.",
+				"temp_required": [1, 2],
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.RESEARCHER,
+				],	
+				"own_limit": 5,
+				"costs": {
+					"unlock": 0,
+					"purchase": 10,
+				},
+				"effect": {
+					"description": "Yields MATERIALS the hotter the environment is (not set-up)",
+					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
+						pass,
+				},				
+			}
+		## ----------------------------------------------------------------------		
+		ROOM.REF.LOGISTICS_ROOM_8:
+			room_data = {
+				"categories": [ROOM.CATEGORY.LOGISTICS],
+				"name": "THERMAL STORAGE",
+				"shortname": "THERMAL.S",
+				"description": "Stores equipment requiring high temperatures for safe containment.",
+				"temp_required": [1, 2],
+				"requires_unlock": false,
+				"required_staffing": [
+					RESEARCHER.SPECIALIZATION.ADMIN,
+					RESEARCHER.SPECIALIZATION.RESEARCHER,
+				],	
+				"own_limit": 5,
+				"costs": {
+					"unlock": 0,
+					"purchase": 10,
+				},
+				"effect": {
+					"description": "Yields MATERIALS the hotter the environment is (not set-up)",
+					"func": func(_new_room_config:Dictionary, _resource_data:Dictionary, _room_data:Dictionary) -> void:
+						pass,
+				},				
+			}			
 
 	room_data.img_src = "res://Media/rooms/logistic_section.png"
 	room_data.ref = ref

@@ -35,8 +35,9 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 	
 	# ------------------------------------------
-	"on_before_build_event": null, 		# "on_before_build_event": EVT.TYPE.ADMIN_SETUP,
-	"on_build_complete_event": null,	# "on_build_complete_event": EVT.TYPE.TEST_EVENT_A
+	"events": {
+		"build_complete": null,	
+	},
 	# ------------------------------------------
 
 	# ------------------------------------------
@@ -71,6 +72,11 @@ var ROOM_TEMPLATE:Dictionary = {
 	# ------------------------------------------
 
 	# ------------------------------------------
+	"temp_required": [0], # include as range of acceptable temperatures
+	"hazard": 0,
+	"pollution": 0,
+	
+	# TODO REMOVE THIS AND USE PREFERED ABOVE
 	"environmental":{
 		"hazard": 0,
 		"temp": 0,
@@ -231,16 +237,6 @@ func return_activation_cost(ref:int) -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_room_ability_level(use_location:Dictionary = current_location) -> int:
-	if room_config.is_empty(): return -1
-	
-	var room_abl_lvl:int = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].abl_lvl
-	var wing_abl_lvl:int = room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl
-	var abl_lvl:int = room_abl_lvl + wing_abl_lvl	
-	return abl_lvl
-# ------------------------------------------------------------------------------	
-
-# ------------------------------------------------------------------------------
 func get_max_level(ref:int) -> int:
 	if ref == -1:
 		return -1
@@ -280,15 +276,12 @@ func add_to_unlocked_list(ref:int) -> void:
 func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	
-	# if has before build event, trigger it
-	if room_details.on_before_build_event != null:
-		await GAME_UTIL.run_event(room_details.on_before_build_event)
+	var skip_build:bool = gameplay_conditionals[CONDITIONALS.TYPE.LOGISTIC_PERK_1]
 
 	purchased_facility_arr.push_back({
 		"ref": ref,
 		# rooms are built instantly if you have this perk
-		"under_construction": true,
+		"under_construction": !skip_build,
 		#"linkable": linkable,
 		"location": {
 			"floor": location_copy.floor,
@@ -299,7 +292,7 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 	
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
 	
-	if gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_3]: 
+	if skip_build: 
 		await ROOM_UTIL.finish_construction(use_location)
 	
 # ------------------------------------------------------------------------------
@@ -314,6 +307,9 @@ func reset_room(use_location:Dictionary) -> bool:
 		SUBSCRIBE.purchased_facility_arr = purchased_facility_arr.filter(func(i): 
 			return !(i.location == use_location)
 		)
+		
+		if room_details.has("on_activate"):
+			room_details.on_activate.call(false)
 		
 		# reset any base state effects
 		var base_state_room:Dictionary = base_states.room[U.location_to_designation(use_location)]
@@ -384,8 +380,9 @@ func finish_construction(use_location:Dictionary) -> void:
 	var updated_data:Dictionary = purchased_facility_arr.filter(func(x): return x.location == use_location)[0]
 	var room_details:Dictionary = return_data(updated_data.ref)
 	## if has build event, trigger it
-	if room_details.on_build_complete_event != null:
-		await GAME_UTIL.run_event(room_details.on_build_complete_event)	
+	if room_details.events.build_complete != null:
+		priority_events.push_back(room_details.events.build_complete)
+		SUBSCRIBE.priority_events = priority_events
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -408,6 +405,11 @@ func is_nuke_active() -> bool:
 
 # ------------------------------------------------------------------------------
 func is_room_empty(use_location:Dictionary = current_location) -> bool:
+	# this check is a bit redundant, but will sometimes stop an error
+	var room_details:Dictionary = return_data_via_location(use_location)
+	if room_details.is_empty():
+		return true
+	
 	return room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room].room_data.is_empty()
 # ------------------------------------------------------------------------------	
 
@@ -450,12 +452,9 @@ func get_room_lvl(use_location:Dictionary = current_location) -> int:
 	if is_room_empty:
 		return -1
 		
-	var floor_level_config:Dictionary = room_config.floor[use_location.floor]
-	var ring_level_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring]
 	var room_level_config:Dictionary = room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	var abl_lvl:int = room_level_config.abl_lvl + ring_level_config.abl_lvl + floor_level_config.abl_lvl
-		
-	return abl_lvl
+	
+	return room_level_config.room_data.room_ability_level
 # ------------------------------------------------------------------------------			
 
 # ------------------------------------------------------------------------------		
@@ -641,7 +640,7 @@ func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_all_link_catagories() -> Array:
+func get_all_room_catagories() -> Array:
 	return purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring
 	).map(func(x): 
@@ -888,6 +887,9 @@ func find_refs_of_adjuacent_rooms(use_location:Dictionary) -> Array:
 		if !room_details.is_empty():
 			refs.push_back(room_details.ref)
 	return refs
+
+func get_department_refs() -> Array:
+	return [ROOM.REF.ADMIN_DEPARTMENT, ROOM.REF.LOGISTICS_DEPARTMENT] #, ROOM.REF.ENGINEERING_DEPARTMENT, ROOM.REF.SCIENCE_DEPARTMENT, ROOM.REF.SECURITY_DEPARTMENT, ROOM.REF.SECURITY_DEPARTMENT]	
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

@@ -120,12 +120,12 @@ func update_node() -> void:
 	Logistics.active_level = power_distribution.logistics
 	
 	# check if they have the correct buildings to enable
-	Heating.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_1)
-	Cooling.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_2)
-	Ventilation.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_3)
-	SRA.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_4)
-	Energy.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_5)
-	Logistics.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_6)
+	#Heating.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_1)
+	#Cooling.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_2)
+	#Ventilation.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_3)
+	#SRA.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_4)
+	#Energy.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_5)
+	#Logistics.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_LINK_6)
 	
 	
 func on_component_list_update() -> void:

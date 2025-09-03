@@ -55,6 +55,10 @@ extends PanelContainer
 # Description 
 @onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/Description/PanelContainer/MarginContainer/DescriptionLabel
 
+# priority
+@onready var DepartmentPriorityContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer
+@onready var DepartmentPriorityLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer/PanelContainer2/MarginContainer/DepartmentPriorityLabel
+
 # has programs
 @onready var HasProgramsContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer
 @onready var HasProgramLabel:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2/MarginContainer/HasProgramLabel
@@ -93,8 +97,18 @@ extends PanelContainer
 
 @onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
 
-@export var modules_only:bool = false 
-
+@export var hide_card:bool = false 
+		
+@export var show_modules:bool = false : 
+	set(val):
+		show_modules = val
+		U.debounce(str(self, "_on_update"), on_update)	
+		
+@export var show_programs:bool = false : 
+	set(val):
+		show_programs = val
+		U.debounce(str(self, "_on_update"), on_update)	
+		
 @export var preview_mode:bool = false : 
 	set(val):
 		preview_mode = val
@@ -216,7 +230,7 @@ func on_update() -> void:
 	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(use_location)
 	
 	# no room
-	if is_room_empty:
+	if is_room_empty or room_details.is_empty():
 		hide()
 		return
 	
@@ -232,7 +246,7 @@ func on_update() -> void:
 	# show
 	show()
 	
-	if modules_only:
+	if hide_card:
 		SidePanel.hide()
 		InfoContainer.hide()		
 		ModuleComponent.room_details = {}
@@ -242,8 +256,9 @@ func on_update() -> void:
 		ContainmentComponent.use_location = use_location				
 		ContainmentComponent.room_details = room_details
 		
+		
 		# passives
-		if room_details.passive_abilities.call().is_empty():
+		if room_details.passive_abilities.call().is_empty() or !show_modules:
 			ModuleContainer.hide()
 			ModuleComponent.room_details = {}
 		else:
@@ -252,7 +267,7 @@ func on_update() -> void:
 			ModuleComponent.room_details = room_details
 		
 		# assign programs
-		if room_details.abilities.call().is_empty():
+		if room_details.abilities.call().is_empty() or !show_programs:
 			ProgramContainer.hide()
 			ProgramComponent.room_details = {}
 		else:
@@ -272,7 +287,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	var is_under_construction:bool = false if is_preview else ROOM_UTIL.is_under_construction(use_location) 
 	var is_activated:bool = true if is_preview else ROOM_UTIL.is_room_activated(use_location)
 	var can_contain:bool = ROOM_UTIL.room_can_contain(use_location)
-	var lvl:int = 0 if is_preview else ROOM_UTIL.get_room_lvl(use_location)
+	var lvl:int = ROOM_UTIL.get_room_lvl(use_location)
 	var max_upgrade_lvl:int = ROOM_UTIL.get_max_level( -1 if is_room_empty else room_details.ref ) 
 	var at_max_level:bool = lvl >= max_upgrade_lvl
 	var personnel_capacity:Dictionary = room_details.personnel_capacity	
@@ -284,8 +299,8 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	# basics
 	NameTag.text = room_details.name #if scp_details.is_empty() else str(room_details.name, "\n(", scp_details.name, ")")
-	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl]
-	DescriptionLabel.text = room_details.description
+	LvlTag.text = "LVL %s" % [lvl if !at_max_level else "%s★" % lvl] if !is_preview else ""
+	DescriptionLabel.text = '"%s"' % room_details.description
 	
 	# fill image
 	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
@@ -296,7 +311,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	# cost
 	CostLabel.text = str(room_details.costs.purchase)
-	CostPanel.show() if room_details.costs.purchase > 0 and is_preview else CostPanel.hide()		
+	CostPanel.show() if room_details.costs.purchase > 0 and is_preview else CostPanel.hide()
 	
 	# pollution
 	PollutionLabel.text = str(room_details.environmental.pollution)
@@ -348,15 +363,25 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	var program_list: Array = room_details.abilities.call()
 	program_list_as_string = "\n".join(program_list.map(func(i): return i.name))
 	HasProgramLabel.text = program_list_as_string
-	HasProgramsContainer.hide() if room_details.abilities.call().is_empty() else HasProgramsContainer.show()
+	HasProgramsContainer.hide() #if room_details.abilities.call().is_empty() else HasProgramsContainer.show()
+	#TODO : ADD A "BENEFITS FROM "ADMIN", "LOGISTICS", if the room can has a module/program
 
+	# priority
+	print("base_states.base.department_perk: ", base_states.base.department_perk)
+	print("room_details.ref: ", room_details.ref)
+	DepartmentPriorityContainer.show() if base_states.base.department_perk.has(room_details.ref) else DepartmentPriorityContainer.hide()
+	if base_states.base.department_perk.has(room_details.ref) and base_states.base.department_perk[room_details.ref] == -1:
+		DepartmentPriorityLabel.text = "No priority selected"
+	else:
+		DepartmentPriorityLabel.text = CONDITIONALS.return_data(room_details.ref).description
+		
 	# effect
 	EffectLabel.text = room_details.effect.description if !room_details.effect.is_empty() else ""
 	EffectContainer.show() if !room_details.effect.is_empty() else EffectContainer.hide()
 	
 	# influence 
 	InfluenceContainer.show() if !room_details.influence.is_empty() else InfluenceContainer.hide()
-	InfluenceLabel.text = room_details.influence.effect.description if !room_details.influence.is_empty() else ""
+	InfluenceLabel.text = room_details.influence.effect.description.call() if !room_details.influence.is_empty() else ""
 	
 	# type 
 	ContainmentTypeLabel.text= SCP_UTIL.get_containment_type_str(room_details.containment_properties) if !room_details.is_empty() else ""
@@ -372,7 +397,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	# scp influence
 	ScpInfluenceContainer.show() if !scp_details.is_empty() and !scp_details.influence.is_empty() else ScpInfluenceContainer.hide()
-	ScpInfluenceLabel.text = scp_details.influence.effect.description if !scp_details.is_empty() and !scp_details.influence.effect.is_empty() else ""
+	ScpInfluenceLabel.text = scp_details.influence.effect.description.call() if !scp_details.is_empty() and !scp_details.influence.effect.is_empty() else ""
 	
 	# under construction
 	if is_under_construction:
@@ -395,10 +420,10 @@ func deselect_btns() -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_ability_btns() -> Array:
+func get_program_btns() -> Array:
 	var btn_list:Array = []
 	
-	for node in [ModuleComponent, ProgramComponent, ContainmentComponent]:
+	for node in [ProgramComponent]:
 		if node.is_visible_in_tree():
 			for btn in node.get_btns():
 				btn_list.push_back(btn)
@@ -407,11 +432,18 @@ func get_ability_btns() -> Array:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-func get_starting_btn_index() -> int:
-	var abilty_btns:Array = get_ability_btns()
-	return 0
+func get_module_btns() -> Array:
+	var btn_list:Array = []
+	
+	for node in [ModuleComponent]:
+		if node.is_visible_in_tree():
+			for btn in node.get_btns():
+				btn_list.push_back(btn)
+	#
+	return btn_list
 # ------------------------------------------------------------------------------
-		
+				
+
 # ------------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	if !is_node_ready():return

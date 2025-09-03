@@ -138,10 +138,12 @@ alignment = 1
 layout_mode = 2
 
 [node name="CurrencyList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="MetricList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 20

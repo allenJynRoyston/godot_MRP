@@ -114,7 +114,7 @@ func update_node() -> void:
 	if !is_node_ready() or room_config.is_empty() or room_details.is_empty() or base_states.is_empty() or resources_data.is_empty() or use_location.is_empty():return
 	var ActionContainerNode:Control = GBL.find_node(REFS.ACTION_CONTAINER)
 	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location) 
-	var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(use_location)
+	var abl_lvl:int =  ROOM_UTIL.get_room_lvl(use_location)
 	var use_list:Array = List.get_children()
 
 	for index in NodeList.size():

@@ -394,12 +394,6 @@ a_btn_title = "CONFIG"
 hide_a_btn = true
 c_btn_title = "ENGINEERING PROGRAMS"
 
-[node name="LogisticsControls" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "UPGRADE"
-c_btn_title = "LOGISTIC PROGRAMS"
-hide_c_btn = false
-
 [node name="EthicsControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 a_btn_title = "DIRECTIVES"
@@ -408,12 +402,21 @@ hide_c_btn = false
 
 [node name="AdminControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
-a_btn_title = "DEALLOCATE STAFF"
+a_btn_title = "MODULES"
 intercept_click_event = true
 c_btn_title = "ADMIN OPERATIONS"
-hide_c_btn = false
 
 [node name="AdminModulesControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+intercept_click_event = true
+c_btn_icon = 26
+
+[node name="LogisticsControls" parent="." instance=ExtResource("10_58xi4")]
+layout_mode = 2
+a_btn_title = "PROGRAMS"
+c_btn_title = "LOGISTIC PROGRAMS"
+
+[node name="LogisticProgramControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 intercept_click_event = true
 c_btn_icon = 26
@@ -552,7 +555,7 @@ custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 200
+theme_override_constants/margin_top = 170
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 metadata/_edit_group_ = true
@@ -561,7 +564,7 @@ metadata/_edit_group_ = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
-modules_only = true
+hide_card = true
 
 [node name="Engineering" type="Control" parent="."]
 layout_mode = 2

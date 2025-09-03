@@ -40,30 +40,30 @@ func setup_gridselect() -> void:
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
 		{
-			"title": "RESOURCE",
+			"title": "ADMIN",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.RESOURCES, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.ADMIN, start_at, end_at),
 		},
 		{
-			"title": "RECRUITMENT",
+			"title": "LOGISTICS",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.RECRUITMENT, start_at, end_at),
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.LOGISTICS, start_at, end_at),
 		},
-		{
-			"title": "ENERGY",
-			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, start_at, end_at),
-		},
+		#{
+			#"title": "ENERGY",
+			#"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
+				#return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, start_at, end_at),
+		#},
 		{
 			"title": "CONTAINMENT",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
 				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, start_at, end_at),
 		},
-		{
-			"title": "UTILITY",
-			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, start_at, end_at),
-		},		
+		#{
+			#"title": "UTILITY",
+			#"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
+				#return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, start_at, end_at),
+		#},		
 	]
 	
 	GridSelect.onModeTab = func() -> void:

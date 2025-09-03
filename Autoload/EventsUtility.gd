@@ -413,8 +413,7 @@ var ADMIN_SETUP:Dictionary = {
 		"title": "ADMIN DEPARTMENT SETUP"
 	},
 	"event_instructions": func(props:Dictionary) -> Array:
-		# admin department always installed
-		
+
 		var instructions_1:Array = build_event_content(props, {
 			"header": "FACILITY SETUP",
 			"subheader": "A NEW DAY BEGINS",
@@ -436,11 +435,15 @@ var ADMIN_SETUP:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_1
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
 						onSelected(choice),
 				},
 				{
-					"header": "SUPPORT",
+					"header": "RECRUITMENT",
 					"title": "Unwavering Loyality",
 					"description": "Your facility recruits only the most committed personnel driven by conviction and unwavering faith in the mission.",
 					"type": EVT.OUTCOME.NEUTRAL,
@@ -454,27 +457,13 @@ var ADMIN_SETUP:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_2
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
 						onSelected(choice),
 				},
-				{
-					"header": "LOGISTICS",
-					"title": "Streamlined Logistics",
-					"description": "Facilities are ready for immediate use, eliminating delays and ensuring your operations start without any waiting period",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_3,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_3).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
-						onSelected(choice),
-				}					
 			]
 		})
 
@@ -510,6 +499,10 @@ var LOGISTIC_SETUP:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
 						onSelected(choice),
 				},
@@ -528,292 +521,38 @@ var LOGISTIC_SETUP:Dictionary = {
 						]
 					},
 					"onSelected": func(choice:Dictionary) -> void:
+						# update base states with selected perk
+						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						SUBSCRIBE.base_states = base_states
+						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
 						onSelected(choice),
 				},
-				{
-					"header": "PERK 3",
-					"title": "Perk 3 title",
-					"description": "Perk description 3.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
-						onSelected(choice),
-				},				
-			]
-		})
-
-		return instructions_1
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SCIENCE_SETUP:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "SCIENCE DEPARTMENT SETUP",
-		"is_disabled_check": func() -> bool:
-			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
-				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
-			).size()
-			return rooms_in_wing_count != 0,
-	},
-	"event_instructions": func(props:Dictionary) -> Array:
-		# admin department always installed
-		
-		var instructions_1:Array = build_event_content(props, {
-			"header": "FACILITY SETUP",
-			"subheader": "A NEW DAY BEGINS",
-			"img_src": "res://Media/images/redacted.png",
-			"text": ["A Science Department is required to oversee research operations. Select its priority."],
-			"options": [
-				{
-					"header": "EXPERIMENTATION",
-					"title": "The Scientific Method in Action",
-					"description": "True science requires careful observation, controlled testing, and a willingness to confront the unknown.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.SCIENCE_PERK_1,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.SCIENCE_PERK_1).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.SCIENCE_PERK_1, true)
-						onSelected(choice),
-				},
-				{
-					"header": "KNOWLEDGE",
-					"title": "Pure Knowledge",
-					"description": "Focus on research and documentation, cataloging anomalies and expanding the Foundation's understanding.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_2,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_2).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
-						onSelected(choice),
-				},
-				{
-					"header": "DISCOVERY",
-					"title": "Frontier Research",
-					"description": "Prioritize uncovering new anomalies and pushing the boundaries of containment and understanding.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_3,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_3).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_3, true)
-						onSelected(choice),
-				}					
-			]
-		})
-		
-		return instructions_1
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_B:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "REWARD",
-		"is_disabled_check": func() -> bool:
-			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
-				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
-			).size()
-			return rooms_in_wing_count != 0,
-	},
-	"event_instructions": func(props:Dictionary) -> Array:
-		
-		var instructions_1:Array = build_event_content(props, {
-			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE MIND",
-			"img_src": "res://Media/images/redacted.png",
-			"text": ["Two departments determine the pulse of the Foundation:"],
-			"options": [
-				# ----------------------------------------- SCIENCE
-				{
-					"header": "SCIENCE",
-					"title": "Research & Anomalous Sciences",
-					"description": "Studies, catalogs, and exploits anomalies. Curiosity kills, but ignorance kills faster.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.SCIENCE_DEPARTMENT,
-					"impact": {
-						"currency": { RESOURCE.CURRENCY.SCIENCE: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Every anomaly documented is another weapon — or warning."] },
-							{ "response": ["Research protocols expand Foundation archives."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						onSelected(choice),
-				},
-				# ----------------------------------------- SECURITY
-				{
-					"header": "MEDICAL",
-					"title": "Medical & Psychological Services",
-					"description": "Stabilizes the body and the mind. Clearance is irrelevant; recovery is compulsory.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.MEDICAL_DEPARTMENT,
-					"impact": {
-						"metrics": { RESOURCE.METRICS.SAFETY: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Pain is inevitable. Collapse is unacceptable."] },
-							{ "response": ["Preventative measures reduce incident severity."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						onSelected(choice),
-				},
-			]
-		})
-		#
-		#var instruction_3:Array = build_event_content(props, {
-			#"header": "SELECT STARTING DEPARTMENTS",
-			#"subheader": "THE SOUL",
-			#"img_src": "res://Media/images/redacted.png",
-			#"text": ["Two departments shape thought and compliance:"],
-			#"options": [
-				## ----------------------------------------- ADMIN
 				#{
-					#"header": "ETHICS",
-					#"title": "Ethics Committee",
-					#"description": "Oversees Foundation conduct, ensuring containment efforts balance necessity with humanity. Their scrutiny can steady staff morale, though at times it slows operations.",
+					#"header": "PERK 3",
+					#"title": "Perk 3 title",
+					#"description": "Perk description 3.",
 					#"type": EVT.OUTCOME.NEUTRAL,
-					#"room_ref": ROOM.REF.ETHICS_DEPARTMENT,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
 					#"impact": {
-						#"metrics": { RESOURCE.METRICS.MORALE: 5 }
-					#},
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+					#},					
 					#"outcomes": {
 						#"list": [
-							#{ "response": ["Staff find reassurance knowing oversight exists beyond cold efficiency."] },
-							#{ "response": ["Committee reviews delay certain projects, but morale improves under a watchful eye."] },
-							#{ "response": ["Ethical scrutiny curbs excesses, reinforcing discipline and confidence among staff."] }
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
 						#]
 					#},
 					#"onSelected": func(choice:Dictionary) -> void:
-						#ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 3, "room": 4})
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
 						#onSelected(choice),
-				#},
-#
-				## ----------------------------------------- MEDICAL
-				#{
-					#"header": "SECURITY",
-					#"title": "Security & Tactical Response",
-					#"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
-					#"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
-					#"impact": {
-						#"metrics": { RESOURCE.METRICS.READINESS: 5 }
-					#},
-					#"outcomes": {
-						#"list": [
-							#{ "response": ["Order exists because someone enforces it."] },
-							#{ "response": ["Personnel drill and mobilize with renewed precision."] }
-						#]
-					#},
-					#"onSelected": func(choice:Dictionary) -> void:
-						#ROOM_UTIL.add_room(choice.option.room_ref, false, {"floor": current_location.floor, "ring": 2, "room": 4})
-						#onSelected(choice),
-				#},
-			#]
-		#})		
-
-		return instructions_1 
-}
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-var SELECT_STARTING_DEPARTMENTS_C:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "REWARD",
-		"is_disabled_check": func() -> bool:
-			var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
-				return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.location.room == 4
-			).size()
-			return rooms_in_wing_count != 0,
-	},
-	"event_instructions": func(props:Dictionary) -> Array:	
-		var instruction_1:Array = build_event_content(props, {
-			"header": "SELECT STARTING DEPARTMENTS",
-			"subheader": "THE SOUL",
-			"img_src": "res://Media/images/redacted.png",
-			"text": ["Two departments shape thought and compliance:"],
-			"options": [
-				# ----------------------------------------- ADMIN
-				{
-					"header": "ETHICS",
-					"title": "Ethics Committee",
-					"description": "Oversees Foundation conduct, ensuring containment efforts balance necessity with humanity. Their scrutiny can steady staff morale, though at times it slows operations.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ETHICS_DEPARTMENT,
-					"impact": {
-						"metrics": { RESOURCE.METRICS.MORALE: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Staff find reassurance knowing oversight exists beyond cold efficiency."] },
-							{ "response": ["Committee reviews delay certain projects, but morale improves under a watchful eye."] },
-							{ "response": ["Ethical scrutiny curbs excesses, reinforcing discipline and confidence among staff."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						onSelected(choice),
-				},
-
-				# ----------------------------------------- MEDICAL
-				{
-					"header": "SECURITY",
-					"title": "Security & Tactical Response",
-					"description": "Trains, surveils, and neutralizes. Internal or external, threats are resolved quickly.",
-					"room_ref": ROOM.REF.SECURITY_DEPARTMENT,
-					"impact": {
-						"metrics": { RESOURCE.METRICS.READINESS: 5 }
-					},
-					"outcomes": {
-						"list": [
-							{ "response": ["Order exists because someone enforces it."] },
-							{ "response": ["Personnel drill and mobilize with renewed precision."] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						onSelected(choice),
-				},
+				#},				
 			]
-		})		
+		})
 
-		return instruction_1 
+		return instructions_1
 }
 # ------------------------------------------------------------------------
+
 
 
 
@@ -2260,10 +1999,7 @@ var reference_data:Dictionary = {
 	
 	EVT.TYPE.ADMIN_SETUP: ADMIN_SETUP,
 	EVT.TYPE.LOGISTIC_SETUP: LOGISTIC_SETUP,
-	EVT.TYPE.SCIENCE_SETUP: SCIENCE_SETUP,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B: SELECT_STARTING_DEPARTMENTS_B,
-	EVT.TYPE.SELECT_STARTING_DEPARTMENTS_C: SELECT_STARTING_DEPARTMENTS_C,
-	
+
 	
 	EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
 	EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,

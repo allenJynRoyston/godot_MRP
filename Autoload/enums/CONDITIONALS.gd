@@ -14,11 +14,10 @@ enum TYPE {
 	SCIENCE_PERK_3,	
 	
 	# SUBDIVISONS
-	ENABLE_ADMIN_SUBDIVISON,
-	ENABLE_LOGISTIC_SUBDIVISON,
+	ENABLE_ADMIN_BRANCH,
+	ENABLE_LOGISTIC_BRANCH,
 	
-	# UI
-	UI_ENABLE_ECONOMY,
+	# UI	
 	UI_ENABLE_VIBES,
 	UI_ENABLE_PERSONNEL,
 	UI_ENABLE_DANGERS,
@@ -27,6 +26,7 @@ enum TYPE {
 			
 
 	# ui
+	SHOW_ECONOMY_BUDGET,
 	ENABLE_TIMELINE,
 	ENABLE_OBJECTIVES,
 	
@@ -53,24 +53,24 @@ func return_data(ref:TYPE) -> Dictionary:
 			}
 		TYPE.ADMIN_PERK_2:
 			return {
-				"description": "All facilities start at level 1."
+				"description": "Your staff costs are 50% cheaper."
 			}
 		TYPE.ADMIN_PERK_3:
 			return {
-				"description": "Facilities are built instantly."
+				"description": "..."
 			}
 			
 		TYPE.LOGISTIC_PERK_1:
 			return {
-				"description": "PERK 1 DESCRIPTION."
+				"description": "Constructing facilities is now instant."
 			}			
 		TYPE.LOGISTIC_PERK_2:
 			return {
-				"description": "PERK 2 DESCRIPTION."
+				"description": "Construction costs are 50% cheaper."
 			}
 		TYPE.LOGISTIC_PERK_3:
 			return {
-				"description": "PERK 3 DESCRIPTION."
+				"description": "..."
 			}			
 			
 		# --- Starting Perks
@@ -87,19 +87,19 @@ func return_data(ref:TYPE) -> Dictionary:
 				"description": "R&D has shorter cooldown."
 			}
 		
-		TYPE.ENABLE_ADMIN_SUBDIVISON:
+		TYPE.ENABLE_ADMIN_BRANCH:
 			return {
 				"description": "Can construct ADMINISTRATION subdivisons."
 			}
-		TYPE.ENABLE_LOGISTIC_SUBDIVISON:
+		TYPE.ENABLE_LOGISTIC_BRANCH:
 			return {
 				"description": "Can construct LOGISTIC subdivisons."
 			}			
 		
 		# --- Header Display Toggles
-		TYPE.UI_ENABLE_ECONOMY:
+		TYPE.SHOW_ECONOMY_BUDGET:
 			return {
-				"description": "Displays the Economy."
+				"description": "Displays differential in the Economy."
 			}
 		TYPE.UI_ENABLE_PERSONNEL:
 			return {

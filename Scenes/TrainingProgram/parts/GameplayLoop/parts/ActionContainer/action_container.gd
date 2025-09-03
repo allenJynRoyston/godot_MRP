@@ -13,6 +13,9 @@ extends GameContainer
 # CONTROLS
 @onready var AdminControls:Control = $AdminControls
 @onready var AdminModulesControls:Control = $AdminModulesControls
+@onready var LogisticsControls:Control = $LogisticsControls
+@onready var LogisticProgramControls:Control = $LogisticProgramControls
+
 @onready var FabricationControls:Control = $FabricationControls
 @onready var IntelControls:Control = $IntelControls
 @onready var IntelOverviewControls:Control = $IntelOverviewControls
@@ -20,7 +23,7 @@ extends GameContainer
 @onready var MedicalOverviewControls:Control = $MedicalOverviewControls
 @onready var EngineeringControls:Control = $EngineeringControls
 @onready var EngineeringConfigControls:Control = $EngineeringConfigControls
-@onready var LogisticsControls:Control = $LogisticsControls
+
 @onready var SecurityControls:Control = $SecurityControls
 @onready var ScienceControls:Control = $ScienceControls
 @onready var EthicsControls:Control = $EthicsControls
@@ -111,10 +114,11 @@ enum MODE {
 	
 	ENGINEERING, ENGINEERING_CONFIG,
 	ADMINISTRATION, ADMINISTRATION_MODULES,
+	LOGISTICS, LOGISTICS_PROGRAMS,
 	SECURITY,
 	SCIENCE, 
 	MEDICAL, MEDICAL_OVERVIEW,
-	LOGISTICS, 
+	
 	ETHICS,
 	CONTAIN, SCP_SELECT,
 	
@@ -175,11 +179,16 @@ func _ready() -> void:
 	
 	# set defaults
 	for node in [
-			IntelControls, IntelOverviewControls,
 			FabricationControls, 
+			
+			IntelControls, IntelOverviewControls,
+			
 			AdminControls, AdminModulesControls, 
+			LogisticsControls, LogisticProgramControls,
+
 			MedicalControls, MedicalOverviewControls,
 			EngineeringControls, EngineeringConfigControls, 
+			
 		]:
 		node.reveal(false)
 
@@ -423,16 +432,18 @@ func show_fabrication_options() -> void:
 			RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
 			
 		# add room
-		await ROOM_UTIL.add_room(x.ref)
-		
+		await ROOM_UTIL.add_room(x.ref)		
 		ActiveMenuNode.close()
-	var all_link_categories:Array = ROOM_UTIL.get_all_link_catagories() 
+
+		
+		
+	var all_room_categories:Array = ROOM_UTIL.get_all_room_catagories() 
 
 	var options:Array = []
 	var list:Array = []
 	
 	# first, get adjacent cateogries
-	for type in all_link_categories:
+	for type in all_room_categories:
 		list.push_back({
 			"title": ROOM.return_category_title(type),
 			"type": type,
@@ -441,13 +452,13 @@ func show_fabrication_options() -> void:
 		})
 
 	# ... then general other categories
-	for type in [ROOM.CATEGORY.ENERGY, ROOM.CATEGORY.UTILITY, ROOM.CATEGORY.CONTAINMENT, ROOM.CATEGORY.DEPARTMENT]:
-		list.push_back({
-			"title": ROOM.return_category_title(type),
-			"type": type,
-			"is_disabled_func": is_disabled_func,
-			"hint_func": hint_func
-		})
+	#for type in [ROOM.CATEGORY.ENERGY, ROOM.CATEGORY.UTILITY, ROOM.CATEGORY.CONTAINMENT, ROOM.CATEGORY.DEPARTMENT]:
+		#list.push_back({
+			#"title": ROOM.return_category_title(type),
+			#"type": type,
+			#"is_disabled_func": is_disabled_func,
+			#"hint_func": hint_func
+		#})
 	
 	for listitem in list:
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
@@ -462,14 +473,26 @@ func show_fabrication_options() -> void:
 				})
 				
 	var subdivision_list:Array = []
-	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_ADMIN_SUBDIVISON):
-		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.ADMIN_OFFICE)
+	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH):
+		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.ADMIN_BRANCH)
 		subdivision_list.push_back({
 			"title": room_details.name,
 			"img_src": room_details.img_src,
 			"is_disabled": is_disabled_func.call(room_details),
 			"hint": hint_func.call(room_details), 
-			"ref": ROOM.REF.ADMIN_OFFICE,
+			"ref": ROOM.REF.ADMIN_BRANCH,
+			"details": room_details,
+			"action": on_selected.bind(room_details)
+		})
+
+	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH):
+		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.LOGISTICS_BRANCH)
+		subdivision_list.push_back({
+			"title": room_details.name,
+			"img_src": room_details.img_src,
+			"is_disabled": is_disabled_func.call(room_details),
+			"hint": hint_func.call(room_details), 
+			"ref": ROOM.REF.ADMIN_BRANCH,
 			"details": room_details,
 			"action": on_selected.bind(room_details)
 		})
@@ -493,14 +516,14 @@ func show_fabrication_options() -> void:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
 		
-		# draw lines
-		var get_node_pos:Callable = func() -> Vector2: 
-			return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size
-		
-		GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
-			"draw_to_active_menu": true,
-			#"draw_to_money": item.details.costs.purchase > 0
-		}, 0 )
+		## draw lines
+		#var get_node_pos:Callable = func() -> Vector2: 
+			#return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size
+		#
+		#GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
+			#"draw_to_active_menu": true,
+			##"draw_to_money": item.details.costs.purchase > 0
+		#}, 0 )
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
 		WingRenderNode.end_preview()
@@ -534,73 +557,74 @@ func show_fabrication_options() -> void:
 	await show_build_complete
 # --------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------
-signal show_programs_complete
-func show_programs(filter_for:Array, title:String) -> void:
-	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
-
-	var update_list:Callable = func() -> void:
-		await U.tick()
-		ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
-			return {
-				"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
-				"show": x.at_level_threshold,
-				"is_disabled": x.on_cooldown,
-				"data": x.data,
-				"hint": {
-					"icon": SVGS.TYPE.ENERGY,
-					"title": "HINT",
-					"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
-			},			
-		}) )
-		
-
-	var items:Array = GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
-		return {
-			"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
-			"show": x.at_level_threshold,
-			"is_disabled": x.on_cooldown,
-			"data": x.data,
-			"hint": {
-				"icon": SVGS.TYPE.ENERGY,
-				"title": "HINT",
-				"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
-			},
-			"is_togglable": false,
-			"action": func() -> void:
-				await ActiveMenuNode.lock()
-				await GAME_UTIL.use_active_ability(x.ability, x.room_details.ref, x.index, x.location)
-				await update_list.call()
-				ActiveMenuNode.unlock(),
-		}
-	)
-		
-	var options:Array = [
-		{
-			"title": title,
-			"items": items,
-		},
-	]
-	
-	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
-		SUBSCRIBE.current_location = item.data.location
-	
-	active_menu_is_open = true
-	ActiveMenuNode.onClose = func() -> void:	
-		await U.tick()
-		active_menu_is_open = false
-		show_programs_complete.emit()
-		
-	ActiveMenuNode.use_color = Color.WHITE
-	ActiveMenuNode.options_list = options
-	ActiveMenuNode.render_on_right = true
-	
-	add_child(ActiveMenuNode)
-	await ActiveMenuNode.activate()
-	ActiveMenuNode.open()	
-	
-	await show_programs_complete
-# --------------------------------------------------------------------------------------------------
+## --------------------------------------------------------------------------------------------------
+#signal show_programs_complete
+#func show_programs(filter_for:Array, title:String) -> void:
+	#var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()
+#
+	#var update_list:Callable = func() -> void:
+		#await U.tick()
+		#ActiveMenuNode.remap_data(GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
+			#return {
+				#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+				#"show": x.at_level_threshold,
+				#"is_disabled": x.on_cooldown,
+				#"data": x.data,
+				#"hint": {
+					#"icon": SVGS.TYPE.ENERGY,
+					#"title": "HINT",
+					#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},			
+		#}) )
+		#
+#
+	#var items:Array = GAME_UTIL.get_list_of_programs(current_location, filter_for).map(func(x): 
+		#return {
+			#"title":  x.ability.name if !x.on_cooldown else str(x.ability.name, " (COOLDOWN)" ),
+			#"show": x.at_level_threshold,
+			#"is_disabled": x.on_cooldown,
+			#"data": x.data,
+			#"hint": {
+				#"icon": SVGS.TYPE.ENERGY,
+				#"title": "HINT",
+				#"description": str(x.ability.description, " " if !x.on_cooldown else " (ON COOLDOWN FOR %s DAYS)" % [x.cooldown_val] )
+			#},
+			#"is_togglable": false,
+			#"action": func() -> void:
+				#await ActiveMenuNode.lock()
+				#await GAME_UTIL.use_active_ability(x.ability, x.room_details.ref, x.index, x.location)
+				#await update_list.call()
+				#ActiveMenuNode.unlock(),
+		#}
+	#)
+		#
+	#var options:Array = [
+		#{
+			#"title": title,
+			#"items": items,
+		#},
+	#]
+	#
+	#ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
+		#SUBSCRIBE.current_location = item.data.location
+	#
+	#active_menu_is_open = true
+	#ActiveMenuNode.onClose = func() -> void:	
+		#await U.tick()
+		#active_menu_is_open = false
+		#show_programs_complete.emit()
+		#LogisticProgramControls.reveal(true)
+		#
+	#ActiveMenuNode.use_color = Color.WHITE
+	#ActiveMenuNode.options_list = options
+	#ActiveMenuNode.render_on_right = true
+	#
+	#add_child(ActiveMenuNode)
+	#await ActiveMenuNode.activate()
+	#ActiveMenuNode.open()	
+	#
+	#await show_programs_complete
+## --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
 signal show_debug_complete
@@ -1055,10 +1079,10 @@ func show_settings() -> void:
 #region checkbtnstates
 # --------------------------------------------------------------------------------------------------
 func before_active_selection() -> void:
-	await AdminModulesControls.reveal(false)
+	await LogisticProgramControls.reveal(false)
 
 func after_active_selection() -> void:
-	AdminModulesControls.reveal(true)
+	LogisticProgramControls.reveal(true)
 
 func before_scp_selection() -> void:
 	await AdminModulesControls.reveal(false)
@@ -1094,7 +1118,8 @@ func check_btn_states() -> void:
 	var can_take_action:bool = (is_ring_powered and !in_lockdown)
 	var lvl:int = ROOM_UTIL.get_room_lvl()
 	var max_upgrade_lvl:int = ROOM_UTIL.get_room_max_level()
-	var has_options:bool = !abilities.is_empty() or !passive_abilities.is_empty()
+	var has_programs:bool = !abilities.is_empty() 
+	var has_modules:bool = !passive_abilities.is_empty()
 	var at_max_level:bool = lvl >= max_upgrade_lvl
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
@@ -1134,28 +1159,34 @@ func check_btn_states() -> void:
 				current_mode = MODE.FABRICATION
 			
 			# need engineering department before you can use this 
-			AdminBtn.show() if (ROOM_UTIL.owns(ROOM.REF.ADMIN_DEPARTMENT) or ROOM_UTIL.owns(ROOM.REF.ADMIN_OFFICE)) and !has_priority_events else AdminBtn.hide()
+			AdminBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH])) and !has_priority_events else AdminBtn.hide()
 			AdminBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT)
-						
-			EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !has_priority_events else EngineeringBtn.hide()
-			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
-			
-			LogisticsBtn.show() if ROOM_UTIL.owns(ROOM.REF.LOGISTICS_DEPARTMENT) and !has_priority_events else LogisticsBtn.hide()
+
+			LogisticsBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH])) and !has_priority_events else LogisticsBtn.hide()
 			LogisticsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT)
-
-			ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !has_priority_events else ScienceBtn.hide()
-			ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
 			
-			MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !has_priority_events else MedicalBtn.hide()
-			MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
-			
-			SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !has_priority_events else SecurityBtn.hide()
-			SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
-			
-			EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
-			EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)
-
-			ContainBtn.show() if ROOM_UTIL.ring_contains(ROOM.REF.CONTAINMENT_CELL) else ContainBtn.hide()
+			EngineeringBtn.hide()
+			ScienceBtn.hide()
+			MedicalBtn.hide()
+			SecurityBtn.hide()
+			EthicsBtn.hide()
+			ContainBtn.hide()
+			#EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !has_priority_events else EngineeringBtn.hide()
+			#EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
+			#
+			#ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !has_priority_events else ScienceBtn.hide()
+			#ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
+			#
+			#MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !has_priority_events else MedicalBtn.hide()
+			#MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
+			#
+			#SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !has_priority_events else SecurityBtn.hide()
+			#SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
+			#
+			#EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
+			#EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)
+#
+			#ContainBtn.show() if ROOM_UTIL.ring_contains(ROOM.REF.CONTAINMENT_CELL) else ContainBtn.hide()
 			
 			#OperationsBtn.hide()
 			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
@@ -1167,6 +1198,19 @@ func check_btn_states() -> void:
 					end_btn_is_flashing = true 
 					break
 			EndTurnBtn.is_flashing = end_btn_is_flashing
+		# -----------			
+		MODE.ADMINISTRATION:
+			AdminControls.reveal(true)
+			AdminControls.disable_active_btn = is_room_empty or !has_modules
+			
+			AdminControls.onAction = func() -> void:
+				await AdminControls.reveal(false)
+				current_mode = MODE.ADMINISTRATION_MODULES
+
+			AdminControls.onBack = func() -> void:
+				await AdminControls.reveal(false)
+				lock_actions(false)
+				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ADMINISTRATION_MODULES:
 			AdminModulesControls.reveal(true)
@@ -1175,49 +1219,50 @@ func check_btn_states() -> void:
 				ModulesCard.deselect_btns()
 				await AdminModulesControls.reveal(false)
 				current_mode = MODE.ADMINISTRATION
-		
+				
 			AdminModulesControls.onUpdate = func(node:Control) -> void:
 				for _node in AdminModulesControls.itemlist:
 					_node.is_selected = _node == node
-					
-				AdminModulesControls.onAction = func() -> void:pass
-				AdminModulesControls.hide_c_btn = true
-				AdminModulesControls.disable_active_btn = false
-				
+
 				AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
+				
 				# ----------------------
 				match node.ref_data.type:
-					"scp":						
-						AdminModulesControls.a_btn_title = "SELECT SCP" if node.ref_data.data.is_empty() else "FULL"
-						AdminModulesControls.disable_active_btn = !node.ref_data.data.is_empty()
-						
-					"active_ability":
-						AdminModulesControls.a_btn_title = "USE PROGRAM"
-						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
-					# ----------------------
 					"passive_ability":
 						AdminModulesControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE" 
 						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
-					# ----------------------
+
 		# -----------	
-		MODE.ADMINISTRATION:
-			AdminControls.disable_active_btn = is_room_empty
-			AdminControls.a_btn_title = "MODULES" #if has_options else "NO ABILITIES"
-			AdminControls.reveal(true)
+		MODE.LOGISTICS:
+			LogisticsControls.reveal(true)
+			LogisticsControls.disable_active_btn = is_room_empty or !has_programs
 			
-			AdminControls.onAction = func() -> void:
-				await AdminControls.reveal(false)
-				current_mode = MODE.ADMINISTRATION_MODULES
+			LogisticsControls.onAction = func() -> void:		
+				await LogisticsControls.reveal(false)
+				current_mode = MODE.LOGISTICS_PROGRAMS
 
-			AdminControls.onCBtn = func() -> void:
-				await AdminControls.reveal(false)				
-				await show_programs([ROOM.CATEGORY.ADMIN_LINKABLE], "ADMIN PROGRAMS")
-				AdminControls.reveal(true)
-
-			AdminControls.onBack = func() -> void:
-				await AdminControls.reveal(false)
-				lock_actions(false)
+			LogisticsControls.onBack = func() -> void:
+				await LogisticsControls.reveal(false)
 				current_mode = MODE.ROOT
+		# -----------	
+		MODE.LOGISTICS_PROGRAMS:				
+			LogisticProgramControls.reveal(true)
+
+			LogisticProgramControls.onBack = func() -> void:
+				ModulesCard.deselect_btns()
+				await LogisticProgramControls.reveal(false)
+				current_mode = MODE.LOGISTICS
+		
+			LogisticProgramControls.onUpdate = func(node:Control) -> void:
+				for _node in LogisticProgramControls.itemlist:
+					_node.is_selected = _node == node
+
+				LogisticProgramControls.disable_active_btn = node.ref_data.is_disabled
+				# ----------------------
+				match node.ref_data.type:
+					"active_ability":
+						AdminModulesControls.a_btn_title = "USE PROGRAM"
+						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 		# -----------	
 		MODE.SECURITY:
 			SecurityControls.reveal(true)
@@ -1229,10 +1274,10 @@ func check_btn_states() -> void:
 				await U.set_timeout(1.0)
 				SecurityControls.reveal(true)
 			
-			SecurityControls.onCBtn = func() -> void:
-				await SecurityControls.reveal(false)				
-				await show_programs([ROOM.CATEGORY.SECURITY_LINKABLE], "SECURITY PROGRAMS")
-				SecurityControls.reveal(true)
+			#SecurityControls.onCBtn = func() -> void:
+				#await SecurityControls.reveal(false)				
+				#await show_programs([ROOM.CATEGORY.SECURITY_LINKABLE], "SECURITY PROGRAMS")
+				#SecurityControls.reveal(true)
 
 			SecurityControls.onBack = func() -> void:
 				await SecurityControls.reveal(false)
@@ -1251,10 +1296,10 @@ func check_btn_states() -> void:
 					on_current_location_update()	
 				ScienceControls.reveal(true)			
 			
-			ScienceControls.onCBtn = func() -> void:
-				await ScienceControls.reveal(false)				
-				await show_programs([ROOM.CATEGORY.SCIENCE_LINKABLE], "SCIENCE PROGRAMS")			
-				ScienceControls.reveal(true)
+			#ScienceControls.onCBtn = func() -> void:
+				#await ScienceControls.reveal(false)				
+				#await show_programs([ROOM.CATEGORY.SCIENCE_LINKABLE], "SCIENCE PROGRAMS")			
+				#ScienceControls.reveal(true)
 
 			ScienceControls.onBack = func() -> void:
 				await ScienceControls.reveal(false)
@@ -1269,10 +1314,10 @@ func check_btn_states() -> void:
 				change_camera_to(CAMERA.TYPE.FLOOR_SELECT)
 				current_mode = MODE.MEDICAL_OVERVIEW
 				
-			MedicalControls.onCBtn = func() -> void:
-				await MedicalControls.reveal(false)
-				await show_programs([ROOM.CATEGORY.MEDICAL_LINKABLE], "MEDICAL PROGRAMS")
-				MedicalControls.reveal(true)
+			#MedicalControls.onCBtn = func() -> void:
+				#await MedicalControls.reveal(false)
+				#await show_programs([ROOM.CATEGORY.MEDICAL_LINKABLE], "MEDICAL PROGRAMS")
+				#MedicalControls.reveal(true)
 				
 			MedicalControls.onBack = func() -> void:
 				await MedicalControls.reveal(false)
@@ -1393,31 +1438,13 @@ func check_btn_states() -> void:
 				await EngineeringControls.reveal(false)
 				current_mode = MODE.ENGINEERING_CONFIG
 				
-			EngineeringControls.onCBtn = func() -> void:		
-				await EngineeringControls.reveal(false)
-				await show_programs([ROOM.CATEGORY.ENGINEERING_LINKABLE], "ENGINEERING PROGRAMS")
-				EngineeringControls.reveal(true)
+			#EngineeringControls.onCBtn = func() -> void:		
+				#await EngineeringControls.reveal(false)
+				#await show_programs([ROOM.CATEGORY.ENGINEERING_LINKABLE], "ENGINEERING PROGRAMS")
+				#EngineeringControls.reveal(true)
 
 			EngineeringControls.onBack = func() -> void:
 				await EngineeringControls.reveal(false)
-				current_mode = MODE.ROOT
-		# -----------	
-		MODE.LOGISTICS:
-			LogisticsControls.reveal(true)
-			LogisticsControls.disable_active_btn = is_room_empty or !is_activated or at_max_level
-			
-			LogisticsControls.onAction = func() -> void:		
-				await LogisticsControls.reveal(false)
-				await GAME_UTIL.upgrade_facility() 
-				LogisticsControls.reveal(true)
-				
-			LogisticsControls.onCBtn = func() -> void:		
-				await LogisticsControls.reveal(false)
-				await show_programs([ROOM.CATEGORY.LOGISTICS_LINKABLE], "LOGISTICS PROGRAMS")
-				LogisticsControls.reveal(true)
-
-			LogisticsControls.onBack = func() -> void:
-				await LogisticsControls.reveal(false)
 				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ETHICS:
@@ -1427,10 +1454,10 @@ func check_btn_states() -> void:
 				await U.set_timeout(1.0)
 				EthicsControls.reveal(true)
 				
-			EthicsControls.onCBtn = func() -> void:		
-				await EthicsControls.reveal(false)
-				await show_programs([ROOM.CATEGORY.ETHICS_LINKABLE], "ETHICS PROGRAMS")
-				EthicsControls.reveal(true)
+			#EthicsControls.onCBtn = func() -> void:		
+				#await EthicsControls.reveal(false)
+				#await show_programs([ROOM.CATEGORY.ETHICS_LINKABLE], "ETHICS PROGRAMS")
+				#EthicsControls.reveal(true)
 
 			EthicsControls.onBack = func() -> void:
 				await EthicsControls.reveal(false)
@@ -1721,6 +1748,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 		match current_mode:
 			# --------------
 			MODE.ROOT:
+				ModulesCard.show_modules = false
+				ModulesCard.show_programs = false
 				#NametagControl.show()
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(0)
@@ -1753,6 +1782,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				current_mode = MODE.ROOT
 			# --------------
 			MODE.ADMINISTRATION:
+				ModulesCard.show_modules = true
+				ModulesCard.show_programs = false
+				
 				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
@@ -1765,12 +1797,38 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 		
 			# --------------
-			MODE.ADMINISTRATION_MODULES:
-				AdminModulesControls.itemlist = ModulesCard.get_ability_btns()
+			MODE.ADMINISTRATION_MODULES:				
+				AdminModulesControls.itemlist = ModulesCard.get_module_btns()
 				AdminModulesControls.item_index = 0							
 				AdminModulesControls.directional_pref = "UD"
 				AdminModulesControls.offset = ModulesCard.global_position
+
 				
+				LocationAndDirectivesContainer.reveal(false)
+				RenderingNode.set_shader_strength(0)
+
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
+			# --------------
+			MODE.LOGISTICS:
+				ModulesCard.show_modules = false
+				ModulesCard.show_programs = true
+				
+				LocationAndDirectivesContainer.reveal(false)
+				RenderingNode.set_shader_strength(1)
+				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_timeline = false
+				
+				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
+				reveal_summarycard(true, true)
+				reveal_actionpanel_label(true, 0.4, "LOGISTICS")
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
+			# --------------
+			MODE.LOGISTICS_PROGRAMS:
+				LogisticProgramControls.itemlist = ModulesCard.get_program_btns()
+				LogisticProgramControls.item_index = 0							
+				LogisticProgramControls.directional_pref = "UD"
+				LogisticProgramControls.offset = ModulesCard.global_position
+
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(0)
 				
@@ -1821,17 +1879,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "ETHICS")
-				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
-			# --------------
-			MODE.LOGISTICS:
-				# NameControl.hide()
-				LocationAndDirectivesContainer.reveal(true)
-				RenderingNode.set_shader_strength(1)
-				GameplayNode.show_marked_objectives = false
-				GameplayNode.show_timeline = false	
-				
-				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
-				reveal_actionpanel_label(true, 0.4, "LOGISTICS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
 			# --------------
 			MODE.ENGINEERING_CONFIG:
@@ -1918,6 +1965,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	match current_mode:
 		# ----------------------------		
 		MODE.ADMINISTRATION_MODULES:
+			pass
+		MODE.LOGISTICS_PROGRAMS:
 			pass
 		MODE.ENGINEERING_CONFIG:
 			pass

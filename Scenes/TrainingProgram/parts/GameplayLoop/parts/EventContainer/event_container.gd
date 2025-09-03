@@ -54,6 +54,7 @@ var impacted_metrics:Dictionary = {}
 var impacted_currency:Dictionary = {}
 var impacted_buffs:Array = []
 var impacted_debuffs:Array = []
+var is_ending:bool = false
 
 var event_instruction_index:int = 0
 var current_event_instruction:Dictionary = {} : 
@@ -268,10 +269,8 @@ func next_instruction(inc:bool = false) -> void:
 		instruction_index += 1
 	
 	if instruction_index + 1 >= current_event_instruction.event_instructions.size():
-		BtnControls.a_btn_title = "CLOSE"
-		BtnControls.onAction = func() -> void:
-			end()
-		has_more = false
+		end()
+		return
 	else:
 		has_more = true
 		
@@ -320,7 +319,6 @@ func on_current_text_update() -> void:
 	BodyLabelTop.text = current_text
 
 	await tween_text_reveal(current_text.length() * 0.01)
-
 
 	update_next_btn(true)	
 # --------------------------------------------------------------------------------------------------		

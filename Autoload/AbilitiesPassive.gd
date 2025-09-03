@@ -1,12 +1,12 @@
 extends Node
 
 enum REF {
-	# SUBDIVISIONS
-	ENABLE_ADMIN_SUBDIVISON,
-	ENABLE_LOGISTIC_SUBDIVISON,
+	# BRANCHES
+	ENABLE_ADMIN_BRANCH,
+	ENABLE_LOGISTIC_BRANCH,
 	
 	# UI
-	UI_ENABLE_ECONOMY,
+	#UI_ENABLE_ECONOMY,
 	UI_ENABLE_VIBES,
 	UI_ENABLE_PERSONNEL, 
 	UI_ENABLE_DANGERS,
@@ -160,32 +160,32 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	match ref:
 		#region SUBDIVSION
 		# SUBDIVISONS
-		REF.ENABLE_ADMIN_SUBDIVISON:
+		REF.ENABLE_ADMIN_BRANCH:
 			ability = {
 				"name": "ENABLE_ADMIN_SUBDIVISON",
-				"description": "Can build an Admin Subdivion.",
-				"energy_cost": 1,
-				"conditionals": [CONDITIONALS.TYPE.ENABLE_ADMIN_SUBDIVISON]
+				"description": "Can build an Admin Branch.",
+				"energy_cost": 5,
+				"conditionals": [CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH]
 			}
 			
-		REF.ENABLE_LOGISTIC_SUBDIVISON:
+		REF.ENABLE_LOGISTIC_BRANCH:
 			ability = {
 				"name": "ENABLE_LOGISTIC_SUBDIVISON",
-				"description": "Can build an Logistics Subdivion.",
-				"energy_cost": 1,
-				"conditionals": [CONDITIONALS.TYPE.ENABLE_LOGISTIC_SUBDIVISON]
+				"description": "Can build an Logistics Branch.",
+				"energy_cost": 5,
+				"conditionals": [CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH]
 			}			
 		#endregion
 		
 		#region UI
 		# UI
-		REF.UI_ENABLE_ECONOMY: 
-			ability = {
-				"name": "UI_ENABLE_ECONOMY",
-				"description": "Enables the ECONOMY panel in the UI.",
-				"energy_cost": 1,
-				"conditionals": [CONDITIONALS.TYPE.UI_ENABLE_ECONOMY]
-			}
+		#REF.UI_ENABLE_ECONOMY: 
+			#ability = {
+				#"name": "UI_ENABLE_ECONOMY",
+				#"description": "Enables the ECONOMY panel in the UI.",
+				#"energy_cost": 1,
+				#"conditionals": [CONDITIONALS.TYPE.UI_ENABLE_ECONOMY]
+			#}
 		REF.UI_ENABLE_VIBES:
 			ability = {
 				"name": "UI_ENABLE_VIBES",

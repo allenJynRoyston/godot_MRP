@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://cfmfs2x81vts1"]
+[gd_scene load_steps=11 format=3 uid="uid://cfmfs2x81vts1"]
 
 [ext_resource type="Script" uid="uid://bjcwgus7irih4" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Personnel/personnel.gd" id="2_s72um"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="4_s72um"]
 [ext_resource type="PackedScene" uid="uid://dkvs5b20lf3pa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/PersonnelItem/PersonnelItem.tscn" id="4_ukuep"]
+[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_x2axq"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="5_s72um"]
+[ext_resource type="PackedScene" uid="uid://b641lti6qidew" path="res://UI/EconItem/EconItem.tscn" id="5_x2axq"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bdyia"]
 
@@ -16,6 +19,14 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_ukuep"]
+font = ExtResource("4_s72um")
+font_color = Color(1, 0, 0, 1)
+outline_size = 2
+outline_color = Color(1, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [node name="Personnel" type="PanelContainer"]
 custom_minimum_size = Vector2(100, 40)
@@ -52,7 +63,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ukuep")
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 0
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
@@ -87,3 +98,33 @@ layout_mode = 2
 value = 1
 max_val = 10
 title = "DCLASS"
+
+[node name="SVGIcon" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_x2axq")]
+layout_mode = 2
+icon = 32
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Title" type="Label" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "COSTS"
+label_settings = SubResource("LabelSettings_ukuep")
+horizontal_alignment = 1
+
+[node name="Costs" parent="VBoxContainer/Content/MarginContainer/HBoxContainer/MarginContainer/VBoxContainer" instance=ExtResource("5_x2axq")]
+layout_mode = 2
+horizontal_mode = true
+icon = 36
+amount = 25
+is_negative = true

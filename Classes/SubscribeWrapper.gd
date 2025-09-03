@@ -20,6 +20,7 @@ var unavailable_rooms:Array
 var hired_lead_researchers_arr:Array
 var awarded_rooms:Array
 var hints_unlocked:Array
+var priority_events:Array
 var notes:Array 
 
 var previous_floor:int = -1
@@ -44,6 +45,7 @@ func _init() -> void:
 	SUBSCRIBE.subscribe_to_awarded_room(self)
 	SUBSCRIBE.subscribe_to_hints_unlocked(self)
 	SUBSCRIBE.subscribe_to_notes(self)
+	SUBSCRIBE.subscribe_to_priority_events(self)
 	
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_progress_data(self)
@@ -63,6 +65,7 @@ func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_awarded_room(self)
 	SUBSCRIBE.unsubscribe_to_hints_unlocked(self)
 	SUBSCRIBE.unsubscribe_to_notes(self)
+	SUBSCRIBE.unsubscribe_to_priority_events(self)
 	
 func on_resources_data_update(new_val:Dictionary) -> void:
 	resources_data = new_val
@@ -130,6 +133,9 @@ func on_awarded_rooms_update(new_val:Array) -> void:
 
 func on_notes_update(new_val:Array) -> void:
 	notes = new_val
+	
+func on_priority_events_update(new_val:Array) -> void:
+	priority_events = new_val	
 	
 func on_floor_changed() -> void:pass
 func on_ring_changed() -> void:pass

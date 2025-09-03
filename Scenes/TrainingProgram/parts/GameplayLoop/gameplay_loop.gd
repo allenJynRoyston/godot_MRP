@@ -90,6 +90,12 @@ var initial_values:Dictionary = {
 			RESOURCE.CURRENCY.SCIENCE: starting_data.diff[RESOURCE.CURRENCY.MATERIAL],
 			RESOURCE.CURRENCY.CORE: starting_data.diff[RESOURCE.CURRENCY.CORE],
 		},
+	"metrics_diff": func() -> Dictionary:
+		return { 
+			RESOURCE.METRICS.MORALE: 0,
+			RESOURCE.METRICS.SAFETY: 0,
+			RESOURCE.METRICS.READINESS: 0
+		},		
 	# ----------------------------------
 	"resources_data": func() -> Dictionary:
 		return { 
@@ -202,7 +208,7 @@ var initial_values:Dictionary = {
 				# ------------------------------
 				for room_index in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
 					room[str(floor_index, ring_index, room_index)] = {
-						"abl_lvl": 0,
+						#"abl_lvl": 0,
 						"influence": {
 							"added_range": 0,
 							"allow_horizontal": false,
@@ -227,6 +233,15 @@ var initial_values:Dictionary = {
 				# record events and their outcomes
 			},
 			"base": {
+				"department_perk": {
+					ROOM.REF.ADMIN_DEPARTMENT: -1,
+					ROOM.REF.LOGISTICS_DEPARTMENT: -1,
+					#ROOM.REF.ENGINEERING_DEPARTMENT: -1,
+					#ROOM.REF.MEDICAL_DEPARTMENT: -1,
+					#ROOM.REF.ETHICS_DEPARTMENT: -1,
+					#ROOM.REF.SCIENCE_DEPARTMENT: -1,
+					#ROOM.REF.SECURITY_DEPARTMENT: -1,
+				},				
 				"onsite_nuke": {
 					"triggered": false
 				},
@@ -559,7 +574,7 @@ func get_floor_default(array_size:int) -> Dictionary:
 			RESOURCE.CURRENCY.SCIENCE: 0,
 			RESOURCE.CURRENCY.CORE: 0,
 		},
-		"abl_lvl": 0,
+		#"abl_lvl": 0,
 		"buffs": [],
 		"debuffs": [],
 		# --------------
@@ -608,7 +623,7 @@ func get_ring_defaults(array_size:int) -> Dictionary:
 		},
 		# --------------
 		"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,		
-		"abl_lvl": 0,
+		#"abl_lvl": 0,
 		"energy": {
 			"available": 0,
 			"used": 0
@@ -637,7 +652,7 @@ func get_room_defaults() -> Dictionary:
 		# --------------
 		"energy_used": 0, 		
 		"damage_val": 0,
-		"abl_lvl": 0,
+		#"abl_lvl": 0,
 		# --------------
 		"is_activated": false,
 		"room_data": {},
@@ -1285,7 +1300,9 @@ func update_room_config(force_setup:bool = false) -> void:
 	# grab default values
 	var new_room_config:Dictionary = initial_values.room_config.call()	
 	var resource_diff:Dictionary = initial_values.resource_diff.call()
-
+	var metrics_diff:Dictionary = initial_values.metrics_diff.call()
+	var room_ability_level:Dictionary = {}
+	
 	# add to starting diff to resources_diff
 	for key in resource_diff:
 		resources_data[key].diff = resource_diff[key]
@@ -1298,13 +1315,11 @@ func update_room_config(force_setup:bool = false) -> void:
 	room_setup_passives_and_ability_level(new_room_config)
 	
 	# check if room is activated
-	room_activation_check(new_room_config)
-	# influence	
-	apply_influence_before_effect(new_room_config)		
+	room_activation_check(new_room_config, metrics_diff, room_ability_level)
 	
 	# ROOM, check for effects
 	apply_conditionals(new_room_config)
-	apply_room_passives_and_effects(new_room_config)
+	apply_room_passives_and_effects(new_room_config, room_ability_level)
 	
 	# apply scp effects
 	apply_scp_effects(new_room_config)	
@@ -1313,7 +1328,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	apply_influence_effect(new_room_config)	
 
 	# add metrics/currencies
-	assign_refs(new_room_config)
+	assign_refs_and_level(new_room_config, room_ability_level)
 
 	# calculate final diff	
 	calculate_final(new_room_config)
@@ -1376,7 +1391,7 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 				var room_level:Dictionary = new_room_config.floor[floor_index].ring[ring_index].room[room_index]
 				
 				# room level ability level
-				room_level.abl_lvl = room_base_state.abl_lvl
+				#room_level.abl_lvl = room_base_state.abl_lvl
 				room_level.influence = room_base_state.influence
 				
 #func check_for_buffs_and_debuffs(new_room_config:Dictionary) -> void:
@@ -1506,21 +1521,27 @@ func room_setup_passives_and_ability_level(new_room_config:Dictionary) -> void:
 					if "mtf_ref" in ability:
 						ring_config_data.mtf.push_back(ability.mtf_ref)
 
-func room_activation_check(new_room_config:Dictionary) -> void:
+func room_activation_check(new_room_config:Dictionary, metrics_diff:Dictionary, room_ability_level:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
 		var ring:int = item.location.ring
-		var room:int = item.location.room		
+		var room:int = item.location.room	
 		var ring_config_data:Dictionary = new_room_config.floor[floor].ring[ring]
 		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
 		var is_under_construction:bool = item.under_construction
 		var energy_available:int = ring_config_data.energy.available - ring_config_data.energy.used
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		
+		# set all initial levels to 0
+		if item.ref not in room_ability_level:
+			room_ability_level[item.ref] = 0		
+		
 		# apply is activated state if have enough staff and enough energy
 		if energy_available >= room_details.required_energy and !is_under_construction:
 			ring_config_data.energy.used += room_details.required_energy
 			room_config_data.is_activated = true
+			room_ability_level[item.ref] += 1
+			# captures a grand total to be checkable
 		else:
 			room_config_data.is_activated = false
 		
@@ -1537,18 +1558,18 @@ func apply_conditionals(new_room_config:Dictionary) -> void:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
 
 		# CHECK CONDITIONALS
-		if room_config_data.is_activated:
-			# add income (CONDITIONAL CHECKS ONLY)
-			for ref in room_details.currencies:
-				var amount:int = room_details.currencies[ref]
-				match ref:
-					RESOURCE.CURRENCY.MONEY:
-						# if room makes at least one money, it makes on more
-						if amount > 0 and gameplay_conditionals[CONDITIONALS.TYPE.PLUS_MONEY_1]:
-							room_config_data.currencies[ref] += 1
-							amount += 1	
+		#if room_config_data.is_activated:
+			## add income (CONDITIONAL CHECKS ONLY)
+			#for ref in room_details.currencies:
+				#var amount:int = room_details.currencies[ref]
+				#match ref:
+					#RESOURCE.CURRENCY.MONEY:
+						## if room makes at least one money, it makes on more
+						#if amount > 0 and gameplay_conditionals[CONDITIONALS.TYPE.PLUS_MONEY_1]:
+							#room_config_data.currencies[ref] += 1
+							#amount += 1	
 
-func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
+func apply_room_passives_and_effects(new_room_config:Dictionary, room_ability_level:Dictionary) -> void:
 	# ----------------- CHECK AND APPLY EFFECTS FROM SCP
 	for item in purchased_facility_arr:
 		var floor:int = item.location.floor
@@ -1574,10 +1595,10 @@ func apply_room_passives_and_effects(new_room_config:Dictionary) -> void:
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_details.ref, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-				var floor_abl_lvl:int = new_room_config.floor[floor].abl_lvl
-				var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
-				var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
-				var current_lvl:int = floor_abl_lvl  + wing_abl_lvl + room_abl_lvl
+				#var floor_abl_lvl:int = new_room_config.floor[floor].abl_lvl
+				#var wing_abl_lvl:int = new_room_config.floor[floor].ring[ring].abl_lvl
+				#var room_abl_lvl:int = new_room_config.floor[floor].ring[ring].room[room].abl_lvl
+				var current_lvl:int = room_ability_level[item.ref] #floor_abl_lvl  + wing_abl_lvl + room_abl_lvl
 				# admin perk 2 - start at an additional level
 				if gameplay_conditionals[CONDITIONALS.TYPE.ADMIN_PERK_2]:
 					current_lvl += 1
@@ -1701,32 +1722,6 @@ func apply_scp_effects(new_room_config:Dictionary) -> void:
 				if scp_details.effect.has("func"):					
 					new_room_config = scp_details.effect.func.call( new_room_config, sdata )
 
-func apply_influence_before_effect(new_room_config:Dictionary) -> void:
-	# ----------------- check for rooms
-	for item in purchased_facility_arr:
-		var floor:int = item.location.floor
-		var ring:int = item.location.ring
-		var room:int = item.location.room		
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
-		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
-
-		if room_config_data.is_activated and !room_details.influence.is_empty() and room_details.influence.starting_range > 0:
-			if !room_details.influence.is_empty() and room_details.influence.effect.has("before_func"):
-				room_details.influence.effect.before_func.call(new_room_config, item.ref, item.location)
-				
-	# ----------------- check for scp
-	for ref in scp_data:
-		var sdata:Dictionary = scp_data[ref]
-		if !sdata.location.is_empty():
-			var floor:int = sdata.location.floor
-			var ring:int = sdata.location.ring
-			var room:int = sdata.location.room
-			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-			
-			if room_config_data.is_activated and !scp_details.influence.is_empty() and scp_details.influence.starting_range > 0:
-				if !scp_details.influence.is_empty() and scp_details.influence.effect.has("before_func"):
-					scp_details.influence.effect.before_func.call(new_room_config, ref, sdata.location)
 					
 func apply_influence_effect(new_room_config:Dictionary) -> void:
 	# ----------------- check for rooms
@@ -1755,11 +1750,12 @@ func apply_influence_effect(new_room_config:Dictionary) -> void:
 				if !scp_details.influence.is_empty() and scp_details.influence.effect.has("func"):
 					scp_details.influence.effect.func.call(new_room_config, ref, sdata.location)			
 			
-func assign_refs(new_room_config:Dictionary) -> void:
+func assign_refs_and_level(new_room_config:Dictionary, room_ability_level:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var room_config_data:Dictionary = new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]
 		room_config_data.room_data = {
-			"ref": item.ref
+			"ref": item.ref,
+			"room_ability_level": room_ability_level[item.ref]
 		}				
 
 	for ref in scp_data:

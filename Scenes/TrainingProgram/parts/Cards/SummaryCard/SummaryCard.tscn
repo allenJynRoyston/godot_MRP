@@ -74,14 +74,14 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_budmt"]
+[sub_resource type="LabelSettings" id="LabelSettings_dchg3"]
 font = ExtResource("11_jgan4")
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
-[sub_resource type="LabelSettings" id="LabelSettings_dchg3"]
+[sub_resource type="LabelSettings" id="LabelSettings_budmt"]
 font = ExtResource("11_jgan4")
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
@@ -112,9 +112,9 @@ layout_mode = 2
 [node name="SidePanel" type="VBoxContainer" parent="Control"]
 layout_mode = 2
 offset_left = 296.0
-offset_top = 34.0
-offset_right = 359.0
-offset_bottom = 135.0
+offset_top = 11.0
+offset_right = 368.0
+offset_bottom = 147.0
 
 [node name="CostPanel" type="PanelContainer" parent="Control/SidePanel"]
 custom_minimum_size = Vector2(72, 0)
@@ -246,7 +246,7 @@ metadata/_edit_group_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -494,47 +494,47 @@ title = ""
 is_left_side = true
 border_color = Color(1, 0.74902, 0.2, 1)
 
-[node name="HasProgramsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+[node name="DepartmentPriorityContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer"]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer/MarginContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-text = "OPERATIONS"
+text = "PRIORITY"
 label_settings = ExtResource("6_3otej")
 vertical_alignment = 1
 
-[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer/PanelContainer2"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HasProgramLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2/MarginContainer"]
+[node name="DepartmentPriorityLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DepartmentPriorityContainer/PanelContainer2/MarginContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
-text = "PROGRAM NAME"
-label_settings = SubResource("LabelSettings_0krab")
-vertical_alignment = 1
+text = "EFFECT "
+label_settings = SubResource("LabelSettings_dchg3")
+horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="CapacityContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
@@ -862,6 +862,49 @@ layout_mode = 2
 text = "EFFECT "
 label_settings = SubResource("LabelSettings_dchg3")
 horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HasProgramsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5g6vn")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "OPERATIONS"
+label_settings = ExtResource("6_3otej")
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HasProgramLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/HasProgramsContainer/PanelContainer2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "PROGRAM NAME"
+label_settings = SubResource("LabelSettings_0krab")
 vertical_alignment = 1
 autowrap_mode = 3
 

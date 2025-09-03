@@ -27,6 +27,7 @@ size_flags_vertical = 3
 script = ExtResource("1_15jbj")
 
 [node name="Structure3DContainer" parent="." instance=ExtResource("2_gauva")]
+visible = false
 layout_mode = 2
 
 [node name="TimelineContainer" parent="." instance=ExtResource("5_1tp62")]

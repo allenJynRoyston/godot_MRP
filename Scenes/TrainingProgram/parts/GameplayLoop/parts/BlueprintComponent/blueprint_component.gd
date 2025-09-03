@@ -91,12 +91,12 @@ func update_node() -> void:
 		for item in list_of_effects:
 			var new_label:Label = Label.new()
 			new_label.label_settings = font_1_black_preload.duplicate()
-			new_label.text = item.influence_description
+			new_label.text = item.influence_description.call()
 			new_label.custom_minimum_size = Vector2(1, 1)
 			EffectList.add_child(new_label)
 	
-		CurrencyList.hide() if !has_currency else CurrencyList.show()
-		MetricList.hide() if !has_metric else MetricList.show()
+		#CurrencyList.hide() if !has_currency else CurrencyList.show()
+		#MetricList.hide() if !has_metric else MetricList.show()
 		EffectList.hide() if list_of_effects.is_empty() else EffectList.show()
 		return
 	

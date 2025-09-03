@@ -488,7 +488,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_2:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_2,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_2",
 	#"shortname": "LOGISTICS_ROOM_2",
 	#"img_src": "res://Media/rooms/vehicle_bay.png",
@@ -497,7 +497,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_3:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_3,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_3",
 	#"shortname": "LOGISTICS_ROOM_3",
 	#"img_src": "res://Media/rooms/armory.png",
@@ -509,7 +509,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_4:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_4,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_4",
 	#"shortname": "LOGISTICS_ROOM_4",
 	#"img_src": "res://Media/rooms/distribution_center.png",
@@ -889,7 +889,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 ##region LOGISTICS linkables
 #var LOGISTICS_ROOM_1:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_1,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_1",
 	#"shortname": "LOGISTICS_ROOM_1",
 	#"img_src": "res://Media/rooms/storage.png",
@@ -898,7 +898,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_2:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_2,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_2",
 	#"shortname": "LOGISTICS_ROOM_2",
 	#"img_src": "res://Media/rooms/vehicle_bay.png",
@@ -907,7 +907,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_3:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_3,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_3",
 	#"shortname": "LOGISTICS_ROOM_3",
 	#"img_src": "res://Media/rooms/armory.png",
@@ -919,7 +919,7 @@ var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_RO
 #
 #var LOGISTICS_ROOM_4:Dictionary = {
 	#"ref": ROOM.REF.LOGISTICS_ROOM_4,
-	#"categories": [ROOM.CATEGORY.LOGISTICS_LINKABLE],
+	#"categories": [ROOM.CATEGORY.LOGISTICS],
 	#"name": "LOGISTICS_ROOM_4",
 	#"shortname": "LOGISTICS_ROOM_4",
 	#"img_src": "res://Media/rooms/distribution_center.png",

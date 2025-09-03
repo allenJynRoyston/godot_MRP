@@ -925,32 +925,32 @@ func trigger_containment_event(scp_ref:int) -> void:
 		scp_data[scp_ref].is_contained = true
 		SUBSCRIBE.scp_data = scp_data		
 		
-		await trigger_event([EVENT_UTIL.run_event(
-			EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT, 
-				{
-					"rewarded": [
-							{
-								"room_ref": ROOM.REF.HR_DEPARTMENT, 
-								"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
-								"val": {
-									"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
-								},
-								"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
-							},
-							{
-								"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
-								"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
-								"val": {
-									"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
-								},
-								"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
-							}							
-					],
-					"onSelection": func(selection:Dictionary) -> void:
-						await selection.func.call(),
-				}
-			)
-		])	
+		#await trigger_event([EVENT_UTIL.run_event(
+			#EVT.TYPE.SCP_CONTAINMENT_AWARD_EVENT, 
+				#{
+					#"rewarded": [
+							#{
+								#"room_ref": ROOM.REF.HR_DEPARTMENT, 
+								#"title":  ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).name,
+								#"val": {
+									#"func": rewarded_room.bind(ROOM.REF.HR_DEPARTMENT),
+								#},
+								#"hint_description": ROOM_UTIL.return_data(ROOM.REF.HR_DEPARTMENT).description
+							#},
+							#{
+								#"room_ref": ROOM.REF.OPERATIONS_SUPPORT, 
+								#"title":  ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).name,
+								#"val": {
+									#"func": rewarded_room.bind(ROOM.REF.OPERATIONS_SUPPORT),
+								#},
+								#"hint_description": ROOM_UTIL.return_data(ROOM.REF.OPERATIONS_SUPPORT).description
+							#}							
+					#],
+					#"onSelection": func(selection:Dictionary) -> void:
+						#await selection.func.call(),
+				#}
+			#)
+		#])	
 				
 	
 	# restore previous emergency mode
@@ -1447,7 +1447,7 @@ func get_list_of_programs(use_location:Dictionary = current_location, filter_cat
 		var abilities:Array = room_details.abilities.call()
 		var location:Dictionary = item.location
 		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]
-		var abl_lvl:int =  ROOM_UTIL.get_room_ability_level(location)
+		var abl_lvl:int =  ROOM_UTIL.get_room_lvl(location)
 		var is_activated:bool = room_config_data.is_activated		
 		var include:bool = false
 		for category in room_details.categories:
