@@ -64,7 +64,6 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 		ROOM.REF.LOGISTICS_DEPARTMENT:
 			room_data = {
 				"categories": [ROOM.CATEGORY.DEPARTMENT],
-				"link_categories": ROOM.CATEGORY.LOGISTICS,
 				
 				"name": "LOGISTICS DEPARTMENT",
 				"shortname": "LOGISTICS DEPT", 
@@ -72,7 +71,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Sometimes the cargo delivers itself.",
 
 				"requires_unlock": false, 	
-				"own_limit": 1,
+				
 				"required_staffing": [],
 				"required_energy": 1,
 				
@@ -99,21 +98,20 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 						ABL_P.get_ability(ABL_P.REF.ENABLE_LOGISTIC_BRANCH),
 					],
 				
-				"events": {
-					"build_complete": EVT.TYPE.LOGISTIC_PERK_SETUP
-				}
+				#"events": {
+					#"build_complete": EVT.TYPE.LOGISTIC_PERK_SETUP
+				#}
 			}
 		# ----------------------------------------------------------------------
 		ROOM.REF.LOGISTICS_BRANCH:
 			room_data = {
 				"categories": [ROOM.CATEGORY.BRANCH],
-				"link_categories": ROOM.CATEGORY.LOGISTICS,
 				"name": "LOGISTICS BRANCH",
 				"shortname": "L.BRANCH",
 				"img_src": "res://Media/rooms/research_lab.png",
 				"description": "Supports the expansion of the LOGISTICS network.",
 				"quote": "Allows the use of LOGISTICS functions.",
-				"own_limit": 4,
+				
 			}
 		# ----------------------------------------------------------------------
 		ROOM.REF.LOGISTICS_ROOM_1:
@@ -127,7 +125,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.RESEARCHER
 				], 	
-				"own_limit": 10,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -154,7 +152,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 				], 	
 				"influence": INFLUENCE_PRESETS[INFTYPE.FREE_BUILD], 
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -179,7 +177,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.SECURITY
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -201,7 +199,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.SECURITY
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -228,7 +226,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.RESEARCHER,
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -252,7 +250,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.RESEARCHER,
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -277,7 +275,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.RESEARCHER,
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -302,7 +300,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.RESEARCHER,
 				], 	
-				"own_limit": 5,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -327,7 +325,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					RESEARCHER.SPECIALIZATION.ADMIN,
 					RESEARCHER.SPECIALIZATION.RESEARCHER
 				],
-				"own_limit": 2,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -338,7 +336,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 			}
 		# ----------------------------------------------------------------------
 
-
+	room_data.link_categories = ROOM.CATEGORY.LOGISTICS
 	room_data.img_src = "res://Media/rooms/logistic_section.png"
 	room_data.ref = ref
 	return room_data

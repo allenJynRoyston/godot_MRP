@@ -109,7 +109,7 @@ enum MODE {
 	EVENT_BTN_TRIGGER,
 	
 	FABRICATION,
-	FABRICATION_LINKABLE,
+	FABRICATION_LINKABLE,	
 	INTEL, INTEL_OVERSIGHT, 
 	
 	ENGINEERING, ENGINEERING_CONFIG,
@@ -158,6 +158,7 @@ var show_new_message_btn:bool = false :
 	set(val):
 		show_new_message_btn = val
 		reveal_new_message(val)
+		
 #endregion
 
 #region setup
@@ -188,7 +189,6 @@ func _ready() -> void:
 
 			MedicalControls, MedicalOverviewControls,
 			EngineeringControls, EngineeringConfigControls, 
-			
 		]:
 		node.reveal(false)
 
@@ -250,7 +250,6 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": BlueprintMargin.size.x
 	}
 		
-	
 	# for elements in the bottom left corner
 	control_pos[ActionPanel] = {
 		"show": 0, 
@@ -395,24 +394,45 @@ func show_fabrication_options() -> void:
 		var room_details:Dictionary = ROOM_UTIL.return_data(x.ref)
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring and ROOM.CATEGORY.DEPARTMENT in room_details.categories
 	).size()	
+	var department_refs:Array = ROOM_UTIL.get_department_refs()
+	var deparment_limit:int = 3
+	var rooms_per_ring_limit:int = 1
 	
 	# assists functions
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
+		# do a limit check to make sure there's no more than X categories per floor
+		if x.ref in department_refs:
+			if ROOM_UTIL.department_count() >= deparment_limit:
+				return true
+		# else, do a check to see how many per room can be built here
+		else:
+			if ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
+				return true
+		
 		return x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_available < x.required_energy or ROOM_UTIL.at_own_limit(x.ref)
+		
 	var hint_func:Callable = func(x: Dictionary) -> Dictionary:
 		var description: String = x.description
-		var disabled_reason: String = ""		
-
-		if x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
-			disabled_reason = "Insufficient funds."
-		elif energy_available < x.required_energy:
-			disabled_reason = "Not enough energy."
-		elif ROOM_UTIL.at_own_limit(x.ref):
-			disabled_reason = "At building capacity."
+		var disabled_reason: String = description
+		
+		if x.ref in department_refs:
+			if ROOM_UTIL.department_count() >= deparment_limit:
+				disabled_reason = "Limited to %s departments." % deparment_limit
+		else:
+			if x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+				disabled_reason = "Insufficient funds."
+			elif energy_available < x.required_energy:
+				disabled_reason = "Not enough energy."
+			elif ROOM_UTIL.at_own_limit(x.ref):
+				disabled_reason = "At building capacity."
+			elif ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
+				disabled_reason = "Build limit reached (maximum %s per ring)." % [rooms_per_ring_limit]
+				
+			
 		return {
 			"icon": SVGS.TYPE.GLOBAL,
 			"title": x.name,
-			"description": description if disabled_reason == "" else disabled_reason
+			"description": disabled_reason
 		}
 		
 	var on_selected:Callable = func(x:Dictionary) -> void:
@@ -435,31 +455,35 @@ func show_fabrication_options() -> void:
 		await ROOM_UTIL.add_room(x.ref)		
 		ActiveMenuNode.close()
 
-		
-		
-
 	var options:Array = []
 	var list:Array = []
+	var revert_mode:int = current_mode
 	
-	# first, get adjacent cateogries
-	var all_room_categories:Array = ROOM_UTIL.get_all_room_catagories() 	
-	for type in all_room_categories:
-		list.push_back({
-			"title": ROOM.return_category_title(type),
-			"type": type,
-			"is_disabled_func": is_disabled_func,
-			"hint_func": hint_func
-		})
+	# first add linkables of any neighboring departments
+	var linkables:Array = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location)
 
-	# ... then general other categories
-	for type in [ROOM.CATEGORY.DEPARTMENT, ROOM.CATEGORY.UTILITY]:
+	for type in linkables:
 		list.push_back({
 			"title": ROOM.return_category_title(type),
 			"type": type,
+			# need to add custom check to make sure there's less then three departments in one ring
 			"is_disabled_func": is_disabled_func,
+			# same with hint
+			"hint_func": hint_func
+		})
+		
+	# then the departments
+	for type in [ROOM.CATEGORY.DEPARTMENT]:
+		list.push_back({
+			"title": ROOM.return_category_title(type),
+			"type": type,
+			# need to add custom check to make sure there's less then three departments in one ring
+			"is_disabled_func": is_disabled_func,
+			# same with hint
 			"hint_func": hint_func
 		})
 	
+	#
 	for listitem in list:
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
 		var query_results:Array = await query_complete
@@ -472,41 +496,6 @@ func show_fabrication_options() -> void:
 					"footer": "%s / %s" % [index + 1, items.size() ],
 				})
 	
-	# then add branches?
-	# TODO: THERE has to be a better way to do this
-	var subdivision_list:Array = []
-	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH):
-		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.ADMIN_BRANCH)
-		subdivision_list.push_back({
-			"title": room_details.name,
-			"img_src": room_details.img_src,
-			"is_disabled": is_disabled_func.call(room_details),
-			"hint": hint_func.call(room_details), 
-			"ref": ROOM.REF.ADMIN_BRANCH,
-			"details": room_details,
-			"action": on_selected.bind(room_details)
-		})
-
-	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH):
-		var room_details:Dictionary = ROOM_UTIL.return_data(ROOM.REF.LOGISTICS_BRANCH)
-		subdivision_list.push_back({
-			"title": room_details.name,
-			"img_src": room_details.img_src,
-			"is_disabled": is_disabled_func.call(room_details),
-			"hint": hint_func.call(room_details), 
-			"ref": ROOM.REF.ADMIN_BRANCH,
-			"details": room_details,
-			"action": on_selected.bind(room_details)
-		})
-
-	
-	if !subdivision_list.is_empty():
-		options.push_back({
-			"title": "BRANCH",
-			"items": subdivision_list,
-			"footer": "%s / %s" % [0, 99],
-		})				
-				
 	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
@@ -518,14 +507,6 @@ func show_fabrication_options() -> void:
 		var can_afford:bool = resources_data[RESOURCE.CURRENCY.MONEY].amount >= item.details.costs.purchase 
 		ActiveMenuNode.disable_active_btn = !can_afford
 		
-		## draw lines
-		#var get_node_pos:Callable = func() -> Vector2: 
-			#return GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * self.size
-		#
-		#GBL.find_node(REFS.LINE_DRAW).add( get_node_pos, {
-			#"draw_to_active_menu": true,
-			##"draw_to_money": item.details.costs.purchase > 0
-		#}, 0 )
 	
 	ActiveMenuNode.onBeforeClose = func() -> void:
 		WingRenderNode.end_preview()
@@ -533,7 +514,7 @@ func show_fabrication_options() -> void:
 	
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
-		current_mode = MODE.FABRICATION
+		current_mode = revert_mode
 		SummaryCard.preview_mode_ref = -1
 		SummaryCard.preview_mode = false		
 		reveal_blueprint(true)
@@ -1212,6 +1193,7 @@ func check_btn_states() -> void:
 			AdminControls.onAction = func() -> void:
 				await AdminControls.reveal(false)
 				current_mode = MODE.ADMINISTRATION_MODULES
+				
 
 			AdminControls.onBack = func() -> void:
 				await AdminControls.reveal(false)
@@ -1436,7 +1418,7 @@ func check_btn_states() -> void:
 				WingRenderNode.set_to_build_mode(false)	
 				await FabricationControls.reveal(false)
 				current_mode = MODE.ROOT
-		# -----------	
+		# -----------		
 		MODE.ENGINEERING:
 			EngineeringControls.reveal(true)
 			
@@ -1885,7 +1867,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 				reveal_actionpanel_label(true, 0.4, "ETHICS")
-				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])				
+				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 			# --------------
 			MODE.ENGINEERING_CONFIG:
 				LocationAndDirectivesContainer.reveal(false)
@@ -1969,7 +1951,6 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	if !is_node_ready() or !is_visible_in_tree() or GBL.has_animation_in_queue() or current_location.is_empty() or camera_settings.is_empty() or room_config.is_empty() or !is_started or is_in_transition or active_menu_is_open:return	
 	var key:String = input_data.key
 		
-
 	match current_mode:
 		# ----------------------------		
 		MODE.ADMINISTRATION_MODULES:

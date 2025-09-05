@@ -197,7 +197,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
 title = "BLUEPRINT"
-assigned_key = "U"
+assigned_key = "SHIFT"
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -327,18 +327,6 @@ layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/separation = 5
 
-[node name="SettingsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
-modulate = Color(1, 1, 1, 1)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
-title = "SETTINGS"
-assigned_key = "TAB"
-icon = 15
-hidden_but_usable = false
-is_disabled = false
-allow_hint = false
-
 [node name="InfoBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
@@ -347,6 +335,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
 title = "OBJECTIVES"
 assigned_key = "O"
 icon = 23
+hidden_but_usable = false
+is_disabled = false
+allow_hint = false
+
+[node name="SettingsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
+modulate = Color(1, 1, 1, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ah17n")
+title = "SETTINGS"
+assigned_key = "TAB"
+icon = 15
 hidden_but_usable = false
 is_disabled = false
 allow_hint = false
@@ -404,7 +404,8 @@ hide_c_btn = false
 layout_mode = 2
 a_btn_title = "MODULES"
 intercept_click_event = true
-c_btn_title = "ADMIN OPERATIONS"
+c_btn_title = "NOTUSED"
+c_btn_icon = 29
 
 [node name="AdminModulesControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2

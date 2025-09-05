@@ -24,7 +24,7 @@ var ROOM_TEMPLATE:Dictionary = {
 	"can_destroy": true,
 	"can_assign_researchers": true,
 	"requires_unlock": true,	
-	"own_limit": 1,
+	"own_limit": 40,
 	"unlock_level": 0,
 	"required_staffing": [],
 	"required_energy": 1,
@@ -606,6 +606,20 @@ func calculate_operating_costs(ref:int, add:bool = true) -> Dictionary:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func department_count(use_location:Dictionary = current_location) -> int:	
+	var department_refs:Array = get_department_refs()
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref in department_refs and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
+	return filter.size()
+# ------------------------------------------------------------------------------	
+
+# ------------------------------------------------------------------------------	
+func room_count_per_ring(ref:int, use_location:Dictionary = current_location) -> int:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
+	return filter.size()
+# ------------------------------------------------------------------------------		
+	
+
+# ------------------------------------------------------------------------------
 func build_count(ref:int) -> int:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
 	return filter.size()
@@ -628,7 +642,8 @@ func owns_and_is_active(ref:int) -> bool:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
 	if filter.size() == 0:
 		return false
-	return ROOM_UTIL.is_room_activated()
+		
+	return ROOM_UTIL.is_room_activated( filter[0].location )
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------
@@ -826,7 +841,6 @@ func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Arra
 		
 	return neighbors
 
-
 func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:	
 	# requires a quick check
 	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
@@ -889,8 +903,17 @@ func find_refs_of_adjuacent_rooms(use_location:Dictionary) -> Array:
 			refs.push_back(room_details.ref)
 	return refs
 
+func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Array: 
+	var adjacent_rooms:Array = find_adjacent_rooms(use_location.room)
+	var link_categories:Array = []
+	for room in adjacent_rooms:
+		var room_details:Dictionary = return_data_via_location({"floor": use_location.floor, "ring": use_location.ring, "room": room})
+		if !room_details.is_empty() and room_details.link_categories != null:
+			link_categories.push_back(room_details.link_categories)
+	return link_categories
+
 func get_department_refs() -> Array:
-	return [ROOM.REF.ADMIN_DEPARTMENT, ROOM.REF.LOGISTICS_DEPARTMENT] #, ROOM.REF.ENGINEERING_DEPARTMENT, ROOM.REF.SCIENCE_DEPARTMENT, ROOM.REF.SECURITY_DEPARTMENT, ROOM.REF.SECURITY_DEPARTMENT]	
+	return [ROOM.REF.ADMIN_DEPARTMENT, ROOM.REF.LOGISTICS_DEPARTMENT, ROOM.REF.ENGINEERING_DEPARTMENT] 
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

@@ -67,15 +67,13 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 		ROOM.REF.ADMIN_DEPARTMENT:
 			room_data = {
 				"categories": [ROOM.CATEGORY.DEPARTMENT],
-				"link_categories": ROOM.CATEGORY.ADMIN,
-				
 				"name": "ADMINISTRATION DEPARTMENT",
 				"shortname": "ADMIN DEPT", 	
 				"description": "Central hub that boosts ADMIN influence and resources.",
 				"quote": "The heart of the Site beats in paperwork and protocols.",
 
 				"requires_unlock": false, 	
-				"own_limit": 1,
+				
 				"required_staffing": [],
 				"required_energy": 1,
 				
@@ -98,26 +96,25 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 						ABL.get_ability(ABL.REF.INFLUENCE_RANGE_TWO, 1),
 					], 	
 								
-				"passive_abilities": func() -> Array: 
-					return [
-						ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_BRANCH),
-					],
+				#"passive_abilities": func() -> Array: 
+					#return [
+						#ABL_P.get_ability(ABL_P.REF.ENABLE_ADMIN_BRANCH),
+					#],
 
-				"events": {
-					"build_complete": EVT.TYPE.ADMIN_PERK_SETUP
-				}
+				#"events": {
+					#"build_complete": EVT.TYPE.ADMIN_PERK_SETUP
+				#}
 			}
 		# ----------------------------------------------------------------------
 		ROOM.REF.ADMIN_BRANCH:
 			room_data = {
 				"categories": [ROOM.CATEGORY.BRANCH],
-				"link_categories": ROOM.CATEGORY.ADMIN,
 				"name": "ADMIN BRANCH",
 				"shortname": "A.BRANCH",
 				"img_src": "res://Media/rooms/research_lab.png",
 				"description": "Provides administrative linkage for branch expansion.",
 				"quote": "Allows the use of administrative functions.",
-				"own_limit": 4,
+				
 			}
 		# ----------------------------------------------------------------------
 		ROOM.REF.ADMIN_ROOM_1:
@@ -131,7 +128,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				], 	
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -162,7 +159,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN,
 				],
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -188,7 +185,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				], 	
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -211,7 +208,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				], 	
-				"own_limit": 5, 	
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -276,7 +273,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				],
-				"own_limit": 2,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -302,7 +299,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				],
-				"own_limit": 2,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -323,7 +320,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				],
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 5,
@@ -344,7 +341,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"required_staffing": [
 					RESEARCHER.SPECIALIZATION.ADMIN
 				],
-				"own_limit": 1,
+				
 				"costs": {
 					"unlock": 0,
 					"purchase": 10,
@@ -354,7 +351,8 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				},
 			}
 		# ----------------------------------------------------------------------
-
+	
+	room_data.link_categories = ROOM.CATEGORY.ADMIN
 	room_data.img_src = "res://Media/rooms/admin_section.png"
 	room_data.ref = ref
 	return room_data

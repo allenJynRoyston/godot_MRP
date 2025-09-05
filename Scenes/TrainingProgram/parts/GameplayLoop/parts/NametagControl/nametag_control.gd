@@ -68,7 +68,7 @@ func change_camera_view(new_viewpoint:CAMERA.VIEWPOINT) -> void:
 func on_show_nametags_update() -> void:
 	if !is_node_ready():return
 	reveal_nametags(show_nametags)
-	Checkbox.title = "DETAILS (SHIFT)" if show_nametags else "DETAILS (SHIFT)"
+	Checkbox.title = "DISPLAY NAMES (N)" if !show_nametags else "HIDE NAMES (N)"
 	Checkbox.is_checked = show_nametags
 	
 
@@ -78,7 +78,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 
 	var key:String = input_data.key		
 	match key:
-		"SHIFT":
+		"N":
 			is_animating = true
 			show_nametags = !show_nametags
 			await TransitionScreen.start(0.1, true)

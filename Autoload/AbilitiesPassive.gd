@@ -23,6 +23,11 @@ enum REF {
 	IA_LEVEL_2,
 	IA_LEVEL_3,
 	
+	# WORKSHOP
+	WORKSHOP_1,
+	WORKSHOP_2,
+	WORKSHOP_3,
+	
 	# ADDITIONAL MONEY
 	#ACCOUNTING_LVL_1,
 	#ACCOUNTING_LVL_2,
@@ -289,6 +294,30 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				}
 			}
 		#endregion
+		
+		#region HR
+		REF.WORKSHOP_1:
+			ability = {
+				"name": "WORKSHOP_1",
+				"description": "Implements basic oversight, slightly increasing safety while mildly lowering morale.",
+				"energy_cost": 1,
+				"currencies": { RESOURCE.CURRENCY.SCIENCE: 1 }
+			}						
+		REF.WORKSHOP_2:
+			ability = {
+				"name": "WORKSHOP_2",
+				"description": "Enforces stricter monitoring, further boosting safety at the cost of staff satisfaction.",
+				"energy_cost": 2,
+				"currencies": { RESOURCE.CURRENCY.SCIENCE: 5 }
+			}						
+		REF.WORKSHOP_3:
+			ability = {
+				"name": "WORKSHOP_3",
+				"description": "Full-scale internal audits maximize site safety, but heavily strain staff morale.",
+				"energy_cost": 3,
+				"currencies": { RESOURCE.CURRENCY.SCIENCE: 10 }
+			}
+		#endregion		
 		
 		#region MTF
 		# MTF
