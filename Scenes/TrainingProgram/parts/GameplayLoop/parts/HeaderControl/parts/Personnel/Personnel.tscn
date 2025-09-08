@@ -100,10 +100,12 @@ max_val = 10
 title = "DCLASS"
 
 [node name="SVGIcon" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_x2axq")]
+visible = false
 layout_mode = 2
 icon = 32
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 0

@@ -207,8 +207,8 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2gjl")
-title = "INTEL"
-assigned_key = "T"
+title = "INSPECT"
+assigned_key = "I"
 icon = 17
 hidden_but_usable = false
 is_disabled = false
@@ -219,7 +219,7 @@ modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xathl")
-title = "ADMINISTRATION"
+title = "MODULES"
 assigned_key = "M"
 icon = 30
 hidden_but_usable = false
@@ -251,6 +251,7 @@ is_disabled = false
 allow_hint = false
 
 [node name="ScienceBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -263,6 +264,7 @@ is_disabled = false
 allow_hint = false
 
 [node name="MedicalBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -275,6 +277,7 @@ is_disabled = false
 allow_hint = false
 
 [node name="EthicsBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -286,6 +289,7 @@ is_disabled = false
 allow_hint = false
 
 [node name="SecurityBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Left" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2

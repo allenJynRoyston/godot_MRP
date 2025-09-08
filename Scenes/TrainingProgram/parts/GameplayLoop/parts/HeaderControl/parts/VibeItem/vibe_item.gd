@@ -13,11 +13,6 @@ extends PanelContainer
 @onready var value_label_settings:LabelSettings = ValueLabel.get("label_settings").duplicate()
 @onready var offset_amount_label_setting:LabelSettings = OffsetAmountLabel.get("label_settings").duplicate()
 
-@export var metric:RESOURCE.METRICS : 
-	set(val):
-		metric = val
-		on_metric_update()
-
 @export var value:int = 0 : 
 	set(val):
 		value = val
@@ -53,38 +48,13 @@ func _ready() -> void:
 	ValueLabel.set("label_settings", value_label_settings) 
 	OffsetAmountLabel.set("label_settings", offset_amount_label_setting)
 	
-	on_title_update()
-	on_value_update()
-	on_metric_update()
-	on_invert_color_update()
-	on_big_numbers_update()
-	on_offset_amount_update()
+	U.debounce( str(self, "_update"), update_node )
 # --------------------------------------
 
 # --------------------------------------
-func on_metric_update() -> void:
-	if !is_node_ready():return
-	match metric:
-		RESOURCE.METRICS.MORALE:
-			title = 'MORALE'
-			hint_description = "Morale description."
-
-		RESOURCE.METRICS.SAFETY:
-			title = 'SAFETY'
-			hint_description = "Safety description."
-
-		RESOURCE.METRICS.READINESS:
-			title = 'READINESS'
-			hint_description = "Readiness description."
-
-func on_invert_color_update() -> void:
-	if !is_node_ready():return
-
-
 func on_title_update() -> void:
-	if !is_node_ready():return
-	TitleLabel.text = title
-	
+	U.debounce( str(self, "_update"), update_node )
+		
 func on_offset_amount_update() -> void:
 	U.debounce( str(self, "_update"), update_node )
 
@@ -93,13 +63,17 @@ func on_value_update() -> void:
 	
 func on_big_numbers_update() -> void:
 	U.debounce( str(self, "_update"), update_node )
+
+func on_invert_color_update() -> void:
+	U.debounce( str(self, "_update"), update_node )	
 # --------------------------------------
 
 # --------------------------------------
 func update_node() -> void:
 	if !is_node_ready():return
 	ValueLabel.text = str(value)
-
+	TitleLabel.text = title
+	
 	title_label_settings.font_color = Color.BLACK if invert_color else Color.WHITE
 	title_label_settings.outline_color = title_label_settings.font_color
 	title_label_settings.outline_color.a = 0.2

@@ -1446,8 +1446,8 @@ func get_list_of_programs(use_location:Dictionary = current_location, filter_cat
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)
 		var abilities:Array = room_details.abilities.call()
 		var location:Dictionary = item.location
-		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]
-		var abl_lvl:int =  ROOM_UTIL.get_room_lvl(location)
+		var room_config_data:Dictionary = room_config.floor[location.floor].ring[location.ring].room[location.room]		
+		var abl_lvl:int = ROOM_UTIL.get_room_lvl(location)
 		var is_activated:bool = room_config_data.is_activated		
 		var include:bool = false
 		for category in room_details.categories:

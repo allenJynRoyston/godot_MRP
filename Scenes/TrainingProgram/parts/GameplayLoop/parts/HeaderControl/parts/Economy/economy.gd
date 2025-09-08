@@ -153,10 +153,10 @@ func update_node() -> void:
 	EcoMaterial.amount = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
 	EcoCore.amount = resources_data[RESOURCE.CURRENCY.CORE].amount	
 	
-	EcoMoney.bonus_amount = resources_data[RESOURCE.CURRENCY.MONEY].diff if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoResearch.bonus_amount = resources_data[RESOURCE.CURRENCY.SCIENCE].diff  if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoMaterial.bonus_amount = resources_data[RESOURCE.CURRENCY.MATERIAL].diff  if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoCore.bonus_amount = resources_data[RESOURCE.CURRENCY.CORE].diff	 if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0	
+	EcoMoney.bonus_amount = resources_data[RESOURCE.CURRENCY.MONEY].diff #if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
+	EcoResearch.bonus_amount = resources_data[RESOURCE.CURRENCY.SCIENCE].diff # if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
+	EcoMaterial.bonus_amount = resources_data[RESOURCE.CURRENCY.MATERIAL].diff # if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
+	EcoCore.bonus_amount = resources_data[RESOURCE.CURRENCY.CORE].diff #	 if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0	
 # -----------------------------------------------
 
 

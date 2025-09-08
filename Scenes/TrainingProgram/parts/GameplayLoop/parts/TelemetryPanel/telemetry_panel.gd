@@ -79,8 +79,8 @@ func update_node() -> void:
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty()
 	var is_activated:bool = ROOM_UTIL.is_room_activated()
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction()	
-	var metric_list:Dictionary = ROOM_UTIL.get_room_metric_list() 	
-	var currency_list:Dictionary = ROOM_UTIL.get_room_currency_list() 
+	#var metric_list:Dictionary = ROOM_UTIL.get_room_metric_list() 	
+	#var currency_list:Dictionary = ROOM_UTIL.get_room_currency_list(-1) 
 	var effect:Dictionary = ROOM_UTIL.get_room_effect()
 	var energy_used:int = room_level_config.energy_used	
 	var damage_val:int = room_level_config.damage_val
@@ -106,37 +106,37 @@ func update_node() -> void:
 			node.free()
 
 	# currencies
-	for ref in currency_list:
-		var item:Dictionary = currency_list[ref] 
-		var amount:int = item.amount 
-		var bonus_amount:int = item.bonus_amount
-		var total_amount:int = amount + bonus_amount
-		if total_amount != 0:
-			var new_label:Label = Label.new()
-			var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			new_label.set("label_settings", new_label_settings)			
-			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
-			if bonus_amount != 0:
-				new_label.text += "(+%s BONUS)" % [bonus_amount]
-			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-			ProductionList.add_child(new_label)
-	
-	# metric 
-	for ref in metric_list:
-		var item:Dictionary = metric_list[ref] 
-		var amount:int = item.amount 
-		var bonus_amount:int = item.bonus_amount
-		var total_amount:int = amount + bonus_amount
-		if total_amount != 0:
-			var new_label:Label = Label.new()
-			var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
-			new_label.set("label_settings", new_label_settings)			
-			new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
-			if bonus_amount != 0:
-				new_label.text += "(+%s BONUS)" % [bonus_amount]
-			new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-			VibeList.add_child(new_label)			
-	
+	#for ref in currency_list:
+		#var item:Dictionary = currency_list[ref] 
+		#var amount:int = item.amount 
+		#var bonus_amount:int = item.bonus_amount
+		#var total_amount:int = amount + bonus_amount
+		#if total_amount != 0:
+			#var new_label:Label = Label.new()
+			#var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
+			#new_label.set("label_settings", new_label_settings)			
+			#new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
+			#if bonus_amount != 0:
+				#new_label.text += "(+%s BONUS)" % [bonus_amount]
+			#new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			#ProductionList.add_child(new_label)
+	#
+	## metric 
+	#for ref in metric_list:
+		#var item:Dictionary = metric_list[ref] 
+		#var amount:int = item.amount 
+		#var bonus_amount:int = item.bonus_amount
+		#var total_amount:int = amount + bonus_amount
+		#if total_amount != 0:
+			#var new_label:Label = Label.new()
+			#var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
+			#new_label.set("label_settings", new_label_settings)			
+			#new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
+			#if bonus_amount != 0:
+				#new_label.text += "(+%s BONUS)" % [bonus_amount]
+			#new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			#VibeList.add_child(new_label)			
+	#
 
 	# is empty production list
 	if ProductionList.get_child_count() == 0:

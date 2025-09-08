@@ -156,8 +156,7 @@ func on_control_input_update(input_data:Dictionary) -> void:
 	var energy_available:int = GAME_UTIL.get_energy_available()	
 	var power_distribution:Dictionary = base_states.ring[str(current_location.floor, current_location.ring)].power_distribution
 	var prop_val:int = power_distribution[component_list[component_index].prop]
-	print("prop_val: ", prop_val)
-	
+
 	match key:
 		"W":
 			component_index = U.min_max( component_index - 1, 0, component_list.size() - 1, true )

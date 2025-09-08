@@ -1,10 +1,5 @@
 extends SubscribeWrapper
-var ADMIN:Script = preload("res://_DLC/Base/ROOMS/admin.gd")
-var LOGISTICS:Script = preload("res://_DLC/Base/ROOMS/logistics.gd")
-var ENGINEERING:Script = preload("res://_DLC/Base/ROOMS/engineering.gd")
-
 var UTILITY:Script = preload("res://_DLC/Base/ROOMS/utility.gd")
-
 
 var DEBUG_ROOM:Dictionary = {
 	# ------------------------------------------
@@ -63,94 +58,188 @@ var DEBUG_ROOM:Dictionary = {
 		return [
 			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),
 			ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 1),
-			#ABL.get_ability(ABL.REF.UPGRADE_FACILITY),
-			#ABL.get_ability(ABL.REF.SET_WARNING_MODE),
-			#ABL.get_ability(ABL.REF.SET_DANGER_MODE, 1),
-			
-			#ABL.get_ability(ABL.REF.UNLOCK_FACILITIES, 0),
-			#ABL.get_ability(ABL.REF.HIRE_RESEARCHER, 0),
-			#ABL.get_ability(ABL.REF.PROMOTE_RESEARCHER, 0),
-			#ABL.get_ability(ABL.REF.CLONE_RESEARCHER, 0),
-			#ABL.get_ability(ABL.REF.ADD_TRAIT, 0),
-			#ABL.get_ability(ABL.REF.REMOVE_TRAIT, 0),
-			#
-			#ABL.get_ability(ABL.REF.MONEY_HACK, 0),
-			#ABL.get_ability(ABL.REF.SCIENCE_HACK, 0),
-			#ABL.get_ability(ABL.REF.CONVERT_TO_SCIENCE, 0),
-			#ABL.get_ability(ABL.REF.CONVERT_TO_MONEY, 0),
 		],	
 	# ------------------------------------------
 		
 	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
-			ABL_P.get_ability(ABL_P.REF.GENERATE_SCIENCE_LVL_1, 1),
-			#ABL_P.get_ability(ABL_P.REF.GENERATE_MATERIAL_LVL_1, 0),
-			#ABL_P.get_ability(ABL_P.REF.GENERATE_CORE_LVL_1, 0),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_STAFF, 1),
-			#ABL_P.get_ability(ABL_P.REF.ADDITIONAL_STORE_UNLOCKS, 2),			
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_TECHNICIANS, 2),
-			#ABL_P.get_ability(ABL_P.REF.SUPPLY_DCLASS),
-			#ABL_P.get_ability(ABL_P.REF.FIREARM_TRAINING, 1),
-			#ABL_P.get_ability(ABL_P.REF.HEAVY_WEAPONS_TRAINING, 2),
-			#ABL_P.get_ability(ABL_P.REF.TECH_SUPPORT),
-			#ABL_P.get_ability(ABL_P.REF.MEMETIC_SHILEDING),
+
 		],	
 	# ------------------------------------------		
 }
 
 #region ADMIN
-var ADMIN_DEPARTMENT:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_DEPARTMENT)
-var ADMIN_BRANCH:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_BRANCH)
+var ADMIN_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.ADMIN_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.ADMIN,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "ADMINISTRATION DEPARTMENT",
+	"img_src": "res://Media/rooms/admin_section.png",
+	"shortname": "ADMIN DEPT", 	
+	"description": "Central hub for ADMIN facilities.",
+	"quote": "The heart of the Site beats in paperwork and protocols.",
 
-var ADMIN_ROOM_1:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_1)
-var ADMIN_ROOM_2:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_2)
-var ADMIN_ROOM_3:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_3)
-var ADMIN_ROOM_4:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_4)
-var ADMIN_ROOM_5:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_5)
-var ADMIN_ROOM_6:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_6)
-var ADMIN_ROOM_7:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_7)
-var ADMIN_ROOM_8:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_8)
-var ADMIN_ROOM_9:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_9)
-var ADMIN_ROOM_10:Dictionary = ADMIN.get_room_data(ROOM.REF.ADMIN_ROOM_10)
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [RESOURCE.METRICS.MORALE],
+		"level": 1,
+		"effects": [ROOM.EFFECTS.ADMIN_DEFAULT],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADD_MONEY_TO_ALL_IN_RING, 0)
+		],
+					
+	
+	"influence": {
+		"description": "FACILITIES built here will influence the ADMIN DEPT."
+	},
+}
+
+var LOGISTICS_DEPARTMENT:Dictionary =  {
+	"ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.LOGISTICS,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "LOGISTICS DEPARTMENT",
+	"img_src": "res://Media/rooms/logistic_section.png",
+	"shortname": "LOG DEPT", 	
+	"description": "Central hub for LOGISTICS facilities.",
+	"quote": "...",
+	
+
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [RESOURCE.CURRENCY.MATERIAL],
+		"metric": [],
+		"level": 1,
+		"effects": [ROOM.EFFECTS.LOGISTICS_DEFAULT],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADD_SCIENCE_TO_ALL_IN_RING, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the LOGISTICS DEPT."
+	},
+}
+
+var ENGINEERING_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.ENGINEERING_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.ENGINEERING,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "ENGINEERING DEPARTMENT",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "ENG DEPT", 	
+	"description": "Central hub for ENGINEERING facilities.",
+	"quote": "...",
+
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.SUBTRACT,
+		"currency": [RESOURCE.CURRENCY.MONEY],
+		"metric": [],
+		"level": 1,
+		"effects": [ROOM.EFFECTS.ENGINEERING_DEFAULT],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
+	},
+}
+
+var ANTIMEMETICS_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.ANTIMEMETICS_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.ANTIMEMETICS,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "ANTIMEMETICS DEPARTMENT",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "ANTIM.DEPT", 	
+	"description": "Central hub for ANTIMEMETICS facilities.",
+	"quote": "There is no Antimemetics Department.",
+
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.SUBTRACT,
+		"currency": [],
+		"metric": [RESOURCE.METRICS.SAFETY],
+		"level": 1,
+		"effects": [ROOM.EFFECTS.ANTIMEMETICS_DEFAULT],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
+	},
+}
 #endregion
 
-#region LOGISTICS
-var LOGISTICS_DEPARTMENT:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_DEPARTMENT)
-var LOGISTICS_BRANCH:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_BRANCH)
 
-var LOGISTICS_ROOM_1:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_1)
-var LOGISTICS_ROOM_2:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_2)
-var LOGISTICS_ROOM_3:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_3)
-var LOGISTICS_ROOM_4:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_4)
-var LOGISTICS_ROOM_5:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_5)
-var LOGISTICS_ROOM_6:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_6)
-var LOGISTICS_ROOM_7:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_7)
-var LOGISTICS_ROOM_8:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_8)
-var LOGISTICS_ROOM_9:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_9)
-var LOGISTICS_ROOM_10:Dictionary = LOGISTICS.get_room_data(ROOM.REF.LOGISTICS_ROOM_10)
+#region UTILITY (DRAW) ROOMS
+var UTIL_LEVEL_UP_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_UP_1)
+var UTIL_LEVEL_UP_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_UP_2)
+var UTIL_LEVEL_UP_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_UP_3)
 
-#region ENGINEERING
-var ENGINEERING_DEPARTMENT:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENGINEERING_DEPARTMENT)
-var ENGINEERING_BRANCH:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENGINEERING_BRANCH)
+var UTIL_LEVEL_DOWN_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_DOWN_1)
+var UTIL_LEVEL_DOWN_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_DOWN_2)
+var UTIL_LEVEL_DOWN_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_LEVEL_DOWN_3)
 
-var ENG_ROOM_1:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_1)
-var ENG_ROOM_2:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_2)
-var ENG_ROOM_3:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_3)
-var ENG_ROOM_4:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_4)
-var ENG_ROOM_5:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_5)
-var ENG_ROOM_6:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_6)
-var ENG_ROOM_7:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_7)
-var ENG_ROOM_8:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_8)
-var ENG_ROOM_9:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_9)
-var ENG_ROOM_10:Dictionary = ENGINEERING.get_room_data(ROOM.REF.ENG_ROOM_10)
-#endregion
+var UTIL_ADD_CURRENCY_MONEY:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_CURRENCY_MONEY)
+var UTIL_ADD_CURRENCY_SCIENCE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_CURRENCY_SCIENCE)
+var UTIL_ADD_CURRENCY_MATERIAL:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_CURRENCY_MATERIAL)
+var UTIL_ADD_CURRENCY_CORE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_CURRENCY_CORE)
 
-#region UTILITY
-var UTIL_ROOM_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_CAFETERIA)
-var UTIL_ROOM_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_BREAKROOM)
-var UTIL_ROOM_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_WASHROOM)
+var UTIL_RMV_CURRENCY_MONEY:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_CURRENCY_MONEY)
+var UTIL_RMV_CURRENCY_SCIENCE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_CURRENCY_SCIENCE)
+var UTIL_RMV_CURRENCY_MATERIAL:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_CURRENCY_MATERIAL)
+var UTIL_RMV_CURRENCY_CORE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_CURRENCY_CORE)
+
+var UTIL_ADD_METRIC_MORALE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_METRIC_MORALE)
+var UTIL_ADD_METRIC_SAFETY:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_METRIC_SAFETY)
+var UTIL_ADD_METRIC_READINESS:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_METRIC_READINESS)
+
+var UTIL_RMV_METRIC_MORALE:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_METRIC_MORALE)
+var UTIL_RMV_METRIC_SAFETY:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_METRIC_SAFETY)
+var UTIL_RMV_METRIC_READINESS:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_RMV_METRIC_READINESS)
+
+var UTIL_BUFF_EFFECT_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_BUFF_EFFECT_1)
+var UTIL_BUFF_EFFECT_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_BUFF_EFFECT_2)
+
+var UTIL_DEBUFF_EFFECT_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_DEBUFF_EFFECT_1)
+var UTIL_DEBUFF_EFFECT_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_DEBUFF_EFFECT_2)
 #endregion
 
 
@@ -158,26 +247,24 @@ var UTIL_ROOM_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_WASHROOM)
 
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	DEBUG_ROOM,
 	# ADMIN ROOMS
-	ADMIN_DEPARTMENT, ADMIN_BRANCH,
-	ADMIN_ROOM_1, ADMIN_ROOM_2, ADMIN_ROOM_3, ADMIN_ROOM_4, ADMIN_ROOM_5,
-	ADMIN_ROOM_6, ADMIN_ROOM_7, ADMIN_ROOM_8, ADMIN_ROOM_9, ADMIN_ROOM_10,
-	
-	# LOGISTICS
-	LOGISTICS_DEPARTMENT, LOGISTICS_BRANCH,
-	LOGISTICS_ROOM_1, LOGISTICS_ROOM_2, LOGISTICS_ROOM_3, LOGISTICS_ROOM_4, LOGISTICS_ROOM_5,
-	LOGISTICS_ROOM_6, LOGISTICS_ROOM_7, LOGISTICS_ROOM_8, LOGISTICS_ROOM_9, LOGISTICS_ROOM_10,
-	
-	# ENGINEERING
-	ENGINEERING_DEPARTMENT, ENGINEERING_BRANCH,
-	ENG_ROOM_1, ENG_ROOM_2, ENG_ROOM_3, ENG_ROOM_4, ENG_ROOM_5,
-	ENG_ROOM_6, ENG_ROOM_7, ENG_ROOM_8, ENG_ROOM_9, ENG_ROOM_10,
+	ADMIN_DEPARTMENT, 
+	LOGISTICS_DEPARTMENT, 
+	ENGINEERING_DEPARTMENT, 
+	ANTIMEMETICS_DEPARTMENT,
 	
 	# UTILITY:
-	#UTIL_ROOM_1, UTIL_ROOM_2, UTIL_ROOM_3
+	UTIL_LEVEL_UP_1, UTIL_LEVEL_UP_2, UTIL_LEVEL_UP_3,
+	UTIL_LEVEL_DOWN_1, UTIL_LEVEL_DOWN_2, UTIL_LEVEL_DOWN_3,
 	
+	UTIL_ADD_CURRENCY_MONEY, UTIL_ADD_CURRENCY_SCIENCE, UTIL_ADD_CURRENCY_MATERIAL, UTIL_ADD_CURRENCY_CORE,
+	UTIL_RMV_CURRENCY_MONEY, UTIL_RMV_CURRENCY_SCIENCE, UTIL_RMV_CURRENCY_MATERIAL, UTIL_RMV_CURRENCY_CORE,
+	
+	UTIL_ADD_METRIC_MORALE, UTIL_ADD_METRIC_SAFETY, UTIL_ADD_METRIC_READINESS,
+	UTIL_RMV_METRIC_MORALE, UTIL_RMV_METRIC_SAFETY, UTIL_RMV_METRIC_READINESS,
+		
+	UTIL_BUFF_EFFECT_1, UTIL_BUFF_EFFECT_2,
+	UTIL_DEBUFF_EFFECT_1, UTIL_DEBUFF_EFFECT_2,
 
-	
 ]
 # -----------------------------------	

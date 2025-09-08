@@ -56,48 +56,6 @@ func update_node() -> void:
 	
 	if current_location.room in all_influenced_rooms:
 		NoBonusLabel.hide()
-		var influenced_data:Dictionary = ROOM_UTIL.get_influenced_data(current_location)
-		var currency_list:Dictionary = influenced_data.currency_list
-		var metric_list:Dictionary = influenced_data.metric_list
-		var list_of_effects:Array = influenced_data.list_of_effects
-		var has_currency:bool = false
-		var has_metric:bool = false
-		
-		for ref in currency_list:
-			var amount:int = currency_list[ref]
-			if amount != 0:
-				var new_node:Control = EconItemPreload.instantiate()
-				var currency_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
-				has_currency = true
-				new_node.amount = amount
-				new_node.is_negative = amount < 0
-				new_node.icon = currency_data.icon
-				new_node.icon_size = Vector2(20, 20)
-				new_node.invert_colors = false
-				new_node.horizontal_mode = false
-				CurrencyList.add_child(new_node)
-
-		for ref in metric_list:
-			var amount:int = metric_list[ref]
-			if amount != 0:
-				var new_node:Control = VibeItemPreload.instantiate()
-				var metric_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
-				has_metric = true
-				new_node.metric = ref
-				new_node.value = amount
-				new_node.invert_color = true
-				MetricList.add_child(new_node)
-
-		for item in list_of_effects:
-			var new_label:Label = Label.new()
-			new_label.label_settings = font_1_black_preload.duplicate()
-			new_label.text = item.influence_description.call()
-			new_label.custom_minimum_size = Vector2(1, 1)
-			EffectList.add_child(new_label)
-	
-		#CurrencyList.hide() if !has_currency else CurrencyList.show()
-		#MetricList.hide() if !has_metric else MetricList.show()
-		EffectList.hide() if list_of_effects.is_empty() else EffectList.show()
 		return
 	
 	NoBonusLabel.show()

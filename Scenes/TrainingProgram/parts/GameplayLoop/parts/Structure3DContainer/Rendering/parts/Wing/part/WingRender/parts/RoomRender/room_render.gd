@@ -330,9 +330,10 @@ func update_room_data() -> void:
 	var is_room_under_construction:bool = ROOM_UTIL.is_under_construction(assigned_location)	
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(assigned_location)
 	var all_influenced_rooms:Dictionary = ROOM_UTIL.find_all_influenced_rooms(true)
+	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(assigned_location)
 	var is_built:bool =  false if is_room_empty else !is_room_under_construction and is_activated
 	var final_color:Color
-
+	
 	# side bars
 	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
 		material.albedo_color = Color.GHOST_WHITE		
@@ -340,15 +341,20 @@ func update_room_data() -> void:
 	
 	# assign node color
 	select_mesh_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	if is_built:
-		select_mesh_material.albedo_color = Color.LIGHT_GREEN
-	elif is_under_construction:
-		select_mesh_material.albedo_color = Color.LIGHT_CORAL
-	#elif !influenced_by.is_empty():
-		#select_mesh_material.albedo_color = Color.LIGHT_GREEN
-	elif is_room_empty:
-		select_mesh_material.albedo_color = Color.WHITE
-		# change adjacent connectors
+	select_mesh_material.albedo_color = Color.WHITE
+	
+	if is_built or is_under_construction:
+		match room_details.ref:
+			ROOM.REF.ADMIN_DEPARTMENT: 
+				select_mesh_material.albedo_color = Color.BLUE
+			ROOM.REF.LOGISTICS_DEPARTMENT: 
+				select_mesh_material.albedo_color = Color.GREEN
+			ROOM.REF.ENGINEERING_DEPARTMENT: 
+				select_mesh_material.albedo_color = Color.ORANGE
+		
+			
+	#elif is_under_construction:
+		#select_mesh_material.albedo_color = Color.RED
 
 	# is selected
 	select_mesh_material.albedo_color = select_mesh_material.albedo_color.darkened(0.3) if assigned_location.room == current_location.room else select_mesh_material.albedo_color

@@ -38,35 +38,25 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
-[node name="EnergyComponent" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
-layout_mode = 2
-
 [node name="Economy" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_u7b4y")]
 layout_mode = 2
 
 [node name="Vibes" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("7_euym5")]
-visible = false
+layout_mode = 2
+
+[node name="EnergyComponent" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_hu7qo")]
 layout_mode = 2
 
 [node name="Spacer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_j4ms0")
-
-[node name="Spacer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_j4ms0")
 
 [node name="Personnel" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_6xn47")]
-visible = false
 layout_mode = 2
 
 [node name="WarningComponent" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("6_xq60b")]
-visible = false
 layout_mode = 2
 
 [node name="MTFComponent" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("8_ivake")]
-visible = false
 layout_mode = 2

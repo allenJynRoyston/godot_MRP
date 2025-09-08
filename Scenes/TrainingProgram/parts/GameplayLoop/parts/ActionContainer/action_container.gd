@@ -396,7 +396,7 @@ func show_fabrication_options() -> void:
 	).size()	
 	var department_refs:Array = ROOM_UTIL.get_department_refs()
 	var deparment_limit:int = 3
-	var rooms_per_ring_limit:int = 1
+	var rooms_per_ring_limit:int = 9
 	
 	# assists functions
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
@@ -452,7 +452,12 @@ func show_fabrication_options() -> void:
 			RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
 			
 		# add room
-		await ROOM_UTIL.add_room(x.ref)		
+		var is_department:bool = ROOM.CATEGORY.DEPARTMENT in room_details.categories
+		#var link_back:int = room_details.link_back
+		#var connect_to:int = current_location.room
+		#connect_to = current_location.room if is_department else purchased_facility_arr.filter(func(x): return x.ref == link_back and x.location.floor == current_location.floor and x.location.ring == current_location.ring)[0].location.room
+			#
+		await ROOM_UTIL.add_room(x.ref)
 		ActiveMenuNode.close()
 
 	var options:Array = []
@@ -461,28 +466,33 @@ func show_fabrication_options() -> void:
 	
 	# first add linkables of any neighboring departments
 	var linkables:Array = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location)
-
-	for type in linkables:
-		list.push_back({
-			"title": ROOM.return_category_title(type),
-			"type": type,
-			# need to add custom check to make sure there's less then three departments in one ring
-			"is_disabled_func": is_disabled_func,
-			# same with hint
-			"hint_func": hint_func
-		})
-		
-	# then the departments
-	for type in [ROOM.CATEGORY.DEPARTMENT]:
-		list.push_back({
-			"title": ROOM.return_category_title(type),
-			"type": type,
-			# need to add custom check to make sure there's less then three departments in one ring
-			"is_disabled_func": is_disabled_func,
-			# same with hint
-			"hint_func": hint_func
-		})
 	
+	# if no linkables, build a HQ
+	if linkables.is_empty():
+		# then the departments
+		for type in [ROOM.CATEGORY.DEPARTMENT]:
+			list.push_back({
+				"title": ROOM.return_category_title(type),
+				"type": type,
+				# need to add custom check to make sure there's less then three departments in one ring
+				"is_disabled_func": is_disabled_func,
+				# same with hint
+				"hint_func": hint_func
+			})
+	
+	# else, show linkables
+	else:
+		#for type in linkables:
+		for type in [ROOM.CATEGORY.UTILITY]:		
+			list.push_back({
+				"title": ROOM.return_category_title(type),
+				"type": type,
+				# need to add custom check to make sure there's less then three departments in one ring
+				"is_disabled_func": is_disabled_func,
+				# same with hint
+				"hint_func": hint_func
+			})
+		
 	#
 	for listitem in list:
 		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
@@ -497,6 +507,7 @@ func show_fabrication_options() -> void:
 				})
 	
 	
+
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
 		SummaryCard.preview_mode_ref = item.ref
@@ -1142,14 +1153,11 @@ func check_btn_states() -> void:
 				current_mode = MODE.FABRICATION
 			
 			# need engineering department before you can use this 
-			AdminBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ADMIN_BRANCH])) and !has_priority_events else AdminBtn.hide()
-			AdminBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_DEPARTMENT)
+			AdminBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT) ) and !has_priority_events else AdminBtn.hide()
 
-			LogisticsBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_LOGISTIC_BRANCH])) and !has_priority_events else LogisticsBtn.hide()
-			LogisticsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.LOGISTICS_DEPARTMENT)
+			LogisticsBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.LOGISTICS_DEPARTMENT) ) and !has_priority_events else LogisticsBtn.hide()
 			
-			EngineeringBtn.show() if (ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT) or (ROOM_UTIL.owns_and_is_active(ROOM.REF.ADMIN_BRANCH) and gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_ENGINEERING_BRANCH])) and !has_priority_events else EngineeringBtn.hide()
-			EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
+			EngineeringBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.ENGINEERING_DEPARTMENT) ) and !has_priority_events else EngineeringBtn.hide()
 						
 			
 			#EngineeringBtn.hide()
@@ -1330,11 +1338,10 @@ func check_btn_states() -> void:
 				IntelControls.reveal(false)
 				reveal_actionpanel_label(false)
 				reveal_actionpanel_image(false)
-				reveal_summarycard(false)
+				reveal_summarycard(true)
 				reveal_telemetry(false)
 				TransistionScreen.start(0.5, true)
 				await change_camera_viewpoint(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
-				
 				
 				# get triggerable event
 				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
@@ -1343,7 +1350,6 @@ func check_btn_states() -> void:
 				#trigger event
 				await GAME_UTIL.run_event(event_ref)
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
-				
 				
 				reveal_telemetry(true)
 				reveal_summarycard(true, false)
@@ -1378,9 +1384,10 @@ func check_btn_states() -> void:
 		# -----------	
 		MODE.FABRICATION:	
 			var can_rush:bool = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION]
+			var build_department:bool = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location).is_empty()
 			
-			FabricationControls.a_btn_title = "RUSH" if is_under_construction else "BUILD HERE"
-			FabricationControls.hide_a_btn = is_under_construction and !can_rush
+			FabricationControls.a_btn_title = "BUILD DEPARTMENT" if build_department else "BUILD ATTACHMENT"
+			FabricationControls.hide_a_btn = false #is_under_construction and !can_rush
 			FabricationControls.disable_active_btn = !is_under_construction and !is_room_empty
 			FabricationControls.c_btn_title = "REMOVE or RECYCLE"
 			FabricationControls.hide_c_btn = false			

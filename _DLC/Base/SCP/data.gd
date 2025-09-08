@@ -7,7 +7,7 @@ enum INFTYPE {
 var INFLUENCE_PRESETS:Dictionary = {
 	# --------------------
 	INFTYPE.NO_CURRENCY: {
-		"starting_range": 1,
+		"range": 1,
 		"horizontal": true,
 		"vertical": true,
 		"effect": {
