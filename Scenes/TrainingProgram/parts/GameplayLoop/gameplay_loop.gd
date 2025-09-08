@@ -190,12 +190,11 @@ var initial_values:Dictionary = {
 			# ------------------------------
 			for ring_index in [0, 1, 2, 3]:
 				ring[str(floor_index, ring_index)] = {
+					"buffs": [],
+					"debuffs": [],
 					"energy_level": 0,
 					"emergency_mode": ROOM.EMERGENCY_MODES.NORMAL,
 					"has_containment_breach": false,
-					"buffs": [],
-					"debuffs": [],
-					"level": 0,
 					"power_distribution": {
 						"heating": 0,
 						"cooling": 0,
@@ -212,30 +211,19 @@ var initial_values:Dictionary = {
 						"passives_enabled": {},
 						"ability_on_cooldown": {},
 						"events_pending": [],
-						"buffs": [],
-						"debuffs": [],
 					}	
 
-		
+			
 		return {
-			"metrics": {
-				RESOURCE.METRICS.MORALE: 0,
-				RESOURCE.METRICS.SAFETY: 0,
-				RESOURCE.METRICS.READINESS: 0
-			},
+			"draw_cards": [
+				ROOM.REF.UTIL_LEVEL_UP_1,
+				ROOM.REF.UTIL_ADD_CURRENCY_MONEY,
+				ROOM.REF.UTIL_BUFF_EFFECT_1,
+			],
 			"event_record": {
 				# record events and their outcomes
 			},
 			"base": {
-				"department_perk": {
-					ROOM.REF.ADMIN_DEPARTMENT: -1,
-					ROOM.REF.LOGISTICS_DEPARTMENT: -1,
-					#ROOM.REF.ENGINEERING_DEPARTMENT: -1,
-					#ROOM.REF.MEDICAL_DEPARTMENT: -1,
-					#ROOM.REF.ETHICS_DEPARTMENT: -1,
-					#ROOM.REF.SCIENCE_DEPARTMENT: -1,
-					#ROOM.REF.SECURITY_DEPARTMENT: -1,
-				},				
 				"onsite_nuke": {
 					"triggered": false
 				},
@@ -1241,7 +1229,7 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if is_new_game else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if is_new_game else restore_data.purchased_research_arr
 	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if is_new_game else restore_data.shop_unlock_purchases
-	SUBSCRIBE.base_states = initial_values.base_states.call() if is_new_game else restore_data.base_states
+	SUBSCRIBE.base_states = initial_values.base_states.call() #if is_new_game else restore_data.base_states
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if is_new_game else restore_data.hired_lead_researchers_arr
 
 	# don't need to be saved, just load from defaults
@@ -1251,7 +1239,6 @@ func parse_restore_data() -> void:
 
 #endregion		
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # NOTE: THIS IS THE MAIN LOGIC THAT HAPPENS WHEN GAMEPLAY ESSENTIAL DATA IS UPDATED
@@ -1276,7 +1263,7 @@ func update_room_config(force_setup:bool = false) -> void:
 	# check if room is activated	
 	room_activation_check(new_room_config)
 	
-	# ROOM, check for effects
+	# apply passives
 	apply_room_passives(new_room_config)
 	
 	# apply scp effects
@@ -1298,7 +1285,6 @@ func transfer_base_states_to_room_config(new_room_config:Dictionary) -> void:
 	
 	# duplicate base config nuke status
 	new_room_config.base.onsite_nuke = base_states.base.onsite_nuke.duplicate()
-	new_room_config.base.metrics = base_states.metrics.duplicate()
 	
 	# FLOOR LEVEL ------------- 
 	for floor_index in new_room_config.floor.size():
@@ -1394,7 +1380,7 @@ func room_activation_check(new_room_config:Dictionary) -> void:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
 		
 		# apply is activated state if have enough staff and enough energy
-		if energy_available >= room_details.required_energy and !is_under_construction:
+		if !is_under_construction:
 			ring_config_data.energy.used += room_details.required_energy
 			room_config_data.is_activated = true
 			# captures a grand total to be checkable
@@ -1425,17 +1411,20 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 		# passives always apply to all rings in the room
 		if room_details.has("passive_abilities"):
 			var passive_abilities:Array = room_details.passive_abilities.call()
-			var departments_only_list:Array = ROOM_UTIL.get_departments()
-
+			var departments_only_list:Array = ROOM_UTIL.get_departments(item.location)
+			
+			
 			# go through each ability
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
 				var ability_uid:String = str(room_details.ref, ability_index)
 				var energy_cost:int = ability.energy_cost if "energy_cost" in ability else 1
-				
+				# -------------------
 				# remove passives if conditions not met
 				if department_properties.is_empty() or !is_activated:
 					room_base_state.passives_enabled_list.erase(ability.ref)
+					
+				# -------------------
 				# if enabled
 				else:					
 					if room_base_state.passives_enabled[ability_uid]:
@@ -1443,25 +1432,30 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 						var props:Dictionary = ability.props
 						# apply to each department on that ring
 						if !props.is_empty():
+							# -------------------
 							if props.has("level"):
 								for department in departments_only_list:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
 									department_config_data.department_properties.level += props.level
+							# -------------------
 							if props.has("metric"):
 								for department in departments_only_list:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
 									if props.metric not in department_config_data.department_properties.metric:
 										room_config_data.department_properties.metric.append( props.metric )
+							# -------------------
 							if props.has("currency"):
 								for department in departments_only_list:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
 									if props.currency not in department_config_data.department_properties.currency:
 										department_config_data.department_properties.currency.append( props.currency )
+							# -------------------
 							if props.has("effect") and props.effect not in room_config_data.department_properties.effect:
 								for department in departments_only_list:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
 									if props.effect not in department_config_data.department_properties.effect:
 										department_config_data.department_properties.effects.append( props.effect )
+										
 							# -----------------------------------
 							#if props.has("remove_metric"):
 								#room_config_data.department_properties.metric.erase( props.remove_metric )
@@ -1538,7 +1532,6 @@ func apply_scp_effects(new_room_config:Dictionary) -> void:
 			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
 			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 			
-
 func calculate_final(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)

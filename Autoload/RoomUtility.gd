@@ -654,9 +654,11 @@ func get_category(category:ROOM.CATEGORY, start_at:int, limit:int) -> Dictionary
 
 # ------------------------------------------------------------------------------
 func get_departments(use_location:Dictionary = current_location) -> Array:
+	var department_refs:Array = get_department_refs()
 	var filtered:Array = purchased_facility_arr.filter(func(x): 
-		return x.location.floor == current_location.floor and x.location.ring == current_location.ring and x.ref in [ROOM.REF.ADMIN_DEPARTMENT, ROOM.REF.ENGINEERING_DEPARTMENT, ROOM.REF.LOGISTICS_DEPARTMENT]
+		return x.location.floor == use_location.floor and x.location.ring == use_location.ring and x.ref in department_refs
 	)
+
 	return filtered	
 # ------------------------------------------------------------------------------
 
@@ -742,31 +744,18 @@ func get_personnel_counts() -> Dictionary:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-#func get_influenced_data(use_location:Dictionary = current_location) -> Dictionary:
-	#var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	#var all_influenced_rooms:Dictionary = ROOM_UTIL.find_all_influenced_rooms()	
-#
-	## get description of influence
-	#var list_of_effects:Array = []
-	#if use_location.room in all_influenced_rooms:
-		#for item in all_influenced_rooms[use_location.room]:
-			#if item.has("room_ref"):
-				#var room_details:Dictionary = return_data(item.room_ref)
-				#list_of_effects.push_back({"room_ref": item.room_ref, "influence_description": room_details.influence.description})
-			#if item.has("scp_ref"):
-				#var scp_details:Dictionary = SCP_UTIL.return_data(item.scp_ref)
-				#list_of_effects.push_back({"scp_ref": item.scp_ref, "influence_description": scp_details.influence.description})
-			#
-	## add any bonuses in the room to it
-	#var currency_list:Dictionary = {}
-	#var metric_list:Dictionary = {}	
-#
-#
-	#return {
-		#"currency_list": currency_list, 
-		#"metric_list": metric_list, 
-		#"list_of_effects": list_of_effects
-	#}
+func has_negative_energy() -> bool:
+	var energy_check_pass:bool = false
+	# FLOOR LEVEL ------------- 
+	for floor_index in room_config.floor.size():
+		# RING LEVEL ------------- 
+		for ring_index in room_config.floor[floor_index].ring.size():
+			var ring_level_config:Dictionary = room_config.floor[floor_index].ring[ring_index]
+			# setup initial energy
+			if ring_level_config.energy.used > ring_level_config.energy.available:
+				return true
+
+	return energy_check_pass
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

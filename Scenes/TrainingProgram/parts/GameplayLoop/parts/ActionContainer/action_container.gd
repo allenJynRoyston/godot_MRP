@@ -301,7 +301,7 @@ func start() -> void:
 	
 	EngineeringBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.ENGINEERING
+		current_mode = MODE.ENGINEERING_CONFIG
 		
 	EthicsBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -309,7 +309,10 @@ func start() -> void:
 		
 	LogisticsBtn.onClick = func() -> void:
 		await lock_actions(true)
-		current_mode = MODE.LOGISTICS		
+		current_mode = MODE.ACTIVE_MENU_OPEN	
+		var confirm:bool = await GAME_UTIL.open_store()
+		current_mode = MODE.ROOT
+		lock_actions(false)
 		
 	AdminBtn.onClick = func() -> void:
 		await lock_actions(true)
@@ -483,15 +486,16 @@ func show_fabrication_options() -> void:
 	# else, show linkables
 	else:
 		#for type in linkables:
-		for type in [ROOM.CATEGORY.UTILITY]:		
-			list.push_back({
-				"title": ROOM.return_category_title(type),
-				"type": type,
-				# need to add custom check to make sure there's less then three departments in one ring
-				"is_disabled_func": is_disabled_func,
-				# same with hint
-				"hint_func": hint_func
-			})
+		for card in base_states.draw_cards:
+			for type in [ROOM.CATEGORY.UNIQUE]:
+				list.push_back({
+					"title": ROOM.return_category_title(type),
+					"type": type,
+					# need to add custom check to make sure there's less then three departments in one ring
+					"is_disabled_func": is_disabled_func,
+					# same with hint
+					"hint_func": hint_func
+				})
 		
 	#
 	for listitem in list:
@@ -506,7 +510,30 @@ func show_fabrication_options() -> void:
 					"footer": "%s / %s" % [index + 1, items.size() ],
 				})
 	
-	
+	# add any cards in the draw pile
+	if !linkables.is_empty():
+		var draw_items:Array = []
+		for index in base_states.draw_cards.size():
+			var room_ref:int = base_states.draw_cards[index]
+			var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
+			draw_items.push_back({
+				"title": room_details.name,
+				"img_src": room_details.img_src,
+				"is_disabled": is_disabled_func.call(room_details),
+				"hint": hint_func.call(room_details), 
+				"ref": room_details.ref,
+				"details": room_details,
+				"action": func() -> void:
+					base_states.draw_cards.remove_at(index)
+					SUBSCRIBE.base_states = base_states
+					on_selected.call(room_details),
+			})
+			
+		options.push_back({
+			"title": "DEPARTMENT NODES",
+			"items": draw_items,
+			"footer": "%s / %s" % [1, draw_items.size() ],
+		})
 
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
@@ -1114,12 +1141,14 @@ func check_btn_states() -> void:
 	var max_upgrade_lvl:int = ROOM_UTIL.get_room_max_level()
 	var has_programs:bool = !abilities.is_empty() 
 	var has_modules:bool = !passive_abilities.is_empty()
-	var at_max_level:bool = lvl >= max_upgrade_lvl
+	var has_negative_energy:bool = await ROOM_UTIL.has_negative_energy()
+	var draw_count:int = base_states.draw_cards.size()	
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
 	).size()	
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
+	
 
 	SummaryCard.use_location = current_location
 	ModulesCard.use_location = current_location
@@ -1137,13 +1166,14 @@ func check_btn_states() -> void:
 
 			# show only starting/info if new game
 			HasEventBtn.show() if has_priority_events else HasEventBtn.hide()
-			EndTurnBtn.is_disabled = has_priority_events
+			EndTurnBtn.is_disabled = has_priority_events or has_negative_energy or draw_count != 0
 			
 			# info button
 			IntelBtn.show() if !has_priority_events else IntelBtn.hide()
 			
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
+			FabricationBtn.is_flashing = draw_count != 0
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_ring_powered
 			#FabricationBtn.title = "BLUEPRINT" #if rooms_in_wing_count == 0 else "FABRICATION"
@@ -1153,11 +1183,11 @@ func check_btn_states() -> void:
 				current_mode = MODE.FABRICATION
 			
 			# need engineering department before you can use this 
-			AdminBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT) ) and !has_priority_events else AdminBtn.hide()
+			AdminBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT) ) and !has_priority_events else AdminBtn.hide()
 
-			LogisticsBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.LOGISTICS_DEPARTMENT) ) and !has_priority_events else LogisticsBtn.hide()
+			# LogisticsBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.LOGISTICS_DEPARTMENT) ) and !has_priority_events else LogisticsBtn.hide()
 			
-			EngineeringBtn.show() if (ROOM_UTIL.ring_contains(ROOM.REF.ENGINEERING_DEPARTMENT) ) and !has_priority_events else EngineeringBtn.hide()
+			EngineeringBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.ENGINEERING_DEPARTMENT) ) and !has_priority_events else EngineeringBtn.hide()
 						
 			
 			#EngineeringBtn.hide()
@@ -1192,7 +1222,7 @@ func check_btn_states() -> void:
 				if btn.is_visible_in_tree() and btn.is_disabled:
 					end_btn_is_flashing = true 
 					break
-			EndTurnBtn.is_flashing = end_btn_is_flashing
+			EndTurnBtn.is_flashing = end_btn_is_flashing or draw_count == 0
 		# -----------			
 		MODE.ADMINISTRATION:
 			AdminControls.reveal(true)
@@ -1386,11 +1416,11 @@ func check_btn_states() -> void:
 			var can_rush:bool = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION]
 			var build_department:bool = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location).is_empty()
 			
-			FabricationControls.a_btn_title = "BUILD DEPARTMENT" if build_department else "BUILD ATTACHMENT"
-			FabricationControls.hide_a_btn = false #is_under_construction and !can_rush
+			FabricationControls.a_btn_title = "BUILD..." if build_department else "ATTACH (%s)" % [draw_count]
+			FabricationControls.hide_a_btn = false 
 			FabricationControls.disable_active_btn = !is_under_construction and !is_room_empty
-			FabricationControls.c_btn_title = "REMOVE or RECYCLE"
-			FabricationControls.hide_c_btn = false			
+			FabricationControls.c_btn_title = "REMOVE"
+			FabricationControls.disable_c_btn = is_room_empty			
 			FabricationControls.reveal(true)
 			
 			# remove room
@@ -1461,12 +1491,12 @@ func check_btn_states() -> void:
 		MODE.ENGINEERING_CONFIG:
 			EngineeringConfigControls.reveal(true)
 			
-			EngineeringConfigControls.onBack = func() -> void:
+			EngineeringConfigControls.onBack = func() -> void:				
 				reveal_engineering(false)
-				EngineeringConfigControls.reveal(false)
+				await EngineeringConfigControls.reveal(false)
 				GameplayNode.restore_player_hud()
-				GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)
-				current_mode = MODE.ENGINEERING
+				GBL.find_node(REFS.WING_RENDER).set_engineering_mode(false)				
+				current_mode = MODE.ROOT
 		# -----------	
 		MODE.FABRICATION_LINKABLE:
 			FabricationControls.a_btn_title = "BUILD HERE"
@@ -1970,6 +2000,8 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			pass
 		MODE.NO_INPUT:
 			pass
+		MODE.ACTIVE_MENU_OPEN:
+			pass
 		# ----------------------------		
 		MODE.ROOT:
 			match key:
@@ -2093,16 +2125,16 @@ func on_control_input_update(input_data:Dictionary) -> void:
 			match key:
 				# ----------------------------
 				"W":
-					U.room_up()
+					U.room_up(true)
 				# ----------------------------
 				"S":
-					U.room_down()
+					U.room_down(true)
 				# ----------------------------
 				"D":
-					U.room_right()
+					U.room_right(true)
 				# ----------------------------
 				"A":
-					U.room_left()
+					U.room_left(true)
 		# ----------------------------
 		MODE.FABRICATION_LINKABLE:
 			match key:

@@ -439,8 +439,8 @@ var ADMIN_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_1
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_1
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
 						onSelected(choice),
@@ -461,8 +461,8 @@ var ADMIN_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_2
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_2
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
 						onSelected(choice),
@@ -503,8 +503,8 @@ var LOGISTIC_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
 						onSelected(choice),
@@ -525,8 +525,8 @@ var LOGISTIC_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
 						onSelected(choice),
@@ -585,8 +585,8 @@ var ENGINEERING_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
 						onSelected(choice),
@@ -607,8 +607,8 @@ var ENGINEERING_PERK_SETUP:Dictionary = {
 					},
 					"onSelected": func(choice:Dictionary) -> void:
 						# update base states with selected perk
-						base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
-						SUBSCRIBE.base_states = base_states
+						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						#SUBSCRIBE.base_states = base_states
 						# set conditional to true
 						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
 						onSelected(choice),

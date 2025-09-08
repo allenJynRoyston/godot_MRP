@@ -72,7 +72,8 @@ func update_node() -> void:
 	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config()
 	amount = ring_level_config.energy.available - ring_level_config.energy.used
 	max_amount = ring_level_config.energy.available
-	flashing = amount == 0	
+	flashing = amount <= 0
+	Energy.is_negative = amount <= 0
 # -----------------------------------------------			
 
 # -----------------------------------------------

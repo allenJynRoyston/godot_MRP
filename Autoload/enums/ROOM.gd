@@ -63,6 +63,7 @@ enum CATEGORY {
 	ANTIMEMETICS,
 
 	UTILITY, 
+	UNIQUE
 }
 
 enum EFFECTS {
@@ -105,6 +106,7 @@ func get_op_string(operation:ROOM.OPERATOR) -> String:
 
 func return_effect(ref:EFFECTS) -> Dictionary:
 	match ref:
+		# -----------------------
 		EFFECTS.ADMIN_DEFAULT:
 			return {
 				"description":	func(operation:int) -> String:
@@ -127,23 +129,25 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 		EFFECTS.ENGINEERING_DEFAULT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "Generate +1 HEAT if LEVEL is above 3.",
+					return "The LEVEL of this facility produces the same in ENERGY.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
-					return false,
+					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					pass
+					var ring_config_data:Dictionary = _new_room_config.floor[_location.floor].ring[_location.ring]
+					ring_config_data.energy.available += _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
 			}
 		EFFECTS.ANTIMEMETICS_DEFAULT:
 			return {
 				"description":	func(operation:int) -> String:
 					return "If no other departments are present then this facility %s instead of %s" % [get_op_string(ROOM.OPERATOR.ADD), get_op_string(ROOM.OPERATOR.SUBTRACT)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
-					return ROOM_UTIL.get_departments(_location).size() == 0,
+					return ROOM_UTIL.get_departments(_location).size() == 1,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD
 			}						
-			
-			
+		# -----------------------
+		
+		# -----------------------
 		EFFECTS.EFFECT_1:
 			return {
 				"description":	func(operation:int) -> String:
@@ -161,5 +165,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					pass
-			}				
+			}
+		# -----------------------
+		
 	return {}
