@@ -6,17 +6,20 @@ extends Control
 @onready var CostPanel:PanelContainer = $MarginContainer/FrontDrawerContainer/CostPanel
 @onready var HighlightIcon3:Control = $HighlightControl/HighlightIcon3
 @onready var NameTagLabel:Label = $MarginContainer/FrontDrawerContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
-@onready var CostLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel
-@onready var CostIcon:Control = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/CostIcon
+@onready var CostLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer/CostLabel
+@onready var CostIcon:Control = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer/CostIcon
 @onready var EmptyPanel:PanelContainer = $EmptyPanel
 @onready var PurchaseLabel:Label = $Control/PurchaseLabel
 
-@onready var OwnCountLabel:Label = $CardTextureRect/PanelContainer/MarginContainer/OwnCountLabel
+@onready var OwnCountLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2/OwnCountLabel
+@onready var OwnCapacityLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2/OwnCapacityLabel
 @onready var LevelRequired:PanelContainer = $CardTextureRect/LevelRequired
 
 @onready var name_panel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
 @onready var cost_panel_stylebox:StyleBoxFlat = CostPanel.get("theme_override_styles/panel").duplicate()
+
 @onready var nametag_label_label_setting:LabelSettings = NameTagLabel.get("label_settings").duplicate()
+@onready var own_count_label_setting:LabelSettings = OwnCountLabel.get("label_settings").duplicate()
 
 @export var is_highlighted:bool = false : 
 	set(val):
@@ -53,8 +56,11 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	NameTagLabel.set("label_settings", nametag_label_label_setting)
 	CostLabel.set("label_settings", nametag_label_label_setting)	
+	OwnCountLabel.set("label_settings", own_count_label_setting)
+	OwnCapacityLabel.set("label_settings", nametag_label_label_setting)
 	NamePanel.set("theme_override_styles/panel", name_panel_stylebox)
 	CostPanel.set("theme_override_styles/panel", cost_panel_stylebox)
+	
 	on_ref_update()
 	on_is_highlighted_update()
 	PurchaseLabel.modulate.a = 0	
@@ -70,6 +76,8 @@ func on_is_highlighted_update() -> void:
 	for stylebox in [cost_panel_stylebox, name_panel_stylebox]:
 		stylebox.bg_color = Color(1.0, 0.749, 0.2, 1) if is_highlighted else Color(1.0, 0.749, 0.2, 1).darkened(0.5)
 	nametag_label_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
+	own_count_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
+	
 	CostIcon.icon_color = nametag_label_label_setting.font_color
 	HighlightControl.show() if is_highlighted else HighlightControl.hide()
 	modulate.a = 1
@@ -141,6 +149,7 @@ func update_content() -> void:
 		requires_unlock = true
 	else:
 		LevelRequired.hide()
-		OwnCountLabel.text = "OWNS (%s)" % str(own_count)
+		OwnCountLabel.text = str(own_count)
+		OwnCapacityLabel.text = str("/", room_details.own_limit)
 		CostIcon.icon = SVGS.TYPE.RING
 		requires_unlock = false

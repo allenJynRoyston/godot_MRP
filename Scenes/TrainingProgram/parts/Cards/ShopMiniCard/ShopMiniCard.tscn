@@ -10,19 +10,6 @@
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ak4pd"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ak4pd"]
-bg_color = Color(0, 0, 0, 0.792157)
-corner_radius_top_left = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="LabelSettings" id="LabelSettings_k052h"]
-font = ExtResource("5_ctiee")
-font_size = 12
-outline_color = Color(0, 0, 0, 0.615686)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k052h"]
 bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_top_left = 5
@@ -49,6 +36,20 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
+[sub_resource type="LabelSettings" id="LabelSettings_k052h"]
+font = ExtResource("5_ctiee")
+font_size = 20
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_f5y5s"]
+font = ExtResource("5_ctiee")
+font_size = 14
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctiee"]
 bg_color = Color(0.140447, 0.140447, 0.140447, 1)
 
@@ -66,36 +67,6 @@ layout_mode = 2
 texture = SubResource("PlaceholderTexture2D_ak4pd")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="PanelContainer" type="PanelContainer" parent="CardTextureRect"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -52.0
-offset_top = -50.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ak4pd")
-
-[node name="MarginContainer" type="MarginContainer" parent="CardTextureRect/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 35
-
-[node name="OwnCountLabel" type="Label" parent="CardTextureRect/PanelContainer/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 1
-text = "99"
-label_settings = SubResource("LabelSettings_k052h")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="LevelRequired" parent="CardTextureRect" instance=ExtResource("4_ctiee")]
 layout_mode = 1
@@ -156,24 +127,47 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6v8ap")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 6
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="CostIcon" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("6_k052h")]
+[node name="CostIcon" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer" instance=ExtResource("6_k052h")]
 layout_mode = 2
 icon = 44
 icon_color = Color(1, 1, 1, 1)
 
-[node name="CostLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
+[node name="CostLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_ctiee")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="OwnCountLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_k052h")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OwnCapacityLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "/10"
+label_settings = SubResource("LabelSettings_f5y5s")
+vertical_alignment = 2
 
 [node name="HighlightControl" type="Control" parent="."]
 z_index = 1
@@ -182,9 +176,9 @@ layout_mode = 2
 [node name="HighlightIcon" parent="HighlightControl" instance=ExtResource("6_k052h")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-offset_left = -11.0
+offset_left = -10.0
 offset_top = 3.0
-offset_right = 14.0
+offset_right = 15.0
 offset_bottom = 28.0
 icon = 33
 icon_color = Color(0, 0, 0, 1)
@@ -192,6 +186,7 @@ icon_size = Vector2(25, 25)
 flip_h = true
 
 [node name="HighlightIcon2" parent="HighlightControl" instance=ExtResource("6_k052h")]
+visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 offset_left = 136.0
@@ -205,10 +200,10 @@ icon_size = Vector2(25, 25)
 [node name="HighlightIcon3" parent="HighlightControl" instance=ExtResource("6_k052h")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-offset_left = 87.0
-offset_top = 140.0
-offset_right = 112.0
-offset_bottom = 165.0
+offset_left = 43.0
+offset_top = 139.0
+offset_right = 68.0
+offset_bottom = 164.0
 icon = 43
 icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(25, 25)
@@ -217,12 +212,12 @@ flip_h = true
 [node name="HighlightIcon4" parent="HighlightControl" instance=ExtResource("6_k052h")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-offset_left = 137.0
-offset_top = 95.0
-offset_right = 162.0
-offset_bottom = 120.0
+offset_left = 135.0
+offset_top = 121.0
+offset_right = 160.0
+offset_bottom = 146.0
 icon = 33
-icon_color = Color(1, 1, 1, 1)
+icon_color = Color(0, 0, 0, 1)
 icon_size = Vector2(25, 25)
 
 [node name="EmptyPanel" type="PanelContainer" parent="."]

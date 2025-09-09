@@ -132,11 +132,12 @@ func purchase_room(ref:int) -> void:
 
 	GridSelect.BtnControls.disable_active_btn = true
 	resources_data[RESOURCE.CURRENCY.MATERIAL].amount -= ROOM_UTIL.return_unlock_costs(ref)
-	await selected_node.play_purchase_animation()
-	GridSelect.BtnControls.disable_active_btn = false	
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.base_states = base_states	
+		
+	await selected_node.play_purchase_animation()
+	GridSelect.BtnControls.disable_active_btn = false		
 	made_changes = true
 # --------------------------------------------------------------------------------------------------
 

@@ -8,19 +8,20 @@
 
 [sub_resource type="Environment" id="Environment_bqpsx"]
 background_mode = 1
-ambient_light_energy = 2.88
+background_color = Color(0.213626, 1.73271e-06, 0.967119, 1)
+background_energy_multiplier = 1.47
 tonemap_mode = 3
 tonemap_exposure = 0.62
 sdfgi_read_sky_light = false
 volumetric_fog_enabled = true
-volumetric_fog_anisotropy = 0.69
+volumetric_fog_density = 0.06
+volumetric_fog_albedo = Color(0.322312, 0.447754, 0.972683, 1)
+volumetric_fog_anisotropy = 0.7
 volumetric_fog_length = 60.0
-volumetric_fog_detail_spread = 4.24264
-volumetric_fog_ambient_inject = 1.48
+volumetric_fog_ambient_inject = 2.84
 volumetric_fog_temporal_reprojection_enabled = false
 volumetric_fog_temporal_reprojection_amount = 0.822
 adjustment_enabled = true
-adjustment_brightness = 0.81
 adjustment_contrast = 1.09
 adjustment_saturation = 0.44
 
@@ -70,7 +71,8 @@ size = Vector2(0.02, 0.02)
 [sub_resource type="NoiseTexture3D" id="NoiseTexture3D_bqpsx"]
 
 [sub_resource type="FogMaterial" id="FogMaterial_yyocm"]
-density = 0.0871
+density = 0.3033
+albedo = Color(0.336137, 0.356164, 0.899692, 1)
 density_texture = SubResource("NoiseTexture3D_bqpsx")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_rvrtn"]
@@ -146,7 +148,7 @@ omni_range = 5.0
 disable_reverse_shadow = true
 
 [node name="StreetLight2" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -15.0901, 4.84705, 9.38507)
+transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -15.0901, 4.84705, 7.03358)
 mesh = SubResource("CylinderMesh_rvrtn")
 skeleton = NodePath("../Camera3D")
 
@@ -165,7 +167,7 @@ omni_range = 5.0
 disable_reverse_shadow = true
 
 [node name="StreetLight3" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.9395, 4.84705, 4.52634)
+transform = Transform3D(0.419214, 0, 0.907887, 0, 1, 0, -0.907887, 0, 0.419214, -21.946, 4.84705, 0.127706)
 mesh = SubResource("CylinderMesh_rvrtn")
 skeleton = NodePath("../Camera3D")
 
@@ -175,6 +177,7 @@ mesh = SubResource("BoxMesh_ywuqy")
 
 [node name="CustomSpotlight" parent="Node3D/StreetLight3/MeshInstance3D" instance=ExtResource("2_iu2be")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30537, -0.335719, 0)
+visible = false
 light_color = Color(1, 0.993, 0.79, 1)
 godray_color = Color(0.966243, 0.980311, 0.747895, 1)
 godray_energy = 1.0
@@ -190,10 +193,9 @@ skeleton = NodePath("../MeshInstance3D")
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Node3D/MeshInstance3D2"]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 0, 0, 1, -21.9136, 0, -9.70996)
-light_color = Color(0.918995, 0.503806, 0.352411, 1)
-light_energy = 8.262
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 1.36
+light_color = Color(0.181195, 0.266248, 1, 1)
+light_energy = 12.928
+light_volumetric_fog_energy = 1.444
 shadow_enabled = true
 shadow_normal_bias = 3.022
 omni_range = 45.171
