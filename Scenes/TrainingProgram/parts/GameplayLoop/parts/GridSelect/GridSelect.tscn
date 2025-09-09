@@ -134,7 +134,7 @@ theme_override_constants/separation = 20
 [node name="LessBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_kdf3w")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-icon = 28
+icon = 33
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(25, 25)
 
@@ -160,7 +160,7 @@ columns = 3
 [node name="MoreBtn" parent="ContentControl/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_kdf3w")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-icon = 27
+icon = 32
 icon_color = Color(1, 1, 1, 1)
 icon_size = Vector2(25, 25)
 

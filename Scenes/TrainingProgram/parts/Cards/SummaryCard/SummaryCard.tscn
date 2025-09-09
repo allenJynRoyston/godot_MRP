@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bokpsdt1bavug"]
+[gd_scene load_steps=25 format=3 uid="uid://bokpsdt1bavug"]
 
 [ext_resource type="Script" uid="uid://cs3ugw0kvsji" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/summary_card.gd" id="1_pe6gu"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="2_dchg3"]
@@ -7,6 +7,7 @@
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_wqrfb"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="7_w56pt"]
 [ext_resource type="PackedScene" uid="uid://bwdoedxrhp17b" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerScp.tscn" id="7_wi2bx"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="7_wqrfb"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="8_budmt"]
 [ext_resource type="FontFile" uid="uid://0mmjtqn03dkq" path="res://Fonts/PixelOperator-Bold.ttf" id="9_jgan4"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="11_jgan4"]
@@ -52,11 +53,20 @@ outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3otej"]
-bg_color = Color(0, 0, 0, 0.658824)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wi2bx"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wi2bx"]
+font = ExtResource("11_jgan4")
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
 
 [sub_resource type="LabelSettings" id="LabelSettings_0krab"]
-font = ExtResource("11_jgan4")
+font = ExtResource("7_wqrfb")
+font_size = 8
+font_color = Color(0.967176, 0.739029, 0.873396, 1)
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
@@ -274,9 +284,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_q31gb")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer"]
@@ -301,31 +311,69 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Quote" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/Quote"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_3otej")
+text = "Description"
+label_settings = SubResource("LabelSettings_q31gb")
+vertical_alignment = 1
+autowrap_mode = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/Quote/PanelContainer"]
+[node name="Description" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wi2bx")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description"]
+layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="QuoteLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/Quote/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "PROGRAM NAME"
+label_settings = SubResource("LabelSettings_wi2bx")
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="QuoteLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "I am quote"
 label_settings = SubResource("LabelSettings_0krab")
 vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IMPACT"
+label_settings = SubResource("LabelSettings_q31gb")
+vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="RoomImpact" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]

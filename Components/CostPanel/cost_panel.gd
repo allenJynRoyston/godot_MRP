@@ -12,6 +12,11 @@ extends PanelContainer
 @onready var SmallIcon:Control = $MarginContainer/Small/HBoxContainer/SVGIcon
 @onready var SmallAmountLabel:Label = $MarginContainer/Small/HBoxContainer/MarginContainer/AmountLabel
 
+@onready var TitleLabel:Label = $MarginContainer/Tall/Label
+@onready var Seperator:HSeparator = $MarginContainer/Tall/HSeparator
+
+
+
 @export var icon:SVGS.TYPE = SVGS.TYPE.MONEY : 
 	set(val):
 		icon = val
@@ -73,7 +78,7 @@ func update_colors() -> void:
 	var new_color:Color = COLORS.primary_black if !is_negative else Color.RED
 	var mixed_color:Color = Color(new_color.r, new_color.g, new_color.b, alpha)
 	
-	for node in [SmallAmountLabel, AmountLabel]:
+	for node in [SmallAmountLabel, AmountLabel, TitleLabel]:
 		var label_settings_copy:LabelSettings = node.label_settings.duplicate()
 		label_settings_copy.font_color = mixed_color
 		node.label_settings = label_settings_copy

@@ -46,7 +46,8 @@ var ROOM_TEMPLATE:Dictionary = {
 
 	# ------------------------------------------
 	"costs": {
-		"unlock": 0,
+		"build": 1,
+		"unlock": 1,
 		"purchase": 1,
 	}, 	
 	# ------------------------------------------	
@@ -623,14 +624,14 @@ func build_count(ref:int) -> int:
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	
-func ring_contains(ref:int) -> bool:
-	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
+func ring_contains(ref:int, use_location:Dictionary = current_location) -> bool:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == use_location.floor and i.location.ring == use_location.ring)
 	return filter.size() > 0
 # ------------------------------------------------------------------------------		
 	
 # ------------------------------------------------------------------------------
-func owns(ref:int) -> bool:
-	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == current_location.floor and i.location.ring == current_location.ring)
+func owns(ref:int, use_location:Dictionary = current_location) -> bool:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == use_location.floor and i.location.ring == use_location.ring)
 	return filter.size() > 0
 # ------------------------------------------------------------------------------	
 

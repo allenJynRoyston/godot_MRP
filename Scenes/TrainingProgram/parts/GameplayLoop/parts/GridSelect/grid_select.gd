@@ -83,14 +83,6 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	BtnControls.onDirectional = on_key_press
 	BtnControls.freeze_and_disable(true)
-	#BtnControls.onUpdate = func(node:Control) -> void:
-		#SelectedNode = node
-		#match current_mode:
-			## -------------------
-			#MODE.TAB_SELECT:		
-				#tab_index = node.index
-			#MODE.CONTENT_SELECT:
-				#grid_index = node.index
 	
 	await U.tick()
 	control_pos[HeaderPanel]  = {
@@ -245,7 +237,6 @@ func update_grid_content(index:int = tab_index) -> void:
 	var start_at:int = page_tracker[index] * grid_size
 	var end_at:int = start_at + grid_size
 	
-	
 	var query:Dictionary = tabs[index].onSelect.call(index, start_at, end_at)
 		
 	if query.is_empty():
@@ -269,7 +260,11 @@ func update_grid_content(index:int = tab_index) -> void:
 	update_grid_items()
 # --------------------------------------------------------------------------------------------------	
 
-# --------------------------------------------------------------------------------------------------			
+# --------------------------------------------------------------------------------------------------
+func refresh() -> void:
+	await U.tick()
+	on_grid_index_update()
+	
 func is_valid_selection(index:int) -> bool:
 	if index > GridContent.get_child_count() - 1 or index < 0:
 		return false

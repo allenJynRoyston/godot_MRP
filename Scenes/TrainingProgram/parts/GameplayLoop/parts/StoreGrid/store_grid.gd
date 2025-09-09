@@ -10,12 +10,16 @@ extends GameContainer
 @onready var SummaryCard:Control = $SummaryControl/PanelContainer/MarginContainer/SummaryCard
 
 # cost
-@onready var CostPanel:Control = $ResearcherPanel/MarginContainer/CostPanel
+@onready var CostPanel:Control = $ResearcherPanel/MarginContainer/VBoxContainer/CostPanel
+@onready var ResearchPanel:Control = $ResearcherPanel/MarginContainer/VBoxContainer/ResearchPanel
 
 # minicards
 const ShopMiniCardPreload:PackedScene = preload("res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/ShopMiniCard.tscn")
 
 var made_changes:bool = false
+var current_category:int
+var selected_ref:int = -1
+var selected_node:Control
 
 # --------------------------------------------------------------------------------------------------
 func _ready() -> void:
@@ -33,90 +37,59 @@ func activate() -> void:
 	await U.tick()
 
 	SummaryPanel.position.x = control_pos[SummaryPanel].hide
+	SummaryCard.use_location = current_location
 	await U.tick()
 	
 func setup_gridselect() -> void:
-	#var room_unlock_level:int = 9 #room_config.base.room_unlock_val
 	# ---------------- GRID_SELECT CONFIG
 	GridSelect.tabs = [
 		{
-			"title": "ADMIN",
+			"title": "DEPARTMENTS",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.ADMIN, start_at, end_at),
+				current_category = ROOM.CATEGORY.DEPARTMENT
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.DEPARTMENT, start_at, end_at),
 		},
 		{
-			"title": "LOGISTICS",
+			"title": "NODES",
 			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.LOGISTICS, start_at, end_at),
+				current_category = ROOM.CATEGORY.UTILITY
+				return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, start_at, end_at),
 		},
-		#{
-			#"title": "ENERGY",
-			#"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				#return ROOM_UTIL.get_category(ROOM.CATEGORY.ENERGY, start_at, end_at),
-		#},
-		{
-			"title": "CONTAINMENT",
-			"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				return ROOM_UTIL.get_category(ROOM.CATEGORY.CONTAINMENT, start_at, end_at),
-		},
-		#{
-			#"title": "UTILITY",
-			#"onSelect": func(category:int, start_at:int, end_at:int) -> Dictionary:
-				#return ROOM_UTIL.get_category(ROOM.CATEGORY.UTILITY, start_at, end_at),
-		#},		
 	]
 	
 	GridSelect.onModeTab = func() -> void:
+		ResearchPanel.modulate.a = 1 
+		CostPanel.modulate.a = 1 
 		reveal_node(SummaryPanel, false)
 	
 	GridSelect.onModeContent = func() -> void:
 		reveal_node(SummaryPanel, true)
 	
-	#GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
-		#var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(data.ref) )
-		#var show_card:bool = node.show_card
-		#
-		#print(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
-		#
-		#CostPanel.amount = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
-		#CostPanel.is_negative = !can_afford		
-		#GridSelect.BtnControls.disable_active_btn = !can_afford or !node.is_clickable
-		#
-		#if data.details.requires_unlock:
-			#if data.ref in shop_unlock_purchases:
-				#GridSelect.BtnControls.disable_active_btn = true
-		#else:
-			#GridSelect.BtnControls.disable_active_btn = true
-			
+	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
+		if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
+		selected_ref = data.ref
+		selected_node = node
+		U.debounce( str(self, "_update_node"), update_node )
+
 	
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.ref = -1
-		node.onHover = func() -> void: pass
-		node.onClick = func() -> void: pass		
 	
 	GridSelect.onUpdateNode = func(node:Control, data:Dictionary, index:int) -> void:		
 		node.index = index
 		node.ref = data.ref
-		node.is_hoverable = true
-				
-		node.onHover = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			GridSelect.grid_index = index
-			SummaryCard.preview_mode_ref = data.ref
-			
-		node.onClick = func() -> void:
-			if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT:return
-			GridSelect.grid_index = index
-			await U.tick()
-			if data.ref not in shop_unlock_purchases:
-				unlock_room(data.ref)
 	
 	GridSelect.onValidCheck = func(node:Control) -> bool:
 		return node.ref != -1
 	
 	GridSelect.onAction = func():
-		pass
+		if GridSelect.current_mode != GridSelect.MODE.CONTENT_SELECT or selected_ref == -1:return
+		if selected_node.requires_unlock:
+			unlock_room(selected_ref)
+		else:
+			purchase_room(selected_ref)
 		
+
 	GridSelect.onEnd = func():
 		end()	
 
@@ -129,6 +102,8 @@ func start() -> void:
 		node.ref = -1
 		
 	GridSelect.start(ShopMiniCardPreload, 0, init_func)
+	on_resources_data_update()
+	
 	
 func end() -> void:
 	U.tween_node_property(self, "modulate", Color(1, 1, 1, 0), 0.3)	
@@ -143,12 +118,35 @@ func reveal_node(node:Control, state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
+func purchase_room(ref:int) -> void:
+	match current_category:
+		ROOM.CATEGORY.UTILITY:
+			if ref not in base_states.utility_cards:
+				base_states.utility_cards[ref] = 0
+			base_states.utility_cards[ref] += 1
+		ROOM.CATEGORY.DEPARTMENT:
+			if ref not in base_states.department_cards:
+				base_states.department_cards[ref] = 0
+			base_states.department_cards[ref] += 1
+	
+
+	GridSelect.BtnControls.disable_active_btn = true
+	resources_data[RESOURCE.CURRENCY.MATERIAL].amount -= ROOM_UTIL.return_unlock_costs(ref)
+	await selected_node.play_purchase_animation()
+	GridSelect.BtnControls.disable_active_btn = false	
+	
+	SUBSCRIBE.resources_data = resources_data
+	SUBSCRIBE.base_states = base_states	
+	made_changes = true
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
 func unlock_room(ref:int) -> void:
 	await GridSelect.freeze_and_disable(true, true)
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 	
 	var activation_requirements:Array = [{
-		"amount": -room_details.costs.unlock, 
+		"amount": -ROOM_UTIL.return_unlock_costs(ref), 
 		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)
 	}]
 	
@@ -156,25 +154,49 @@ func unlock_room(ref:int) -> void:
 	if confirm:
 		ROOM_UTIL.add_to_unlocked_list(room_details.ref)
 		ROOM_UTIL.calculate_unlock_cost(room_details.ref)
-		
 		GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
-		
 		made_changes = true
-		await U.set_timeout(0.5)
-		end()		
-		
-	
+
+	GridSelect.refresh()
 	GridSelect.freeze_and_disable(false, true)
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
 func on_resources_data_update(new_val:Dictionary = resources_data) -> void:
 	resources_data = new_val
-	if !is_node_ready():return
-	CostPanel.amount = str(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
+	U.debounce( str(self, "_update_node"), update_node )
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------			
-func can_afford_check(cost:int) -> bool:
-	return resources_data[RESOURCE.CURRENCY.SCIENCE].amount >= abs(cost)
+func can_afford_check(cost:int, requires_unlock:bool) -> bool:
+	return resources_data[RESOURCE.CURRENCY.SCIENCE if requires_unlock else RESOURCE.CURRENCY.MATERIAL].amount >= abs(cost)
+# --------------------------------------------------------------------------------------------------			
+
+# --------------------------------------------------------------------------------------------------			
+func update_node() -> void:	
+	if !is_node_ready() or resources_data.is_empty():
+		return
+		
+	CostPanel.amount = str(resources_data[RESOURCE.CURRENCY.MATERIAL].amount)
+	ResearchPanel.amount = str(resources_data[RESOURCE.CURRENCY.SCIENCE].amount)
+		
+	if selected_node == null or selected_ref == -1:
+		return
+	
+	var requires_unlock:bool = selected_node.requires_unlock
+	var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(selected_ref) if requires_unlock else ROOM_UTIL.return_purchase_cost(selected_ref), requires_unlock )
+	SummaryCard.preview_mode_ref = selected_ref
+
+	GridSelect.BtnControls.disable_active_btn = !can_afford
+	GridSelect.BtnControls.a_btn_title = "RESEARCH" if requires_unlock else 'FABRICATE'	
+
+	ResearchPanel.modulate.a = 1 if requires_unlock else 0.75
+	CostPanel.modulate.a = 1 if !requires_unlock else 0.75
+
+	if requires_unlock:
+		ResearchPanel.is_negative = !can_afford	
+	else:
+		CostPanel.is_negative = !can_afford		
+	
+
 # --------------------------------------------------------------------------------------------------			

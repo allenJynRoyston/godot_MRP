@@ -455,79 +455,60 @@ func show_fabrication_options() -> void:
 			RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
 			
 		# add room
-		var is_department:bool = ROOM.CATEGORY.DEPARTMENT in room_details.categories
-		#var link_back:int = room_details.link_back
-		#var connect_to:int = current_location.room
-		#connect_to = current_location.room if is_department else purchased_facility_arr.filter(func(x): return x.ref == link_back and x.location.floor == current_location.floor and x.location.ring == current_location.ring)[0].location.room
-			#
-		await ROOM_UTIL.add_room(x.ref)
+		await ROOM_UTIL.add_room(x.ref)		
 		ActiveMenuNode.close()
 
 	var options:Array = []
 	var list:Array = []
-	var revert_mode:int = current_mode
 	
 	# first add linkables of any neighboring departments
 	var linkables:Array = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location)
 	
 	# if no linkables, build a HQ
 	if linkables.is_empty():
-		# then the departments
-		for type in [ROOM.CATEGORY.DEPARTMENT]:
-			list.push_back({
-				"title": ROOM.return_category_title(type),
-				"type": type,
-				# need to add custom check to make sure there's less then three departments in one ring
-				"is_disabled_func": is_disabled_func,
-				# same with hint
-				"hint_func": hint_func
-			})
-	
-	# else, show linkables
-	else:
-		#for type in linkables:
-		for card in base_states.draw_cards:
-			for type in [ROOM.CATEGORY.UNIQUE]:
-				list.push_back({
-					"title": ROOM.return_category_title(type),
-					"type": type,
-					# need to add custom check to make sure there's less then three departments in one ring
-					"is_disabled_func": is_disabled_func,
-					# same with hint
-					"hint_func": hint_func
+		var draw_items:Array = []
+		for ref in base_states.department_cards:
+			var amount:int =  base_states.department_cards[ref]
+			for n in range(0, amount):
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				draw_items.push_back({
+					"title": room_details.name,
+					"img_src": room_details.img_src,
+					"is_disabled": is_disabled_func.call(room_details),
+					"hint": hint_func.call(room_details), 
+					"ref": room_details.ref,
+					"details": room_details,
+					"action": func() -> void:
+						base_states.department_cards[ref] -= 1
+						SUBSCRIBE.base_states = base_states
+						on_selected.call(room_details),
 				})
-		
-	#
-	for listitem in list:
-		query_items(ActiveMenuNode, query_size, listitem.type, 0, [], listitem.is_disabled_func, listitem.hint_func, on_selected)
-		var query_results:Array = await query_complete
-		for index in query_results.size():
-			var items:Array = query_results[index]
-			if items.size() > 0:
-				options.push_back({
-					"title": listitem.title,
-					"items": items,
-					"footer": "%s / %s" % [index + 1, items.size() ],
-				})
+			
+		options.push_back({
+			"title": "DEPARTMENT NODES",
+			"items": draw_items,
+			"footer": "%s / %s" % [1, draw_items.size() ],
+		})
 	
 	# add any cards in the draw pile
-	if !linkables.is_empty():
+	else:
 		var draw_items:Array = []
-		for index in base_states.draw_cards.size():
-			var room_ref:int = base_states.draw_cards[index]
-			var room_details:Dictionary = ROOM_UTIL.return_data(room_ref)
-			draw_items.push_back({
-				"title": room_details.name,
-				"img_src": room_details.img_src,
-				"is_disabled": is_disabled_func.call(room_details),
-				"hint": hint_func.call(room_details), 
-				"ref": room_details.ref,
-				"details": room_details,
-				"action": func() -> void:
-					base_states.draw_cards.remove_at(index)
-					SUBSCRIBE.base_states = base_states
-					on_selected.call(room_details),
-			})
+		for ref in base_states.utility_cards:
+			var amount:int =  base_states.utility_cards[ref]
+			for n in range(0, amount):
+				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				draw_items.push_back({
+					"title": room_details.name,
+					"img_src": room_details.img_src,
+					"is_disabled": is_disabled_func.call(room_details),
+					"hint": hint_func.call(room_details), 
+					"ref": room_details.ref,
+					"details": room_details,
+					"action": func() -> void:
+						base_states.utility_cards[ref] -= 1
+						SUBSCRIBE.base_states = base_states
+						on_selected.call(room_details),
+				})
 			
 		options.push_back({
 			"title": "DEPARTMENT NODES",
@@ -552,12 +533,6 @@ func show_fabrication_options() -> void:
 	
 	active_menu_is_open = true
 	ActiveMenuNode.onClose = func() -> void:
-		current_mode = revert_mode
-		SummaryCard.preview_mode_ref = -1
-		SummaryCard.preview_mode = false		
-		reveal_blueprint(true)
-		await reveal_summarycard(false)
-		active_menu_is_open = false
 		show_build_complete.emit()
 
 	ActiveMenuNode.use_color = Color.WHITE
@@ -576,6 +551,11 @@ func show_fabrication_options() -> void:
 	
 	# allows for wait response
 	await show_build_complete
+	SummaryCard.preview_mode_ref = -1
+	SummaryCard.preview_mode = false		
+	reveal_blueprint(true)
+	await reveal_summarycard(false)
+	active_menu_is_open = false		
 # --------------------------------------------------------------------------------------------------
 
 ## --------------------------------------------------------------------------------------------------
@@ -1142,7 +1122,7 @@ func check_btn_states() -> void:
 	var has_programs:bool = !abilities.is_empty() 
 	var has_modules:bool = !passive_abilities.is_empty()
 	var has_negative_energy:bool = await ROOM_UTIL.has_negative_energy()
-	var draw_count:int = base_states.draw_cards.size()	
+	var draw_count:int = base_states.utility_cards.size()	
 	var rooms_in_wing_count:int = purchased_facility_arr.filter(func(x): 
 		return x.location.floor == current_location.floor and x.location.ring == current_location.ring 
 	).size()	
@@ -1166,14 +1146,14 @@ func check_btn_states() -> void:
 
 			# show only starting/info if new game
 			HasEventBtn.show() if has_priority_events else HasEventBtn.hide()
-			EndTurnBtn.is_disabled = has_priority_events or has_negative_energy or draw_count != 0
+			EndTurnBtn.is_disabled = has_priority_events or has_negative_energy # or draw_count != 0
 			
 			# info button
 			IntelBtn.show() if !has_priority_events else IntelBtn.hide()
 			
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
-			FabricationBtn.is_flashing = draw_count != 0
+			#FabricationBtn.is_flashing = draw_count != 0
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_ring_powered
 			#FabricationBtn.title = "BLUEPRINT" #if rooms_in_wing_count == 0 else "FABRICATION"

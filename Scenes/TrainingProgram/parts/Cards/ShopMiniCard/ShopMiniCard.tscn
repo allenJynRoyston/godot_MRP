@@ -1,31 +1,27 @@
-[gd_scene load_steps=16 format=3 uid="uid://jacix3bun03x"]
+[gd_scene load_steps=15 format=3 uid="uid://jacix3bun03x"]
 
 [ext_resource type="Script" uid="uid://cy177bercus4u" path="res://Scenes/TrainingProgram/parts/Cards/ShopMiniCard/shop_mini_card.gd" id="1_7gy44"]
-[ext_resource type="PackedScene" uid="uid://cggkdkq5crbw4" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardBody.tscn" id="2_6v8ap"]
-[ext_resource type="PackedScene" uid="uid://b38bvj8mti387" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardDrawerImage.tscn" id="3_k052h"]
 [ext_resource type="PackedScene" uid="uid://dmxs2kvip2i80" path="res://Scenes/TrainingProgram/parts/Cards/CardBody/parts/CardStatus.tscn" id="4_ctiee"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="5_ctiee"]
+[ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="5_k052h"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="6_k052h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i4yqh"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7qley"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ak4pd"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ctiee"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k052h"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5y5s"]
-bg_color = Color(1, 0.74902, 0.2, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ak4pd"]
+bg_color = Color(0, 0, 0, 0.792157)
 corner_radius_top_left = 5
-corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.580392)
-shadow_size = 1
-shadow_offset = Vector2(3, 3)
+
+[sub_resource type="LabelSettings" id="LabelSettings_k052h"]
+font = ExtResource("5_ctiee")
+font_size = 12
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k052h"]
 bg_color = Color(1, 0.74902, 0.2, 1)
@@ -34,7 +30,7 @@ corner_radius_top_right = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_bx5nk"]
 font = ExtResource("5_ctiee")
-font_size = 14
+font_size = 12
 font_color = Color(0, 0, 0, 1)
 outline_size = 2
 outline_color = Color(1, 1, 1, 0.301961)
@@ -46,17 +42,15 @@ bg_color = Color(1, 0.74902, 0.2, 1)
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5260f"]
-bg_color = Color(0.131379, 0.131379, 0.131379, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="LabelSettings" id="LabelSettings_ctiee"]
+font = ExtResource("5_ctiee")
+font_size = 22
+outline_color = Color(0, 0, 0, 0.615686)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctiee"]
+bg_color = Color(0.140447, 0.140447, 0.140447, 1)
 
 [node name="ShopMiniCard" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.6)
@@ -66,131 +60,189 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_i4yqh")
 script = ExtResource("1_7gy44")
 ref = 0
-is_hoverable = false
 
 [node name="CardTextureRect" type="TextureRect" parent="."]
 layout_mode = 2
-texture = SubResource("ViewportTexture_7qley")
+texture = SubResource("PlaceholderTexture2D_ak4pd")
+expand_mode = 1
 stretch_mode = 6
 
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(175, 175)
+[node name="PanelContainer" type="PanelContainer" parent="CardTextureRect"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -52.0
+offset_top = -50.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ak4pd")
 
-[node name="CardBody" parent="SubViewport" instance=ExtResource("2_6v8ap")]
-card_size = Vector2(175, 175)
-border_color = Color(0, 0, 0, 1)
+[node name="MarginContainer" type="MarginContainer" parent="CardTextureRect/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 35
 
-[node name="TextureRect" parent="SubViewport/CardBody" index="0"]
-texture = SubResource("ViewportTexture_ctiee")
+[node name="OwnCountLabel" type="Label" parent="CardTextureRect/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "99"
+label_settings = SubResource("LabelSettings_k052h")
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="SubViewport" parent="SubViewport/CardBody" index="1"]
-size = Vector2i(175, 175)
+[node name="LevelRequired" parent="CardTextureRect" instance=ExtResource("4_ctiee")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+title = "RESEARCH REQUIRED"
+use_color = Color(1, 0, 0, 1)
+v_offset = 60
 
-[node name="CardBody" parent="SubViewport/CardBody/SubViewport/Control" index="0"]
-custom_minimum_size = Vector2(175, 175)
-offset_right = 175.0
-offset_bottom = 175.0
-
-[node name="Front" parent="SubViewport/CardBody/SubViewport/Control/CardBody" index="0"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxEmpty_k052h")
-
-[node name="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer" index="0"]
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="FrontDrawerContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer" index="0"]
+[node name="FrontDrawerContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="CardDrawerImage" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer" index="0" instance=ExtResource("3_k052h")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_f5y5s")
-title = ""
-is_left_side = true
-
-[node name="AlreadyResearched" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("4_ctiee")]
-visible = false
-layout_mode = 2
-title = "RESEARCHED"
-use_color = Color(1, 0, 0, 1)
-v_offset = 60
-
-[node name="LevelRequired" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage" instance=ExtResource("4_ctiee")]
-visible = false
-layout_mode = 2
-title = "LEVEL X REQUIRED"
-icon = 48
-use_color = Color(1, 0, 0, 1)
-v_offset = 60
-
-[node name="NamePanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+[node name="NamePanel" type="PanelContainer" parent="MarginContainer/FrontDrawerContainer"]
 z_index = 1
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
+size_flags_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_k052h")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/FrontDrawerContainer/NamePanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/NamePanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
 
-[node name="NameTag" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer/HBoxContainer"]
+[node name="NameTag" type="Label" parent="MarginContainer/FrontDrawerContainer/NamePanel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "SCP NAME"
+text = "SCP
+NAME"
 label_settings = SubResource("LabelSettings_bx5nk")
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="CostPanel" type="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage"]
+[node name="CostPanel" type="PanelContainer" parent="MarginContainer/FrontDrawerContainer"]
 z_index = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_6v8ap")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 1
+theme_override_constants/separation = 5
 alignment = 1
 
-[node name="SVGIcon" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("6_k052h")]
+[node name="CostIcon" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer" instance=ExtResource("6_k052h")]
 layout_mode = 2
 icon = 44
+icon_color = Color(1, 1, 1, 1)
 
-[node name="CostLabel" type="Label" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(1, 1)
+[node name="CostLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "5"
-label_settings = SubResource("LabelSettings_bx5nk")
-autowrap_mode = 3
+label_settings = SubResource("LabelSettings_ctiee")
 
-[node name="PanelContainer" parent="SubViewport/CardBody/SubViewport/Control/CardBody/Back" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_5260f")
+[node name="HighlightControl" type="Control" parent="."]
+z_index = 1
+layout_mode = 2
 
-[editable path="SubViewport/CardBody"]
+[node name="HighlightIcon" parent="HighlightControl" instance=ExtResource("6_k052h")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+offset_left = -11.0
+offset_top = 3.0
+offset_right = 14.0
+offset_bottom = 28.0
+icon = 33
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(25, 25)
+flip_h = true
+
+[node name="HighlightIcon2" parent="HighlightControl" instance=ExtResource("6_k052h")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+offset_left = 136.0
+offset_top = 3.0
+offset_right = 161.0
+offset_bottom = 28.0
+icon = 33
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(25, 25)
+
+[node name="HighlightIcon3" parent="HighlightControl" instance=ExtResource("6_k052h")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+offset_left = 87.0
+offset_top = 140.0
+offset_right = 112.0
+offset_bottom = 165.0
+icon = 43
+icon_color = Color(0, 0, 0, 1)
+icon_size = Vector2(25, 25)
+flip_h = true
+
+[node name="HighlightIcon4" parent="HighlightControl" instance=ExtResource("6_k052h")]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+offset_left = 137.0
+offset_top = 95.0
+offset_right = 162.0
+offset_bottom = 120.0
+icon = 33
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(25, 25)
+
+[node name="EmptyPanel" type="PanelContainer" parent="."]
+z_index = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ctiee")
+
+[node name="Control" type="Control" parent="."]
+z_as_relative = false
+layout_mode = 2
+
+[node name="PurchaseLabel" type="Label" parent="Control"]
+z_index = 11
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "PURCHASED!"
+label_settings = ExtResource("5_k052h")
+horizontal_alignment = 1
+vertical_alignment = 1

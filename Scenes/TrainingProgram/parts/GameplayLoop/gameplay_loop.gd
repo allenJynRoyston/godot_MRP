@@ -213,13 +213,27 @@ var initial_values:Dictionary = {
 						"events_pending": [],
 					}	
 
-			
 		return {
-			"draw_cards": [
-				ROOM.REF.UTIL_LEVEL_UP_1,
-				ROOM.REF.UTIL_ADD_CURRENCY_MONEY,
-				ROOM.REF.UTIL_BUFF_EFFECT_1,
-			],
+			"metrics": {
+				RESOURCE.METRICS.MORALE: 0,
+				RESOURCE.METRICS.SAFETY: 0,
+				RESOURCE.METRICS.READINESS: 0
+			},			
+			"department_cards": {
+				ROOM.REF.PROCUREMENT_DEPARTMENT: 1,
+				
+				ROOM.REF.ADMIN_DEPARTMENT: 1,
+				ROOM.REF.ENGINEERING_DEPARTMENT: 1,
+				ROOM.REF.LOGISTICS_DEPARTMENT: 1,
+				ROOM.REF.THEOLOGY_DEPARTMENT: 1,
+				ROOM.REF.TEMPORAL_DEPARTMENT: 1,
+				ROOM.REF.MISCOMMUNICATION_DEPARTMENT: 1,
+			},
+			"utility_cards": {
+				ROOM.REF.UTIL_LEVEL_UP_1: 2,
+				ROOM.REF.UTIL_ADD_CURRENCY_SCIENCE: 1,
+				ROOM.REF.UTIL_DOUBLE_ECON_OUTPUT: 1,
+			},
 			"event_record": {
 				# record events and their outcomes
 			},
@@ -1438,6 +1452,11 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
 									department_config_data.department_properties.level += props.level
 							# -------------------
+							if props.has("bonus"):
+								for department in departments_only_list:
+									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
+									department_config_data.department_properties.bonus += props.bonus									
+							# -------------------
 							if props.has("metric"):
 								for department in departments_only_list:
 									var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
@@ -1481,6 +1500,8 @@ func room_calculate_stats(new_room_config:Dictionary) -> void:
 				if !utility_props.is_empty():
 					if utility_props.has("level"):
 						room_config_data.department_properties.level += utility_props.level
+					if utility_props.has("bonus"):
+						room_config_data.department_properties.bonus += utility_props.bonus
 					if utility_props.has("metric") and utility_props.metric not in room_config_data.department_properties.metric:
 						room_config_data.department_properties.metric.append( utility_props.metric )
 					if utility_props.has("currency") and utility_props.currency not in room_config_data.department_properties.currency:
@@ -1556,7 +1577,7 @@ func calculate_final(new_room_config:Dictionary) -> void:
 		
 		if room_level_config.is_activated and !room_level_config.department_properties.is_empty():
 			var department_properties:Dictionary = room_level_config.department_properties
-			var level:int = department_properties.level
+			var level:int = department_properties.level + department_properties.bonus
 
 			for ref in department_properties.currency:
 				match department_properties.operator:

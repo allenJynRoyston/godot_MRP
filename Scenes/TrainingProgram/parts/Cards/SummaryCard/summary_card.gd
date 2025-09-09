@@ -33,7 +33,8 @@ extends PanelContainer
 @onready var StatusLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/StatusOverlay/CenterContainer/StatusLabel
 
 # Description 
-@onready var QuoteLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/Quote/PanelContainer/MarginContainer/QuoteLabel
+@onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/MarginContainer/VBoxContainer/DescriptionLabel
+@onready var QuoteLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Description/MarginContainer/VBoxContainer/QuoteLabel
 
 # modules
 @onready var ModuleContainer:VBoxContainer = $MarginContainer/VBoxContainer/ModuleContainer
@@ -75,6 +76,16 @@ extends PanelContainer
 	set(val):
 		preview_mode = val
 		on_preview_mode_update()
+		
+@export var show_sidebar:bool = true : 
+	set(val):
+		show_sidebar = val
+		U.debounce(str(self, "_on_update"), on_update)	
+		
+@export var ignore_benefits:bool = false : 
+	set(val):
+		ignore_benefits = val
+		U.debounce(str(self, "_on_update"), on_update)	
 
 const NormalFont:FontFile = preload("res://Fonts/PixelOperator.ttf")
 const BoldFont:FontFile = preload("res://Fonts/PixelOperator-Bold.ttf")
@@ -144,19 +155,20 @@ func on_update() -> void:
 	if preview_mode and preview_mode_ref != -1:
 		var preview_data:Dictionary = ROOM_UTIL.return_data(preview_mode_ref)		
 		var adjacent_rooms_refs:Array = ROOM_UTIL.find_refs_of_adjuacent_rooms(use_location)
-
-		for ref in adjacent_rooms_refs:
-			var adjacent_room_details:Dictionary = ROOM_UTIL.return_data(ref)
-			var utility_props:Dictionary = adjacent_room_details.utility_props
-			if !utility_props.is_empty():
-				if utility_props.has("level"):
-					preview_data.department_properties.level += utility_props.level
-				if utility_props.has("metric"):
-					preview_data.department_properties.metric.append( utility_props.metric )
-				if utility_props.has("currency"):
-					preview_data.department_properties.currency.append( utility_props.currency )
-				if utility_props.has("effect"):
-					preview_data.department_properties.effects.append( utility_props.effect )
+		
+		if !ignore_benefits:
+			for ref in adjacent_rooms_refs:
+				var adjacent_room_details:Dictionary = ROOM_UTIL.return_data(ref)
+				var utility_props:Dictionary = adjacent_room_details.utility_props
+				if !utility_props.is_empty():
+					if utility_props.has("level"):
+						preview_data.department_properties.level += utility_props.level
+					if utility_props.has("metric"):
+						preview_data.department_properties.metric.append( utility_props.metric )
+					if utility_props.has("currency"):
+						preview_data.department_properties.currency.append( utility_props.currency )
+					if utility_props.has("effect"):
+						preview_data.department_properties.effects.append( utility_props.effect )
 							
 		# shape for preview
 		fill( preview_data, {}, true )
@@ -207,11 +219,12 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 
 	# assign details
 	show()
-	SidePanel.show()
+	SidePanel.show() if show_sidebar else SidePanel.hide()
 	InfoContainer.show()
 
 	# basics
 	NameTag.text = room_details.name 
+	DescriptionLabel.text = room_details.description
 	QuoteLabel.text = '"%s"' % room_details.quote
 	
 	# fill image
@@ -234,44 +247,80 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP	
 	TempPanel.show() if room_details.environmental.temp != 0 else TempPanel.hide()
 	
+	if !room_details.utility_props.is_empty():
+		RoomImpact.show()
+		RoomEffects.hide()
+		var utility_props:Dictionary = room_details.utility_props
+		var final_string:String = ""
+		if utility_props.has("level"):
+			final_string += "[b][color='GREEN']ADD[/color] %s LEVEL[/b] to effected departments.\n" % utility_props.level
+		if utility_props.has("metric"):
+			var metric_data:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric)
+			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to effected departments.\n" % [metric_data.name]	
+		if utility_props.has("currency"):
+			var currency_data:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
+			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to effected departments.\n" % [currency_data.name]
+		if utility_props.has("effect"):
+			var effect_data:Dictionary = ROOM.return_effect(utility_props.effect)
+			final_string += effect_data.description.call(ROOM.OPERATOR.ADD)
+	
+		RoomImpactLabel.text = str("[b][color='ORANGE']EFFECT:[/color][/b] ", final_string)
+	
+	
 	# add department properties
 	if !room_details.department_properties.is_empty():
 		RoomImpact.show()
 		# add operator string		
-		var department_properties:Dictionary = room_details.department_properties
-		var has_no_production:bool = department_properties.metric.is_empty() and department_properties.currency.is_empty()
-		var operator_string:String
-		
-		if !has_no_production:
-			match department_properties.operator:
-				ROOM.OPERATOR.ADD:
-					operator_string = "[color='GREEN']%s[/color]" % ["PRODUCES"]
-				ROOM.OPERATOR.SUBTRACT:
-					operator_string = "[color='RED']%s[/color]" % ["EXPENDS"]
-		
-		# adds metrics
-		var resource_string:String = "[color='ORANGE']"
+		var department_properties: Dictionary = room_details.department_properties
+		var has_no_production: bool = department_properties.metric.is_empty() and department_properties.currency.is_empty()
+		var amount:int = department_properties.level + department_properties.bonus
+		var metrics_string: String = ""
+		var currency_string: String = ""
+
+		# --- Metrics ---
 		if !department_properties.metric.is_empty():
-			for ref in department_properties.metric:
-				var metric_details:Dictionary = RESOURCE_UTIL.return_metric(ref)
-				resource_string += "%s / " % [metric_details.name]
-			resource_string = resource_string.left(resource_string.length() - 3)
-		resource_string += "[/color]"
-		
-		# add currency
-		if !department_properties.currency.is_empty():
-			if !department_properties.metric.is_empty():
-				resource_string += " and "
+			var combined_metrics: String = ""
+			for i in range(department_properties.metric.size()):
+				var ref = department_properties.metric[i]
+				var metric_details: Dictionary = RESOURCE_UTIL.return_metric(ref)
+				combined_metrics += metric_details.name
+				if i < department_properties.metric.size() - 1:
+					combined_metrics += "/"
 			
-			resource_string += "[color='PURPLE']"
-			for ref in department_properties.currency:
-				var currency_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
-				resource_string += "%s / " % [currency_details.name]
-			resource_string = resource_string.left(resource_string.length() - 3)
-			resource_string += "[/color]"		
-		
-		# then add it all as one string
-		RoomImpactLabel.text = "This facility has no output." if has_no_production else "[b]%s  %s  %s[/b] every day." % [operator_string, department_properties.level, resource_string] 
+			if department_properties.operator == ROOM.OPERATOR.ADD:
+				metrics_string = "[color='GREEN'][b]INCREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
+			elif department_properties.operator == ROOM.OPERATOR.SUBTRACT:
+				metrics_string = "[color='RED'][b]DECREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
+
+		# --- Currency ---
+		if !department_properties.currency.is_empty():
+			var combined_currency: String = ""
+			for i in range(department_properties.currency.size()):
+				var ref = department_properties.currency[i]
+				var currency_details: Dictionary = RESOURCE_UTIL.return_currency(ref)
+				combined_currency += currency_details.name
+				if i < department_properties.currency.size() - 1:
+					combined_currency += "/"
+			
+			if department_properties.operator == ROOM.OPERATOR.ADD:
+				currency_string = "[color='GREEN'][b]PRODUCES[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
+			elif department_properties.operator == ROOM.OPERATOR.SUBTRACT:
+				currency_string = "[color='RED'][b]EXPENDS[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
+
+		# --- Combine ---
+		var final_string: String = ""
+		if has_no_production:
+			final_string = "This facility has no output."
+		else:
+			if !metrics_string.is_empty() and !currency_string.is_empty():
+				final_string = "%s.\n%s every day." % [metrics_string, currency_string]
+			elif !metrics_string.is_empty():
+				final_string = "%s." % metrics_string
+			elif !currency_string.is_empty():
+				final_string = "%s every day." % currency_string
+
+		RoomImpactLabel.text = "[color='ORANGE'][b]EFFECT:[/b][/color]  %s" % final_string
+
 		LvlTag.text = "LVL %s" % [room_details.department_properties.level]
 
 		# get effects
@@ -280,16 +329,28 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		else:
 			RoomEffects.show()
 
-			var final_string:String = ""
+			var effect_string:String = ""
 			for index in department_properties.effects.size():
 				var effect_details:Dictionary = ROOM.return_effect(department_properties.effects[index])
 				var new_rich_label:RichTextLabel = RichTextLabel.new()
-				var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location) 
-				final_string += "[color=%s][b]PASSIVE %s:[/b][/color] %s \n" % [('WHITE' if applies else 'SLATE_GRAY') if !is_preview else "WHITE", "" if applies else "(INACTIVE)", effect_details.description.call(department_properties.operator)]				
+				var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location)
+
+				if applies:
+					effect_string += "[color=ORANGE][b]PASSIVE:[/b][/color] %s\n" % effect_details.description.call(department_properties.operator)
+				else:
+					var regex = RegEx.new()
+					regex.compile("\\[.*?\\]")
+					var stripped_text:String = regex.sub(effect_details.description.call(department_properties.operator), "", true)
+					effect_string += "[color=ORANGE][b]PASSIVE (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
+
 				if index != department_properties.effects.size() - 1:
-					final_string += "\n"
-			RoomEffectLabel.text = final_string
-	else:
+					effect_string += "\n"
+
+			RoomEffectLabel.text = effect_string
+
+	
+	# hide all
+	if room_details.utility_props.is_empty() and room_details.department_properties.is_empty():
 		LvlTag.text = ""
 		RoomEffects.hide()
 		RoomImpact.hide()			

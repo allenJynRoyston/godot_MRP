@@ -9,23 +9,15 @@ enum DURATION {DAILY, WEEKLY}
 enum REF {
 	DEBUG_ROOM,
 	
-	# -----------------  ADMIN
-	ADMIN_DEPARTMENT, ADMIN_BRANCH,
-	ADMIN_ROOM_1, ADMIN_ROOM_2, ADMIN_ROOM_3, ADMIN_ROOM_4, ADMIN_ROOM_5, 
-	ADMIN_ROOM_6, ADMIN_ROOM_7, ADMIN_ROOM_8, ADMIN_ROOM_9, ADMIN_ROOM_10,
-	
-	# -----------------  LOGISTICS
-	LOGISTICS_DEPARTMENT, LOGISTICS_BRANCH,
-	LOGISTICS_ROOM_1, LOGISTICS_ROOM_2, LOGISTICS_ROOM_3, LOGISTICS_ROOM_4, LOGISTICS_ROOM_5, 
-	LOGISTICS_ROOM_6, LOGISTICS_ROOM_7, LOGISTICS_ROOM_8, LOGISTICS_ROOM_9, LOGISTICS_ROOM_10,
-	
-	# -----------------  ENGINEERING
-	ENGINEERING_DEPARTMENT, ENGINEERING_BRANCH,
-	ENG_ROOM_1, ENG_ROOM_2, ENG_ROOM_3, ENG_ROOM_4, ENG_ROOM_5,
-	ENG_ROOM_6, ENG_ROOM_7, ENG_ROOM_8, ENG_ROOM_9, ENG_ROOM_10,	
-	
-	# -----------------  ANTIMEMETICS DEPARTMENTS
+	# -----------------  DEPARTMENTS
+	PROCUREMENT_DEPARTMENT,
+	ADMIN_DEPARTMENT, 
+	LOGISTICS_DEPARTMENT, 
+	ENGINEERING_DEPARTMENT, 
 	ANTIMEMETICS_DEPARTMENT,
+	THEOLOGY_DEPARTMENT,
+	TEMPORAL_DEPARTMENT,
+	MISCOMMUNICATION_DEPARTMENT,
 	
 	# -----------------  CONTAINMENT_CELL
 	CONTAINMENT_CELL,
@@ -40,8 +32,8 @@ enum REF {
 	UTIL_ADD_METRIC_MORALE, UTIL_ADD_METRIC_SAFETY, UTIL_ADD_METRIC_READINESS,
 	UTIL_RMV_METRIC_MORALE, UTIL_RMV_METRIC_SAFETY, UTIL_RMV_METRIC_READINESS,
 	
-	UTIL_BUFF_EFFECT_1, UTIL_BUFF_EFFECT_2,
-	UTIL_DEBUFF_EFFECT_1, UTIL_DEBUFF_EFFECT_2,
+	UTIL_DOUBLE_ECON_OUTPUT, UTIL_TRIPLE_ECON_OUTPUT, UTIL_HALF_ECON_OUTPUT, UTIL_ZERO_ECON_OUTPUT,
+
 }
 
 
@@ -57,35 +49,47 @@ enum CATEGORY {
 	BRANCH,
 	CONTAINMENT, 
 	
+	PROCUREMENT,
 	ADMIN,
 	LOGISTICS,
 	ENGINEERING,
 	ANTIMEMETICS,
+	THEOLOGY,
+	TEMPORAL,
+	MISCOMMUNICATION,
 
 	UTILITY, 
 	UNIQUE
 }
 
 enum EFFECTS {
+	PROCUREMENT_DEFAULT,
 	ADMIN_DEFAULT,
 	ENGINEERING_DEFAULT,
 	LOGISTICS_DEFAULT,
 	ANTIMEMETICS_DEFAULT,
+	THEOLOGY_DEFAULT,
+	TEMPORAL_DEFAULT,
+	MISCOMMUNICATION_DEFAULT,
 	
-	EFFECT_1,
-	EFFECT_2,
+	# ---------------
+	DOUBLE_ECON_OUTPUT,
+	TRIPLE_ECON_OUTPUT,
+	HALF_ECON_OUTPUT,
+	ZERO_ECON_OUTPUT,
 }
 
 func return_category_title(ref: CATEGORY) -> String:
 	match ref:
-		CATEGORY.UTILITY:
-			return "UTILITY"
-					
 		CATEGORY.DEPARTMENT:
 			return "DEPARTMENT"
 		CATEGORY.BRANCH:
 			return "BRANCH"
+		CATEGORY.CONTAINMENT:
+			return "CONTAINMENT"
 
+		CATEGORY.PROCUREMENT:
+			return "PROCUREMENT"
 		CATEGORY.ADMIN:
 			return "ADMIN"
 		CATEGORY.LOGISTICS:
@@ -93,13 +97,22 @@ func return_category_title(ref: CATEGORY) -> String:
 		CATEGORY.ENGINEERING:
 			return "ENGINEERING"
 		CATEGORY.ANTIMEMETICS:
-			return "ANTIMEMETICS"			
-			
-		CATEGORY.CONTAINMENT:
-			return "CONTAINMENT"
+			return "THERE IS NO ANTIMEMETICS"
+		CATEGORY.THEOLOGY:
+			return "THEOLOGY"
+		CATEGORY.TEMPORAL:
+			return "TEMPORAL"
+		CATEGORY.MISCOMMUNICATION:
+			return "MISCOMMUNICATION"
+
+		CATEGORY.UTILITY:
+			return "UTILITY"
+		CATEGORY.UNIQUE:
+			return "UNIQUE"
 
 		_:
 			return "UNKNOWN"
+
 
 func get_op_string(operation:ROOM.OPERATOR) -> String:
 	return "[b][color='GREEN']PRODUCES[/color][b]" if operation == ROOM.OPERATOR.ADD else "[b][color='RED']EXPENDS[/color][/b]"
@@ -107,10 +120,19 @@ func get_op_string(operation:ROOM.OPERATOR) -> String:
 func return_effect(ref:EFFECTS) -> Dictionary:
 	match ref:
 		# -----------------------
+		EFFECTS.PROCUREMENT_DEFAULT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "If an ADMIN DEPARTMENT is built in the same WING, this facility %s +3 more." % [get_op_string(operation)],
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT, _location),
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.bonus += 3
+			}		
 		EFFECTS.ADMIN_DEFAULT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "If LEVEL is 2 or less, then this building also %s READINESS." % [get_op_string(operation)],
+					return "If LEVEL is 2 or less, then this facility also %s READINESS." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level <= 2,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
@@ -145,27 +167,77 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD
 			}						
+		EFFECTS.THEOLOGY_DEFAULT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "If you have more MONEY than SCIENCE, add SCIENCE modifer to this facility, else, add MONEY." % [get_op_string(operation)],
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					var money:int = GAME_UTIL.resources_data[RESOURCE.CURRENCY.MONEY].amount
+					var science:int = GAME_UTIL.resources_data[RESOURCE.CURRENCY.SCIENCE].amount
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.append(RESOURCE.CURRENCY.SCIENCE if money > science else RESOURCE.CURRENCY.MONEY)
+			}
+		EFFECTS.TEMPORAL_DEFAULT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "This facility %s MATERIAL on even days, and SCIENCE on odd days." % [get_op_string(operation)],
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					var day:int = GAME_UTIL.progress_data.day - 1
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.append(RESOURCE.CURRENCY.MATERIAL if day % 2 == 0 else RESOURCE.CURRENCY.SCIENCE)
+			}
+		EFFECTS.MISCOMMUNICATION_DEFAULT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "If there is another MISSCOMMUNICATION DEPARTMENT present then this facility %s instead of %s, else reverse." % [get_op_string(ROOM.OPERATOR.ADD), get_op_string(ROOM.OPERATOR.SUBTRACT)],
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					var contains_another:bool = ROOM_UTIL.ring_contains(ROOM.REF.MISCOMMUNICATION_DEPARTMENT, _location)
+					print("contains_another: ", contains_another)
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD if contains_another else ROOM.OPERATOR.SUBTRACT
+			}						
 		# -----------------------
 		
 		# -----------------------
-		EFFECTS.EFFECT_1:
+		EFFECTS.DOUBLE_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "EFFECT 1",
+					return "[b]DOUBLE[/b] the output of any ECONOMY values.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					pass
 			}
-		EFFECTS.EFFECT_2:
+		EFFECTS.TRIPLE_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "EFFECT 2",
+					return "[b]TRIPLE[/b] the output of any ECONOMY values.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					pass
 			}
+		EFFECTS.HALF_ECON_OUTPUT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "[b]HALVES[/b] the output of any ECONOMY values.",
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					pass
+			}
+		EFFECTS.ZERO_ECON_OUTPUT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "[b]SET[/b] the output of any ECONOMY values to 0.",
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					pass
+			}			
 		# -----------------------
 		
 	return {}

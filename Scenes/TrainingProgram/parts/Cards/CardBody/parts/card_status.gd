@@ -25,12 +25,12 @@ extends PanelContainer
 		v_offset = val
 		on_v_offset_update()
 		
-func _ready() -> void:
+func _ready() -> void:	
 	on_title_update()
 	on_icon_update()
 	on_use_color_update()
 	on_v_offset_update()
-	
+		
 func on_title_update() -> void:
 	if !is_node_ready():return
 	TitleLabel.text = title

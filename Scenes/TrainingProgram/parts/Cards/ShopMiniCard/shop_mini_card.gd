@@ -1,17 +1,22 @@
-extends MouseInteractions
+extends Control
 
-@onready var CardBody:Control = $SubViewport/CardBody
-@onready var CardDrawerImage:Control = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage
-@onready var NameTagLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/NamePanel/MarginContainer/HBoxContainer/NameTag
-@onready var CostLabel:Label = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/CostPanel/MarginContainer/HBoxContainer/CostLabel
+@onready var CardTextureRect:TextureRect = $CardTextureRect
+@onready var HighlightControl:Control = $HighlightControl
+@onready var NamePanel:PanelContainer = $MarginContainer/FrontDrawerContainer/NamePanel
+@onready var CostPanel:PanelContainer = $MarginContainer/FrontDrawerContainer/CostPanel
+@onready var HighlightIcon3:Control = $HighlightControl/HighlightIcon3
+@onready var NameTagLabel:Label = $MarginContainer/FrontDrawerContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
+@onready var CostLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/CostLabel
+@onready var CostIcon:Control = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/CostIcon
+@onready var EmptyPanel:PanelContainer = $EmptyPanel
+@onready var PurchaseLabel:Label = $Control/PurchaseLabel
 
-@onready var AlreadyResearched:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/AlreadyResearched
-@onready var LevelRequired:PanelContainer = $SubViewport/CardBody/SubViewport/Control/CardBody/Front/PanelContainer/MarginContainer/FrontDrawerContainer/CardDrawerImage/LevelRequired
+@onready var OwnCountLabel:Label = $CardTextureRect/PanelContainer/MarginContainer/OwnCountLabel
+@onready var LevelRequired:PanelContainer = $CardTextureRect/LevelRequired
 
-@export var flip:bool = false : 
-	set(val):
-		flip = val
-		on_flip_update()
+@onready var name_panel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
+@onready var cost_panel_stylebox:StyleBoxFlat = CostPanel.get("theme_override_styles/panel").duplicate()
+@onready var nametag_label_label_setting:LabelSettings = NameTagLabel.get("label_settings").duplicate()
 
 @export var is_highlighted:bool = false : 
 	set(val):
@@ -23,59 +28,57 @@ extends MouseInteractions
 		ref = val
 		on_ref_update()
 		
-const BlackAndWhiteShader:ShaderMaterial = preload("res://Shader/BlackAndWhite/template.tres")
-
 var index:int
+var requires_unlock:bool
+var base_states:Dictionary = {}
 var resources_data:Dictionary = {} 
 var shop_unlock_purchase:Array = []
 var room_config:Dictionary = {}
 
-var border_color:Color
-var is_clickable:bool = false
-var show_card:bool = true
-
-var onClick:Callable = func():pass
-var onHover:Callable = func():pass
-var onDismiss:Callable = func():pass
-
 # --------------------------------------
 func _init() -> void:
-	super._init()
+	SUBSCRIBE.subscribe_to_base_states(self)
 	SUBSCRIBE.subscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.subscribe_to_resources_data(self)
 	SUBSCRIBE.subscribe_to_shop_unlock_purchases(self)
 	SUBSCRIBE.subscribe_to_room_config(self)
 
 func _exit_tree() -> void:
-	super._exit_tree()
+	SUBSCRIBE.unsubscribe_to_base_states(self)
 	SUBSCRIBE.unsubscribe_to_purchased_facility_arr(self)
 	SUBSCRIBE.unsubscribe_to_resources_data(self)
 	SUBSCRIBE.unsubscribe_to_shop_unlock_purchases(self)	
 	SUBSCRIBE.unsubscribe_to_room_config(self)
 
 func _ready() -> void:
-	super._ready()
-	
-	on_focus()
+	NameTagLabel.set("label_settings", nametag_label_label_setting)
+	CostLabel.set("label_settings", nametag_label_label_setting)	
+	NamePanel.set("theme_override_styles/panel", name_panel_stylebox)
+	CostPanel.set("theme_override_styles/panel", cost_panel_stylebox)
 	on_ref_update()
 	on_is_highlighted_update()
-
+	PurchaseLabel.modulate.a = 0	
+	
 func reset() -> void:
 	is_highlighted = false
-	update_content()
+	update_content()	
 # --------------------------------------
 
 # --------------------------------------	
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
-	CardBody.border_color = border_color.lightened(0.3) if is_highlighted else border_color
-	self.modulate = Color(1, 1, 1, 1 if is_highlighted else 0.6)
+	for stylebox in [cost_panel_stylebox, name_panel_stylebox]:
+		stylebox.bg_color = Color(1.0, 0.749, 0.2, 1) if is_highlighted else Color(1.0, 0.749, 0.2, 1).darkened(0.5)
+	nametag_label_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
+	CostIcon.icon_color = nametag_label_label_setting.font_color
+	HighlightControl.show() if is_highlighted else HighlightControl.hide()
+	modulate.a = 1
 # --------------------------------------		
 
 # --------------------------------------	
-func on_flip_update() -> void:
-	if !is_node_ready():return
-	CardBody.flip = flip
+func on_base_states_update(new_val:Dictionary) -> void:
+	base_states = new_val
+	U.debounce( str(self.name, "_update_content"), update_content )
 	
 func on_shop_unlock_purchases_update(new_val:Array) -> void:
 	shop_unlock_purchase = new_val
@@ -91,82 +94,53 @@ func on_room_config_update(new_val:Dictionary) -> void:
 
 func on_ref_update() -> void:
 	if !is_node_ready():return
-	CardBody.instant_flip(ref == -1)
 	update_content()
+
+func play_purchase_animation() -> void:
+	PurchaseLabel.modulate.a = 1
+	U.tween_node_property(PurchaseLabel, "modulate:a", 0, 0.3)
+	await U.tween_node_property(PurchaseLabel, "position:y", -10, 0.3, 0, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	PurchaseLabel.position.y = 0
 # --------------------------------------		
 
 # --------------------------------------		
 func update_content() -> void:	
-	if !is_node_ready() or resources_data.is_empty() or room_config.is_empty() or ref == -1:return
-	var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-	var panel_nodes:Array = [AlreadyResearched, LevelRequired]
-	var room_unlock_val:int = room_config.base.room_unlock_val
+	if !is_node_ready() or resources_data.is_empty() or room_config.is_empty():return
 	
-	for node in panel_nodes:
-		node.hide()
-	
-	NameTagLabel.text = room_details.name
-	CardDrawerImage.img_src = room_details.img_src
-	CostLabel.text = str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
-	is_clickable = true
-	show_card = true
-	
-	# -------------------- ALREADY PURCHASED
-	if !room_details.requires_unlock or room_details.ref in shop_unlock_purchase:
-		for node in panel_nodes:
-			if node in [AlreadyResearched]:
-				node.show() 
-			else:
-				node.hide()
-
-		is_clickable = false
-		
-		hint_title = room_details.name
-		hint_icon = SVGS.TYPE.BUILD
-		hint_description = room_details.description
+	if ref == -1:
+		EmptyPanel.show()
 		return
 	
-	# -------------------- LEVEL REQUIRED
-	if room_details.ref not in shop_unlock_purchase and room_details.unlock_level > room_unlock_val:
-		for node in panel_nodes:
-			if node in [LevelRequired]:
-				node.show() 
-			else:
-				node.hide()
-
-		NameTagLabel.text = '???'
-		CardDrawerImage.img_src = ""
-		show_card = false
-
-		is_clickable = false
-		LevelRequired.title = "LEVEL %s REQUIRED" % [room_details.unlock_level]
-		hint_title = "???"
-		hint_icon = SVGS.TYPE.QUESTION_MARK
-		hint_description = "Prerequisite not met."
-		return		
+	var room_details:Dictionary = ROOM_UTIL.return_data(ref)	
+	var room_unlock_val:int = room_config.base.room_unlock_val
+	var own_count:int = 0
 	
-	# -------------------- PURCHASABLE
-	hint_title = room_details.name
-	hint_icon = SVGS.TYPE.BUILD
-	hint_description = room_details.description		
-# --------------------------------------		
-
-# --------------------------------------	
-func on_focus(state:bool = false) -> void:
-	if !is_node_ready():return
+	EmptyPanel.hide()
+	
+	NameTagLabel.text = room_details.name
+	CardTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
+	CostLabel.text = str(room_details.costs.purchase) # str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
+	
+	if ref in base_states.department_cards:
+		own_count = base_states.department_cards[ref]
+	if ref in base_states.utility_cards:
+		own_count = base_states.utility_cards[ref]
 		
-	if state:
-		GBL.change_mouse_icon.call_deferred(GBL.MOUSE_ICON.POINTER)
-		onHover.call()
-	else:
-		GBL.change_mouse_icon(GBL.MOUSE_ICON.CURSOR)
-# --------------------------------------	
 
-# --------------------------------------	
-func on_mouse_click(node:Control, btn:int, on_hover:bool) -> void:
-	if on_hover:
-		if !is_clickable:return
-		#onClick.call()
+	HighlightIcon3.hide() if own_count == 0 else HighlightIcon3.show()
+	
+
+	# -------------------- LEVEL REQUIRED
+	if room_details.requires_unlock and (room_details.ref not in shop_unlock_purchase): #and and room_details.unlock_level > room_unlock_val:
+		LevelRequired.show()
+		NameTagLabel.text = '?'
+		CardTextureRect.texture = null
+		LevelRequired.title = "RESEARCH TO UNLOCK"
+		OwnCountLabel.text = "-"
+		CostIcon.icon = SVGS.TYPE.RESEARCH
+		requires_unlock = true
 	else:
-		onDismiss.call()
-# --------------------------------------		
+		LevelRequired.hide()
+		OwnCountLabel.text = "OWNS (%s)" % str(own_count)
+		CostIcon.icon = SVGS.TYPE.RING
+		requires_unlock = false
