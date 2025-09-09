@@ -616,7 +616,6 @@ func room_count_per_ring(ref:int, use_location:Dictionary = current_location) ->
 	return filter.size()
 # ------------------------------------------------------------------------------		
 	
-
 # ------------------------------------------------------------------------------
 func build_count(ref:int) -> int:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref)
@@ -627,6 +626,12 @@ func build_count(ref:int) -> int:
 func ring_contains(ref:int, use_location:Dictionary = current_location) -> bool:
 	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == use_location.floor and i.location.ring == use_location.ring)
 	return filter.size() > 0
+# ------------------------------------------------------------------------------		
+
+# ------------------------------------------------------------------------------	
+func ring_contains_count(ref:int, use_location:Dictionary = current_location) -> int:
+	var filter:Array = purchased_facility_arr.filter(func(i):return i.ref == ref and i.location.floor == use_location.floor and i.location.ring == use_location.ring)
+	return filter.size()
 # ------------------------------------------------------------------------------		
 	
 # ------------------------------------------------------------------------------
@@ -902,10 +907,15 @@ func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Ar
 
 func get_department_refs() -> Array:
 	return [
+		ROOM.REF.PROCUREMENT_DEPARTMENT,
 		ROOM.REF.ADMIN_DEPARTMENT, 
 		ROOM.REF.LOGISTICS_DEPARTMENT, 
 		ROOM.REF.ENGINEERING_DEPARTMENT,
-		ROOM.REF.ANTIMEMETICS_DEPARTMENT
+		ROOM.REF.ANTIMEMETICS_DEPARTMENT,
+		ROOM.REF.PATAPHYSICS_DEPARTMENT,
+		ROOM.REF.THEOLOGY_DEPARTMENT,
+		ROOM.REF.TEMPORAL_DEPARTMENT,
+		ROOM.REF.MISCOMMUNICATION_DEPARTMENT,
 	]
 		 
 # ------------------------------------------------------------------------------	

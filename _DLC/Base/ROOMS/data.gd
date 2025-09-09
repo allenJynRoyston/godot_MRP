@@ -386,6 +386,45 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
 	},
 }
+
+var PATAPHYSICS_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.PATAPHYSICS_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.PATAPHYSICS,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "PATAPHYSICS DEPARTMENT",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "PATAPHYSICS DEPT", 	
+	"description": "A department that studies (and questions) the basis for reality.",
+	"quote": "Reality is only the preferred option.",
+
+	"costs": {
+		"build": 10,
+		"unlock": 25,
+		"purchase": 15,
+	},	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [],
+		"level": 1,
+		"bonus": 0,
+		"effects": [ROOM.EFFECTS.PATAPHYSICS_DEFAULT],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the PATAPHYSICS DEPT."
+	},
+}
 #endregion
 
 
@@ -437,6 +476,7 @@ var list:Array[Dictionary] = [
 	THEOLOGY_DEPARTMENT,
 	TEMPORAL_DEPARMENT,
 	MISCOMMUNICATION_DEPARTMENT,
+	PATAPHYSICS_DEPARTMENT,
 	
 	# UTILITY:
 	UTIL_LEVEL_UP_1, UTIL_LEVEL_UP_2, UTIL_LEVEL_UP_3,

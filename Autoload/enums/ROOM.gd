@@ -18,6 +18,7 @@ enum REF {
 	THEOLOGY_DEPARTMENT,
 	TEMPORAL_DEPARTMENT,
 	MISCOMMUNICATION_DEPARTMENT,
+	PATAPHYSICS_DEPARTMENT,
 	
 	# -----------------  CONTAINMENT_CELL
 	CONTAINMENT_CELL,
@@ -57,6 +58,7 @@ enum CATEGORY {
 	THEOLOGY,
 	TEMPORAL,
 	MISCOMMUNICATION,
+	PATAPHYSICS,
 
 	UTILITY, 
 	UNIQUE
@@ -71,6 +73,7 @@ enum EFFECTS {
 	THEOLOGY_DEFAULT,
 	TEMPORAL_DEFAULT,
 	MISCOMMUNICATION_DEFAULT,
+	PATAPHYSICS_DEFAULT,
 	
 	# ---------------
 	DOUBLE_ECON_OUTPUT,
@@ -104,6 +107,8 @@ func return_category_title(ref: CATEGORY) -> String:
 			return "TEMPORAL"
 		CATEGORY.MISCOMMUNICATION:
 			return "MISCOMMUNICATION"
+		CATEGORY.PATAPHYSICS:
+			return "PATAPHYSICS"
 
 		CATEGORY.UTILITY:
 			return "UTILITY"
@@ -195,48 +200,64 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var contains_another:bool = ROOM_UTIL.ring_contains(ROOM.REF.MISCOMMUNICATION_DEPARTMENT, _location)
-					print("contains_another: ", contains_another)
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD if contains_another else ROOM.OPERATOR.SUBTRACT
-			}						
+					var count:int = ROOM_UTIL.ring_contains_count(ROOM.REF.MISCOMMUNICATION_DEPARTMENT, _location)
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD if count > 1 else ROOM.OPERATOR.SUBTRACT
+			}
+		EFFECTS.PATAPHYSICS_DEFAULT:
+			return {
+				"description":	func(operation:int) -> String:
+					return "Other departments in this wing are the same level as this facility." % [get_op_string(operation)],
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					var departments:Array = ROOM_UTIL.get_departments(_location)
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					for item in departments:
+						_new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_properties.level = level
+			}
 		# -----------------------
 		
 		# -----------------------
 		EFFECTS.DOUBLE_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "[b]DOUBLE[/b] the output of any ECONOMY values.",
+					return "[b]DOUBLE[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					pass
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = level * 2
+
 			}
 		EFFECTS.TRIPLE_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "[b]TRIPLE[/b] the output of any ECONOMY values.",
+					return "[b]TRIPLE[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					pass
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = level * 3
 			}
 		EFFECTS.HALF_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "[b]HALVES[/b] the output of any ECONOMY values.",
+					return "[b]HALVES[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					pass
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = int(round(level * 0.5))
 			}
 		EFFECTS.ZERO_ECON_OUTPUT:
 			return {
 				"description":	func(operation:int) -> String:
-					return "[b]SET[/b] the output of any ECONOMY values to 0.",
+					return "[b]SET[/b] the LEVEL nearby departments to [b]ZERO[/b].",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					pass
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = 0
 			}			
 		# -----------------------
 		
