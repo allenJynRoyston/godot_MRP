@@ -44,15 +44,6 @@ outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
-font = ExtResource("8_budmt")
-font_size = 12
-font_color = Color(0, 0, 0, 1)
-outline_size = 2
-outline_color = Color(1, 1, 1, 0.301961)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wi2bx"]
 bg_color = Color(0, 0, 0, 1)
 
@@ -71,6 +62,15 @@ outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
+font = ExtResource("8_budmt")
+font_size = 12
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
 bg_color = Color(0, 0, 0, 1)
@@ -302,15 +302,6 @@ label_settings = SubResource("LabelSettings_q31gb")
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "lvl 1"
-label_settings = SubResource("LabelSettings_mee86")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
@@ -367,12 +358,24 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "IMPACT"
 label_settings = SubResource("LabelSettings_q31gb")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "lvl 1"
+label_settings = SubResource("LabelSettings_mee86")
+horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 3
 

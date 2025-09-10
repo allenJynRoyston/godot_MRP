@@ -5,10 +5,11 @@ extends PanelContainer
 @onready var InfoContainer:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
-@onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
+@onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/LvlTag
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
 
 # sidepanel
+@onready var NamePanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel
 @onready var SidePanel:VBoxContainer = $Control/SidePanel
 
 # cost
@@ -58,6 +59,7 @@ extends PanelContainer
 
 @onready var node_list:Array = [StatusOverlay] 
 
+@onready var namepanel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
 @onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
 
 @export var hide_card:bool = false 
@@ -110,9 +112,10 @@ func _init() -> void:
 
 func _exit_tree() -> void:
 	SUBSCRIBE.unsubscribe_to_room_config(self)
-	
-	
+
 func _ready() -> void:
+	InfoContainer.set("theme_override_styles/panel", infocontainer_stylebox)
+	NamePanel.set("theme_override_styles/panel", namepanel_stylebox)
 	on_modules_only_update()
 	on_preview_mode_update()
 	on_preview_mode_ref_update()
@@ -223,7 +226,6 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	InfoContainer.show()
 
 	# basics
-	NameTag.text = room_details.name 
 	DescriptionLabel.text = room_details.description
 	QuoteLabel.text = '"%s"' % room_details.quote
 	
@@ -250,6 +252,13 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	if !room_details.utility_props.is_empty():
 		RoomImpact.show()
 		RoomEffects.hide()
+		LvlTag.hide()
+		infocontainer_stylebox.bg_color = Color.WHITE
+		namepanel_stylebox.bg_color = Color.WHITE
+		
+		# update name
+		NameTag.text = "%s  (%s)" % [room_details.name, room_details.shortname]
+		
 		var utility_props:Dictionary = room_details.utility_props
 		var final_string:String = ""
 		if utility_props.has("level"):
@@ -268,8 +277,15 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	
 	# add department properties
-	if !room_details.department_properties.is_empty():
+	if !room_details.department_properties.is_empty():		
 		RoomImpact.show()
+		LvlTag.show()
+		infocontainer_stylebox.bg_color = COLORS.primary_color
+		namepanel_stylebox.bg_color = COLORS.primary_color
+		
+		# update name
+		NameTag.text = room_details.name 
+		
 		# add operator string		
 		var department_properties: Dictionary = room_details.department_properties
 		var has_no_production: bool = department_properties.metric.is_empty() and department_properties.currency.is_empty()
@@ -313,13 +329,13 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 			final_string = "This facility has no output."
 		else:
 			if !metrics_string.is_empty() and !currency_string.is_empty():
-				final_string = "%s.\n%s every day." % [metrics_string, currency_string]
+				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s.\n\n[color='ORANGE'][b]EFFECT:[/b][/color] %s every day." % [metrics_string, currency_string]
 			elif !metrics_string.is_empty():
-				final_string = "%s." % metrics_string
+				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s." % metrics_string
 			elif !currency_string.is_empty():
-				final_string = "%s every day." % currency_string
+				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s every day." % currency_string
 
-		RoomImpactLabel.text = "[color='ORANGE'][b]EFFECT:[/b][/color]  %s" % final_string
+		RoomImpactLabel.text = final_string
 
 		LvlTag.text = "LVL %s" % [room_details.department_properties.level]
 

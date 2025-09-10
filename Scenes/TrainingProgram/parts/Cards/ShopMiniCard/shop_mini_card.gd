@@ -4,15 +4,21 @@ extends Control
 @onready var HighlightControl:Control = $HighlightControl
 @onready var NamePanel:PanelContainer = $MarginContainer/FrontDrawerContainer/NamePanel
 @onready var CostPanel:PanelContainer = $MarginContainer/FrontDrawerContainer/CostPanel
+
+@onready var HighlightIcon1:Control = $HighlightControl/HighlightIcon1
+@onready var HighlightIcon2:Control = $HighlightControl/HighlightIcon2
 @onready var HighlightIcon3:Control = $HighlightControl/HighlightIcon3
+@onready var HighlightIcon4:Control = $HighlightControl/HighlightIcon4
+
 @onready var NameTagLabel:Label = $MarginContainer/FrontDrawerContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 @onready var CostLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer/CostLabel
 @onready var CostIcon:Control = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer/CostIcon
 @onready var EmptyPanel:PanelContainer = $EmptyPanel
 @onready var PurchaseLabel:Label = $Control/PurchaseLabel
 
-@onready var OwnCountLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2/OwnCountLabel
-@onready var OwnCapacityLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2/OwnCapacityLabel
+@onready var OwnHBox:HBoxContainer = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/OwnHBox
+@onready var OwnCountLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/OwnHBox/OwnCountLabel
+@onready var OwnCapacityLabel:Label = $MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/OwnHBox/OwnCapacityLabel
 @onready var LevelRequired:PanelContainer = $CardTextureRect/LevelRequired
 
 @onready var name_panel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
@@ -74,7 +80,8 @@ func reset() -> void:
 func on_is_highlighted_update() -> void:
 	if !is_node_ready():return
 	for stylebox in [cost_panel_stylebox, name_panel_stylebox]:
-		stylebox.bg_color = Color(1.0, 0.749, 0.2, 1) if is_highlighted else Color(1.0, 0.749, 0.2, 1).darkened(0.5)
+		stylebox.bg_color = Color(1.0, 0.8, 0.2, 1) if !requires_unlock else Color.DARK_GRAY
+		stylebox.bg_color.a = 0.9 if !is_highlighted else 1
 	nametag_label_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
 	own_count_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
 	
@@ -125,7 +132,7 @@ func update_content() -> void:
 	
 	EmptyPanel.hide()
 	
-	NameTagLabel.text = room_details.name
+	
 	CardTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
 	CostLabel.text = str(room_details.costs.purchase) # str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
 	
@@ -135,20 +142,31 @@ func update_content() -> void:
 		own_count = base_states.utility_cards[ref]
 		
 
-	HighlightIcon3.hide() if own_count == 0 else HighlightIcon3.show()
 	
+	LevelRequired.icon = SVGS.TYPE.NONE
 
 	# -------------------- LEVEL REQUIRED
 	if room_details.requires_unlock and (room_details.ref not in shop_unlock_purchase): #and and room_details.unlock_level > room_unlock_val:
 		LevelRequired.show()
-		NameTagLabel.text = '?'
+		OwnHBox.hide()
+		HighlightIcon3.hide()
+		for node in [HighlightIcon1, HighlightIcon2, HighlightIcon3, HighlightIcon4]:
+			node.icon_color = Color.WHITE
+		
+		NameTagLabel.text = room_details.shortname
 		CardTextureRect.texture = null
 		LevelRequired.title = "RESEARCH TO UNLOCK"
 		OwnCountLabel.text = "-"
 		CostIcon.icon = SVGS.TYPE.RESEARCH
 		requires_unlock = true
 	else:
+		NameTagLabel.text = room_details.shortname
 		LevelRequired.hide()
+		OwnHBox.show()
+		HighlightIcon3.show()
+		for node in [HighlightIcon1, HighlightIcon2, HighlightIcon3, HighlightIcon4]:
+			node.icon_color = Color.BLACK
+					
 		OwnCountLabel.text = str(own_count)
 		OwnCapacityLabel.text = str("/", room_details.own_limit)
 		CostIcon.icon = SVGS.TYPE.RING

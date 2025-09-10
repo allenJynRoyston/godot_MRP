@@ -121,7 +121,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dkurb")
 title = "BACK"
 assigned_key = "B"
-icon = 28
+icon = 33
 hidden_but_usable = false
 allow_hint = false
 

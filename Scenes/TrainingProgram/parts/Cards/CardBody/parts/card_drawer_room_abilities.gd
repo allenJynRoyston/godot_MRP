@@ -131,7 +131,8 @@ func update_node() -> void:
 					var on_cooldown:bool = false
 					var at_level_threshold:bool = abl_lvl >= ability.lvl_required
 					var cooldown_val:int = 0
-
+					var ability_title:String = ability.name
+					
 					if ability_uid in base_states.room[designation].ability_on_cooldown:
 						cooldown_val = base_states.room[designation].ability_on_cooldown[ability_uid]		
 						on_cooldown = base_states.room[designation].ability_on_cooldown[ability_uid] > 0
@@ -141,11 +142,11 @@ func update_node() -> void:
 					if !at_level_threshold:
 						SummaryBtnNode.hint_description = "Requires upgrade to use."
 					else:					
-						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !on_cooldown else "On cooldown for %s days." % [cooldown_val]
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability_title if !on_cooldown else "On cooldown for %s days." % [cooldown_val]
 					
 					SummaryBtnNode.is_disabled = !is_activated or !at_level_threshold
 					SummaryBtnNode.use_alt = on_cooldown
-					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.description if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
+					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability_title if !on_cooldown else 'COOLDOWN (%s)' % [cooldown_val]
 					SummaryBtnNode.icon =  SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.FROZEN if on_cooldown else SVGS.TYPE.MEDIA_PLAY
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
@@ -177,6 +178,8 @@ func update_node() -> void:
 					var is_active = base_states.room[designation].passives_enabled[ability_uid] if ability_uid in base_states.room[designation].passives_enabled else false	
 					var at_level_threshold:bool = ability.lvl_required <= abl_lvl
 					var at_mtf_limit:bool = false
+					var apply_to_all:bool = ability.has("apply_all")
+					var ability_title:String = "(%s) %s" % ["ALL" if apply_to_all else "SELF", ability.description.call(ability.ref, use_location)]
 					
 					# check if scp is required for passive to be used
 					if "scp_required" in ability and ability.scp_required:
@@ -199,7 +202,7 @@ func update_node() -> void:
 					if !at_level_threshold:
 						SummaryBtnNode.hint_description = "Requires upgrade to use."
 					else:
-						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability.description if !not_enough_energy else "Not enough energy."
+						SummaryBtnNode.hint_description = "Requires activation" if !is_activated else ability_title if !not_enough_energy else "Not enough energy."
 						
 					if at_mtf_limit:
 						SummaryBtnNode.hint_description = "At MTF team capacity." 
@@ -215,7 +218,7 @@ func update_node() -> void:
 							SummaryBtnNode.hint_description = "At MTF team capacity." if (mtf_list.size() >= 3 and !is_active) else SummaryBtnNode.hint_description
 
 					
-					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.description
+					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.name
 					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed or at_mtf_limit else SVGS.TYPE.DELETE
 					
 					SummaryBtnNode.show_checked_panel = true

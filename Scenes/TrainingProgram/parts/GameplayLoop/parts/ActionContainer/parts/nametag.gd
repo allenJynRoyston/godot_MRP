@@ -1,13 +1,16 @@
 @tool
 extends Control
 
-@onready var ContentPanel:PanelContainer = $ContentControl/PanelContainer
-@onready var ConstructionIcon:Control = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/ConstructionIcon
-@onready var StatusIcon:Control = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/StatusIcon
-@onready var NameLabel:Label = $ContentControl/PanelContainer/MarginContainer/HBoxContainer/NameLabel
+@onready var ContentPanel:PanelContainer = $ContentControl/ContentPanel
+@onready var ConstructionIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/ConstructionIcon
+@onready var StatusIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/StatusIcon
+@onready var NameLabel:Label = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/MarginContainer/NameLabel
+@onready var LevelPanel:PanelContainer = $ContentControl/LevelPanel
+@onready var LevelLabel:Label = $ContentControl/LevelPanel/MarginContainer/HBoxContainer/MarginContainer/LevelLabel
 @onready var DownArrowIcon:Control = $ArrowControl/DownArrowIcon
 
 @onready var name_label_settings:LabelSettings = NameLabel.get("label_settings").duplicate()
+@onready var contentpanel_stylebox:StyleBoxFlat = ContentPanel.get("theme_override_styles/panel").duplicate()
 
 @export var index:int = -1 : 
 	set(val):
@@ -54,6 +57,7 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_process(self)
 
 func _ready() -> void:
+	ContentPanel.set("theme_override_styles/panel", contentpanel_stylebox)
 	NameLabel.set("label_settings", name_label_settings)
 	update_node()
 # --------------------------------------------
@@ -63,9 +67,9 @@ func change_camera_view(viewpoint:CAMERA.VIEWPOINT) -> void:
 	match viewpoint:
 		# ---------------
 		CAMERA.VIEWPOINT.OVERHEAD:
-			focus_on_current = true
+			focus_on_current = false
 			show_empty = true
-			offset_y = 90
+			offset_y = -20
 			if index in [0, 1, 3]:
 				alignment = U.ALIGN.LEFT
 			if index in [2, 4, 6]:
@@ -74,12 +78,12 @@ func change_camera_view(viewpoint:CAMERA.VIEWPOINT) -> void:
 				alignment = U.ALIGN.RIGHT
 		# ---------------
 		CAMERA.VIEWPOINT.DISTANCE:
-			offset_y = 90
+			offset_y = -20
 			focus_on_current = true
 			show_empty = false
 		# ---------------
 		_:
-			offset_y = 100
+			offset_y = -10
 			focus_on_current = false
 			show_empty = false
 			alignment = U.ALIGN.CENTER
@@ -109,7 +113,6 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	if previous_ring != current_location.ring or previous_floor != current_location.floor:
 		previous_ring = current_location.ring 
 		previous_floor = current_location.floor
-
 		U.debounce(str(self.name, "_update_node"), func():update_node())
 
 func on_alignment_update() -> void:
@@ -118,16 +121,19 @@ func on_alignment_update() -> void:
 	await U.tick()
 	match alignment:
 		U.ALIGN.CENTER:
+			U.tween_node_property(LevelPanel, "position:x", -(ContentPanel.size.x/2) - 1, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -(ContentPanel.size.x/2) + 10, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.LEFT:
+			U.tween_node_property(LevelPanel, "position:x", -ContentPanel.size.x + 20, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -ContentPanel.size.x + 30, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, -10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.RIGHT:
+			U.tween_node_property(LevelPanel, "position:x", -8, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", 0, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 30, 0.3, func(new_val) -> void:
 				offset_x = new_val	
@@ -158,16 +164,19 @@ func update_node() -> void:
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
 	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location)
+	var is_department:bool = !is_room_empty and !room_details.department_properties.is_empty()
+	var is_utility:bool = !is_room_empty and !room_details.utility_props.is_empty()
 	
+	# empty room
 	if is_room_empty:
+		LevelPanel.hide()
 		ConstructionIcon.hide()
-		
-		StatusIcon.show()
-		StatusIcon.icon = SVGS.TYPE.DOT
+		StatusIcon.hide()
+		StatusIcon.icon = SVGS.TYPE.NONE
 		StatusIcon.icon_color = Color.BLACK
-
+		# update name label
 		name_label_settings.font_color = Color.BLACK
-		name_str = "Empty" if show_empty else ""
+		name_str = "EMPTY" if show_empty else ""
 		if show_empty and focus_on_current:
 			if current_location.room == index:
 				set_fade(true)
@@ -179,21 +188,73 @@ func update_node() -> void:
 		return
 	
 
-	# update label
-	name_label_settings.font_size = 12 
-	name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK
+	# is_department
+	if is_department:
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+		# hide and update icons
+		LevelPanel.show()
+		ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
+		StatusIcon.show() if !is_under_construction else StatusIcon.hide()
+		StatusIcon.icon = SVGS.TYPE.CONTAIN
+		StatusIcon.icon_color = Color.BLACK if is_activated else Color.DARK_RED
+		# content 
+		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2)
+		LevelLabel.text = str(room_level_config.department_properties.level)
+
+		# update Name
+		name_label_settings.font_size = 12 
+		name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK		
+		name_str = room_details.shortname.substr(0, 13)
+		
+	# is utility...
+	if is_utility:
+		# hide and update icons
+		ConstructionIcon.hide()
+		StatusIcon.hide()
+		LevelPanel.hide()
+		StatusIcon.icon_color = Color.BLACK
+		DownArrowIcon.icon_color = Color.WHITE
+		
+		# content
+		contentpanel_stylebox.bg_color = Color.WHITE
+		
+		# update name
+		name_label_settings.font_size = 14 
+		name_label_settings.font_color =  Color.BLACK
+		
+		# update utility
+		var utility_props:Dictionary = room_details.utility_props		
+		if !utility_props.is_empty():
+			# ---------------------------
+			if utility_props.has("level"):
+				StatusIcon.icon_size = Vector2(12, 12)
+				StatusIcon.icon = SVGS.TYPE.PLUS
+				StatusIcon.show()
+				
+				name_str = str(utility_props.level)
+			# ---------------------------
+			if utility_props.has("metric"):
+				var metric_details:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric)
+				StatusIcon.icon_size = Vector2(12, 12)
+				StatusIcon.icon = SVGS.TYPE.PLUS
+				StatusIcon.show()
+				name_str = metric_details.name
+			# ---------------------------
+			if utility_props.has("currency"):
+				var currency_details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
+				StatusIcon.icon_size = Vector2(12, 12)
+				StatusIcon.icon = SVGS.TYPE.PLUS
+				StatusIcon.show()
+				name_str = currency_details.name
+			# ---------------------------
+			if utility_props.has("effect"):
+				var effect_details:Dictionary = ROOM.return_effect(utility_props.effect)
+				name_str = room_details.shortname
+		
 	
-	# icons
-	ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
-	StatusIcon.show() if !is_under_construction else StatusIcon.hide()
-	StatusIcon.icon = SVGS.TYPE.NONE
-	StatusIcon.icon_color = Color.DARK_GREEN if is_activated else Color.DARK_RED
-	
-	# name
-	name_str = room_details.shortname.substr(0, 13)
-	
+	# show only when focused on
 	if focus_on_current:
-		if current_location.room == index:
+		if focus_on_current and current_location.room == index:
 			set_fade(true)
 		else:
 			set_fade(false)
@@ -226,4 +287,5 @@ func _physics_process(delta: float) -> void:
 		shifted_val -= 1
 		NameLabel.text = shift_string_backward(name_str, shifted_val)
 		ContentPanel.size = Vector2(1, 1)
+		LevelPanel.size = Vector2(1, 1)
 # --------------------------------------------

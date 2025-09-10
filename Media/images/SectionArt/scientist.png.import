@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cry45e114fi52"
-path="res://.godot/imported/admin.png-df4dce8e0f6250dc0ed2dfebb7f9937f.ctex"
+uid="uid://bdyheg3n8tomg"
+path="res://.godot/imported/scientist.png-fd922c1091226e211df024d6197aad71.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Media/images/SectionArt/admin.png"
-dest_files=["res://.godot/imported/admin.png-df4dce8e0f6250dc0ed2dfebb7f9937f.ctex"]
+source_file="res://Media/images/SectionArt/scientist.png"
+dest_files=["res://.godot/imported/scientist.png-fd922c1091226e211df024d6197aad71.ctex"]
 
 [params]
 

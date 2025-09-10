@@ -72,7 +72,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 		ROOM.REF.UTIL_LEVEL_UP_1:
 			room_data = {
 				"categories": [ROOM.CATEGORY.UTILITY],
-				"name": "MEETING ROOM",
+				"name": "BASIC OFFICE",
 				"shortname": "LVL+1",
 				"description": "Polished surfaces reflect light oddly across the ceiling.",
 				"quote": "Nothing boosts morale like staring at fluorescent lighting.",
@@ -106,6 +106,43 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 					"level": 3,
 				}
 			}
+
+		ROOM.REF.UTIL_ADD_ENERGY_1:
+			room_data = {
+				"categories": [ROOM.CATEGORY.UTILITY],
+				"name": "ENERGY 1",
+				"shortname": "ENERGY+1",
+				"description": "",
+				"quote": "",
+				"costs": get_costs(1),
+				"utility_props": {
+					"energy": 3,
+				}
+			}
+		ROOM.REF.UTIL_ADD_ENERGY_2:
+			room_data = {
+				"categories": [ROOM.CATEGORY.UTILITY],
+				"name": "ENERGY 2",
+				"shortname": "ENERGY+2",
+				"description": "",
+				"quote": "",
+				"costs": get_costs(0),
+				"utility_props": {
+					"energy": 5,
+				}
+			}			
+		ROOM.REF.UTIL_ADD_ENERGY_3:
+			room_data = {
+				"categories": [ROOM.CATEGORY.UTILITY],
+				"name": "ENERGY 3",
+				"shortname": "ENERGY+3",
+				"description": "",
+				"quote": "",
+				"costs": get_costs(2),
+				"utility_props": {
+					"energy": 10,
+				}
+			}		
 
 		# ----------------------------------------------------------------------
 		ROOM.REF.UTIL_ADD_CURRENCY_MONEY:
@@ -170,7 +207,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Auditors: because someone has to make money feel guilty.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_currency": RESOURCE.CURRENCY.MONEY,
+					"blacklist_currency": RESOURCE.CURRENCY.MONEY,
 				}
 			}
 
@@ -183,7 +220,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Experiments: results may vary, sanity not guaranteed.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_currency": RESOURCE.CURRENCY.SCIENCE,
+					"blacklist_currency": RESOURCE.CURRENCY.SCIENCE,
 				}				
 			}			
 
@@ -196,7 +233,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Measure twice, cut once, panic always.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_currency": RESOURCE.CURRENCY.MATERIAL,
+					"blacklist_currency": RESOURCE.CURRENCY.MATERIAL,
 				}				
 			}
 
@@ -209,7 +246,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Secrets here gossip more than the staff.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_currency": RESOURCE.CURRENCY.CORE,
+					"blacklist_currency": RESOURCE.CURRENCY.CORE,
 				}				
 			}
 
@@ -262,7 +299,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Cheerful conversation not included.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_metric": RESOURCE.METRICS.MORALE,
+					"blacklist_metric": RESOURCE.METRICS.MORALE,
 				}				
 			}
 
@@ -275,7 +312,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "You’ll get plenty of ‘alone time’ in here.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_metric": RESOURCE.METRICS.SAFETY,
+					"blacklist_metric": RESOURCE.METRICS.SAFETY,
 				}				
 			}			
 
@@ -288,7 +325,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Nap responsibly, or at least theatrically.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"remove_metric": RESOURCE.METRICS.READINESS,
+					"blacklist_metric": RESOURCE.METRICS.READINESS,
 				}				
 			}
 

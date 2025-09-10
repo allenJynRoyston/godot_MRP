@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cigcbc6iwp13m" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionPanel/action_panel.gd" id="1_0jgqq"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="2_dr1up"]
 [ext_resource type="Shader" uid="uid://dbt8u5cipx8ne" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionPanel/ActionPanel.gdshader" id="3_ykh6c"]
-[ext_resource type="Texture2D" uid="uid://cby48wufiylx5" path="res://Media/images/SectionArt/engineer.png" id="4_m4ab1"]
+[ext_resource type="Texture2D" uid="uid://rqsm6tkboe1g" path="res://Media/images/SectionArt/engineer.png" id="4_m4ab1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ykh6c"]
 

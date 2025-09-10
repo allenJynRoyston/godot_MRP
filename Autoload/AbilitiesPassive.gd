@@ -1,6 +1,21 @@
 extends Node
 
 enum REF {
+	# EFFECTS
+	PROCUREMENT_PASSIVE_1,
+	PROCUREMENT_PASSIVE_2,
+	
+	ADMIN_PASSIVE_1,
+	ENGINEERING_PASSIVE_1,
+	SECURITY_PASSIVE_1,
+	SCIENCE_PASSIVE_1,
+	LOGISTICS_PASSIVE_1,
+	ANTIMEMETICS_PASSIVE_1,
+	THEOLOGY_PASSIVE_1,
+	TEMPORAL_PASSIVE_1,
+	MISCOMMUNICATION_PASSIVE_1,
+	PATAPHYSICS_PASSIVE_1,
+	
 	# ADD RESOURCE TO ALL
 	ADD_MONEY_TO_ALL_IN_RING,
 	ADD_SCIENCE_TO_ALL_IN_RING,
@@ -20,162 +35,215 @@ enum REF {
 	MTF_D,
 	MTF_E,
 	MTF_F,
-	
-
-	
-
 }
-
-# --------------------------------- SUBDIVISIONS
-#var PREDICTIVE_TIMELINE:Dictionary = {
-	#"name": "PREDICTIVE TIMELINE",
-	#"description": "Show a most likely timeline of events.",
-	#"energy_cost": 1,
-	#"conditionals": [CONDITIONALS.TYPE.ENABLE_TIMELINE]
-#}
-#
-#var OBJECTIVE_ASSIST:Dictionary = {
-	#"name": "OBJECTIVES ASSIST",
-	#"description": "Objectives are always visible on the main screen.",
-	#"energy_cost": 1,
-	#"conditionals": [CONDITIONALS.TYPE.ENABLE_OBJECTIVES]
-#}
-
-
-#var UPGRADE_ABL_LVL:Dictionary = {
-	#"name": "LVL +1",
-	#"description": "Increases the ability level of ALL rooms in a wing.",
-	#"energy_cost": 4,
-	##"wing": func(new_room_config:Dictionary, use_location:Dictionary) -> Dictionary:
-		##new_room_config.floor[use_location.floor].ring[use_location.ring].abl_lvl += 1
-		##return new_room_config,
-#}
-#
-#var ADDITIONAL_STORE_UNLOCKS:Dictionary = {
-	#"name": "ADDITIONAL STORE UNLOCKS",
-	#"description": "Additional facilities can be unlocked in the store.",
-	#"energy_cost": 4,
-	##"floor_effect": func(floor_config_data:Dictionary) -> void:
-		##if floor_config_data.room_unlock_val < 1:
-			##floor_config_data.room_unlock_val = 1
-		#
-#}
-
-# ---------------------------------
-#var SUPPLY_SECURITY:Dictionary = {
-	#"name": "EMPLOY SECURITY",
-	#"description": "Makes SECURITY personnel available for the entire wing.",
-	#"energy_cost": 1,
-	#"personnel": [
-		#RESOURCE.PERSONNEL.SECURITY
-	#]
-#}
-
-## ---------------------------------
-#var FIREARM_TRAINING:Dictionary = {
-	#"name": "FIREARM TRAINING",
-	#"description": "Increases SAFETY rating by 1.",
-	#"energy_cost": 2,
-	#"metrics": {
-		#RESOURCE.METRICS.SAFETY: 1
-	#}
-#}
-#
-## ---------------------------------
-#var HEAVY_WEAPONS_TRAINING:Dictionary = {
-	#"name": "HEAVY WEAPONS TRAINING",
-	#"description": "Increases READINESS rating by 1.",
-	#"energy_cost": 3,
-	#"metrics": {
-		#RESOURCE.METRICS.READINESS: 1
-	#}
-#}
-#
-## ---------------------------------
-#var TECH_SUPPORT:Dictionary = {
-	#"name": "TECH SUPPORT",
-	#"description": "Increases READINESS rating by 1.",
-	#"energy_cost": 2,
-	#"metrics": {
-		#RESOURCE.METRICS.READINESS: 1
-	#}	
-#}
-#
-#
-## ---------------------------------
-#var MEMETIC_SHIELDING:Dictionary = {
-	#"name": "MEMETIC SHIELDING",
-	#"description": "Increases READINESS rating by 1.",
-	#"energy_cost": 3,
-	#"metrics":{
-		#RESOURCE.METRICS.READINESS: 1
-	#}
-#}
-#
-## ---------------------------------
-#var GENERATE_RESEARCH_FROM_SCP:Dictionary = {
-	#"name": "GENERATE RESEARCH",
-	#"description": "Research into contained object generates research.",
-	#"energy_cost": 4,
-	#"scp_required": true,
-	#"currencies":{
-		#RESOURCE.CURRENCY.SCIENCE: 1
-	#}
-#}
-#
-#var GENERATE_MONEY_FROM_SCP:Dictionary = {
-	#"name": "GENERATE MONEY",
-	#"description": "Research into contained object generates money.",
-	#"energy_cost": 4,
-	#"scp_required": true,
-	#"currencies":{
-		#RESOURCE.CURRENCY.MONEY: 1
-	#}
-#}
-# ---------------------------------
 
 
 
 # ---------------------------------
 func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var ability:Dictionary = {}
-
+	var regex = RegEx.new()
+	regex.compile("\\[.*?\\]")
+	
 	match ref:
+		#region SUBDIVSION
+		REF.PROCUREMENT_PASSIVE_1:
+			ability = {
+				"name": "SYNCHRONIZED",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_1
+				}
+			}
+		REF.PROCUREMENT_PASSIVE_2:
+			ability = {
+				"name": "STREAMLINED",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 5,
+				"apply_all": {
+					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_2
+				}
+			}
+			
+		REF.ENGINEERING_PASSIVE_1:
+			ability = {
+				"name": "ENERGY BOOST",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.ENGINEERING_PASSIVE_1
+				}
+			}
+		REF.LOGISTICS_PASSIVE_1:
+			ability = {
+				"name": "EFFICIENCY",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.LOGISTICS_PASSIVE_1
+				}
+			}
+		REF.SCIENCE_PASSIVE_1:
+			ability = {
+				"name": "SCIENCE!",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.SCIENCE_PASSIVE_1
+				}
+			}			
+		REF.ADMIN_PASSIVE_1:
+			ability = {
+				"name": "AGILE METHODOLOGY",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.ADMIN_PASSIVE_1
+				}
+			}
+		REF.SECURITY_PASSIVE_1:
+			ability = {
+				"name": "TWO OR LESS",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.SECURITY_PASSIVE_1
+				}
+			}
+		REF.TEMPORAL_PASSIVE_1:
+			ability = {
+				"name": "SHIFTING PRIORITIES",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.TEMPORAL_PASSIVE_1
+				}
+			}
+		REF.THEOLOGY_PASSIVE_1:
+			ability = {
+				"name": "MO MONEY MO PROBLEMS",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.THEOLOGY_PASSIVE_1
+				}
+			}				
+		REF.PATAPHYSICS_PASSIVE_1:
+			ability = {
+				"name": "THIS IS A MIROR YOU ARE A TYPO",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.PATAPHYSICS_PASSIVE_1
+				}
+			}
+		REF.ANTIMEMETICS_PASSIVE_1:
+			ability = {
+				"name": "TWO OR LESS",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.ANTIMEMETICS_PASSIVE_1
+				}
+			}
+		REF.MISCOMMUNICATION_PASSIVE_1:
+			ability = {
+				"name": "TWO WRONGS EQUAL A RIGHT",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
+					# strip out bbbcode
+					return regex.sub(description_string, "", true),
+				"energy_cost": 3,
+				"apply_self": {
+					"effect": ROOM.EFFECTS.MISCOMMUNICATION_PASSIVE_1
+				}
+			}			
+			
 		#region SUBDIVSION
 		# SUBDIVISONS
 		REF.ADD_MONEY_TO_ALL_IN_RING:
 			ability = {
 				"name": "ADD MONEY",
-				"description": "All facilities use MONEY.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "MONEY",
 				"energy_cost": 3,
-				"props": {
+				"apply_all": {
 					"currency": RESOURCE.CURRENCY.MONEY
 				}
 			}
 		REF.ADD_SCIENCE_TO_ALL_IN_RING:
 			ability = {
 				"name": "ADD SCIENCE",
-				"description": "All facilities use SCIENCE.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "SCIENCE",
 				"energy_cost": 3,
-				"props": {
+				"apply_all": {
 					"currency": RESOURCE.CURRENCY.SCIENCE
 				}
 			}			
 		REF.ADD_MATERIAL_TO_ALL_IN_RING:
 			ability = {
 				"name": "ADD MATERIAL",
-				"description": "All facilities use MATERIAL.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "MATERIAL",
 				"energy_cost": 3,
-				"props": {
+				"apply_all": {
 					"currency": RESOURCE.CURRENCY.MATERIAL
 				}
 			}
 		REF.ADD_CORE_TO_ALL_IN_RING:
 			ability = {
-				"name": "ADD MATERIAL",
-				"description": "All facilities use MONEY.",
+				"name": "ADD CORE",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "CORE",
 				"energy_cost": 3,
-				"props": {
+				"apply_all": {
 					"currency": RESOURCE.CURRENCY.MONEY
 				}
 			}
@@ -186,42 +254,48 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.MTF_A:
 			ability = {
 				"name": "MTF ALPHA",
-				"description": "MTF ALPHA.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "ALPHA",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.ALPHA
 			}
 		REF.MTF_B:
 			ability = {
 				"name": "MTF BRAVO",
-				"description": "MTF BRAVO.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "BRAVO",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.BRAVO
 			}
 		REF.MTF_C:
 			ability = {
 				"name": "MTF CHARLIE",
-				"description": "MTF CHARLIE.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "CHARLIE",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.CHARLIE
 			}
 		REF.MTF_D:
 			ability = {
 				"name": "MTF DELTA",
-				"description": "MTF DELTA.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "DELTA",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.DELTA
 			}
 		REF.MTF_E:
 			ability = {
 				"name": "MTF ECHO",
-				"description": "MTF ECHO.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "ECHO",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.ECHO
 			}
 		REF.MTF_F:
 			ability = {
 				"name": "MTF FOXTROT",
-				"description": "MTF FOXTROT.",
+				"description": func(_ref:int, _use_location:Dictionary) -> String:
+					return "FOXTROT",
 				"energy_cost": 1,
 				"mtf_ref": MTF.TEAM.FOXTROT
 			}

@@ -28,7 +28,7 @@ var current_location:Dictionary = {}
 # -----------------------------------------------
 func _ready() -> void:
 	on_show_details_update()
-	TitleLabel.text = "WING %s" % [assigned_wing]
+	TitleLabel.text = "SECTOR %s" % [assigned_wing]
 
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_current_location(self)

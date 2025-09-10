@@ -190,7 +190,7 @@ layout_mode = 2
 [node name="CheckBox" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/List" instance=ExtResource("6_kq5a2")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kq5a2")
-is_negative = false
+default_color = Color(0.05, 0.05, 0.05, 1)
 title = "1 energy required (you have X)"
 
 [node name="BeforeAndAfter" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -208,7 +208,7 @@ burn_val = "00"
 [node name="SVGIcon" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter" instance=ExtResource("8_t4xaw")]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-icon = 27
+icon = 32
 icon_size = Vector2(30, 30)
 
 [node name="after" type="HBoxContainer" parent="ResourceControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/BeforeAndAfter"]

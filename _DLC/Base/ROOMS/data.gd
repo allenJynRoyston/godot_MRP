@@ -78,7 +78,7 @@ var PROCUREMENT_DEPARTMENT:Dictionary = {
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"name": "PROCUREMENT DEPARTMENT",
 	"img_src": "res://Media/rooms/admin_section.png",
-	"shortname": "PROOCUREMENT DEPT", 	
+	"shortname": "PROC DEPT", 	
 	"description": "Central hub for PROOCUREMENT facilities.",
 	"quote": "The heart of the Site beats in paperwork and protocols.",
 
@@ -91,59 +91,21 @@ var PROCUREMENT_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 
-	
 	"department_properties": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [RESOURCE.CURRENCY.MONEY],
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.PROCUREMENT_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MONEY_TO_ALL_IN_RING, 0)
-		],
-					
-	
-	"influence": {
-		"description": "FACILITIES built here will influence the ADMIN DEPT."
-	},
-}
-
-var ADMIN_DEPARTMENT:Dictionary = {
-	"ref": ROOM.REF.ADMIN_DEPARTMENT,
-	"link_categories": ROOM.CATEGORY.ADMIN,
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"name": "ADMINISTRATION DEPARTMENT",
-	"img_src": "res://Media/rooms/admin_section.png",
-	"shortname": "ADMIN DEPT", 	
-	"description": "Central hub for ADMIN facilities.",
-	"quote": "The heart of the Site beats in paperwork and protocols.",
-
-	"costs": {
-		"build": 10,
-		"unlock": 0,
-		"purchase": 10,
-	},
-	"requires_unlock": false, 	
-	"required_staffing": [],
-	"required_energy": 1,
-
-	
-	"department_properties": {
-		"operator": ROOM.OPERATOR.ADD,
-		"currency": [],
-		"metric": [RESOURCE.METRICS.MORALE],
-		"level": 1,
-		"bonus": 0,
-		"effects": [ROOM.EFFECTS.ADMIN_DEFAULT],
-	},
-	
-	"passive_abilities": func() -> Array: 
-		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MONEY_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_2, 0)
 		],
 					
 	
@@ -177,12 +139,14 @@ var LOGISTICS_DEPARTMENT:Dictionary =  {
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.LOGISTICS_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_SCIENCE_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.LOGISTICS_PASSIVE_1, 0)
 		],
 					
 	
@@ -211,17 +175,185 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 	"required_energy": 1,
 	
 	"department_properties": {
-		"operator": ROOM.OPERATOR.SUBTRACT,
-		"currency": [RESOURCE.CURRENCY.MONEY],
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [RESOURCE.CURRENCY.CORE],
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.ENGINEERING_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.ENGINEERING_PASSIVE_1, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
+	},
+}
+
+var SCIENCE_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.SCIENCE_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.SCIENCE,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "SCIENCE DEPARTMENT",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "SCI DEPT", 	
+	"description": "Central hub for SCIENCE facilities.",
+	"quote": "...",
+
+	"costs": {
+		"build": 10,
+		"unlock": 10,
+		"purchase": 10,
+	},	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [RESOURCE.CURRENCY.SCIENCE],
+		"metric": [],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.SCIENCE_PASSIVE_1, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
+	},
+}
+
+var ADMIN_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.ADMIN_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.ADMIN,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "ADMINISTRATION DEPARTMENT",
+	"img_src": "res://Media/rooms/admin_section.png",
+	"shortname": "ADM DEPT", 	
+	"description": "Central hub for ADMIN facilities.",
+	"quote": "The heart of the Site beats in paperwork and protocols.",
+
+	"costs": {
+		"build": 10,
+		"unlock": 0,
+		"purchase": 10,
+	},
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [RESOURCE.METRICS.MORALE],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.ADMIN_PASSIVE_1, 0)
+		],
+					
+	
+	"influence": {
+		"description": "FACILITIES built here will influence the ADMIN DEPT."
+	},
+}
+
+var SECURITY_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.SECURITY_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.SECURITY,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "SECURITY DEPARTMENT",
+	"img_src": "res://Media/rooms/admin_section.png",
+	"shortname": "SEC DEPT", 	
+	"description": "Central hub for ADMIN facilities.",
+	"quote": "The heart of the Site beats in paperwork and protocols.",
+
+	"costs": {
+		"build": 10,
+		"unlock": 0,
+		"purchase": 10,
+	},
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [RESOURCE.METRICS.SAFETY],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.SECURITY_PASSIVE_1, 0)
+		],
+					
+	
+	"influence": {
+		"description": "FACILITIES built here will influence the ADMIN DEPT."
+	},
+}
+
+var TEMPORAL_DEPARMENT:Dictionary = {
+	"ref": ROOM.REF.TEMPORAL_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.TEMPORAL,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "TEMPORAL DEPARTMENT",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "TEMP DEPT", 	
+	"description": "Central hub for TEMPORAL facilities.",
+	"quote": "This should have been done yesterday, literally.",
+
+	"costs": {
+		"build": 10,
+		"unlock": 25,
+		"purchase": 15,
+	},	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [RESOURCE.METRICS.READINESS],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.TEMPORAL_PASSIVE_1, 0)
 		],
 					
 	
@@ -237,7 +369,7 @@ var ANTIMEMETICS_DEPARTMENT:Dictionary = {
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"name": "ANTIMEMETICS DEPARTMENT",
 	"img_src": "res://Media/rooms/engineering_section.png",
-	"shortname": "ANTIM.DEPT", 	
+	"shortname": "ANTIM DEPT", 	
 	"description": "Central hub for ANTIMEMETICS facilities.",
 	"quote": "There is no Antimemetics Department.",
 
@@ -252,15 +384,17 @@ var ANTIMEMETICS_DEPARTMENT:Dictionary = {
 	"department_properties": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
 		"currency": [],
-		"metric": [RESOURCE.METRICS.SAFETY],
+		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.ANTIMEMETICS_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.ANTIMEMETICS_PASSIVE_1, 0)
 		],
 					
 	
@@ -270,54 +404,16 @@ var ANTIMEMETICS_DEPARTMENT:Dictionary = {
 	},
 }
 
+# -----------
 var THEOLOGY_DEPARTMENT:Dictionary = {
 	"ref": ROOM.REF.THEOLOGY_DEPARTMENT,
 	"link_categories": ROOM.CATEGORY.THEOLOGY,
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"name": "THEOLOGY DEPARTMENT",
 	"img_src": "res://Media/rooms/engineering_section.png",
-	"shortname": "THEOLOGY.DEPT", 	
+	"shortname": "THEO DEPT", 	
 	"description": "Central hub for THEOLOGY facilities.",
 	"quote": "More gods, more problems.",
-
-	"costs": {
-		"build": 10,
-		"unlock": 25,
-		"purchase": 15,
-	},	
-	"required_staffing": [],
-	"required_energy": 1,
-	
-	"department_properties": {
-		"operator": ROOM.OPERATOR.ADD,
-		"currency": [],
-		"metric": [],
-		"level": 1,
-		"bonus": 0,
-		"effects": [ROOM.EFFECTS.THEOLOGY_DEFAULT],
-	},
-	
-	"passive_abilities": func() -> Array: 
-		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
-		],
-					
-	
-	"influence": {
-		"range": 1,
-		"description": "FACILITIES built here will influence the ENGINEERING DEPT."
-	},
-}
-
-var TEMPORAL_DEPARMENT:Dictionary = {
-	"ref": ROOM.REF.TEMPORAL_DEPARTMENT,
-	"link_categories": ROOM.CATEGORY.TEMPORAL,
-	"categories": [ROOM.CATEGORY.DEPARTMENT],
-	"name": "TEMPORAL DEPARTMENT",
-	"img_src": "res://Media/rooms/engineering_section.png",
-	"shortname": "TEMPORAL DEPT", 	
-	"description": "Central hub for TEMPORAL facilities.",
-	"quote": "This should have been done yesterday, literally.",
 
 	"costs": {
 		"build": 10,
@@ -333,12 +429,14 @@ var TEMPORAL_DEPARMENT:Dictionary = {
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.TEMPORAL_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.THEOLOGY_PASSIVE_1, 0)
 		],
 					
 	
@@ -354,7 +452,7 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"name": "MISCOMMUNICATION DEPARTMENT",
 	"img_src": "res://Media/rooms/engineering_section.png",
-	"shortname": "MISCOMMUNICATION DEPT", 	
+	"shortname": "MISC DEPT", 	
 	"description": "Central hub for MISCOMMUNICATION facilities.",
 	"quote": "✌☂ ✡✈✉ ✋☃ ✈✇✈♠.",
 
@@ -368,16 +466,16 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 	
 	"department_properties": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
-		"currency": [RESOURCE.CURRENCY.CORE],
+		"currency": [],
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.MISCOMMUNICATION_DEFAULT],
+		"effects": [],
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.MISCOMMUNICATION_PASSIVE_1, 0)
 		],
 					
 	
@@ -393,7 +491,7 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 	"categories": [ROOM.CATEGORY.DEPARTMENT],
 	"name": "PATAPHYSICS DEPARTMENT",
 	"img_src": "res://Media/rooms/engineering_section.png",
-	"shortname": "PATAPHYSICS DEPT", 	
+	"shortname": "PATA DEPT", 	
 	"description": "A department that studies (and questions) the basis for reality.",
 	"quote": "Reality is only the preferred option.",
 
@@ -411,12 +509,14 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 		"metric": [],
 		"level": 1,
 		"bonus": 0,
-		"effects": [ROOM.EFFECTS.PATAPHYSICS_DEFAULT],
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.ADD_MATERIAL_TO_ALL_IN_RING, 0)
+			ABL_P.get_ability(ABL_P.REF.PATAPHYSICS_PASSIVE_1, 0)
 		],
 					
 	
@@ -426,6 +526,7 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 	},
 }
 #endregion
+
 
 
 #region UTILITY (DRAW) ROOMS
@@ -460,6 +561,11 @@ var UTIL_TRIPLE_ECON_OUTPUT:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_TRI
 
 var UTIL_HALF_ECON_OUTPUT:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_HALF_ECON_OUTPUT)
 var UTIL_ZERO_ECON_OUTPUT:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ZERO_ECON_OUTPUT)
+
+var UTIL_ADD_ENERGY_1:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_ENERGY_1)
+var UTIL_ADD_ENERGY_2:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_ENERGY_2)
+var UTIL_ADD_ENERGY_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_ENERGY_3)
+#var UTIL_ZERO_ECON_OUTPUT:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ZERO_ECON_OUTPUT)
 #endregion
 
 
@@ -477,11 +583,14 @@ var list:Array[Dictionary] = [
 	TEMPORAL_DEPARMENT,
 	MISCOMMUNICATION_DEPARTMENT,
 	PATAPHYSICS_DEPARTMENT,
+	SECURITY_DEPARTMENT,
+	SCIENCE_DEPARTMENT,
 	
 	# UTILITY:
 	UTIL_LEVEL_UP_1, UTIL_LEVEL_UP_2, UTIL_LEVEL_UP_3,
 	UTIL_LEVEL_DOWN_1, UTIL_LEVEL_DOWN_2, UTIL_LEVEL_DOWN_3,
-	
+	UTIL_ADD_ENERGY_1, UTIL_ADD_ENERGY_2, UTIL_ADD_ENERGY_3,
+
 	UTIL_ADD_CURRENCY_MONEY, UTIL_ADD_CURRENCY_SCIENCE, UTIL_ADD_CURRENCY_MATERIAL, UTIL_ADD_CURRENCY_CORE,
 	UTIL_RMV_CURRENCY_MONEY, UTIL_RMV_CURRENCY_SCIENCE, UTIL_RMV_CURRENCY_MATERIAL, UTIL_RMV_CURRENCY_CORE,
 	
@@ -490,6 +599,7 @@ var list:Array[Dictionary] = [
 		
 	UTIL_DOUBLE_ECON_OUTPUT, UTIL_TRIPLE_ECON_OUTPUT,
 	UTIL_HALF_ECON_OUTPUT, UTIL_ZERO_ECON_OUTPUT,
-
+	
+	UTIL_HALF_ECON_OUTPUT, UTIL_ZERO_ECON_OUTPUT,
 ]
 # -----------------------------------	

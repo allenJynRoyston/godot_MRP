@@ -65,7 +65,7 @@ func update_labels() -> void:
 	IsPowered.icon = SVGS.TYPE.NONE if is_powered else SVGS.TYPE.NO_ELECTRICITY
 	IsPowered.hide() if is_powered else IsPowered.show()
 	FloorLabel.text = "FLOOR %s" % [current_location.floor]
-	WingLabel.text = "WING %s" % [current_location.ring]
+	WingLabel.text = "SECTOR %s" % [current_location.ring]
 	
 	var node_arr:Array = [WingA, WingB, WingC, WingD]
 	for index in node_arr.size():

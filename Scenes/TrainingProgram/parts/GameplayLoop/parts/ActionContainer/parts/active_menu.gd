@@ -94,11 +94,6 @@ func _ready() -> void:
 		if SelectedNode != null and !SelectedNode.is_disabled and !freeze_inputs:
 			freeze_inputs = true
 			await on_action()
-			# delay stops user from hitting same button and calling the action multiple times, like
-			# opening a modal multiple times
-			# BUG: DONT CHANGE 0.4 VALUE - prevents a huge bug I can't seem to figure out...
-			# TODO: it's still happening!
-			await U.set_timeout(0.4)
 			freeze_inputs = false
 		
 	BtnControls.onBack = func() -> void:

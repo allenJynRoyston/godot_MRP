@@ -280,6 +280,7 @@ func add_to_unlocked_list(ref:int) -> void:
 
 # ------------------------------------------------------------------------------
 func add_room(ref:int, use_location:Dictionary = current_location) -> void:
+	var room_details:Dictionary = return_data(ref)
 	var location_copy:Dictionary = use_location.duplicate(true)
 	var skip_build:bool = true #gameplay_conditionals[CONDITIONALS.TYPE.LOGISTIC_PERK_1]
 	
@@ -293,11 +294,14 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 		}
 	})
 	
+	# update array
 	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+	
+	# tally costs
+	RESOURCE_UTIL.make_update_to_currency_amount(RESOURCE.CURRENCY.MONEY, room_details.costs.purchase)	
 	
 	if skip_build: 
 		await ROOM_UTIL.finish_construction(use_location)
-	
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -831,15 +835,14 @@ func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Arra
 	return neighbors
 
 func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:		
-	var room_config_level:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	var room_base_state:Dictionary = base_states.room[str(use_location.floor, use_location.ring, use_location.room)]
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
 	
-	if room_config_level.is_empty() or influence_data.is_empty():
+	if room_level_config.is_empty() or influence_data.is_empty():
 		return []
 		
 	var include_vertical:bool = true #influence_data.vertical if influence_data.has("vertical") else false
 	var include_horizontal:bool = true #influence_data.horizontal if influence_data.has("horizontal") else false			
-	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if room_base_state.influence_range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
+	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if room_level_config.influence_range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
 	
 	return neighbors
 
@@ -870,10 +873,10 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 		if !scp_details.is_empty():
 			if !scp_details.influence.is_empty():
 				# now add self
-				var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
-				if center_room not in all_influenced_rooms:
-					all_influenced_rooms[center_room] = []
-				all_influenced_rooms[center_room].push_back({"scp_ref": scp_details.ref})
+				#var center_room:int = index_to_room_lookup(use_location.room) if convert_to_index else use_location.room
+				#if center_room not in all_influenced_rooms:
+					#all_influenced_rooms[center_room] = []
+				#all_influenced_rooms[center_room].push_back({"scp_ref": scp_details.ref})
 								
 				for room_id in ROOM_UTIL.find_influenced_rooms( use_location, scp_details.influence ):
 					var actual_ref:int = index_to_room_lookup(room_id) if convert_to_index else room_id
@@ -883,10 +886,12 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 						
 	return all_influenced_rooms
 	
-func find_refs_of_adjuacent_rooms(use_location:Dictionary, range:int = 1) -> Array: 
-	var room_base_state:Dictionary = base_states.room[str(use_location.floor, use_location.ring, use_location.room)]
-	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_base_state.influence_range == 1 else range_two(use_location.room, true, true)
+func find_refs_of_adjuacent_rooms(use_location:Dictionary, use_room_config:Dictionary = room_config) -> Array: 
+	var room_level_config:Dictionary = use_room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
+	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_level_config.influence_range == 1 else range_two(use_location.room, true, true)
 	
+	print("> : ", room_level_config.influence_range)
+
 	var refs:Array = []
 	for room in adjacent_rooms:
 		var room_details:Dictionary = return_data_via_location({"floor": use_location.floor, "ring": use_location.ring, "room": room})
@@ -895,9 +900,10 @@ func find_refs_of_adjuacent_rooms(use_location:Dictionary, range:int = 1) -> Arr
 	return refs
 
 func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Array: 
-	var room_base_state:Dictionary = base_states.room[str(use_location.floor, use_location.ring, use_location.room)]	
-	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_base_state.influence_range == 1 else range_two(use_location.room, true, true)
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
+	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_level_config.influence_range == 1 else range_two(use_location.room, true, true)
 	
+
 	var link_categories:Array = []
 	for room in adjacent_rooms:
 		var room_details:Dictionary = return_data_via_location({"floor": use_location.floor, "ring": use_location.ring, "room": room})
@@ -908,13 +914,17 @@ func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Ar
 func get_department_refs() -> Array:
 	return [
 		ROOM.REF.PROCUREMENT_DEPARTMENT,
-		ROOM.REF.ADMIN_DEPARTMENT, 
-		ROOM.REF.LOGISTICS_DEPARTMENT, 
 		ROOM.REF.ENGINEERING_DEPARTMENT,
+		ROOM.REF.LOGISTICS_DEPARTMENT, 
+		ROOM.REF.SCIENCE_DEPARTMENT,
+		
+		ROOM.REF.ADMIN_DEPARTMENT, 
+		ROOM.REF.SECURITY_DEPARTMENT,
+		ROOM.REF.TEMPORAL_DEPARTMENT,
+		
 		ROOM.REF.ANTIMEMETICS_DEPARTMENT,
 		ROOM.REF.PATAPHYSICS_DEPARTMENT,
 		ROOM.REF.THEOLOGY_DEPARTMENT,
-		ROOM.REF.TEMPORAL_DEPARTMENT,
 		ROOM.REF.MISCOMMUNICATION_DEPARTMENT,
 	]
 		 

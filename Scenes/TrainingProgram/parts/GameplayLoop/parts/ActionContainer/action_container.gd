@@ -391,6 +391,7 @@ func show_fabrication_options() -> void:
 	var ActiveMenuNode:Control = ActiveMenuPreload.instantiate()	
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)	
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty()	
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
 	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config()
 	var energy_available:int = GAME_UTIL.get_energy_available()
 	var department_count:int = purchased_facility_arr.filter(func(x): 
@@ -439,23 +440,13 @@ func show_fabrication_options() -> void:
 		}
 		
 	var on_selected:Callable = func(x:Dictionary) -> void:
+		# lock menu
 		await ActiveMenuNode.lock()
-		# purchase and show tally
-		var room_details:Dictionary = ROOM_UTIL.return_data(x.ref)
-		# calculate costs
-		var costs:Array = [{
-			"amount": -(room_details.costs.purchase), 
-			"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.MONEY)
-		}] if room_details.costs.purchase > 0 else []
-
-		# build new foundation
-		# pay and close
-		for item in costs:
-			var amount:int = item.amount
-			RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
-			
 		# add room
-		await ROOM_UTIL.add_room(x.ref)		
+		await ROOM_UTIL.add_room(x.ref)
+		# update base states (remove card from draw)
+		SUBSCRIBE.base_states = base_states	
+		# close active menu
 		ActiveMenuNode.close()
 
 	var options:Array = []
@@ -480,12 +471,11 @@ func show_fabrication_options() -> void:
 					"details": room_details,
 					"action": func() -> void:
 						base_states.department_cards[ref] -= 1
-						SUBSCRIBE.base_states = base_states
-						on_selected.call(room_details),
+						await on_selected.call(room_details),
 				})
 			
 		options.push_back({
-			"title": "DEPARTMENT NODES",
+			"title": "DEPARTMENTS",
 			"items": draw_items,
 			"footer": "%s / %s" % [1, draw_items.size() ],
 		})
@@ -498,7 +488,7 @@ func show_fabrication_options() -> void:
 			for n in range(0, amount):
 				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
 				draw_items.push_back({
-					"title": room_details.name,
+					"title": str(room_details.name, "  (", room_details.shortname, ")"),
 					"img_src": room_details.img_src,
 					"is_disabled": is_disabled_func.call(room_details),
 					"hint": hint_func.call(room_details), 
@@ -506,12 +496,11 @@ func show_fabrication_options() -> void:
 					"details": room_details,
 					"action": func() -> void:
 						base_states.utility_cards[ref] -= 1
-						SUBSCRIBE.base_states = base_states
-						on_selected.call(room_details),
+						await on_selected.call(room_details),
 				})
 			
 		options.push_back({
-			"title": "DEPARTMENT NODES",
+			"title": "SUPPORT NODES",
 			"items": draw_items,
 			"footer": "%s / %s" % [1, draw_items.size() ],
 		})
@@ -1205,7 +1194,6 @@ func check_btn_states() -> void:
 			EndTurnBtn.is_flashing = end_btn_is_flashing or draw_count == 0
 		# -----------			
 		MODE.ADMINISTRATION:
-			AdminControls.reveal(true)
 			AdminControls.disable_active_btn = is_room_empty or !has_modules
 			
 			AdminControls.onAction = func() -> void:
@@ -1219,8 +1207,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ADMINISTRATION_MODULES:
-			AdminModulesControls.reveal(true)
-
 			AdminModulesControls.onBack = func() -> void:
 				ModulesCard.deselect_btns()
 				await AdminModulesControls.reveal(false)
@@ -1239,8 +1225,7 @@ func check_btn_states() -> void:
 						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 
 		# -----------	
-		MODE.LOGISTICS:
-			LogisticsControls.reveal(true)
+		MODE.LOGISTICS:			
 			LogisticsControls.disable_active_btn = is_room_empty or !has_programs
 			
 			LogisticsControls.onAction = func() -> void:		
@@ -1252,8 +1237,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------	
 		MODE.LOGISTICS_PROGRAMS:				
-			LogisticProgramControls.reveal(true)
-
 			LogisticProgramControls.onBack = func() -> void:
 				ModulesCard.deselect_btns()
 				await LogisticProgramControls.reveal(false)
@@ -1270,8 +1253,7 @@ func check_btn_states() -> void:
 						AdminModulesControls.a_btn_title = "USE PROGRAM"
 						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
 		# -----------	
-		MODE.SECURITY:
-			SecurityControls.reveal(true)
+		MODE.SECURITY:			
 			SecurityControls.disable_active_btn = is_room_empty
 			
 			SecurityControls.onAction = func() -> void:
@@ -1291,7 +1273,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.SCIENCE:
-			ScienceControls.reveal(true)
 			ScienceControls.disable_active_btn = false #is_room_empty or !is_activated or at_max_level
 			
 			ScienceControls.onAction = func() -> void:
@@ -1313,8 +1294,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.MEDICAL:
-			MedicalControls.reveal(true)
-			
 			MedicalControls.onAction = func() -> void:
 				await MedicalControls.reveal(false)
 				change_camera_to(CAMERA.TYPE.FLOOR_SELECT)
@@ -1342,8 +1321,7 @@ func check_btn_states() -> void:
 			var has_event_here:bool = false
 			IntelControls.a_btn_title = "INVESTIGATE ANAMOLLY" if has_event_here else "NO ANAMOLLIES"
 			IntelControls.disable_active_btn = !has_event_here
-			IntelControls.reveal(true)
-			
+
 			IntelControls.onAction = func() -> void:				
 				IntelControls.reveal(false)
 				reveal_actionpanel_label(false)
@@ -1385,7 +1363,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.INTEL_OVERSIGHT:
-			IntelOverviewControls.reveal(true)
 
 			IntelOverviewControls.onBack = func() -> void:
 				await IntelOverviewControls.reveal(false)
@@ -1401,7 +1378,6 @@ func check_btn_states() -> void:
 			FabricationControls.disable_active_btn = !is_under_construction and !is_room_empty
 			FabricationControls.c_btn_title = "REMOVE"
 			FabricationControls.disable_c_btn = is_room_empty			
-			FabricationControls.reveal(true)
 			
 			# remove room
 			FabricationControls.onCBtn = func() -> void:
@@ -1437,8 +1413,7 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------		
 		MODE.ENGINEERING:
-			EngineeringControls.reveal(true)
-			
+		
 			EngineeringControls.onAction = func() -> void:		
 				await EngineeringControls.reveal(false)
 				current_mode = MODE.ENGINEERING_CONFIG
@@ -1453,7 +1428,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------	
 		MODE.ETHICS:
-			EthicsControls.reveal(true)	
 			EthicsControls.onAction = func() -> void:		
 				await EthicsControls.reveal(false)
 				await U.set_timeout(1.0)
@@ -1469,7 +1443,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT				
 		# -----------	
 		MODE.ENGINEERING_CONFIG:
-			EngineeringConfigControls.reveal(true)
 			
 			EngineeringConfigControls.onBack = func() -> void:				
 				reveal_engineering(false)
@@ -1491,7 +1464,7 @@ func check_btn_states() -> void:
 				linkable_action.emit(false)
 		# -----------
 		MODE.CONTAIN:
-			ContainControls.reveal(true)
+					
 			ContainControls.a_btn_title = "CONTAIN" if is_scp_empty else "ALREADY OCCUPIED"
 			ContainControls.disable_active_btn = !can_contain or !is_scp_empty			
 			
@@ -1509,8 +1482,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.INFO:
-			InfoControls.reveal(true)
-			
 			InfoControls.onAction = func() -> void:
 				await InfoControls.reveal(false)
 				await GAME_UTIL.open_objectives()
@@ -1787,6 +1758,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				current_mode = MODE.ROOT
 			# --------------
 			MODE.ADMINISTRATION:
+				AdminControls.reveal(true)
 				ModulesCard.show_modules = true
 				ModulesCard.show_programs = false
 				
@@ -1802,12 +1774,12 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 		
 			# --------------
-			MODE.ADMINISTRATION_MODULES:				
+			MODE.ADMINISTRATION_MODULES:
+				AdminModulesControls.reveal(true)							
 				AdminModulesControls.itemlist = ModulesCard.get_module_btns()
 				AdminModulesControls.item_index = 0							
 				AdminModulesControls.directional_pref = "UD"
 				AdminModulesControls.offset = ModulesCard.global_position
-
 				
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(0)
@@ -1815,6 +1787,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 			# --------------
 			MODE.LOGISTICS:
+				LogisticsControls.reveal(true)
+							
 				ModulesCard.show_modules = false
 				ModulesCard.show_programs = true
 				
@@ -1829,6 +1803,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 			# --------------
 			MODE.LOGISTICS_PROGRAMS:
+				LogisticProgramControls.reveal(true)
+	
 				LogisticProgramControls.itemlist = ModulesCard.get_program_btns()
 				LogisticProgramControls.item_index = 0							
 				LogisticProgramControls.directional_pref = "UD"
@@ -1839,7 +1815,9 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
 			# -------------
-			MODE.INTEL:
+			MODE.INTEL:				
+				IntelControls.reveal(true)
+				
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
@@ -1851,22 +1829,28 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 			# -------------	
 			MODE.INTEL_OVERSIGHT:
+				IntelOverviewControls.reveal(true)
 				reveal_summarycard(false)
+			
 			# --------------
 			MODE.FABRICATION:
+				FabricationControls.reveal(true)
+
 				LocationAndDirectivesContainer.reveal(false)
 				WingRenderNode.set_to_build_mode(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false	
 				
-				change_camera_viewpoint(CAMERA.VIEWPOINT.OVERHEAD)				
+				change_camera_viewpoint(CAMERA.VIEWPOINT.OVERHEAD)
 				reveal_summarycard(true, false)
 				reveal_blueprint(true)
 				reveal_actionpanel_label(true, 0.4, "BLUEPRINTS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 			# --------------
 			MODE.ENGINEERING:
+				EngineeringControls.reveal(true)
+												
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1877,6 +1861,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])				
 			# --------------
 			MODE.ETHICS:
+				EthicsControls.reveal(true)	
+		
 				LocationAndDirectivesContainer.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1887,6 +1873,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ADMIN])
 			# --------------
 			MODE.ENGINEERING_CONFIG:
+				EngineeringConfigControls.reveal(true)
+
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_only([GameplayNode.Structure3dContainer, GameplayNode.ActionContainer])	
 				
@@ -1899,6 +1887,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				EngineeringComponent.start()
 			# --------------
 			MODE.SECURITY:
+				SecurityControls.reveal(true)		
+							
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1910,6 +1900,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.SECURITY])								
 			# -----------	
 			MODE.SCIENCE:
+				ScienceControls.reveal(true)				
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.show_marked_objectives = false
@@ -1920,6 +1911,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])								
 			# -----------	
 			MODE.MEDICAL:
+				MedicalControls.reveal(true)				
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
@@ -1929,12 +1921,13 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 			# -----------	
 			MODE.MEDICAL_OVERVIEW:
+				MedicalOverviewControls.reveal(true)
+				
 				change_camera_to(CAMERA.TYPE.FLOOR_SELECT)
 				reveal_medical(true)
-				
-				MedicalOverviewControls.reveal(true)
 			# -----------	
-			MODE.INFO:				
+			MODE.INFO:								
+				InfoControls.reveal(true)				
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.TimelineContainer.show_details( true ) 
 				GameplayNode.show_marked_objectives = true
@@ -1943,6 +1936,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				set_backdrop_state(true)
 			# -----------	
 			MODE.CONTAIN:
+				ContainControls.reveal(true)
 				RenderingNode.set_shader_strength(1)
 				GameplayNode.TimelineContainer.show_details( true ) 
 				GameplayNode.show_marked_objectives = false

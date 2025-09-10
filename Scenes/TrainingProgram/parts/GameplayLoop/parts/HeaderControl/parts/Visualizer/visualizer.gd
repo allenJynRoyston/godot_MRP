@@ -51,6 +51,15 @@ func on_current_location_update(new_val:Dictionary) -> void:
 	FloorLabel.text = str(new_val.floor)
 	WingLabel.text = U.ring_to_str(new_val.ring)
 	RoomLabel.text = str(new_val.room)
-		
-	SectorLabel.text = str("SECTOR ", new_val.floor, U.ring_to_str(new_val.ring))
+	# find which "dominiate" departments are here and give it that labbel if it applies	
+	var department_counts:int = ROOM_UTIL.department_count(new_val)
+	var department_refs:Array = ROOM_UTIL.get_departments(new_val)
+	var department_string:String = ""
+	for i in range(department_refs.size()):
+		var room_details: Dictionary = ROOM_UTIL.return_data(department_refs[i].ref)
+		department_string += room_details.name
+		if i < department_refs.size() - 1:
+			department_string += "\n"
+	
+	SectorLabel.text = "EMPTY" if department_counts == 0 else department_string
 # -----------------------------------------------			

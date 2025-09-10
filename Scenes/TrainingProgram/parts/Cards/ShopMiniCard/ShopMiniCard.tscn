@@ -55,6 +55,7 @@ bg_color = Color(0.140447, 0.140447, 0.140447, 1)
 
 [node name="ShopMiniCard" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0.6)
+clip_contents = true
 custom_minimum_size = Vector2(150, 150)
 offset_right = 40.0
 offset_bottom = 40.0
@@ -151,11 +152,11 @@ layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_ctiee")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
+[node name="OwnHBox" type="HBoxContainer" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="OwnCountLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2"]
+[node name="OwnCountLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/OwnHBox"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "0"
@@ -163,7 +164,7 @@ label_settings = SubResource("LabelSettings_k052h")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="OwnCapacityLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/HBoxContainer2"]
+[node name="OwnCapacityLabel" type="Label" parent="MarginContainer/FrontDrawerContainer/CostPanel/MarginContainer/HBoxContainer/OwnHBox"]
 layout_mode = 2
 text = "/10"
 label_settings = SubResource("LabelSettings_f5y5s")
@@ -173,7 +174,7 @@ vertical_alignment = 2
 z_index = 1
 layout_mode = 2
 
-[node name="HighlightIcon" parent="HighlightControl" instance=ExtResource("6_k052h")]
+[node name="HighlightIcon1" parent="HighlightControl" instance=ExtResource("6_k052h")]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 offset_left = -10.0
@@ -186,12 +187,11 @@ icon_size = Vector2(25, 25)
 flip_h = true
 
 [node name="HighlightIcon2" parent="HighlightControl" instance=ExtResource("6_k052h")]
-visible = false
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
-offset_left = 136.0
+offset_left = 135.0
 offset_top = 3.0
-offset_right = 161.0
+offset_right = 160.0
 offset_bottom = 28.0
 icon = 33
 icon_color = Color(0, 0, 0, 1)

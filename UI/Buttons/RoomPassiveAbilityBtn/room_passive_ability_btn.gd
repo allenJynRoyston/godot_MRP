@@ -189,7 +189,7 @@ func update_text() -> void:
 		ability_name = ability_data.name
 		hint_title = ability_data.name
 		hint_icon = SVGS.TYPE.ENERGY
-		hint_description = ability_data.description
+		hint_description = ability_data.description.call(ability_data.ref, use_location)
 		IconBtn.icon = SVGS.TYPE.LOCK
 		cost = ability_data.lvl_required
 		Checkbox.is_checked = false
