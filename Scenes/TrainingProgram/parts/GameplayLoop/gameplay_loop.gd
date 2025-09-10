@@ -1544,17 +1544,31 @@ func room_calculate_stats(new_room_config:Dictionary) -> void:
 					if utility_props.has("bonus"):
 						room_config_data.department_properties.bonus += utility_props.bonus
 					if utility_props.has("metric") and utility_props.metric not in room_config_data.department_properties.metric:
-						if utility_props.metric not in room_config_data.department_properties.blacklist_metric:
-							room_config_data.department_properties.metric.append( utility_props.metric )
+						room_config_data.department_properties.metric.append( utility_props.metric )
 					if utility_props.has("currency") and utility_props.currency not in room_config_data.department_properties.currency:
-						if utility_props.metric not in room_config_data.department_properties.blacklist_currency:
-							room_config_data.department_properties.currency.append( utility_props.currency )
+						room_config_data.department_properties.currency.append( utility_props.currency )
+					if utility_props.has("currency_blacklist") and utility_props.currency_blacklist not in room_config_data.department_properties.currency_blacklist:
+						room_config_data.department_properties.currency_blacklist.append( utility_props.currency_blacklist )
+					if utility_props.has("blacklist_metric") and utility_props.metrics_blacklist not in room_config_data.department_properties.metrics_blacklist:
+						room_config_data.department_properties.metrics_blacklist.append( utility_props.metrics_blacklist )						
 					if utility_props.has("effect") and utility_props.effect not in room_config_data.department_properties.effects:
 						room_config_data.department_properties.effects.append( utility_props.effect )
-
 					# ------------------------------------
 					if utility_props.has("energy"):
 						ring_config_data.energy.available += utility_props.energy
+						
+	# CHECK BLACKLISTED CURRENCY/METRICS AND REMOVE THEM SO THEY DONT' GET CALCULATED
+	for item in purchased_facility_arr:
+		var floor:int = item.location.floor
+		var ring:int = item.location.ring
+		var room:int = item.location.room
+		
+		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
+		if !room_config_data.department_properties.is_empty():
+			for ref in room_config_data.department_properties.currency_blacklist:
+				room_config_data.department_properties.currency.erase(ref)
+			for ref in room_config_data.department_properties.metric_blacklist:
+				room_config_data.department_properties.metric.erase(ref)
 			
 
 func apply_scp_effects(new_room_config:Dictionary) -> void:

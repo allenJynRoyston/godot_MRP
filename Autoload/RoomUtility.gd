@@ -890,8 +890,6 @@ func find_refs_of_adjuacent_rooms(use_location:Dictionary, use_room_config:Dicti
 	var room_level_config:Dictionary = use_room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
 	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_level_config.influence_range == 1 else range_two(use_location.room, true, true)
 	
-	print("> : ", room_level_config.influence_range)
-
 	var refs:Array = []
 	for room in adjacent_rooms:
 		var room_details:Dictionary = return_data_via_location({"floor": use_location.floor, "ring": use_location.ring, "room": room})

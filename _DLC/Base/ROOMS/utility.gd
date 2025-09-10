@@ -204,10 +204,10 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"name": "AUDITING OFFICE",
 				"shortname": "MONEY",
 				"description": "Ledgers lie open, ink fading into shadows.",
-				"quote": "Auditors: because someone has to make money feel guilty.",
+				"quote": "Just because we're a clandestine shadowy cabal doesn't mean we can waste taxpayer money.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_currency": RESOURCE.CURRENCY.MONEY,
+					"currency_blacklist": RESOURCE.CURRENCY.MONEY,
 				}
 			}
 
@@ -220,7 +220,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Experiments: results may vary, sanity not guaranteed.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_currency": RESOURCE.CURRENCY.SCIENCE,
+					"currency_blacklist": RESOURCE.CURRENCY.SCIENCE,
 				}				
 			}			
 
@@ -233,7 +233,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Measure twice, cut once, panic always.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_currency": RESOURCE.CURRENCY.MATERIAL,
+					"currency_blacklist": RESOURCE.CURRENCY.MATERIAL,
 				}				
 			}
 
@@ -246,7 +246,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Secrets here gossip more than the staff.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_currency": RESOURCE.CURRENCY.CORE,
+					"currency_blacklist": RESOURCE.CURRENCY.CORE,
 				}				
 			}
 
@@ -299,7 +299,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Cheerful conversation not included.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_metric": RESOURCE.METRICS.MORALE,
+					"metric_blacklist": RESOURCE.METRICS.MORALE,
 				}				
 			}
 
@@ -312,7 +312,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "You’ll get plenty of ‘alone time’ in here.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_metric": RESOURCE.METRICS.SAFETY,
+					"metric_blacklist": RESOURCE.METRICS.SAFETY,
 				}				
 			}			
 
@@ -325,7 +325,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Nap responsibly, or at least theatrically.",
 				"costs": get_costs(1),
 				"utility_props": {
-					"blacklist_metric": RESOURCE.METRICS.READINESS,
+					"metric_blacklist": RESOURCE.METRICS.READINESS,
 				}				
 			}
 

@@ -336,7 +336,7 @@ func update_room_data() -> void:
 	
 	# side bars
 	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-		material.albedo_color = Color.GHOST_WHITE		
+		material.albedo_color = Color.ORANGE_RED		
 					
 	
 	# assign node color

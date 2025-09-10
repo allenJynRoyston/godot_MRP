@@ -122,9 +122,10 @@ theme_override_constants/margin_bottom = 0
 [node name="SectorLabel" type="Label" parent="MarginContainer/VBoxContainer/Location/HeaderHBox/Header/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "DEPT ASDFASDFASDFASDF 
-DEPT ASDFASDF 
-DEPT ASDF"
+text = "DEPT A 
+DEPT B
+DEPT C
+"
 label_settings = SubResource("LabelSettings_e5r3d")
 
 [node name="BuffsAndDebuffs" parent="MarginContainer/VBoxContainer/Location/HeaderHBox" instance=ExtResource("3_6ttso")]
