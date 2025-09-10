@@ -61,7 +61,7 @@ extends PanelContainer
 @onready var PreviewPanel:PanelContainer = $PreviewControl/PreviewPanel
 @onready var PreviewText:RichTextLabel = $PreviewControl/PreviewPanel/MarginContainer/RoomPreviewText
 
-@onready var node_list:Array = [StatusOverlay] 
+@onready var node_list:Array = [PreviewPanel, StatusOverlay] 
 
 @onready var namepanel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
 @onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
@@ -131,11 +131,8 @@ func _ready() -> void:
 		var effect_details:Dictionary = ROOM.return_effect(_ref_data.data.ref)
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
 		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_properties.operator, true)
-		#if preview_passive == -1:
-			#RoomPreviewText.text = ""
-			#return
-		#RoomEffects.show()
-		#print(RoomPreviewText.text )
+		PreviewPanel.size = Vector2(1, 1)
+		PreviewPanel.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -204,6 +201,7 @@ func on_update() -> void:
 		show()
 		SidePanel.hide()
 		InfoContainer.hide()		
+		
 		
 		# passives
 		if room_details.passive_abilities.call().is_empty() or !show_modules:
