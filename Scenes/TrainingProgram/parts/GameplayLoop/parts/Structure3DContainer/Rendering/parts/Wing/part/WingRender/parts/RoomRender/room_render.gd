@@ -336,7 +336,7 @@ func update_room_data() -> void:
 	
 	# side bars
 	for material in [bottom_link_material, top_link_material, left_link_material, right_link_material]:
-		material.albedo_color = Color.ORANGE_RED		
+		material.albedo_color = Color.LIGHT_SLATE_GRAY		
 					
 	
 	# assign node color
@@ -345,12 +345,31 @@ func update_room_data() -> void:
 	
 	if is_built or is_under_construction:
 		match room_details.ref:
-			ROOM.REF.ADMIN_DEPARTMENT: 
-				select_mesh_material.albedo_color = Color.BLUE
-			ROOM.REF.LOGISTICS_DEPARTMENT: 
-				select_mesh_material.albedo_color = Color.GREEN
-			ROOM.REF.ENGINEERING_DEPARTMENT: 
-				select_mesh_material.albedo_color = Color.ORANGE
+			ROOM.REF.PROCUREMENT_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(86, 156, 214)   # Bright blue
+			ROOM.REF.ENGINEERING_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(255, 165, 66)   # Orange
+			ROOM.REF.LOGISTICS_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(102, 220, 127)  # Green
+			ROOM.REF.SCIENCE_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(173, 126, 254)  # Violet
+			
+			ROOM.REF.ADMIN_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(240, 240, 240)  # Light gray/white
+			ROOM.REF.SECURITY_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(220, 20, 60)    # Crimson red
+			ROOM.REF.TEMPORAL_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(0, 255, 255)    # Cyan
+			
+			ROOM.REF.ANTIMEMETICS_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(255, 105, 180)  # Hot pink
+			ROOM.REF.PATAPHYSICS_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(255, 215, 0)    # Gold
+			ROOM.REF.THEOLOGY_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(255, 250, 205)  # Soft light yellow
+			ROOM.REF.MISCOMMUNICATION_DEPARTMENT:
+				select_mesh_material.albedo_color = Color8(255, 140, 0)    # Darker orange
+
 		
 			
 	#elif is_under_construction:

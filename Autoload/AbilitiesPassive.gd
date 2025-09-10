@@ -45,16 +45,18 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	var regex = RegEx.new()
 	regex.compile("\\[.*?\\]")
 	
+	var passive_description_func:Callable = func(_ref:int, _use_location:Dictionary) -> String:
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
+		var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator if !room_level_config.department_properties.is_empty() else ROOM.OPERATOR.ADD)
+		# strip out bbbcode
+		return regex.sub(description_string, "", true)	
+	
 	match ref:
 		#region SUBDIVSION
 		REF.PROCUREMENT_PASSIVE_1:
 			ability = {
 				"name": "SYNCHRONIZED",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_1
@@ -63,11 +65,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.PROCUREMENT_PASSIVE_2:
 			ability = {
 				"name": "STREAMLINED",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 5,
 				"apply_all": {
 					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_2
@@ -77,11 +75,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.ENGINEERING_PASSIVE_1:
 			ability = {
 				"name": "ENERGY BOOST",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.ENGINEERING_PASSIVE_1
@@ -90,11 +84,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.LOGISTICS_PASSIVE_1:
 			ability = {
 				"name": "EFFICIENCY",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.LOGISTICS_PASSIVE_1
@@ -103,11 +93,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.SCIENCE_PASSIVE_1:
 			ability = {
 				"name": "SCIENCE!",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.SCIENCE_PASSIVE_1
@@ -116,11 +102,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.ADMIN_PASSIVE_1:
 			ability = {
 				"name": "AGILE METHODOLOGY",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.ADMIN_PASSIVE_1
@@ -129,11 +111,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.SECURITY_PASSIVE_1:
 			ability = {
 				"name": "TWO OR LESS",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.SECURITY_PASSIVE_1
@@ -142,11 +120,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.TEMPORAL_PASSIVE_1:
 			ability = {
 				"name": "SHIFTING PRIORITIES",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.TEMPORAL_PASSIVE_1
@@ -155,11 +129,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.THEOLOGY_PASSIVE_1:
 			ability = {
 				"name": "MO MONEY MO PROBLEMS",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.THEOLOGY_PASSIVE_1
@@ -168,11 +138,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.PATAPHYSICS_PASSIVE_1:
 			ability = {
 				"name": "THIS IS A MIROR YOU ARE A TYPO",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.PATAPHYSICS_PASSIVE_1
@@ -181,11 +147,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.ANTIMEMETICS_PASSIVE_1:
 			ability = {
 				"name": "TWO OR LESS",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.ANTIMEMETICS_PASSIVE_1
@@ -194,11 +156,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 		REF.MISCOMMUNICATION_PASSIVE_1:
 			ability = {
 				"name": "TWO WRONGS EQUAL A RIGHT",
-				"description": func(_ref:int, _use_location:Dictionary) -> String:
-					var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-					var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator)
-					# strip out bbbcode
-					return regex.sub(description_string, "", true),
+				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
 					"effect": ROOM.EFFECTS.MISCOMMUNICATION_PASSIVE_1

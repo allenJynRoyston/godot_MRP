@@ -105,7 +105,7 @@ var PROCUREMENT_DEPARTMENT:Dictionary = {
 	"passive_abilities": func() -> Array: 
 		return [
 			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_1, 0),
-			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_2, 0)
+			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_2, 4)
 		],
 					
 	
@@ -454,7 +454,7 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 	"img_src": "res://Media/rooms/engineering_section.png",
 	"shortname": "MISC DEPT", 	
 	"description": "Central hub for MISCOMMUNICATION facilities.",
-	"quote": "✌☂ ✡✈✉ ✋☃ ✈✇✈♠.",
+	"quote": "Did you unironically get that thing I sent you?",
 
 	"costs": {
 		"build": 10,
@@ -471,6 +471,8 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 		"level": 1,
 		"bonus": 0,
 		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],		
 	},
 	
 	"passive_abilities": func() -> Array: 
@@ -493,7 +495,7 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 	"img_src": "res://Media/rooms/engineering_section.png",
 	"shortname": "PATA DEPT", 	
 	"description": "A department that studies (and questions) the basis for reality.",
-	"quote": "Reality is only the preferred option.",
+	"quote": "Existence is merely the preferred option.",
 
 	"costs": {
 		"build": 10,

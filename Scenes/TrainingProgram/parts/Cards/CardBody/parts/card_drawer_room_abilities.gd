@@ -218,7 +218,7 @@ func update_node() -> void:
 							SummaryBtnNode.hint_description = "At MTF team capacity." if (mtf_list.size() >= 3 and !is_active) else SummaryBtnNode.hint_description
 
 					
-					SummaryBtnNode.title = "REQUIRES UPGRADE" if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.name
+					SummaryBtnNode.title = "LVL % REQUIRED" % [ability.lvl_required] if !at_level_threshold else "UNAVAILABLE" if !is_activated else ability.name
 					SummaryBtnNode.icon = SVGS.TYPE.LOCK if !is_activated else SVGS.TYPE.DELETE if not_enough_energy or scp_needed or at_mtf_limit else SVGS.TYPE.DELETE
 					
 					SummaryBtnNode.show_checked_panel = true
