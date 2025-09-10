@@ -1223,6 +1223,7 @@ func check_btn_states() -> void:
 					"passive_ability":
 						AdminModulesControls.a_btn_title = "UNAVAILABLE" if node.ref_data.is_disabled else "TOGGLE" 
 						AdminModulesControls.disable_active_btn = node.ref_data.is_disabled
+						
 
 		# -----------	
 		MODE.LOGISTICS:			

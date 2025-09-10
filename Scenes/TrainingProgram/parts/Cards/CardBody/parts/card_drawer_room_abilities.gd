@@ -30,7 +30,8 @@ var use_location:Dictionary = {} :
 	set(val):
 		use_location = val
 		on_use_location_update()		
-		
+
+var onUpdate:Callable = func(_data:Dictionary, _node:Control) -> void:pass		
 var onLock:Callable = func() -> void:pass
 var onUnlock:Callable = func() -> void:pass
 
@@ -166,6 +167,8 @@ func update_node() -> void:
 						"data": ability,
 						"is_disabled": SummaryBtnNode.is_disabled
 					}
+					
+						
 											
 							
 			ABILITY_TYPE.PASSIVE:
@@ -232,12 +235,15 @@ func update_node() -> void:
 					SummaryBtnNode.onClick = func() -> void:
 						if preview_mode or !is_visible_in_tree():return
 						GAME_UTIL.toggle_passive_ability(room_details.ref, index, use_location)
+					SummaryBtnNode.onUpdate = func(_ref_data:Dictionary) -> void:
+						onUpdate.call(_ref_data, SummaryBtnNode)
 
 					SummaryBtnNode.ref_data = {
 						"type": 'passive_ability', 
 						"data": ability,
 						"is_disabled": SummaryBtnNode.is_disabled
 					}				
+					
 					
 
 					

@@ -1,73 +1,58 @@
 extends SubscribeWrapper
 var UTILITY:Script = preload("res://_DLC/Base/ROOMS/utility.gd")
 
-var DEBUG_ROOM:Dictionary = {
-	# ------------------------------------------
-	"ref": ROOM.REF.DEBUG_ROOM,
-	"categories": [ROOM.CATEGORY.UTILITY],
-	
-	"name": "DEBUG_ROOM",
-	"shortname": "DEBUG_ROOM",
-	"img_src": "res://Media/rooms/research_lab.png",
-	"description": "Debug room.",
-	"requires_unlock": false,	
-	"required_energy": 0,
-	"own_limit": 10,
-	# ------------------------------------------
+var DEBUG_DEPARTMENT:Dictionary = {
+	"ref": ROOM.REF.DEBUG_DEPARTMENT,
+	"link_categories": ROOM.CATEGORY.DEPARTMENT,
+	"categories": [ROOM.CATEGORY.DEPARTMENT],
+	"name": "DEBUG DEPARTMENT",
+	"img_src": "res://Media/rooms/admin_section.png",
+	"shortname": "DEBUG DEPT", 	
+	"description": "Central hub for DEBUG facilities.",
+	"quote": "This should NOT normally be available.",
 
-	# ------------------------------------------
-	"can_contain": false,
-	"can_assign_researchers": true,
-	"required_staffing": [
-		RESEARCHER.SPECIALIZATION.RESEARCHER
-	],
-	# ------------------------------------------
-
-	# ------------------------------------------	
-	"currencies": {
-		RESOURCE.CURRENCY.MONEY: 5,
-		RESOURCE.CURRENCY.MATERIAL: 4,
-		RESOURCE.CURRENCY.SCIENCE: 3,
-		RESOURCE.CURRENCY.CORE: 2,
-	},
-	"metrics": {
-		RESOURCE.METRICS.MORALE: 0,
-		RESOURCE.METRICS.SAFETY: 0,
-		RESOURCE.METRICS.READINESS: 0
-	},	
-	"environmental":{
-		"hazard": 0,
-		"temp": 0,
-		"pollution": 0
-	},	
-	# ------------------------------------------
-	
-	# ------------------------------------------
 	"costs": {
-		"build": 1,
-		"unlock": 1,
-		"purchase": 1,
+		"build": 10,
+		"unlock": 0,
+		"purchase": 10,
 	},
-	# ------------------------------------------
 	
-	# --------------------------------------
-	#"requires_specialization": RESEARCHER.SPECIALIZATION.ADMINISTRATION,
-	# ------------------------------------------	
+	"requires_unlock": false, 	
+	"required_staffing": [],
+	"required_energy": 1,
+
+	"department_properties": {
+		"operator": ROOM.OPERATOR.ADD,
+		"currency": [],
+		"metric": [],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],
+	},
 	
-	# ------------------------------------------
-	"abilities": func() -> Array: 
-		return [
-			ABL.get_ability(ABL.REF.HAPPY_HOUR, 0),
-			ABL.get_ability(ABL.REF.UNHAPPY_HOUR, 1),
-		],	
-	# ------------------------------------------
-		
-	# ------------------------------------------
 	"passive_abilities": func() -> Array: 
 		return [
+			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.PROCUREMENT_PASSIVE_2, 0),
+			
+			ABL_P.get_ability(ABL_P.REF.LOGISTICS_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.ENGINEERING_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.TEMPORAL_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.SCIENCE_PASSIVE_1, 0),
 
-		],	
-	# ------------------------------------------		
+			ABL_P.get_ability(ABL_P.REF.ADMIN_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.SECURITY_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.THEOLOGY_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.ANTIMEMETICS_PASSIVE_1, 0),
+			ABL_P.get_ability(ABL_P.REF.MISCOMMUNICATION_PASSIVE_1, 0),
+		],
+					
+	
+	"influence": {
+		"description": "FACILITIES built here will influence the ADMIN DEPT."
+	},
 }
 
 
@@ -576,6 +561,7 @@ var UTIL_ADD_ENERGY_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_ENERG
 # -----------------------------------	
 var list:Array[Dictionary] = [
 	# ADMIN ROOMS
+	DEBUG_DEPARTMENT,
 	PROCUREMENT_DEPARTMENT,
 	ADMIN_DEPARTMENT, 
 	LOGISTICS_DEPARTMENT, 

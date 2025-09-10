@@ -231,6 +231,36 @@ label_settings = SubResource("LabelSettings_jgan4")
 horizontal_alignment = 2
 metadata/_edit_group_ = true
 
+[node name="PreviewControl" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PreviewPanel" type="PanelContainer" parent="PreviewControl"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_left = 406.0
+offset_top = 45.0
+offset_right = 606.0
+offset_bottom = 77.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PreviewControl/PreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="RoomPreviewText" type="RichTextLabel" parent="PreviewControl/PreviewPanel/MarginContainer"]
+clip_contents = false
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("11_jgan4")
+theme_override_fonts/bold_font = ExtResource("9_jgan4")
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+text = "[b]BONUS[/b]: [b][color='ORANGE']MORALE[/color][/b] also generates [b][color='PURPLE']MONEY[/color][/b]."
+fit_content = true
+scroll_active = false
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_top = 0
@@ -414,7 +444,10 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="RoomEffectLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects/MarginContainer"]
+layout_mode = 2
+
+[node name="RoomEffectLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects/MarginContainer/VBoxContainer"]
 clip_contents = false
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("11_jgan4")

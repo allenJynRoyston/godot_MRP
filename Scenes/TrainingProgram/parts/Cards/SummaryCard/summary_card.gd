@@ -55,7 +55,11 @@ extends PanelContainer
 
 # passive list effects
 @onready var RoomEffects:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects
-@onready var RoomEffectLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects/MarginContainer/RoomEffectLabel
+@onready var RoomEffectLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects/MarginContainer/VBoxContainer/RoomEffectLabel
+
+#
+@onready var PreviewPanel:PanelContainer = $PreviewControl/PreviewPanel
+@onready var PreviewText:RichTextLabel = $PreviewControl/PreviewPanel/MarginContainer/RoomPreviewText
 
 @onready var node_list:Array = [StatusOverlay] 
 
@@ -105,6 +109,7 @@ var use_location:Dictionary :
 var room_config:Dictionary
 var base_states:Dictionary
 var hired_lead_researchers:Array
+var preview_passive:int = -1
 
 # ------------------------------------------------------------------------------
 func _init() -> void:
@@ -119,6 +124,18 @@ func _ready() -> void:
 	on_modules_only_update()
 	on_preview_mode_update()
 	on_preview_mode_ref_update()
+	
+	ModuleComponent.onUpdate = func(_ref_data:Dictionary, _node:Control) -> void:
+		preview_passive = _ref_data.data.ref
+		PreviewPanel.global_position = _node.global_position - Vector2(200, 0)
+		var effect_details:Dictionary = ROOM.return_effect(_ref_data.data.ref)
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
+		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_properties.operator, true)
+		#if preview_passive == -1:
+			#RoomPreviewText.text = ""
+			#return
+		#RoomEffects.show()
+		#print(RoomPreviewText.text )
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -348,19 +365,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 			var effect_string:String = ""
 			for index in department_properties.effects.size():
 				var effect_details:Dictionary = ROOM.return_effect(department_properties.effects[index])
-				var new_rich_label:RichTextLabel = RichTextLabel.new()
 				var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location)
-
-				if applies:
-					effect_string += "[color=ORANGE][b]PASSIVE:[/b][/color] %s\n" % effect_details.description.call(department_properties.operator)
-				else:
-					var regex = RegEx.new()
-					regex.compile("\\[.*?\\]")
-					var stripped_text:String = regex.sub(effect_details.description.call(department_properties.operator), "", true)
-					effect_string += "[color=ORANGE][b]PASSIVE (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
-
-				if index != department_properties.effects.size() - 1:
-					effect_string += "\n"
+				var is_end:bool = index == department_properties.effects.size() - 1
+				effect_string += build_effect_string(effect_details, applies, department_properties.operator, is_end)
 
 			RoomEffectLabel.text = effect_string
 
@@ -384,6 +391,20 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		return	
 # ------------------------------------------------------------------------------
 
+func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, is_last:bool) -> String:
+	var effect_string:String = ""
+	if applies:
+		effect_string += "[color=ORANGE][b]PASSIVE:[/b][/color] %s\n" % effect_details.description.call(operator)
+	else:
+		var regex = RegEx.new()
+		regex.compile("\\[.*?\\]")
+		var stripped_text:String = regex.sub(effect_details.description.call(operator), "", true)
+		effect_string += "[color=ORANGE][b]PASSIVE (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
+
+	if !is_last:
+		effect_string += "\n"
+	
+	return effect_string
 # ------------------------------------------------------------------------------
 func deselect_btns() -> void:
 	pass

@@ -220,6 +220,7 @@ var initial_values:Dictionary = {
 				RESOURCE.METRICS.READINESS: 0
 			},			
 			"department_cards": {
+				ROOM.REF.DEBUG_DEPARTMENT: 10,
 				ROOM.REF.PROCUREMENT_DEPARTMENT: 1,
 				# ------------
 				ROOM.REF.SCIENCE_DEPARTMENT: 1,

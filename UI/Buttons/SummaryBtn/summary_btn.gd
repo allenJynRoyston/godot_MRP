@@ -93,6 +93,7 @@ extends Control
 const LabelSettingsPreload:LabelSettings = preload("res://Fonts/font_1_black.tres")
 const CostLabelSettingsPreload:LabelSettings = preload("res://Fonts/font_2_16_black.tres")
 
+var onUpdate:Callable = func(_data:Dictionary):pass
 var onClick:Callable = func():pass
 
 # directly access, do not remove
@@ -164,6 +165,8 @@ func on_title_update() -> void:
 func update_all() -> void:
 	update_font_color()
 	on_panel_color_update()
+	if is_selected:
+		onUpdate.call(ref_data)
 	
 func update_font_color() -> void:
 	if !is_node_ready():return
