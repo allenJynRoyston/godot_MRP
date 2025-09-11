@@ -123,10 +123,11 @@ func end(made_changes:bool) -> void:
 	
 	U.tween_node_property(ResourcePanel, "position:y", control_pos[ResourcePanel].hide)
 	await U.tween_node_property(ContentPanel, "position:y", control_pos[ContentPanel].hide)
-
-	for item in activation_requirements:
-		var amount:int = item.amount
-		RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
+	
+	#if made_changes:
+		#for item in activation_requirements:
+			#var amount:int = item.amount
+			#RESOURCE_UTIL.make_update_to_currency_amount(item.resource.ref, amount)
 
 	user_response.emit(made_changes)
 	queue_free()

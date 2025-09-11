@@ -106,7 +106,6 @@ func update_control_pos() -> void:
 	on_current_mode_update(true)
 # --------------------------------------------------------------------------------------------------	
 
-
 # --------------------------------------------------------------------------------------------------	
 func purchase_room() -> void:	
 	current_mode = MODE.PURCHASE
@@ -172,10 +171,7 @@ func update_grid_content() -> void:
 			card_node.ref = room_details.ref
 			card_node.is_hoverable = true
 			
-			#card_node.onHover = func() -> void:
-				#if current_mode == MODE.CONTENT_SELECT:
-					#grid_index = n
-				
+
 			card_node.onClick = func() -> void:
 				if current_mode == MODE.CONTENT_SELECT:
 					grid_index = n
@@ -301,7 +297,7 @@ func on_key_press(key:String) -> void:
 		return
 	
 	var columns:int = GridContent.columns
-		
+	
 	match key:
 		"W":
 			match current_mode:
@@ -319,6 +315,7 @@ func on_key_press(key:String) -> void:
 		"A":
 			match current_mode:
 				MODE.CONTENT_SELECT:
+					
 					if grid_index not in [0, 3, 6]:
 						if has_valid_ref(grid_index - 1):
 							grid_index = grid_index - 1

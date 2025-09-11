@@ -40,5 +40,5 @@ horizontal_alignment = 1
 [node name="SVGIcon" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_oo3lu")]
 visible = false
 layout_mode = 2
-icon = 55
+icon = 60
 icon_color = Color(1, 1, 1, 1)

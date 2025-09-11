@@ -406,10 +406,18 @@ func show_fabrication_options() -> void:
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
 		# do a limit check to make sure there's no more than X categories per floor
 		if x.ref in department_refs:
+			var amount:int =  base_states.department_cards[x.ref]
+			if amount <= 0:
+				return true
+			
 			if ROOM_UTIL.department_count() >= deparment_limit:
 				return true
 		# else, do a check to see how many per room can be built here
 		else:
+			var amount:int =  base_states.utility_cards[x.ref]
+			if amount <= 0:
+				return true
+							
 			if ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
 				return true
 		
@@ -420,9 +428,15 @@ func show_fabrication_options() -> void:
 		var disabled_reason: String = description
 		
 		if x.ref in department_refs:
+			var amount:int =  base_states.department_cards[x.ref]
+			if amount <= 0:	
+				disabled_reason = "Not enough in inventory."
 			if ROOM_UTIL.department_count() >= deparment_limit:
 				disabled_reason = "Limited to %s departments." % deparment_limit
 		else:
+			var amount:int =  base_states.utility_cards[x.ref]
+			if amount <= 0:	
+				disabled_reason = "Not enough in inventory."			
 			if x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
 				disabled_reason = "Insufficient funds."
 			elif energy_available < x.required_energy:
@@ -460,19 +474,19 @@ func show_fabrication_options() -> void:
 		var draw_items:Array = []
 		for ref in base_states.department_cards:
 			var amount:int =  base_states.department_cards[ref]
-			for n in range(0, amount):
-				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-				draw_items.push_back({
-					"title": room_details.name,
-					"img_src": room_details.img_src,
-					"is_disabled": is_disabled_func.call(room_details),
-					"hint": hint_func.call(room_details), 
-					"ref": room_details.ref,
-					"details": room_details,
-					"action": func() -> void:
-						base_states.department_cards[ref] -= 1
-						await on_selected.call(room_details),
-				})
+			#for n in range(0, amount):
+			var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+			draw_items.push_back({
+				"title": "%s (%s)" % [room_details.name, amount],
+				"img_src": room_details.img_src,
+				"is_disabled": is_disabled_func.call(room_details),
+				"hint": hint_func.call(room_details), 
+				"ref": room_details.ref,
+				"details": room_details,
+				"action": func() -> void:
+					base_states.department_cards[ref] -= 1
+					await on_selected.call(room_details),
+			})
 			
 		options.push_back({
 			"title": "DEPARTMENTS",
@@ -485,19 +499,19 @@ func show_fabrication_options() -> void:
 		var draw_items:Array = []
 		for ref in base_states.utility_cards:
 			var amount:int =  base_states.utility_cards[ref]
-			for n in range(0, amount):
-				var room_details:Dictionary = ROOM_UTIL.return_data(ref)
-				draw_items.push_back({
-					"title": str(room_details.name, "  (", room_details.shortname, ")"),
-					"img_src": room_details.img_src,
-					"is_disabled": is_disabled_func.call(room_details),
-					"hint": hint_func.call(room_details), 
-					"ref": room_details.ref,
-					"details": room_details,
-					"action": func() -> void:
-						base_states.utility_cards[ref] -= 1
-						await on_selected.call(room_details),
-				})
+		
+			var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+			draw_items.push_back({
+				"title": "%s (%s)" % [room_details.name, amount],
+				"img_src": room_details.img_src,
+				"is_disabled": is_disabled_func.call(room_details),
+				"hint": hint_func.call(room_details), 
+				"ref": room_details.ref,
+				"details": room_details,
+				"action": func() -> void:
+					base_states.utility_cards[ref] -= 1
+					await on_selected.call(room_details),
+			})
 			
 		options.push_back({
 			"title": "SUPPORT NODES",
@@ -541,7 +555,7 @@ func show_fabrication_options() -> void:
 	# allows for wait response
 	await show_build_complete
 	SummaryCard.preview_mode_ref = -1
-	SummaryCard.preview_mode = false		
+	SummaryCard.preview_mode = false
 	reveal_blueprint(true)
 	await reveal_summarycard(false)
 	active_menu_is_open = false		
@@ -1762,7 +1776,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				AdminControls.reveal(true)
 				ModulesCard.show_modules = true
 				ModulesCard.show_programs = false
-				
+				ModulesCard.show_module_preview = false
 				# NameControl.hide()
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(1)
@@ -1781,6 +1795,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				AdminModulesControls.item_index = 0							
 				AdminModulesControls.directional_pref = "UD"
 				AdminModulesControls.offset = ModulesCard.global_position
+				ModulesCard.show_module_preview = true
 				
 				LocationAndDirectivesContainer.reveal(false)
 				RenderingNode.set_shader_strength(0)
@@ -1805,7 +1820,6 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 			# --------------
 			MODE.LOGISTICS_PROGRAMS:
 				LogisticProgramControls.reveal(true)
-	
 				LogisticProgramControls.itemlist = ModulesCard.get_program_btns()
 				LogisticProgramControls.item_index = 0							
 				LogisticProgramControls.directional_pref = "UD"

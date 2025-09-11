@@ -911,6 +911,7 @@ func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Ar
 
 func get_department_refs() -> Array:
 	return [
+		ROOM.REF.DEBUG_DEPARTMENT,
 		ROOM.REF.PROCUREMENT_DEPARTMENT,
 		ROOM.REF.ENGINEERING_DEPARTMENT,
 		ROOM.REF.LOGISTICS_DEPARTMENT, 

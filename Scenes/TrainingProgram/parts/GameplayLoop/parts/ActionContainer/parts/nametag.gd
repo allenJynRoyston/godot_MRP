@@ -2,11 +2,12 @@
 extends Control
 
 @onready var ContentPanel:PanelContainer = $ContentControl/ContentPanel
+@onready var ContentMargin:MarginContainer = $ContentControl/ContentPanel/MarginContainer
 @onready var ConstructionIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/ConstructionIcon
 @onready var StatusIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/StatusIcon
 @onready var NameLabel:Label = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/MarginContainer/NameLabel
-@onready var LevelPanel:PanelContainer = $ContentControl/LevelPanel
-@onready var LevelLabel:Label = $ContentControl/LevelPanel/MarginContainer/HBoxContainer/MarginContainer/LevelLabel
+@onready var LevelPanel:PanelContainer = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/LevelPanel
+@onready var LevelLabel:Label = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/LevelPanel/MarginContainer/HBoxContainer/MarginContainer/LevelLabel
 @onready var DownArrowIcon:Control = $ArrowControl/DownArrowIcon
 
 @onready var name_label_settings:LabelSettings = NameLabel.get("label_settings").duplicate()
@@ -121,19 +122,19 @@ func on_alignment_update() -> void:
 	await U.tick()
 	match alignment:
 		U.ALIGN.CENTER:
-			U.tween_node_property(LevelPanel, "position:x", -(ContentPanel.size.x/2) - 1, 0.3, 0, Tween.TRANS_SINE)
+			#U.tween_node_property(LevelPanel, "position:x", -(ContentPanel.size.x/2) - 1, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -(ContentPanel.size.x/2) + 10, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.LEFT:
-			U.tween_node_property(LevelPanel, "position:x", -ContentPanel.size.x + 20, 0.3, 0, Tween.TRANS_SINE)
+			#U.tween_node_property(LevelPanel, "position:x", -ContentPanel.size.x + 20, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -ContentPanel.size.x + 30, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, -10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.RIGHT:
-			U.tween_node_property(LevelPanel, "position:x", -8, 0.3, 0, Tween.TRANS_SINE)
+			#U.tween_node_property(LevelPanel, "position:x", -8, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", 0, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 30, 0.3, func(new_val) -> void:
 				offset_x = new_val	
@@ -197,9 +198,12 @@ func update_node() -> void:
 		StatusIcon.show() if !is_under_construction else StatusIcon.hide()
 		StatusIcon.icon = SVGS.TYPE.CONTAIN
 		StatusIcon.icon_color = Color.BLACK if is_activated else Color.DARK_RED
+		DownArrowIcon.icon_color = Color(1.0, 0.749, 0.2)
+		
 		# content 
 		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2)
 		LevelLabel.text = str(room_level_config.department_properties.level)
+		ContentMargin.set("theme_override_constants/margin_left", 0)
 
 		# update Name
 		name_label_settings.font_size = 12 
@@ -221,6 +225,7 @@ func update_node() -> void:
 		# update name
 		name_label_settings.font_size = 14 
 		name_label_settings.font_color =  Color.BLACK
+		ContentMargin.set("theme_override_constants/margin_left", 7)
 		
 		# update utility
 		var utility_props:Dictionary = room_details.utility_props		
@@ -287,5 +292,4 @@ func _physics_process(delta: float) -> void:
 		shifted_val -= 1
 		NameLabel.text = shift_string_backward(name_str, shifted_val)
 		ContentPanel.size = Vector2(1, 1)
-		LevelPanel.size = Vector2(1, 1)
 # --------------------------------------------

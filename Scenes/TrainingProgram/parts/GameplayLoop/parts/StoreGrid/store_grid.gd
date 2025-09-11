@@ -131,7 +131,7 @@ func purchase_room(ref:int) -> void:
 	
 
 	GridSelect.BtnControls.disable_active_btn = true
-	resources_data[RESOURCE.CURRENCY.MATERIAL].amount -= ROOM_UTIL.return_unlock_costs(ref)
+	resources_data[RESOURCE.CURRENCY.MATERIAL].amount -= ROOM_UTIL.return_purchase_cost(ref)
 	
 	SUBSCRIBE.resources_data = resources_data
 	SUBSCRIBE.base_states = base_states	
@@ -139,6 +139,8 @@ func purchase_room(ref:int) -> void:
 	await selected_node.play_purchase_animation()
 	GridSelect.BtnControls.disable_active_btn = false		
 	made_changes = true
+	
+	U.debounce( str(self, "_update_node"), update_node )
 # --------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------------
@@ -151,12 +153,12 @@ func unlock_room(ref:int) -> void:
 		"resource": RESOURCE_UTIL.return_currency(RESOURCE.CURRENCY.SCIENCE)
 	}]
 	
-	var confirm:bool = await GAME_UTIL.create_modal("Unlock %s?" % room_details.name, room_details.description, room_details.img_src, activation_requirements, false)
-	if confirm:
+	made_changes = await GAME_UTIL.create_modal("Unlock %s?" % room_details.name, room_details.description, room_details.img_src, activation_requirements, false)
+	if made_changes:
+		await GAME_UTIL.open_tally( {RESOURCE.CURRENCY.SCIENCE: -ROOM_UTIL.return_unlock_costs(ref)} )
 		ROOM_UTIL.add_to_unlocked_list(room_details.ref)
-		ROOM_UTIL.calculate_unlock_cost(room_details.ref)
 		GameplayNode.ToastContainer.add("Unlocked %s!" % [room_details.name])
-		made_changes = true
+		await U.tick()
 
 	GridSelect.refresh()
 	GridSelect.freeze_and_disable(false, true)
@@ -186,8 +188,8 @@ func update_node() -> void:
 	
 	var requires_unlock:bool = selected_node.requires_unlock
 	var can_afford:bool = can_afford_check( ROOM_UTIL.return_unlock_costs(selected_ref) if requires_unlock else ROOM_UTIL.return_purchase_cost(selected_ref), requires_unlock )
+	
 	SummaryCard.preview_mode_ref = selected_ref
-
 	GridSelect.BtnControls.disable_active_btn = !can_afford
 	GridSelect.BtnControls.a_btn_title = "RESEARCH" if requires_unlock else 'FABRICATE'	
 

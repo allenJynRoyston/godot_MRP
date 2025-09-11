@@ -26,6 +26,7 @@ extends Control
 
 @onready var nametag_label_label_setting:LabelSettings = NameTagLabel.get("label_settings").duplicate()
 @onready var own_count_label_setting:LabelSettings = OwnCountLabel.get("label_settings").duplicate()
+@onready var cost_label_setting:LabelSettings = CostLabel.get("label_settings").duplicate()
 
 @export var is_highlighted:bool = false : 
 	set(val):
@@ -61,7 +62,7 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
 	NameTagLabel.set("label_settings", nametag_label_label_setting)
-	CostLabel.set("label_settings", nametag_label_label_setting)	
+	CostLabel.set("label_settings", cost_label_setting)	
 	OwnCountLabel.set("label_settings", own_count_label_setting)
 	OwnCapacityLabel.set("label_settings", nametag_label_label_setting)
 	NamePanel.set("theme_override_styles/panel", name_panel_stylebox)
@@ -78,14 +79,20 @@ func reset() -> void:
 
 # --------------------------------------	
 func on_is_highlighted_update() -> void:
-	if !is_node_ready():return
+	if !is_node_ready() or ref == -1:return
+	var cost:int = ROOM_UTIL.return_unlock_costs(ref) if requires_unlock else ROOM_UTIL.return_purchase_cost(ref)	
+	var can_afford:bool = resources_data[RESOURCE.CURRENCY.SCIENCE if requires_unlock else RESOURCE.CURRENCY.MATERIAL].amount >= abs(cost)
+		
 	for stylebox in [cost_panel_stylebox, name_panel_stylebox]:
 		stylebox.bg_color = Color(1.0, 0.8, 0.2, 1) if !requires_unlock else Color.DARK_GRAY
-		stylebox.bg_color.a = 0.9 if !is_highlighted else 1
-	nametag_label_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
-	own_count_label_setting.font_color = Color.WHITE if !is_highlighted else Color.BLACK
-	
-	CostIcon.icon_color = nametag_label_label_setting.font_color
+		stylebox.bg_color.a = 0.8 if !is_highlighted else 1
+	nametag_label_label_setting.font_color = Color.DARK_SLATE_GRAY if !is_highlighted else Color.BLACK if can_afford else Color.DARK_RED
+	own_count_label_setting.font_color = Color.DARK_SLATE_GRAY if !is_highlighted else Color.BLACK if can_afford else Color.DARK_RED
+	cost_label_setting.font_color = own_count_label_setting.font_color if can_afford else Color.DARK_RED
+
+	CostIcon.icon_color = cost_label_setting.font_color	
+	LevelRequired.use_color = Color.WHITE if can_afford else Color.DARK_RED
+		
 	HighlightControl.show() if is_highlighted else HighlightControl.hide()
 	modulate.a = 1
 # --------------------------------------		
@@ -118,6 +125,7 @@ func play_purchase_animation() -> void:
 	PurchaseLabel.position.y = 0
 # --------------------------------------		
 
+
 # --------------------------------------		
 func update_content() -> void:	
 	if !is_node_ready() or resources_data.is_empty() or room_config.is_empty():return
@@ -127,22 +135,20 @@ func update_content() -> void:
 		return
 	
 	var room_details:Dictionary = ROOM_UTIL.return_data(ref)	
+	var cost:int = ROOM_UTIL.return_unlock_costs(room_details.ref) if requires_unlock else ROOM_UTIL.return_purchase_cost(room_details.ref)	
 	var room_unlock_val:int = room_config.base.room_unlock_val
 	var own_count:int = 0
 	
 	EmptyPanel.hide()
 	
-	
 	CardTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
-	CostLabel.text = str(room_details.costs.purchase) # str(room_details.costs.unlock) if room_details.costs.unlock > 0 else "FREE"
+	CostLabel.text = str(cost) 
 	
 	if ref in base_states.department_cards:
 		own_count = base_states.department_cards[ref]
 	if ref in base_states.utility_cards:
 		own_count = base_states.utility_cards[ref]
 		
-
-	
 	LevelRequired.icon = SVGS.TYPE.NONE
 
 	# -------------------- LEVEL REQUIRED
@@ -151,11 +157,12 @@ func update_content() -> void:
 		OwnHBox.hide()
 		HighlightIcon3.hide()
 		for node in [HighlightIcon1, HighlightIcon2, HighlightIcon3, HighlightIcon4]:
-			node.icon_color = Color.WHITE
+			node.icon_color = Color.BLACK
 		
 		NameTagLabel.text = room_details.shortname
 		CardTextureRect.texture = null
-		LevelRequired.title = "RESEARCH TO UNLOCK"
+		LevelRequired.title = ""
+		LevelRequired.icon = SVGS.TYPE.LOCK
 		OwnCountLabel.text = "-"
 		CostIcon.icon = SVGS.TYPE.RESEARCH
 		requires_unlock = true

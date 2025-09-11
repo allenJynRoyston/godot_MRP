@@ -59,9 +59,7 @@ extends PanelContainer
 
 #
 @onready var PreviewPanel:PanelContainer = $PreviewControl/PreviewPanel
-@onready var PreviewText:RichTextLabel = $PreviewControl/PreviewPanel/MarginContainer/RoomPreviewText
-
-@onready var node_list:Array = [PreviewPanel, StatusOverlay] 
+@onready var PreviewText:RichTextLabel = $PreviewControl/PreviewPanel/MarginContainer/PanelContainer/MarginContainer/RoomPreviewText
 
 @onready var namepanel_stylebox:StyleBoxFlat = NamePanel.get("theme_override_styles/panel").duplicate()
 @onready var infocontainer_stylebox:StyleBoxFlat = InfoContainer.get("theme_override_styles/panel").duplicate()
@@ -71,6 +69,11 @@ extends PanelContainer
 @export var show_modules:bool = false : 
 	set(val):
 		show_modules = val
+		U.debounce(str(self, "_on_update"), on_update)	
+
+@export var show_module_preview:bool = false : 
+	set(val):
+		show_module_preview = val
 		U.debounce(str(self, "_on_update"), on_update)	
 		
 @export var show_programs:bool = false : 
@@ -127,12 +130,11 @@ func _ready() -> void:
 	
 	ModuleComponent.onUpdate = func(_ref_data:Dictionary, _node:Control) -> void:
 		preview_passive = _ref_data.data.ref
-		PreviewPanel.global_position = _node.global_position - Vector2(200, 0)
+		PreviewPanel.global_position = _node.global_position - Vector2(205, 0)
 		var effect_details:Dictionary = ROOM.return_effect(_ref_data.data.ref)
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
 		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_properties.operator, true)
 		PreviewPanel.size = Vector2(1, 1)
-		PreviewPanel.show()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -163,11 +165,11 @@ func on_update() -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
 	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(use_location)
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
-	
-	# hide all nodes
-	for node in node_list:
-		node.hide()	
 		
+	# set defaults
+	StatusOverlay.hide()
+	PreviewPanel.hide()
+
 	# preview data...
 	if preview_mode and preview_mode_ref != -1:
 		var preview_data:Dictionary = ROOM_UTIL.return_data(preview_mode_ref)		
@@ -220,6 +222,10 @@ func on_update() -> void:
 			ProgramContainer.show()
 			ProgramComponent.use_location = use_location			
 			ProgramComponent.room_details = room_details	
+		
+		# show preview	
+		PreviewPanel.show() if show_module_preview else PreviewPanel.hide()
+				
 		return
 	
 	# override and add department properties to room_details
@@ -405,10 +411,11 @@ func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, 
 	return effect_string
 # ------------------------------------------------------------------------------
 func deselect_btns() -> void:
-	pass
-	#for node in [ModuleComponent, ProgramComponent, ContainmentComponent]:
-		#for btn in node.get_btns():
-			#btn.is_selected = false
+	for node in [ModuleComponent, ProgramComponent, ContainmentComponent]:
+		for btn in node.get_btns():
+			btn.is_selected = false
+			
+	PreviewPanel.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -440,6 +447,5 @@ func get_module_btns() -> Array:
 func _process(delta: float) -> void:
 	if !is_node_ready():return
 	SidePanel.position.x = CardMargin.size.x - 5
-	#CardBodySubviewport.size = CardControlBody.size
 # ------------------------------------------------------------------------------
 	

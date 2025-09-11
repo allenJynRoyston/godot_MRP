@@ -246,6 +246,7 @@ func update_grid_content(index:int = tab_index) -> void:
 	BtnControls.disable_active_btn = query.list.size() == 0
 	has_more = query.has_more
 
+
 	MoreBtn.modulate = Color(1, 1, 1, 1 if has_more else 0) 			
 	LessBtn.modulate = Color(1, 1, 1, 0 if page_tracker[index] == 0 else 1) 
 
@@ -271,14 +272,16 @@ func is_valid_selection(index:int) -> bool:
 	return onValidCheck.call(GridContent.get_child(index))
 
 func find_nearest_valid(start_at:int, reverse:bool = false) -> void:
+	update_grid_content()	
+	await U.tick()
 	var nearest_val:int = GridContent.columns - 1
-	
 	for n in range(start_at + nearest_val, 0, -1) if reverse else [start_at - nearest_val, 8, 4, 0]:
 		if is_valid_selection(n):
 			grid_index = n
 			return
 	
 	grid_index = 0 
+
 # --------------------------------------------------------------------------------------------------				
 
 
@@ -366,7 +369,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 func on_key_press(key:String) -> void:
 	if !is_visible_in_tree() or !is_node_ready() or freeze_inputs or is_animating: 
 		return
-	
+
 	var columns:int = GridContent.columns
 		
 	match key:
@@ -401,5 +404,6 @@ func on_key_press(key:String) -> void:
 					elif has_more:
 						page_tracker[tab_index] = page_tracker[tab_index] + 1
 						find_nearest_valid(grid_index, false)
+						
 		
 # --------------------------------------------------------------------------------------------------
