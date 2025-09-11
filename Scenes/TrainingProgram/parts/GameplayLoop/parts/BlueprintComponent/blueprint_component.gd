@@ -72,31 +72,33 @@ func update_node() -> void:
 		var utility_props:Dictionary = room_details.utility_props
 		var utility_string:String = ""
 		var energy_string:String = ""
-		
+
 		if !utility_props.is_empty():
 			if utility_props.has("level"):
-				utility_string += "+%s LVL" % [utility_props.level]
+				utility_string += "[color=blue][+%s LVL][/color]" % [utility_props.level]
 			if utility_props.has("bonus"):
-				utility_string += "+%s BONUS" % [utility_props.bonus]
+				utility_string += " [color=blue][+%s BONUS][/color]" % [utility_props.bonus]
 			if utility_props.has("metric"):
 				var details:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric)
-				utility_string += "ADD %s MODIFIER" % [details.name]
+				utility_string += " [color=blue][ADD %s MODIFIER][/color]" % [details.name]
 			if utility_props.has("currency"):
 				var details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
-				utility_string += "ADD %s MODIFIER" % [details.name]
+				utility_string += " [color=blue][ADD %s MODIFIER][/color]" % [details.name]
 			if utility_props.has("currency_blacklist"):
 				var details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency_blacklist)
-				utility_string += "REMOVED %s MODIFIER" % [details.name]
+				utility_string += " [color=red][REMOVED %s MODIFIER][/color]" % [details.name]
 			if utility_props.has("metric_blacklist"):
 				var details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.metric_blacklist)
-				utility_string += "REMOVED %s MODIFIER" % [details.name]
-			if utility_props.has("effect"):
-				var details:Dictionary = ROOM.return_effect(utility_props.effect)
-				utility_string += details.description.call(ROOM.OPERATOR.ADD)
+				utility_string += " [color=red][REMOVED %s MODIFIER][/color]" % [details.name]
+			if utility_props.has("effects"):
+				var details:Dictionary = ROOM.return_effect(utility_props.effects)
+				utility_string += "[color=purple][%s][/color]" % details.description.call(ROOM.OPERATOR.ADD)
 			# ------------------------------------
 			if utility_props.has("energy"):
-				energy_string += "+%s ENERGY" % [utility_props.energy]
-		
+				energy_string += "[color=orange]+%s ENERGY[/color]" % [utility_props.energy]
+					
+			var room_names: Array = []
+
 			for i in range(adjacent_departments.size()):
 				var room = adjacent_departments[i]
 				var adj_room_details: Dictionary = ROOM_UTIL.return_data_via_location({
@@ -106,14 +108,27 @@ func update_node() -> void:
 				})
 				if !adj_room_details.is_empty():
 					NoBonusLabel.hide()
-					if energy_string != "":
-						EffectTextLabel.text += "[color='black'][b]%s[/b] added to sector." % [energy_string]
-					if utility_string != "":
-						EffectTextLabel.text += "[color='black'][b]%s[/b] applied to [b]%s.[/b][/color]" % [utility_string, adj_room_details.shortname]
-					
-					# Only add linebreaks if not the last element
-					if i < adjacent_departments.size() - 1:
-						EffectTextLabel.text += "\n\n"
+					room_names.append(adj_room_details.shortname)
+
+			# After gathering all valid rooms, print once
+			if energy_string != "":
+				EffectTextLabel.text += "[color=black][b]%s[/b] added to sector.[/color]\n\n" % [energy_string]
+
+			if utility_string != "" and room_names.size() > 0:
+				var joined_names := ""
+				if room_names.size() == 1:
+					joined_names = room_names[0]
+				elif room_names.size() == 2:
+					joined_names = "%s and %s" % [room_names[0], room_names[1]]
+				else:
+					# "a, b, and c"
+					joined_names = ", ".join(room_names.slice(0, room_names.size() - 1))
+					joined_names += ", and %s" % room_names[-1]
+
+				EffectTextLabel.text += "[color=black][b]%s[/b] applied to [b][color=teal]%s[/color][/b].[/color]" % [utility_string, joined_names]
+
+
+
 	
 	else:
 		NoBonusLabel.show()

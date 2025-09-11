@@ -272,7 +272,7 @@ func update_node() -> void:
 				var effect_details:Dictionary = ROOM.return_effect(utility_props.effects)
 				name_str = room_details.shortname
 				name_label_settings.font_color = Color.BLACK
-		
+			# ---------------------------
 	
 	# show only when focused on
 	if focus_on_current:
