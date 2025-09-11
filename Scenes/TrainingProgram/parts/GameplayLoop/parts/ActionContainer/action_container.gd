@@ -405,7 +405,7 @@ func show_fabrication_options() -> void:
 	# assists functions
 	var is_disabled_func:Callable = func(x:Dictionary) -> bool:
 		# do a limit check to make sure there's no more than X categories per floor
-		if x.ref in department_refs:
+		if x.ref in base_states.department_cards:
 			var amount:int =  base_states.department_cards[x.ref]
 			if amount <= 0:
 				return true
@@ -413,13 +413,22 @@ func show_fabrication_options() -> void:
 			if ROOM_UTIL.department_count() >= deparment_limit:
 				return true
 		# else, do a check to see how many per room can be built here
-		else:
+		if x.ref in base_states.utility_cards:			
 			var amount:int =  base_states.utility_cards[x.ref]
 			if amount <= 0:
 				return true
 							
 			if ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
 				return true
+				
+		# else, do a check to see how many per room can be built here
+		if x.ref in base_states.containment_cards:	
+			var amount:int =  base_states.containment_cards[x.ref]
+			if amount <= 0:
+				return true
+							
+			if ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
+				return true				
 		
 		return x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount or energy_available < x.required_energy or ROOM_UTIL.at_own_limit(x.ref)
 		
@@ -427,13 +436,14 @@ func show_fabrication_options() -> void:
 		var description: String = x.description
 		var disabled_reason: String = description
 		
-		if x.ref in department_refs:
+		if x.ref in base_states.department_cards:
 			var amount:int =  base_states.department_cards[x.ref]
 			if amount <= 0:	
 				disabled_reason = "Not enough in inventory."
 			if ROOM_UTIL.department_count() >= deparment_limit:
-				disabled_reason = "Limited to %s departments." % deparment_limit
-		else:
+				disabled_reason = "Limited to %s departments per sector." % deparment_limit
+		
+		if x.ref in base_states.utility_cards:			
 			var amount:int =  base_states.utility_cards[x.ref]
 			if amount <= 0:	
 				disabled_reason = "Not enough in inventory."			
@@ -445,6 +455,19 @@ func show_fabrication_options() -> void:
 				disabled_reason = "At building capacity."
 			elif ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
 				disabled_reason = "Build limit reached (maximum %s per ring)." % [rooms_per_ring_limit]
+				
+		if x.ref in base_states.containment_cards:			
+			var amount:int =  base_states.containment_cards[x.ref]
+			if amount <= 0:	
+				disabled_reason = "Not enough in inventory."			
+			if x.costs.purchase > resources_data[RESOURCE.CURRENCY.MONEY].amount:
+				disabled_reason = "Insufficient funds."
+			elif energy_available < x.required_energy:
+				disabled_reason = "Not enough energy."
+			elif ROOM_UTIL.at_own_limit(x.ref):
+				disabled_reason = "At building capacity."
+			elif ROOM_UTIL.room_count_per_ring(x.ref) >= rooms_per_ring_limit:
+				disabled_reason = "Build limit reached (maximum %s per ring)." % [rooms_per_ring_limit]				
 				
 			
 		return {
@@ -467,10 +490,10 @@ func show_fabrication_options() -> void:
 	var list:Array = []
 	
 	# first add linkables of any neighboring departments
-	var linkables:Array = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location)
+	var attachables:Array = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location)
 	
 	# if no linkables, build a HQ
-	if linkables.is_empty():
+	if attachables.is_empty():
 		var draw_items:Array = []
 		for ref in base_states.department_cards:
 			var amount:int =  base_states.department_cards[ref]
@@ -496,11 +519,12 @@ func show_fabrication_options() -> void:
 	
 	# add any cards in the draw pile
 	else:
+		# --------------------------
 		var draw_items:Array = []
 		for ref in base_states.utility_cards:
-			var amount:int =  base_states.utility_cards[ref]
-		
+			var amount:int =  base_states.utility_cards[ref]		
 			var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+			
 			draw_items.push_back({
 				"title": "%s (%s)" % [room_details.name, amount],
 				"img_src": room_details.img_src,
@@ -518,7 +542,31 @@ func show_fabrication_options() -> void:
 			"items": draw_items,
 			"footer": "%s / %s" % [1, draw_items.size() ],
 		})
-
+		
+	# --------------------------
+	var containment_items:Array = []
+	for ref in base_states.containment_cards:
+		var amount:int =  base_states.containment_cards[ref]
+		var room_details:Dictionary = ROOM_UTIL.return_data(ref)
+		
+		containment_items.push_back({
+			"title": "%s (%s)" % [room_details.name, amount],
+			"img_src": room_details.img_src,
+			"is_disabled": is_disabled_func.call(room_details),
+			"hint": hint_func.call(room_details), 
+			"ref": room_details.ref,
+			"details": room_details,
+			"action": func() -> void:
+				base_states.containment_cards[ref] -= 1
+				await on_selected.call(room_details),
+		})
+		
+	options.push_back({
+		"title": "CONTAINMENT",
+		"items": containment_items,
+		"footer": "%s / %s" % [1, containment_items.size() ],
+	})						
+	
 	ActiveMenuNode.onUpdate = func(item:Dictionary) -> void:
 		# update preview
 		SummaryCard.preview_mode_ref = item.ref
@@ -1156,49 +1204,26 @@ func check_btn_states() -> void:
 			
 
 			# TODO: this is going to become a function of a room, so it doesn't need its own button.  
-			#FabricationBtn.is_flashing = draw_count != 0
 			FabricationBtn.show() if !has_priority_events else FabricationBtn.hide()
 			FabricationBtn.is_disabled = !is_ring_powered
-			#FabricationBtn.title = "BLUEPRINT" #if rooms_in_wing_count == 0 else "FABRICATION"
-			
 			FabricationBtn.onClick = func() -> void:
 				await lock_actions(true)
 				current_mode = MODE.FABRICATION
 			
 			# need engineering department before you can use this 
 			AdminBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT) ) and !has_priority_events else AdminBtn.hide()
-
-			# LogisticsBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.LOGISTICS_DEPARTMENT) ) and !has_priority_events else LogisticsBtn.hide()
-			
 			EngineeringBtn.show() #if (ROOM_UTIL.ring_contains(ROOM.REF.ENGINEERING_DEPARTMENT) ) and !has_priority_events else EngineeringBtn.hide()
-						
+			ContainBtn.show() if ROOM_UTIL.ring_contains(ROOM.REF.CONTAINMENT_CELL) else ContainBtn.hide()
+			#OperationsBtn.hide()
+			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
 			
 			#EngineeringBtn.hide()
 			ScienceBtn.hide()
 			MedicalBtn.hide()
 			SecurityBtn.hide()
 			EthicsBtn.hide()
-			ContainBtn.hide()
-			#EngineeringBtn.show() if ROOM_UTIL.owns(ROOM.REF.ENGINEERING_DEPARTMENT) and !has_priority_events else EngineeringBtn.hide()
-			#EngineeringBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ENGINEERING_DEPARTMENT)
-			#
-			#ScienceBtn.show() if ROOM_UTIL.owns(ROOM.REF.SCIENCE_DEPARTMENT) and !has_priority_events else ScienceBtn.hide()
-			#ScienceBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SCIENCE_DEPARTMENT)
-			#
-			#MedicalBtn.show() if ROOM_UTIL.owns(ROOM.REF.MEDICAL_DEPARTMENT) and !has_priority_events else MedicalBtn.hide()
-			#MedicalBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.MEDICAL_DEPARTMENT)			
-			#
-			#SecurityBtn.show() if ROOM_UTIL.owns(ROOM.REF.SECURITY_DEPARTMENT) and !has_priority_events else SecurityBtn.hide()
-			#SecurityBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.SECURITY_DEPARTMENT)
-			#
-			#EthicsBtn.show() if ROOM_UTIL.owns(ROOM.REF.ETHICS_DEPARTMENT) and !has_priority_events else EthicsBtn.hide()
-			#EthicsBtn.is_disabled = !ROOM_UTIL.owns_and_is_active(ROOM.REF.ETHICS_DEPARTMENT)
-#
-			#ContainBtn.show() if ROOM_UTIL.ring_contains(ROOM.REF.CONTAINMENT_CELL) else ContainBtn.hide()
-			
-			#OperationsBtn.hide()
-			DebugBtn.show() if DEBUG.get_val(DEBUG.GAMEPLAY_SHOW_DEBUG_MENU) else DebugBtn.hide()
-			
+	
+
 			# end button 
 			var end_btn_is_flashing:bool = false
 			for btn in [AdminBtn, EngineeringBtn, LogisticsBtn, ScienceBtn, MedicalBtn, SecurityBtn, EthicsBtn]:

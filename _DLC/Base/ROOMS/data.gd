@@ -514,6 +514,47 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 }
 #endregion
 
+var CONTAINMENT_CELL_A:Dictionary = {
+	"ref": ROOM.REF.CONTAINMENT_CELL,
+	"link_categories": ROOM.CATEGORY.CONTAINMENT,
+	"categories": [ROOM.CATEGORY.CONTAINMENT],
+	"name": "CONTAINMENT CELL",
+	"img_src": "res://Media/rooms/engineering_section.png",
+	"shortname": "C.CELL", 	
+	"description": "Basic containment cell.",
+	"quote": "...",
+	"can_contain": true,
+
+	"costs": {
+		"build": 10,
+		"unlock": 25,
+		"purchase": 15,
+	},	
+	"required_staffing": [],
+	"required_energy": 1,
+	
+	"department_properties": {
+		"operator": ROOM.OPERATOR.SUBTRACT,
+		"currency": [RESOURCE.CURRENCY.MONEY],
+		"metric": [RESOURCE.METRICS.SAFETY],
+		"level": 1,
+		"bonus": 0,
+		"effects": [],
+		"metric_blacklist": [],
+		"currency_blacklist": [],
+	},
+	
+	"passive_abilities": func() -> Array: 
+		return [
+			ABL_P.get_ability(ABL_P.REF.PATAPHYSICS_PASSIVE_1, 0)
+		],
+					
+	
+	"influence": {
+		"range": 1,
+		"description": "FACILITIES built here will influence the PATAPHYSICS DEPT."
+	},
+}
 
 
 #region UTILITY (DRAW) ROOMS
@@ -555,12 +596,9 @@ var UTIL_ADD_ENERGY_3:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ADD_ENERG
 #var UTIL_ZERO_ECON_OUTPUT:Dictionary = UTILITY.get_room_data(ROOM.REF.UTIL_ZERO_ECON_OUTPUT)
 #endregion
 
-
-
-
 # -----------------------------------	
 var list:Array[Dictionary] = [
-	# ADMIN ROOMS
+	# DEPARTMENTS
 	DEBUG_DEPARTMENT,
 	PROCUREMENT_DEPARTMENT,
 	ADMIN_DEPARTMENT, 
@@ -573,6 +611,9 @@ var list:Array[Dictionary] = [
 	PATAPHYSICS_DEPARTMENT,
 	SECURITY_DEPARTMENT,
 	SCIENCE_DEPARTMENT,
+	
+	# CONTAINMENT
+	CONTAINMENT_CELL_A,
 	
 	# UTILITY:
 	UTIL_LEVEL_UP_1, UTIL_LEVEL_UP_2, UTIL_LEVEL_UP_3,

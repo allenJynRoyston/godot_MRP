@@ -238,6 +238,7 @@ metadata/_edit_group_ = true
 layout_mode = 2
 
 [node name="PreviewPanel" type="PanelContainer" parent="PreviewControl"]
+visible = false
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 0
 offset_top = -87.0

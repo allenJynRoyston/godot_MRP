@@ -2,10 +2,19 @@
 
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_o1lms"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="3_rodcg"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_o1lms"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1lms"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ohcx"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.2)
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o1lms"]
 bg_color = Color(0.126585, 0.195218, 0.535076, 1)
@@ -45,7 +54,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 offset_right = 147.0
 offset_bottom = 30.0
-theme_override_styles/panel = ExtResource("3_rodcg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ohcx")
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentControl/ContentPanel"]
 layout_mode = 2
@@ -119,7 +128,7 @@ custom_minimum_size = Vector2(10, 15)
 layout_mode = 0
 offset_left = 27.0
 offset_top = 25.0
-offset_right = 47.0
+offset_right = 37.0
 offset_bottom = 40.0
 icon = 42
 icon_color = Color(1, 0.74902, 0.2, 1)

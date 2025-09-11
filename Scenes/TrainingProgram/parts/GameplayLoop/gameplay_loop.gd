@@ -218,8 +218,12 @@ var initial_values:Dictionary = {
 				RESOURCE.METRICS.MORALE: 0,
 				RESOURCE.METRICS.SAFETY: 0,
 				RESOURCE.METRICS.READINESS: 0
-			},			
+			},
+			"containment_cards": {
+				ROOM.REF.CONTAINMENT_CELL: 1
+			},
 			"department_cards": {
+				# ------------
 				ROOM.REF.DEBUG_DEPARTMENT: 10,
 				ROOM.REF.PROCUREMENT_DEPARTMENT: 1,
 				# ------------
@@ -1443,7 +1447,6 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 			var passive_abilities:Array = room_details.passive_abilities.call()
 			var departments_only_list:Array = ROOM_UTIL.get_departments(item.location)
 			
-			
 			# go through each ability
 			for ability_index in passive_abilities.size():
 				var ability:Dictionary = passive_abilities[ability_index]
@@ -1453,74 +1456,38 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 				# remove passives if conditions not met
 				if department_properties.is_empty() or !is_activated:
 					room_base_state.passives_enabled_list.erase(ability.ref)
-					
 				# -------------------
 				# if enabled
 				else:					
 					if room_base_state.passives_enabled[ability_uid]:
 						ring_config_data.energy.used += energy_cost
-						
+						# --------------- APPLY TO ALL
 						if ability.has("apply_all"):
 							var apply_all:Dictionary = ability.apply_all
 							# apply to each department on that ring
 							if !apply_all.is_empty():
+								for prop in ['level', 'bonus']:
+									if apply_all.has(prop):
+										for department in departments_only_list:
+											var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
+											department_config_data.department_properties[prop] += apply_all[prop]
 								# -------------------
-								if apply_all.has("level"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										department_config_data.department_properties.level += apply_all.level
-								# -------------------
-								if apply_all.has("bonus"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										department_config_data.department_properties.bonus += apply_all.bonus									
-								# -------------------
-								if apply_all.has("metric"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										if apply_all.metric not in department_config_data.department_properties.metric:
-											room_config_data.department_properties.metric.append( apply_all.metric )
-								# -------------------
-								if apply_all.has("currency"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										if apply_all.currency not in department_config_data.department_properties.currency:
-											department_config_data.department_properties.currency.append( apply_all.currency )
-								# -------------------
-								if apply_all.has("effect"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										if apply_all.effect not in department_config_data.department_properties.effects:
-											department_config_data.department_properties.effects.append( apply_all.effect )
-								# ------------------------------------	
-								if apply_all.has("blacklist_metric"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										if apply_all.blacklist_metric not in department_config_data.department_properties.blacklist_metric:
-											department_config_data.department_properties.blacklist_metric.append( apply_all.blacklist_metric )
-								if apply_all.has("blacklist_currency"):
-									for department in departments_only_list:
-										var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
-										if apply_all.blacklist_currency not in department_config_data.department_properties.blacklist_currency:
-											department_config_data.department_properties.blacklist_currency.append( apply_all.blacklist_currency )											
-						
-						# ---------------
+								for prop in ['currency', 'metric', 'currency_blacklist', 'blacklist_metric', 'effects']:
+									if apply_all.has(prop):
+										for department in departments_only_list:
+											var department_config_data:Dictionary = new_room_config.floor[department.location.floor].ring[department.location.ring].room[department.location.room]
+											if apply_all[prop] not in department_config_data.department_properties[prop]:
+												room_config_data.department_properties[prop].append( apply_all[prop] )
+
+						# --------------- ONLY EFFECTS SELF
 						if ability.has("apply_self"):
 							var apply_self:Dictionary = ability.apply_self
-							if apply_self.has("level"):
-								room_config_data.department_properties.level += apply_self.level
-							if apply_self.has("bonus"):
-								room_config_data.department_properties.bonus += apply_self.bonus
-							if apply_self.has("metric") and apply_self.metric not in room_config_data.department_properties.metric:
-								room_config_data.department_properties.metric.append( apply_self.metric )
-							if apply_self.has("currency") and apply_self.currency not in room_config_data.department_properties.currency:
-								room_config_data.department_properties.currency.append( apply_self.currency )
-							if apply_self.has("effect") and apply_self.effect not in room_config_data.department_properties.effects:
-								room_config_data.department_properties.effects.append( apply_self.effect )
-							if apply_self.has("blacklist_metric") and apply_self.blacklist_metric not in room_config_data.department_properties.blacklist_metric:
-								room_config_data.department_properties.blacklist_metric.append( apply_self.blacklist_metric )
-							if apply_self.has("blacklist_currency") and apply_self.blacklist_metric not in room_config_data.department_properties.blacklist_metric:
-								room_config_data.department_properties.blacklist_metric.append( apply_self.blacklist_currency )
+							for prop in ['level', 'bonus']:
+								if apply_self.has(prop):
+									room_config_data.department_properties[prop] += apply_self[prop]
+							for prop in ['currency', 'metric', 'currency_blacklist', 'blacklist_metric', 'effects']:
+								if apply_self.has(prop) and apply_self[prop] not in room_config_data.department_properties[prop]:
+									room_config_data.department_properties[prop].append( apply_self[prop] )
 
 func room_calculate_stats(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
@@ -1540,23 +1507,15 @@ func room_calculate_stats(new_room_config:Dictionary) -> void:
 				
 				var utility_props:Dictionary = adjacent_room_details.utility_props
 				if !utility_props.is_empty():
-					if utility_props.has("level"):
-						room_config_data.department_properties.level += utility_props.level
-					if utility_props.has("bonus"):
-						room_config_data.department_properties.bonus += utility_props.bonus
-					if utility_props.has("metric") and utility_props.metric not in room_config_data.department_properties.metric:
-						room_config_data.department_properties.metric.append( utility_props.metric )
-					if utility_props.has("currency") and utility_props.currency not in room_config_data.department_properties.currency:
-						room_config_data.department_properties.currency.append( utility_props.currency )
-					if utility_props.has("currency_blacklist") and utility_props.currency_blacklist not in room_config_data.department_properties.currency_blacklist:
-						room_config_data.department_properties.currency_blacklist.append( utility_props.currency_blacklist )
-					if utility_props.has("blacklist_metric") and utility_props.metrics_blacklist not in room_config_data.department_properties.metrics_blacklist:
-						room_config_data.department_properties.metrics_blacklist.append( utility_props.metrics_blacklist )						
-					if utility_props.has("effect") and utility_props.effect not in room_config_data.department_properties.effects:
-						room_config_data.department_properties.effects.append( utility_props.effect )
-					# ------------------------------------
+					for prop in ['level', 'bonus']:
+						if utility_props.has(prop):
+							room_config_data.department_properties[prop] += utility_props[prop]					
+					for prop in ['currency', 'metric', 'currency_blacklist', 'blacklist_metric', 'effects']:
+						if utility_props.has(prop) and utility_props[prop] not in room_config_data.department_properties[prop]:
+							room_config_data.department_properties[prop].append( utility_props[prop] )
 					if utility_props.has("energy"):
-						ring_config_data.energy.available += utility_props.energy
+						ring_config_data.energy.available += utility_props.energy								
+					# ------------------------------------
 						
 	# CHECK BLACKLISTED CURRENCY/METRICS AND REMOVE THEM SO THEY DONT' GET CALCULATED
 	for item in purchased_facility_arr:
@@ -1571,7 +1530,6 @@ func room_calculate_stats(new_room_config:Dictionary) -> void:
 			for ref in room_config_data.department_properties.metric_blacklist:
 				room_config_data.department_properties.metric.erase(ref)
 			
-
 func apply_scp_effects(new_room_config:Dictionary) -> void:
 	# ----------------- CHECK AND APPLY EFFECTS FROM SCP
 	for ref in scp_data:
@@ -1585,32 +1543,24 @@ func apply_scp_effects(new_room_config:Dictionary) -> void:
 			var is_activated:bool = room_config_data.is_activated
 			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
 			
+			# apply effect
+			if !scp_details.effect.is_empty():
+				# has apply all...
+				if scp_details.effect.has("apply_all"):
+					var apply_all:Dictionary = scp_details.effect.apply_all
+					var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(room)
+					for _room in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+						var _room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[_room]
+						if !_room_config_data.department_properties.is_empty():
+							for prop in ['level', 'bonus']:
+								if apply_all.has(prop):
+									_room_config_data.department_properties[prop] += apply_all[prop]
+							for props in ["currency", "metric", "currency_blacklist", "metric_blacklist", "effects"]:
+								if apply_all.has(props):
+									for _ref in apply_all[props]:
+										if _ref not in _room_config_data.department_properties[props]:
+											_room_config_data.department_properties[props].append(_ref)
 
-			if !scp_details.effect.is_empty():				
-				if scp_details.effect.has("func"):					
-					new_room_config = scp_details.effect.func.call( new_room_config, sdata )
-
-					
-# func apply_influence_effect(new_room_config:Dictionary) -> void:
-	# ----------------- check for rooms
-	for item in purchased_facility_arr:
-		var floor:int = item.location.floor
-		var ring:int = item.location.ring
-		var room:int = item.location.room		
-		var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]		
-		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)	
-
-				
-	# ----------------- check for scp
-	for ref in scp_data:
-		var sdata:Dictionary = scp_data[ref]
-		if !sdata.location.is_empty():
-			var floor:int = sdata.location.floor
-			var ring:int = sdata.location.ring
-			var room:int = sdata.location.room
-			var room_config_data:Dictionary = new_room_config.floor[floor].ring[ring].room[room]
-			var scp_details:Dictionary = SCP_UTIL.return_data(ref)
-			
 func calculate_final(new_room_config:Dictionary) -> void:
 	for item in purchased_facility_arr:
 		var room_details:Dictionary = ROOM_UTIL.return_data(item.ref)

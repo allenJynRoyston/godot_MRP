@@ -342,7 +342,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Naps optional.",
 				"costs": get_costs(1), 
 				"utility_props": {
-					"effect": ROOM.EFFECTS.DOUBLE_ECON_OUTPUT
+					"effects": ROOM.EFFECTS.DOUBLE_ECON_OUTPUT
 				}				
 			}
 		# ----------------------------------------------------------------------
@@ -355,7 +355,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "They said the robots wouldn’t replace us. They lied badly.",
 				"costs": get_costs(2), 
 				"utility_props": {
-					"effect": ROOM.EFFECTS.TRIPLE_ECON_OUTPUT
+					"effects": ROOM.EFFECTS.TRIPLE_ECON_OUTPUT
 				}				
 			}					
 			
@@ -369,7 +369,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "If it fits, we convert it. If it doesn’t fit... we still convert it.",
 				"costs": get_costs(1), 
 				"utility_props": {
-					"effect": ROOM.EFFECTS.HALF_ECON_OUTPUT
+					"effects": ROOM.EFFECTS.HALF_ECON_OUTPUT
 				}				
 			}
 			
@@ -383,7 +383,7 @@ static func get_room_data(ref:ROOM.REF) -> Dictionary:
 				"quote": "Everything burns eventually.",
 				"costs": get_costs(2), 
 				"utility_props": {
-					"effect": ROOM.EFFECTS.ZERO_ECON_OUTPUT
+					"effects": ROOM.EFFECTS.ZERO_ECON_OUTPUT
 				}				
 			}						
 

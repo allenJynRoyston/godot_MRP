@@ -273,7 +273,6 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
 					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = level * 2
-
 			}
 		EFFECTS.TRIPLE_ECON_OUTPUT:
 			return {

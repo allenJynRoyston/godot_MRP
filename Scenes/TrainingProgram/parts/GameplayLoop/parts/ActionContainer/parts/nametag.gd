@@ -122,19 +122,16 @@ func on_alignment_update() -> void:
 	await U.tick()
 	match alignment:
 		U.ALIGN.CENTER:
-			#U.tween_node_property(LevelPanel, "position:x", -(ContentPanel.size.x/2) - 1, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -(ContentPanel.size.x/2) + 10, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.LEFT:
-			#U.tween_node_property(LevelPanel, "position:x", -ContentPanel.size.x + 20, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", -ContentPanel.size.x + 30, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, -10, 0.3, func(new_val) -> void:
 				offset_x = new_val	
 			)
 		U.ALIGN.RIGHT:
-			#U.tween_node_property(LevelPanel, "position:x", -8, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_node_property(ContentPanel, "position:x", 0, 0.3, 0, Tween.TRANS_SINE)
 			U.tween_range(offset_x, 30, 0.3, func(new_val) -> void:
 				offset_x = new_val	
@@ -235,7 +232,7 @@ func update_node() -> void:
 				StatusIcon.icon_size = Vector2(12, 12)
 				StatusIcon.icon = SVGS.TYPE.PLUS
 				StatusIcon.show()
-				
+				name_label_settings.font_color = Color.BLACK
 				name_str = str(utility_props.level)
 			# ---------------------------
 			if utility_props.has("metric"):
@@ -243,6 +240,7 @@ func update_node() -> void:
 				StatusIcon.icon_size = Vector2(12, 12)
 				StatusIcon.icon = SVGS.TYPE.PLUS
 				StatusIcon.show()
+				name_label_settings.font_color = Color.BLACK
 				name_str = metric_details.name
 			# ---------------------------
 			if utility_props.has("currency"):
@@ -252,9 +250,28 @@ func update_node() -> void:
 				StatusIcon.show()
 				name_str = currency_details.name
 			# ---------------------------
-			if utility_props.has("effect"):
-				var effect_details:Dictionary = ROOM.return_effect(utility_props.effect)
+			if utility_props.has("currency_blacklist"):
+				var currency_details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency_blacklist)
+				StatusIcon.icon_size = Vector2(12, 12)
+				StatusIcon.icon = SVGS.TYPE.MINUS
+				StatusIcon.icon_color = Color.RED
+				StatusIcon.show()
+				name_label_settings.font_color = Color.RED
+				name_str = currency_details.name				
+			# ---------------------------
+			if utility_props.has("metric_blacklist"):
+				var currency_details:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric_blacklist)
+				StatusIcon.icon_size = Vector2(12, 12)
+				StatusIcon.icon = SVGS.TYPE.MINUS
+				StatusIcon.icon_color = Color.RED
+				StatusIcon.show()
+				name_label_settings.font_color = Color.RED
+				name_str = currency_details.name				
+			# ---------------------------
+			if utility_props.has("effects"):
+				var effect_details:Dictionary = ROOM.return_effect(utility_props.effects)
 				name_str = room_details.shortname
+				name_label_settings.font_color = Color.BLACK
 		
 	
 	# show only when focused on

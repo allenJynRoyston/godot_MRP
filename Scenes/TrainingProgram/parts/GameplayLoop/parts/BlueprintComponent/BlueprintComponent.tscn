@@ -1,14 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsbakxgtqjmp"]
+[gd_scene load_steps=13 format=3 uid="uid://dsbakxgtqjmp"]
 
 [ext_resource type="Script" uid="uid://dki4lkk52npow" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/BlueprintComponent/blueprint_component.gd" id="1_wuj0y"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_r3s2j"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="3_5xmsx"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_4qbcm"]
+[ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_wuj0y"]
+[ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="6_5xmsx"]
+[ext_resource type="FontFile" uid="uid://0mmjtqn03dkq" path="res://Fonts/PixelOperator-Bold.ttf" id="7_4qbcm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbxtp"]
-bg_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
@@ -18,12 +21,18 @@ outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_x26ft"]
-font = ExtResource("3_5xmsx")
-font_color = Color(1, 0, 0, 1)
-outline_color = Color(0, 0, 0, 0.615686)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xmsx"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.2)
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x26ft"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+shadow_offset = Vector2(1, 1)
 
 [node name="BlueprintComponent" type="PanelContainer"]
 offset_right = 150.0
@@ -85,7 +94,7 @@ alignment = 1
 [node name="Income" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/separation = 0
+theme_override_constants/separation = -1
 
 [node name="Header" type="PanelContainer" parent="VBoxContainer/Income"]
 layout_mode = 2
@@ -105,45 +114,48 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/Income/Header/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "BONUS"
+text = "info"
 label_settings = SubResource("LabelSettings_yr4tm")
 horizontal_alignment = 2
 
-[node name="Content" type="PanelContainer" parent="VBoxContainer/Income"]
-custom_minimum_size = Vector2(275, 68)
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Income"]
 layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = ExtResource("2_r3s2j")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5xmsx")
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/Content"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="NoBonusLabel" type="Label" parent="VBoxContainer/Income/Content/MarginContainer"]
+[node name="Content" type="PanelContainer" parent="VBoxContainer/Income/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 4
-text = "NO BONUS"
-label_settings = SubResource("LabelSettings_x26ft")
-horizontal_alignment = 1
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x26ft")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Income/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
-[node name="EffectList" type="VBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
+[node name="NoBonusLabel" type="Label" parent="VBoxContainer/Income/PanelContainer/MarginContainer/Content/MarginContainer"]
 layout_mode = 2
+text = "None"
+label_settings = ExtResource("5_wuj0y")
 
-[node name="CurrencyList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
-visible = false
+[node name="EffectTextLabel" type="RichTextLabel" parent="VBoxContainer/Income/PanelContainer/MarginContainer/Content/MarginContainer"]
+clip_contents = false
 layout_mode = 2
-theme_override_constants/separation = 20
-alignment = 1
-
-[node name="MetricList" type="HBoxContainer" parent="VBoxContainer/Income/Content/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.254902)
+theme_override_fonts/normal_font = ExtResource("6_5xmsx")
+theme_override_fonts/bold_font = ExtResource("7_4qbcm")
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+text = "[b]BONUS[/b]: [b][color='ORANGE']MORALE[/color][/b] also generates [b][color='PURPLE']MONEY[/color][/b]."
+fit_content = true
+scroll_active = false

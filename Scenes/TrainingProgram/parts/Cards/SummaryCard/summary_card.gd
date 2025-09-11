@@ -169,6 +169,7 @@ func on_update() -> void:
 	# set defaults
 	StatusOverlay.hide()
 	PreviewPanel.hide()
+	RoomEffectLabel.text = ""
 
 	# preview data...
 	if preview_mode and preview_mode_ref != -1:
@@ -186,8 +187,8 @@ func on_update() -> void:
 						preview_data.department_properties.metric.append( utility_props.metric )
 					if utility_props.has("currency"):
 						preview_data.department_properties.currency.append( utility_props.currency )
-					if utility_props.has("effect"):
-						preview_data.department_properties.effects.append( utility_props.effect )
+					if utility_props.has("effects"):
+						preview_data.department_properties.effects.append( utility_props.effects )
 							
 		# shape for preview
 		fill( preview_data, {}, true )
@@ -203,8 +204,7 @@ func on_update() -> void:
 		show()
 		SidePanel.hide()
 		InfoContainer.hide()		
-		
-		
+
 		# passives
 		if room_details.passive_abilities.call().is_empty() or !show_modules:
 			ModuleContainer.hide()
@@ -290,8 +290,8 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		if utility_props.has("currency"):
 			var currency_data:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
 			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to effected departments.\n" % [currency_data.name]
-		if utility_props.has("effect"):
-			var effect_data:Dictionary = ROOM.return_effect(utility_props.effect)
+		if utility_props.has("effects"):
+			var effect_data:Dictionary = ROOM.return_effect(utility_props.effects)
 			final_string += effect_data.description.call(ROOM.OPERATOR.ADD)
 	
 		RoomImpactLabel.text = str("[b][color='ORANGE']EFFECT:[/color][/b] ", final_string)
@@ -374,7 +374,12 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 				effect_string += build_effect_string(effect_details, applies, department_properties.operator, is_end)
 
 			RoomEffectLabel.text = effect_string
-
+	
+	# scp effect
+	if !scp_details.is_empty():		
+		var contain_string:String = "%s [b]%s[/b]: %s" % [RoomEffectLabel.text + "[color='PURPLE'][b]CONTAINS:[/b][/color]", scp_details.name, scp_details.effect.description]
+		RoomEffectLabel.text = contain_string
+		RoomEffects.show()
 	
 	# hide all
 	if room_details.utility_props.is_empty() and room_details.department_properties.is_empty():
@@ -398,12 +403,12 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, is_last:bool) -> String:
 	var effect_string:String = ""
 	if applies:
-		effect_string += "[color=ORANGE][b]PASSIVE:[/b][/color] %s\n" % effect_details.description.call(operator)
+		effect_string += "[color=ORANGE][b]EFFECT:[/b][/color] %s\n" % effect_details.description.call(operator)
 	else:
 		var regex = RegEx.new()
 		regex.compile("\\[.*?\\]")
 		var stripped_text:String = regex.sub(effect_details.description.call(operator), "", true)
-		effect_string += "[color=ORANGE][b]PASSIVE (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
+		effect_string += "[color=ORANGE][b]EFFECT (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
 
 	if !is_last:
 		effect_string += "\n"

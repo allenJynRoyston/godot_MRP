@@ -354,7 +354,17 @@ var SCP0:Dictionary = {
 		SCP.CONTAINMENT_TYPES.SPATIAL
 	],
 
-	"influence": INFLUENCE_PRESETS[INFTYPE.NO_CURRENCY],	
+	"effect": {
+		"description": "Level is increased by 5.",
+		"apply_all": {
+			"level": 5,
+			"currency": [RESOURCE.CURRENCY.MONEY, RESOURCE.CURRENCY.SCIENCE],
+			"currency_blacklist": [],
+			"metric_blacklist": []
+		}
+			
+	}		
+
 	#"effect": {
 		#"description": "All adjacent rooms generate +1 RESEARCH.",
 		#"func": func(_new_room_config:Dictionary, _item:Dictionary) -> Dictionary:
