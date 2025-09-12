@@ -220,7 +220,7 @@ var initial_values:Dictionary = {
 				RESOURCE.METRICS.READINESS: 0
 			},
 			"containment_cards": {
-				ROOM.REF.CONTAINMENT_CELL: 1
+				ROOM.REF.CONTAINMENT_CELL: 10,
 			},
 			"department_cards": {
 				# ------------
@@ -907,14 +907,13 @@ func on_current_phase_update() -> void:
 			await GAME_UTIL.open_tally( RESOURCE_UTIL.return_diff() )
 			
 			# BONUS PERK
-			if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ADMIN_PERK_1):
-				await GAME_UTIL.open_tally( RESOURCE_UTIL.return_extra_diff() )
+			#if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.ADMIN_PERK_1):
+				#await GAME_UTIL.open_tally( RESOURCE_UTIL.return_extra_diff() )
 				
 			current_phase = PHASE.CALC_NEXT_DAY
 		# ------------------------
 		PHASE.CALC_NEXT_DAY:
 			PhaseAnnouncement.start("ADVANCING THE DAY")	
-
 			# first, get list of rooms that will be completed in order of floor -> ring -> room
 			var construction_complete:Dictionary = {}
 			var previous_ring:int = -1
@@ -939,7 +938,6 @@ func on_current_phase_update() -> void:
 							build_count += 1
 					floor_list[ring_index] = ring_list
 				construction_complete[floor_index] = floor_list
-
 									
 			# jump to each room...
 			if build_count > 0:
@@ -965,7 +963,6 @@ func on_current_phase_update() -> void:
 								for item in room_list:
 									ROOM_UTIL.finish_construction(item.location)
 									
-
 			# reduce cooldown in abilities
 			for floor_index in room_config.floor.size():		
 				for ring_index in room_config.floor[floor_index].ring.size():
@@ -977,10 +974,12 @@ func on_current_phase_update() -> void:
 									base_states.room[room_designation].ability_on_cooldown[key] -= 1
 									if base_states.room[room_designation].ability_on_cooldown[key] == 0:
 										ToastContainer.add("[%s] is ready!" % [key])
-
 					
 			# update subscriptions
 			SUBSCRIBE.base_states = base_states
+			
+			# check rooms for any effects
+			ROOM_UTIL.check_end_of_turn_event()
 			
 			await U.set_timeout(0.5)
 			current_phase = PHASE.SCHEDULED_EVENTS
@@ -1260,7 +1259,7 @@ func parse_restore_data() -> void:
 	SUBSCRIBE.researcher_hire_list = initial_values.researcher_hire_list.call() if is_new_game else restore_data.researcher_hire_list
 	SUBSCRIBE.purchased_research_arr = initial_values.purchased_research_arr.call() if is_new_game else restore_data.purchased_research_arr
 	SUBSCRIBE.shop_unlock_purchases = initial_values.shop_unlock_purchases.call() if is_new_game else restore_data.shop_unlock_purchases
-	SUBSCRIBE.base_states = initial_values.base_states.call() #if is_new_game else restore_data.base_states
+	SUBSCRIBE.base_states = initial_values.base_states.call() if is_new_game else restore_data.base_states
 	SUBSCRIBE.hired_lead_researchers_arr = initial_values.hired_lead_researchers_arr.call() if is_new_game else restore_data.hired_lead_researchers_arr
 
 	# don't need to be saved, just load from defaults
@@ -1461,9 +1460,11 @@ func apply_room_passives(new_room_config:Dictionary) -> void:
 				else:					
 					if room_base_state.passives_enabled[ability_uid]:
 						ring_config_data.energy.used += energy_cost
+
 						# --------------- APPLY TO ALL
 						if ability.has("apply_all"):
 							var apply_all:Dictionary = ability.apply_all
+
 							# apply to each department on that ring
 							if !apply_all.is_empty():
 								for prop in ['level', 'bonus']:
@@ -1600,7 +1601,14 @@ func calculate_final(new_room_config:Dictionary) -> void:
 						new_room_config.base.metrics[ref] += level
 					ROOM.OPERATOR.SUBTRACT:
 						new_room_config.base.metrics[ref] -= level
-			
-			
+
+	# conditionals
+	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_MORALE_TO_ZERO):
+		new_room_config.base.metrics[RESOURCE.METRICS.MORALE] = 0
+	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_SAFETY_TO_ZERO):
+		new_room_config.base.metrics[RESOURCE.METRICS.SAFETY] = 0
+	if GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_READINESS_TO_ZERO):
+		new_room_config.base.metrics[RESOURCE.METRICS.READINESS] = 0
+	
 
 # -----------------------------------

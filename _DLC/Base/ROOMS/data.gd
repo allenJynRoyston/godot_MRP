@@ -535,20 +535,18 @@ var CONTAINMENT_CELL_A:Dictionary = {
 	
 	"department_properties": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
-		"currency": [RESOURCE.CURRENCY.MONEY],
-		"metric": [RESOURCE.METRICS.SAFETY],
 		"level": 1,
 		"bonus": 0,
-		"effects": [],
+		"currency": [],
+		"metric": [],				
 		"metric_blacklist": [],
 		"currency_blacklist": [],
+		"effects": [],
 	},
 	
 	"passive_abilities": func() -> Array: 
 		return [
-			ABL_P.get_ability(ABL_P.REF.PATAPHYSICS_PASSIVE_1, 0)
 		],
-					
 	
 	"influence": {
 		"range": 1,

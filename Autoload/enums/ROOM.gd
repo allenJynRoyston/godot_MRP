@@ -36,9 +36,7 @@ enum REF {
 	UTIL_RMV_METRIC_MORALE, UTIL_RMV_METRIC_SAFETY, UTIL_RMV_METRIC_READINESS,
 	
 	UTIL_DOUBLE_ECON_OUTPUT, UTIL_TRIPLE_ECON_OUTPUT, UTIL_HALF_ECON_OUTPUT, UTIL_ZERO_ECON_OUTPUT,
-
 }
-
 
 enum EMERGENCY_MODES { 
 	NORMAL, 
@@ -83,11 +81,17 @@ enum EFFECTS {
 	MISCOMMUNICATION_PASSIVE_1,
 	PATAPHYSICS_PASSIVE_1,
 	
+	
 	# ---------------
 	DOUBLE_ECON_OUTPUT,
 	TRIPLE_ECON_OUTPUT,
 	HALF_ECON_OUTPUT,
 	ZERO_ECON_OUTPUT,
+	
+	#---------------- SCP RELATED EFFECTS
+	SET_LEVEL_TO_1,
+	TELEPORTS,
+	BUILD_RANDOM_ROOM,
 }
 
 func return_category_title(ref: CATEGORY) -> String:
@@ -130,7 +134,6 @@ func return_category_title(ref: CATEGORY) -> String:
 		_:
 			return "UNKNOWN"
 
-
 func get_op_string(operation:ROOM.OPERATOR) -> String:
 	return "[b][color='GREEN']PRODUCES[/color][b]" if operation == ROOM.OPERATOR.ADD else "[b][color='RED']EXPENDS[/color][/b]"
 
@@ -139,7 +142,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 		# -----------------------
 		EFFECTS.PROCUREMENT_PASSIVE_1:
 			return {		
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If an ADMIN DEPARTMENT is built in the same SECTOR, INCREASE this facility by +3 LEVELS." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT, _location),
@@ -148,7 +151,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}		
 		EFFECTS.PROCUREMENT_PASSIVE_2:
 			return {		
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "Facility modifer now includes READINESS." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -159,7 +162,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 		# -----------------------
 		EFFECTS.ADMIN_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If LEVEL is 2 or less, then this facility also %s READINESS." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level <= 2,
@@ -169,7 +172,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.LOGISTICS_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If two different resources from ECONOMY are %s here, increase this facilities level by [b]+3[/b]." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.size() >= 2,
@@ -178,7 +181,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.ENGINEERING_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "The LEVEL of this facility produces the same in ENERGY.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -188,7 +191,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.ANTIMEMETICS_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If no other departments are present then this facility %s instead of %s" % [get_op_string(ROOM.OPERATOR.ADD), get_op_string(ROOM.OPERATOR.SUBTRACT)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return ROOM_UTIL.get_departments(_location).size() == 1,
@@ -197,7 +200,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}						
 		EFFECTS.THEOLOGY_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If you have more MONEY than SCIENCE, add SCIENCE modifer to this facility, else, add MONEY." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -208,7 +211,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.TEMPORAL_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "This facility %s MATERIAL on even days, and SCIENCE on odd days." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -218,7 +221,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.MISCOMMUNICATION_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If there is another MISSCOMMUNICATION DEPARTMENT present then this facility %s instead of %s, else reverse." % [get_op_string(ROOM.OPERATOR.ADD), get_op_string(ROOM.OPERATOR.SUBTRACT)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -228,7 +231,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.PATAPHYSICS_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "Other departments in this wing are the same level as this facility.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -240,7 +243,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.SCIENCE_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "LEVEL is increased by +3 if an SCP is contained in the same SECTOR.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					# TODO CHECK FOR SCP
@@ -250,7 +253,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}			
 		EFFECTS.SECURITY_PASSIVE_1:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If 2 or more MTF teams are present in this SECTOR, apply READINESS to ALL departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					# TODO do check for this
@@ -266,7 +269,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 		# -----------------------
 		EFFECTS.DOUBLE_ECON_OUTPUT:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "[b]DOUBLE[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -276,7 +279,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.TRIPLE_ECON_OUTPUT:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "[b]TRIPLE[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -286,7 +289,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.HALF_ECON_OUTPUT:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "[b]HALVES[/b] the LEVEL nearby departments.",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -296,7 +299,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}
 		EFFECTS.ZERO_ECON_OUTPUT:
 			return {
-				"description":	func(operation:int) -> String:
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "[b]SET[/b] the LEVEL nearby departments to [b]ZERO[/b].",
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
@@ -306,4 +309,64 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 			}			
 		# -----------------------
 		
+		# -----------------------
+		EFFECTS.SET_LEVEL_TO_1:
+			return {
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
+					return "[b]LEVEL[/b] cannot exceed [b]1[/b].",
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = 1
+			}
+		EFFECTS.TELEPORTS:
+			return {
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
+					return "This facility teleports (if space is available).",
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"end_of_turn": func(_location:Dictionary) -> void:
+					var available_slots:Array = []
+					for room in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+						var room_details:Dictionary = ROOM_UTIL.return_data_via_location( {"floor": _location.floor, "ring":  _location.ring, "room": room} )
+						if room_details.is_empty():
+							available_slots.append(room)
+
+					if !available_slots.is_empty():
+						SUBSCRIBE.purchased_facility_arr = GAME_UTIL.purchased_facility_arr.map(func(x):
+							if x.location == _location:
+								var new_location:Dictionary = {"floor": x.location.floor, "ring": x.location.ring, "room": available_slots[randi() % available_slots.size()]} 
+								SCP_UTIL.force_move_location(x.location, new_location)
+								x.location = new_location
+							return x
+						),
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					pass
+			}
+		EFFECTS.BUILD_RANDOM_ROOM:
+			return {
+				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
+					return "Build random rooms in it's area of influence (if space is available).",
+				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
+					return true,
+				"end_of_turn": func(_location:Dictionary) -> void:
+					var available_slots:Array = []
+					for room in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+						var room_details:Dictionary = ROOM_UTIL.return_data_via_location( {"floor": _location.floor, "ring":  _location.ring, "room": room} )
+						if room_details.is_empty():
+							available_slots.append(room)
+
+					if !available_slots.is_empty():
+						for item in GAME_UTIL.purchased_facility_arr:
+							if item.location == _location:
+								var adjacent_rooms:Array = ROOM_UTIL.find_adjacent_rooms(item.location.room)
+								var new_location:Dictionary = {"floor": _location.floor, "ring":  _location.ring, "room": adjacent_rooms[randi() % adjacent_rooms.size()]}
+								var room_details:Dictionary = ROOM_UTIL.return_data_via_location( new_location  )
+								if room_details.is_empty():
+									ROOM_UTIL.add_random_room(new_location),
+				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
+					pass
+			}
+		# -----------------------
 	return {}

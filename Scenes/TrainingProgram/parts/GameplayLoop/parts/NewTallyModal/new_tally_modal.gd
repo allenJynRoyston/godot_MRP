@@ -19,12 +19,18 @@ extends GameContainer
 @onready var MetricsMargin:MarginContainer = $MetricControl/PanelContainer/MarginContainer
 @onready var MetricsHBox:HBoxContainer = $MetricControl/PanelContainer/MarginContainer/PanelContainer/MarginContainer/MetricsHBox
 
-const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
-const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
+@onready var disable_money_collection:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_MONEY_COLLECTION)	
+@onready var disable_science_collection:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_SCIENCE_COLLECTION)	
+@onready var disable_material_collection:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_MATERIAL_COLLECTION)	
+@onready var disable_core_collection:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_CORE_COLLECTION)	
 
 @onready var allow_controls:bool = false : 
 	set(val):
 		allow_controls = val
+
+const CheckboxBtnPreload:PackedScene = preload("res://UI/Buttons/Checkbox/Checkbox.tscn")
+const ResourceItemPreload:PackedScene = preload("res://UI/ResourceItem/ResourceItem.tscn")
+
 
 var title:String = "" : 
 	set(val):
@@ -55,6 +61,7 @@ var currency_diff:Dictionary = {}
 var metric_diff:Dictionary = {}
 var bg_color:Color = Color(0, 0, 0, 0)
 var is_ending:bool = false
+
 
 signal tally_complete
 
@@ -102,6 +109,19 @@ func end() -> void:
 	# update amount
 	for ref in currency_diff:
 		var amount:int = currency_diff[ref]
+		match ref:
+			RESOURCE.CURRENCY.MONEY:
+				if disable_money_collection and amount > 0:
+					amount = 0
+			RESOURCE.CURRENCY.SCIENCE:
+				if disable_science_collection and amount > 0:
+					amount = 0
+			RESOURCE.CURRENCY.MATERIAL:
+				if disable_material_collection and amount > 0:
+					amount = 0
+			RESOURCE.CURRENCY.CORE:
+				if disable_core_collection and amount > 0:
+					amount = 0		
 		resources_data[ref].amount = U.min_max(resources_data[ref].amount + amount, 0, resources_data[ref].capacity) 
 
 	# update metrics
@@ -140,6 +160,8 @@ func activate(auto_start:bool = true) -> void:
 	ResourcePanel.position.y = control_pos[ResourcePanel].hide
 	ContentPanel.position.y = control_pos[ContentPanel].hide
 	MetricsPanel.position.y = control_pos[MetricsPanel].hide
+	
+	
 # --------------------------------------------------------------------------------------------------	
 
 # -------------------------------------------------------------------------------------------------	
@@ -159,6 +181,18 @@ func start(_currency_diff:Dictionary, _metric_diff:Dictionary = {}) -> void:
 		var DiffLabel:Label = ResourceNode.get_child(1)		
 		var diff_amount:int = currency_diff[ref] if currency_diff.has(ref) else 0
 		var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
+		var amount:int = resources_data[ref].amount
+		
+		match ref:
+			RESOURCE.CURRENCY.MONEY:
+				CostPanel.is_negative = disable_money_collection
+			RESOURCE.CURRENCY.SCIENCE:
+				CostPanel.is_negative = disable_science_collection	
+			RESOURCE.CURRENCY.MATERIAL:
+				CostPanel.is_negative = disable_material_collection	
+			RESOURCE.CURRENCY.CORE:
+				CostPanel.is_negative = disable_core_collection					
+		
 		
 		DiffLabel.text = "%s %s" % ["+" if diff_amount >= 0 else "-", absi(diff_amount)]
 		DiffLabel.modulate = Color(1, 1, 1, 1 if diff_amount != 0 else 0.5)
@@ -207,9 +241,9 @@ func start(_currency_diff:Dictionary, _metric_diff:Dictionary = {}) -> void:
 
 # -------------------------------------------------------------------------------------------------
 func initiate_currency_tally() -> void:
-	var index:int = 0
-	await U.set_timeout(0.7)
+	var index:int = 0	
 
+	await U.set_timeout(0.7)
 	for ref in resources_data:
 		if currency_diff.has(ref):
 			var resource_details:Dictionary = RESOURCE_UTIL.return_currency(ref)
@@ -219,14 +253,27 @@ func initiate_currency_tally() -> void:
 
 			var current_amount:int = resources_data[ref].amount
 			var diff_amount:int = currency_diff[ref]
-			var target_amount:int = current_amount + diff_amount
+
+			match ref:
+				RESOURCE.CURRENCY.MONEY:
+					if disable_money_collection and diff_amount > 0:
+						diff_amount = 0
+				RESOURCE.CURRENCY.SCIENCE:
+					if disable_science_collection and diff_amount > 0:
+						diff_amount = 0
+				RESOURCE.CURRENCY.MATERIAL:
+					if disable_material_collection and diff_amount > 0:
+						diff_amount = 0
+				RESOURCE.CURRENCY.CORE:
+					if disable_core_collection and diff_amount > 0:
+						diff_amount = 0
 			
 			# Animate increasing the amount incrementally
 			animate_amount_increment( absi(diff_amount) , 0, -1, 0.02, func(val):
 				DiffLabel.text = "%s %s" % ["+" if val >= 0 else "-", absi(val)]
 			)
 			
-			await animate_amount_increment(current_amount, target_amount, 1 if diff_amount >= 0 else -1, 0.02, func(val): 
+			await animate_amount_increment(current_amount, current_amount + diff_amount, 1 if diff_amount >= 0 else -1, 0.02, func(val): 
 				CostPanel.amount = U.min_max(val, 0, resources_data[ref].capacity )
 			)
 

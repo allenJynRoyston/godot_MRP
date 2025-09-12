@@ -719,33 +719,9 @@ func select_scp() -> int:
 	ScpGridNode.z_index = z_index_lvl
 	
 	await ScpGridNode.activate()
-	ScpGridNode.research()
+	ScpGridNode.start()
 	var scp_ref:int = await ScpGridNode.user_response	
 	return scp_ref
-
-func eval_scp() -> bool:
-	var ScpGridNode:Control = ScpGridPreload.instantiate()
-	GameplayNode.add_child(ScpGridNode)
-	ScpGridNode.z_index = z_index_lvl
-	
-	await ScpGridNode.activate()
-	ScpGridNode.start()
-	var scp_ref:int = await ScpGridNode.user_response
-	
-	if scp_ref == -1:
-		return false
-	
-	# create dict if it doesn't exist
-	if scp_ref not in scp_data:
-		scp_data[scp_ref] = new_scp_entry.duplicate(true)
-	
-	scp_data[scp_ref].level += 1
-	SUBSCRIBE.scp_data = scp_data
-	
-	resources_data[RESOURCE.CURRENCY.CORE].amount -= 1
-	SUBSCRIBE.resources_data = resources_data
-	
-	return true
 # ---------------------
 
 # --------------------------------------------------------------------------------------------------	
@@ -756,7 +732,7 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	# create dict if it doesn't exist
 	if scp_ref not in scp_data:
 		scp_data[scp_ref] = new_scp_entry.duplicate(true)
-		
+
 	# then update entry
 	scp_data[scp_ref].location = current_location.duplicate(true)
 	scp_data[scp_ref].contained_on_day = progress_data.day
@@ -764,6 +740,12 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 
 	# save
 	SUBSCRIBE.scp_data = scp_data	
+	
+	
+	# trigger any conditionals in any events it has
+	if scp_details.effect.has("conditional"):
+		set_conditional(scp_details.effect.conditional, true)
+		print("set conditional")
 
 	# update music
 	# var previous_track:int = SUBSCRIBE.music_data.selected
@@ -800,11 +782,6 @@ func trigger_initial_containment_event(scp_ref:int) -> void:
 	
 	await SplashNode.end()
 	GameplayNode.restore_showing_state()	
-	
-	# then revert OS_AUDIO...
-	#SUBSCRIBE.music_data = {
-		#"selected": previous_track
-	#}			
 
 	# restore previous emergency mode
 	await U.set_timeout(1.0)	

@@ -239,6 +239,7 @@ layout_mode = 2
 
 [node name="PreviewPanel" type="PanelContainer" parent="PreviewControl"]
 visible = false
+z_index = 2
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 0
 offset_top = -87.0
@@ -348,7 +349,6 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -410,7 +410,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "IMPACT"
+text = "EFFECT"
 label_settings = SubResource("LabelSettings_q31gb")
 vertical_alignment = 1
 autowrap_mode = 3
@@ -423,6 +423,29 @@ label_settings = SubResource("LabelSettings_mee86")
 horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="RoomContains" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RoomContainLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains/MarginContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("11_jgan4")
+theme_override_fonts/bold_font = ExtResource("9_jgan4")
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+text = "[color='WHITE'][/color][b][color='GREEN']PRODUCES[/color] 1 [color='orange']MORALE[/color] [/b][b][color='WHITE']EVERY DAY.[/color][/b]
+"
+fit_content = true
 
 [node name="RoomImpact" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -473,10 +496,6 @@ bbcode_enabled = true
 text = "[b]BONUS[/b]: [b][color='ORANGE']MORALE[/color][/b] also generates [b][color='PURPLE']MONEY[/color][/b]."
 fit_content = true
 scroll_active = false
-
-[node name="PassiveEffects" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
 
 [node name="StatusOverlay" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer"]
 visible = false

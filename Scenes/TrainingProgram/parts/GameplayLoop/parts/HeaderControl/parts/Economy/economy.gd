@@ -147,16 +147,21 @@ func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
 # -----------------------------------------------
 func update_node() -> void:
 	if !is_node_ready() or resources_data.is_empty() or gameplay_conditionals.is_empty():return
-
+	
+	EcoMoney.is_negative = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_MONEY_COLLECTION)
+	EcoResearch.is_negative = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_SCIENCE_COLLECTION)
+	EcoMaterial.is_negative = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_MATERIAL_COLLECTION)
+	EcoCore.is_negative = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.DISABLE_CORE_COLLECTION)
+	
 	EcoMoney.amount = resources_data[RESOURCE.CURRENCY.MONEY].amount
 	EcoResearch.amount = resources_data[RESOURCE.CURRENCY.SCIENCE].amount
 	EcoMaterial.amount = resources_data[RESOURCE.CURRENCY.MATERIAL].amount
 	EcoCore.amount = resources_data[RESOURCE.CURRENCY.CORE].amount	
 	
-	EcoMoney.bonus_amount = resources_data[RESOURCE.CURRENCY.MONEY].diff #if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoResearch.bonus_amount = resources_data[RESOURCE.CURRENCY.SCIENCE].diff # if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoMaterial.bonus_amount = resources_data[RESOURCE.CURRENCY.MATERIAL].diff # if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0
-	EcoCore.bonus_amount = resources_data[RESOURCE.CURRENCY.CORE].diff #	 if gameplay_conditionals[CONDITIONALS.TYPE.SHOW_ECONOMY_BUDGET] else 0	
+	EcoMoney.bonus_amount = resources_data[RESOURCE.CURRENCY.MONEY].diff 
+	EcoResearch.bonus_amount = resources_data[RESOURCE.CURRENCY.SCIENCE].diff
+	EcoMaterial.bonus_amount = resources_data[RESOURCE.CURRENCY.MATERIAL].diff
+	EcoCore.bonus_amount = resources_data[RESOURCE.CURRENCY.CORE].diff 
 # -----------------------------------------------
 
 

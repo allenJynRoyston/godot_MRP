@@ -7,7 +7,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gm34h"]
 
-[sub_resource type="Shader" id="Shader_skfir"]
+[sub_resource type="Shader" id="Shader_77222"]
 code = "shader_type canvas_item;
 
 uniform float speed : hint_range(0.0, 5.0) = 1.0;
@@ -56,15 +56,15 @@ void fragment() {
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nhwoo"]
-shader = SubResource("Shader_skfir")
+shader = SubResource("Shader_77222")
 shader_parameter/speed = 0.2
 shader_parameter/zoom = 2.919
 shader_parameter/line_thickness = 0.024
 shader_parameter/glow_strength = 0.597
-shader_parameter/line_color = Color(0.754962, 0.418916, 0.232987, 1)
+shader_parameter/line_color = Color(0.574912, 0.389277, 0.919495, 1)
 shader_parameter/alpha = 1.0
 shader_parameter/moving = true
-shader_parameter/angle = 1.824
+shader_parameter/angle = 1.201
 shader_parameter/center_falloff_radius = 0.0
 shader_parameter/center_falloff_softness = 0.001
 
@@ -104,7 +104,6 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_77222")
 
 [node name="MarginContainer" type="MarginContainer" parent="CardControl/CardPanel"]
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 40

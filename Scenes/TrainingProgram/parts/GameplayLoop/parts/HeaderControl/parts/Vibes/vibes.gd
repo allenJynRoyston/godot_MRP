@@ -57,11 +57,16 @@ func on_room_config_update(new_val:Dictionary) -> void:
 func update_node() -> void:
 	if !is_node_ready() or room_config.is_empty():return
 	var metrics:Dictionary = room_config.base.metrics
+	
 
 	# update vibes
 	Morale.value = metrics[RESOURCE.METRICS.MORALE]
 	Safety.value = metrics[RESOURCE.METRICS.SAFETY]
 	Readiness.value = metrics[RESOURCE.METRICS.READINESS]
+	
+	Morale.is_disabled = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_MORALE_TO_ZERO)
+	Safety.is_disabled = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_SAFETY_TO_ZERO)
+	Readiness.is_disabled = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.SET_READINESS_TO_ZERO)
 	
 	Morale.offset_amount = offset_morale
 	Safety.offset_amount = offset_safety

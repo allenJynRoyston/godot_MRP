@@ -1,28 +1,43 @@
-[gd_scene load_steps=16 format=3 uid="uid://dmgj730nihsve"]
+[gd_scene load_steps=21 format=3 uid="uid://dmgj730nihsve"]
 
 [ext_resource type="Script" uid="uid://d1bxee1l27t34" path="res://Scenes/TrainingProgram/parts/Cards/SCP/scp_card.gd" id="1_ppy2u"]
-[ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="2_w1mgs"]
 [ext_resource type="Texture2D" uid="uid://dj8hcx3ibqdxa" path="res://Media/rooms/construction_yard.jpg" id="3_aydr2"]
 [ext_resource type="FontFile" uid="uid://cf1pm48y6jlcm" path="res://Fonts/RasterForgeRegular-JpBgm.ttf" id="4_a1y1b"]
 [ext_resource type="LabelSettings" uid="uid://dbob06w6oks64" path="res://Fonts/font_1_black.tres" id="5_50nll"]
+[ext_resource type="FontFile" uid="uid://gev2kme45ctq" path="res://Fonts/Mx437_Portfolio_6x8.ttf" id="6_aydr2"]
+[ext_resource type="FontFile" uid="uid://0mmjtqn03dkq" path="res://Fonts/PixelOperator-Bold.ttf" id="7_aydr2"]
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="8_a1y1b"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qha80"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pgoi"]
-bg_color = Color(1, 0.74902, 0.2, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w1mgs"]
+bg_color = Color(0.510764, 0.00166744, 0.716704, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.2)
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_y252v"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aydr2"]
+bg_color = Color(0.509804, 0, 0.717647, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_w1mgs"]
 font = ExtResource("4_a1y1b")
 font_size = 12
-font_color = Color(0, 0, 0, 1)
 outline_size = 2
 outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3cc3l"]
-bg_color = Color(1, 0.74902, 0.2, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_a1y1b"]
+font = ExtResource("4_a1y1b")
+font_size = 12
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbv36"]
 bg_color = Color(0, 0, 0, 1)
@@ -34,12 +49,32 @@ outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
 
+[sub_resource type="LabelSettings" id="LabelSettings_50nll"]
+font = ExtResource("6_aydr2")
+font_size = 8
+font_color = Color(0.967176, 0.739029, 0.873396, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.2)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3cc3l"]
+bg_color = Color(1, 0.74902, 0.2, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_3cc3l"]
 font = ExtResource("8_a1y1b")
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1pgoi"]
+font = ExtResource("4_a1y1b")
+font_size = 12
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvhpf"]
 bg_color = Color(0.06, 0.06, 0.06, 0.690196)
@@ -52,6 +87,7 @@ shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
 [node name="SCPCard" type="PanelContainer"]
+custom_minimum_size = Vector2(260, 0)
 offset_right = 256.0
 offset_bottom = 282.0
 pivot_offset = Vector2(125, 225)
@@ -67,7 +103,7 @@ theme_override_constants/separation = 20
 
 [node name="InfoContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_w1mgs")
+theme_override_styles/panel = SubResource("StyleBoxFlat_w1mgs")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer"]
 layout_mode = 2
@@ -106,7 +142,7 @@ theme_override_constants/separation = 0
 [node name="NamePanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_1pgoi")
+theme_override_styles/panel = SubResource("StyleBoxFlat_aydr2")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel"]
 layout_mode = 2
@@ -119,36 +155,45 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="NameTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SCP NAME"
-label_settings = SubResource("LabelSettings_y252v")
+label_settings = SubResource("LabelSettings_w1mgs")
+autowrap_mode = 3
+
+[node name="NicknameLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCP NAME"
+label_settings = SubResource("LabelSettings_w1mgs")
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "description"
+label_settings = SubResource("LabelSettings_a1y1b")
+vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="DescriptionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer"]
-visible = false
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 0
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-text = "ABSTRACT"
-label_settings = ExtResource("5_50nll")
-vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer"]
 custom_minimum_size = Vector2(150, 0)
@@ -163,7 +208,11 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1, 1)
 layout_mode = 2
 text = "PROGRAM NAME"
@@ -171,7 +220,16 @@ label_settings = SubResource("LabelSettings_aydr2")
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="QuoteLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+text = "I am quote"
+label_settings = SubResource("LabelSettings_50nll")
+vertical_alignment = 2
+autowrap_mode = 3
+
 [node name="TypeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/separation = 0
@@ -215,28 +273,29 @@ label_settings = SubResource("LabelSettings_3cc3l")
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IMPACT"
+label_settings = SubResource("LabelSettings_1pgoi")
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="EffectContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer"]
-custom_minimum_size = Vector2(82, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-text = "EFFECT"
-label_settings = ExtResource("5_50nll")
-vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer"]
 custom_minimum_size = Vector2(150, 0)
@@ -246,41 +305,27 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="EffectLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer"]
-custom_minimum_size = Vector2(1, 1)
+[node name="EffectLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer"]
 layout_mode = 2
-text = "Effect description"
-label_settings = SubResource("LabelSettings_3cc3l")
-vertical_alignment = 1
-autowrap_mode = 3
+theme_override_fonts/normal_font = ExtResource("8_a1y1b")
+theme_override_fonts/bold_font = ExtResource("7_aydr2")
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+text = "[color='WHITE'][/color][b][color='GREEN']PRODUCES[/color] 1 [color='orange']MORALE[/color] [/b][b][color='WHITE']EVERY DAY.[/color][/b]
+"
+fit_content = true
 
 [node name="Influence" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_constants/separation = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence"]
-custom_minimum_size = Vector2(82, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3cc3l")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer/MarginContainer"]
-layout_mode = 2
-text = "INFLUENCE"
-label_settings = ExtResource("5_50nll")
-vertical_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence"]
 custom_minimum_size = Vector2(150, 0)
@@ -290,10 +335,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_bbv36")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="InfluenceLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2/MarginContainer"]
 custom_minimum_size = Vector2(1, 1)

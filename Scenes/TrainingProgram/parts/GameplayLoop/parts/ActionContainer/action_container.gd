@@ -1410,7 +1410,6 @@ func check_btn_states() -> void:
 				current_mode = MODE.INTEL
 		# -----------	
 		MODE.FABRICATION:	
-			var can_rush:bool = gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_RUSH_CONSTRUCTION]
 			var build_department:bool = ROOM_UTIL.find_linkables_categories_of_adjuacent_rooms(current_location).is_empty()
 			
 			FabricationControls.a_btn_title = "BUILD..." if build_department else "ATTACH (%s)" % [draw_count]
@@ -1966,7 +1965,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				change_camera_to(CAMERA.TYPE.FLOOR_SELECT)
 				reveal_medical(true)
 			# -----------	
-			MODE.INFO:								
+			MODE.INFO:
 				InfoControls.reveal(true)				
 				LocationAndDirectivesContainer.reveal(false)
 				GameplayNode.TimelineContainer.show_details( true ) 
@@ -1981,7 +1980,8 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				GameplayNode.TimelineContainer.show_details( true ) 
 				GameplayNode.show_marked_objectives = false
 				GameplayNode.show_timeline = false
-				
+				LocationAndDirectivesContainer.reveal(false)
+				reveal_summarycard(true)
 				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)				
 			# -----------	
 			MODE.ACTIVE_MENU_OPEN:

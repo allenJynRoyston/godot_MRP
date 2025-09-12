@@ -59,7 +59,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_1
+					"effects": ROOM.EFFECTS.PROCUREMENT_PASSIVE_1
 				}
 			}
 		REF.PROCUREMENT_PASSIVE_2:
@@ -68,7 +68,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 5,
 				"apply_all": {
-					"effect": ROOM.EFFECTS.PROCUREMENT_PASSIVE_2
+					"effects": ROOM.EFFECTS.PROCUREMENT_PASSIVE_2
 				}
 			}
 			
@@ -78,7 +78,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.ENGINEERING_PASSIVE_1
+					"effects": ROOM.EFFECTS.ENGINEERING_PASSIVE_1
 				}
 			}
 		REF.LOGISTICS_PASSIVE_1:
@@ -87,7 +87,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.LOGISTICS_PASSIVE_1
+					"effects": ROOM.EFFECTS.LOGISTICS_PASSIVE_1
 				}
 			}
 		REF.SCIENCE_PASSIVE_1:
@@ -96,7 +96,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.SCIENCE_PASSIVE_1
+					"effects": ROOM.EFFECTS.SCIENCE_PASSIVE_1
 				}
 			}			
 		REF.ADMIN_PASSIVE_1:
@@ -105,7 +105,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.ADMIN_PASSIVE_1
+					"effects": ROOM.EFFECTS.ADMIN_PASSIVE_1
 				}
 			}
 		REF.SECURITY_PASSIVE_1:
@@ -114,7 +114,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.SECURITY_PASSIVE_1
+					"effects": ROOM.EFFECTS.SECURITY_PASSIVE_1
 				}
 			}
 		REF.TEMPORAL_PASSIVE_1:
@@ -123,7 +123,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.TEMPORAL_PASSIVE_1
+					"effects": ROOM.EFFECTS.TEMPORAL_PASSIVE_1
 				}
 			}
 		REF.THEOLOGY_PASSIVE_1:
@@ -132,7 +132,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.THEOLOGY_PASSIVE_1
+					"effects": ROOM.EFFECTS.THEOLOGY_PASSIVE_1
 				}
 			}				
 		REF.PATAPHYSICS_PASSIVE_1:
@@ -140,8 +140,8 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"name": "THIS IS A MIROR YOU ARE A TYPO",
 				"description": passive_description_func,
 				"energy_cost": 3,
-				"apply_self": {
-					"effect": ROOM.EFFECTS.PATAPHYSICS_PASSIVE_1
+				"apply_all": {
+					"effects": ROOM.EFFECTS.PATAPHYSICS_PASSIVE_1
 				}
 			}
 		REF.ANTIMEMETICS_PASSIVE_1:
@@ -150,7 +150,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.ANTIMEMETICS_PASSIVE_1
+					"effects": ROOM.EFFECTS.ANTIMEMETICS_PASSIVE_1
 				}
 			}
 		REF.MISCOMMUNICATION_PASSIVE_1:
@@ -159,7 +159,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 				"description": passive_description_func,
 				"energy_cost": 3,
 				"apply_self": {
-					"effect": ROOM.EFFECTS.MISCOMMUNICATION_PASSIVE_1
+					"effects": ROOM.EFFECTS.MISCOMMUNICATION_PASSIVE_1
 				}
 			}			
 			

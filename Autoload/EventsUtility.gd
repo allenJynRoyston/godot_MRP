@@ -410,232 +410,232 @@ var TEST_EVENT_C:Dictionary = {
 
 #region PERK SETUP
 # ------------------------------------------------------------------------
-var ADMIN_PERK_SETUP:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "ADMIN DEPARTMENT SETUP"
-	},
-	"event_instructions": func(props:Dictionary) -> Array:
-
-		var instructions_1:Array = build_event_content(props, {
-			"header": "FACILITY SETUP",
-			"subheader": "A NEW DAY BEGINS",
-			"img_src": "res://Media/images/redacted.png",
-			"text": ["The beating heart of any bureaucracy: the Administration Department. Select its priority"],
-			"options": [
-				{
-					"header": "FINANCIAL",
-					"title": "Fiscal Oversight",
-					"description": "Gain additional resources each turn through optimized budgets and front-company revenue.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_1,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_1).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_1
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
-						onSelected(choice),
-				},
-				{
-					"header": "RECRUITMENT",
-					"title": "Unwavering Loyality",
-					"description": "Your facility recruits only the most committed personnel driven by conviction and unwavering faith in the mission.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.ADMIN_PERK_2,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_2).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_2
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
-						onSelected(choice),
-				},
-			]
-		})
-
-		return instructions_1
-}
-
-var LOGISTIC_PERK_SETUP:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "LOGISTIC DEPARTMENT SETUP"
-	},
-	"event_instructions": func(props:Dictionary) -> Array:
-		# admin department always installed
-		
-		var instructions_1:Array = build_event_content(props, {
-			"header": "FACILITY SETUP",
-			"subheader": "BEANS AND BULLETS",
-			"img_src": "res://Media/images/logistic_section.png",
-			"text": ["Select its priority"],
-			"options": [
-				{
-					"header": "PERK 1",
-					"title": "Perk 1 title",
-					"description": "Perk description 1.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
-						onSelected(choice),
-				},
-				{
-					"header": "PERK 2",
-					"title": "Perk 2 title",
-					"description": "Perk description 2.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
-						onSelected(choice),
-				},
+#var ADMIN_PERK_SETUP:Dictionary = {
+	#"is_repeatable": true,
+	#"btn": {
+		#"title": "ADMIN DEPARTMENT SETUP"
+	#},
+	#"event_instructions": func(props:Dictionary) -> Array:
+#
+		#var instructions_1:Array = build_event_content(props, {
+			#"header": "FACILITY SETUP",
+			#"subheader": "A NEW DAY BEGINS",
+			#"img_src": "res://Media/images/redacted.png",
+			#"text": ["The beating heart of any bureaucracy: the Administration Department. Select its priority"],
+			#"options": [
 				#{
-					#"header": "PERK 3",
-					#"title": "Perk 3 title",
-					#"description": "Perk description 3.",
+					#"header": "FINANCIAL",
+					#"title": "Fiscal Oversight",
+					#"description": "Gain additional resources each turn through optimized budgets and front-company revenue.",
 					#"type": EVT.OUTCOME.NEUTRAL,
-					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					#"impact": {
-						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+						#"conditional": CONDITIONALS.TYPE.ADMIN_PERK_1,
 					#},					
 					#"outcomes": {
 						#"list": [
-							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_1).description] }
 						#]
 					#},
 					#"onSelected": func(choice:Dictionary) -> void:
-						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_1
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_1, true)
 						#onSelected(choice),
-				#},				
-			]
-		})
-
-		return instructions_1
-}
-
-var ENGINEERING_PERK_SETUP:Dictionary = {
-	"is_repeatable": true,
-	"btn": {
-		"title": "ENGINEERING DEPARTMENT SETUP"
-	},
-	"event_instructions": func(props:Dictionary) -> Array:
-		# admin department always installed
-		
-		var instructions_1:Array = build_event_content(props, {
-			"header": "FACILITY SETUP",
-			"subheader": "ENGINEERING...",
-			"img_src": "res://Media/images/logistic_section.png",
-			"text": ["Select its priority"],
-			"options": [
-				{
-					"header": "PERK 1",
-					"title": "Perk 1 title",
-					"description": "Perk description 1.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
-						onSelected(choice),
-				},
-				{
-					"header": "PERK 2",
-					"title": "Perk 2 title",
-					"description": "Perk description 2.",
-					"type": EVT.OUTCOME.NEUTRAL,
-					"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
-					"impact": {
-						"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
-					},					
-					"outcomes": {
-						"list": [
-							{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
-						]
-					},
-					"onSelected": func(choice:Dictionary) -> void:
-						# update base states with selected perk
-						#base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
-						#SUBSCRIBE.base_states = base_states
-						# set conditional to true
-						GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
-						onSelected(choice),
-				},
+				#},
 				#{
-					#"header": "PERK 3",
-					#"title": "Perk 3 title",
-					#"description": "Perk description 3.",
+					#"header": "RECRUITMENT",
+					#"title": "Unwavering Loyality",
+					#"description": "Your facility recruits only the most committed personnel driven by conviction and unwavering faith in the mission.",
 					#"type": EVT.OUTCOME.NEUTRAL,
-					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"room_ref": ROOM.REF.ADMIN_DEPARTMENT,
 					#"impact": {
-						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+						#"conditional": CONDITIONALS.TYPE.ADMIN_PERK_2,
 					#},					
 					#"outcomes": {
 						#"list": [
-							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.ADMIN_PERK_2).description] }
 						#]
 					#},
 					#"onSelected": func(choice:Dictionary) -> void:
-						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.ADMIN_DEPARTMENT] = CONDITIONALS.TYPE.ADMIN_PERK_2
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.ADMIN_PERK_2, true)
 						#onSelected(choice),
-				#},				
-			]
-		})
-
-		return instructions_1
-}
+				#},
+			#]
+		#})
+#
+		#return instructions_1
+#}
+#
+#var LOGISTIC_PERK_SETUP:Dictionary = {
+	#"is_repeatable": true,
+	#"btn": {
+		#"title": "LOGISTIC DEPARTMENT SETUP"
+	#},
+	#"event_instructions": func(props:Dictionary) -> Array:
+		## admin department always installed
+		#
+		#var instructions_1:Array = build_event_content(props, {
+			#"header": "FACILITY SETUP",
+			#"subheader": "BEANS AND BULLETS",
+			#"img_src": "res://Media/images/logistic_section.png",
+			#"text": ["Select its priority"],
+			#"options": [
+				#{
+					#"header": "PERK 1",
+					#"title": "Perk 1 title",
+					#"description": "Perk description 1.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"impact": {
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
+					#},					
+					#"outcomes": {
+						#"list": [
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
+						#onSelected(choice),
+				#},
+				#{
+					#"header": "PERK 2",
+					#"title": "Perk 2 title",
+					#"description": "Perk description 2.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"impact": {
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
+					#},					
+					#"outcomes": {
+						#"list": [
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
+						#onSelected(choice),
+				#},
+				##{
+					##"header": "PERK 3",
+					##"title": "Perk 3 title",
+					##"description": "Perk description 3.",
+					##"type": EVT.OUTCOME.NEUTRAL,
+					##"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					##"impact": {
+						##"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+					##},					
+					##"outcomes": {
+						##"list": [
+							##{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+						##]
+					##},
+					##"onSelected": func(choice:Dictionary) -> void:
+						##GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						##onSelected(choice),
+				##},				
+			#]
+		#})
+#
+		#return instructions_1
+#}
+#
+#var ENGINEERING_PERK_SETUP:Dictionary = {
+	#"is_repeatable": true,
+	#"btn": {
+		#"title": "ENGINEERING DEPARTMENT SETUP"
+	#},
+	#"event_instructions": func(props:Dictionary) -> Array:
+		## admin department always installed
+		#
+		#var instructions_1:Array = build_event_content(props, {
+			#"header": "FACILITY SETUP",
+			#"subheader": "ENGINEERING...",
+			#"img_src": "res://Media/images/logistic_section.png",
+			#"text": ["Select its priority"],
+			#"options": [
+				#{
+					#"header": "PERK 1",
+					#"title": "Perk 1 title",
+					#"description": "Perk description 1.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"impact": {
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_1,
+					#},					
+					#"outcomes": {
+						#"list": [
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_1).description] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_1
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_1, true)
+						#onSelected(choice),
+				#},
+				#{
+					#"header": "PERK 2",
+					#"title": "Perk 2 title",
+					#"description": "Perk description 2.",
+					#"type": EVT.OUTCOME.NEUTRAL,
+					#"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					#"impact": {
+						#"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_2,
+					#},					
+					#"outcomes": {
+						#"list": [
+							#{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_2).description] }
+						#]
+					#},
+					#"onSelected": func(choice:Dictionary) -> void:
+						## update base states with selected perk
+						##base_states.base.department_perk[ROOM.REF.LOGISTICS_DEPARTMENT] = CONDITIONALS.TYPE.LOGISTIC_PERK_2
+						##SUBSCRIBE.base_states = base_states
+						## set conditional to true
+						#GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_2, true)
+						#onSelected(choice),
+				#},
+				##{
+					##"header": "PERK 3",
+					##"title": "Perk 3 title",
+					##"description": "Perk description 3.",
+					##"type": EVT.OUTCOME.NEUTRAL,
+					##"room_ref": ROOM.REF.LOGISTICS_DEPARTMENT,
+					##"impact": {
+						##"conditional": CONDITIONALS.TYPE.LOGISTIC_PERK_3,
+					##},					
+					##"outcomes": {
+						##"list": [
+							##{"response": [CONDITIONALS.return_data(CONDITIONALS.TYPE.LOGISTIC_PERK_3).description] }
+						##]
+					##},
+					##"onSelected": func(choice:Dictionary) -> void:
+						##GAME_UTIL.set_conditional(CONDITIONALS.TYPE.LOGISTIC_PERK_3, true)
+						##onSelected(choice),
+				##},				
+			#]
+		#})
+#
+		#return instructions_1
+#}
 # ------------------------------------------------------------------------
 #endregion
 
@@ -2083,10 +2083,10 @@ var reference_data:Dictionary = {
 	EVT.TYPE.TEST_EVENT_B: TEST_EVENT_B,
 	EVT.TYPE.TEST_EVENT_C: TEST_EVENT_C,
 	
-	EVT.TYPE.ADMIN_PERK_SETUP: ADMIN_PERK_SETUP,
-	EVT.TYPE.LOGISTIC_PERK_SETUP: LOGISTIC_PERK_SETUP,
-	EVT.TYPE.ENGINEERING_PERK_SETUP: ENGINEERING_PERK_SETUP,
-	
+	#EVT.TYPE.ADMIN_PERK_SETUP: ADMIN_PERK_SETUP,
+	#EVT.TYPE.LOGISTIC_PERK_SETUP: LOGISTIC_PERK_SETUP,
+	#EVT.TYPE.ENGINEERING_PERK_SETUP: ENGINEERING_PERK_SETUP,
+	#
 	
 	#EVT.TYPE.FACILITY_RAID_1: FACILITY_RAID_1,
 	#EVT.TYPE.FACILITY_RAID_2: FACILITY_RAID_2,

@@ -1,11 +1,20 @@
 extends SubscribeWrapper
 
-
 var SCP_DLC_0:Dictionary = {
-	# -----------------------------------
-	"nickname": "DLC_01_TEST",
-	"description": "A framed piece of art, typically oil or acrylic, designed to be hung on a wall. It adds aesthetic value to living spaces.",
-	# -----------------------------------
+	"nickname": "SCP_DLC_0",
+	"img_src": "res://Media/scps/mirror_frame.png",	
+	"description": func(_scp_details:Dictionary) -> String:	
+		return "%s description." % _scp_details.name,
+	"quote": func(_scp_details:Dictionary) -> String: 
+		return "Add short quote...",
+		
+	"containment_requirements": [
+		SCP.CONTAINMENT_TYPES.PHYSICAL,
+	],
+
+	"effect": {
+		"description": "All adjacent rooms generate +1 RESEARCH.",
+	},	
 }
 
 

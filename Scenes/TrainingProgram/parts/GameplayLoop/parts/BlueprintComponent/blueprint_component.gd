@@ -62,6 +62,8 @@ func update_node() -> void:
 	
 	EffectTextLabel.text = ""
 	
+	if room_details.is_empty(): return
+	
 	# ---------------------------------------------------------
 	if !room_level_config.department_properties.is_empty():
 		NoBonusLabel.hide()

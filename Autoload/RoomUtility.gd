@@ -305,6 +305,27 @@ func add_room(ref:int, use_location:Dictionary = current_location) -> void:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+func add_random_room(use_location:Dictionary) -> void:
+	var skip_build:bool = true #gameplay_conditionals[CONDITIONALS.TYPE.LOGISTIC_PERK_1]
+	var utility_rooms:Dictionary = get_category(ROOM.CATEGORY.UTILITY, 0, 50)
+	var refs:Array = utility_rooms.list.map(func(x): return x.ref)
+	var selected_ref:int = refs[randi() % refs.size()]
+
+	purchased_facility_arr.push_back({
+		"ref": selected_ref,
+		"under_construction": !skip_build,
+		"location": {
+			"floor": use_location.floor,
+			"ring": use_location.ring,
+			"room": use_location.room
+		}
+	})
+	
+	# update array
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 func reset_room(use_location:Dictionary) -> bool:
 	var room_details:Dictionary = return_data_via_location(use_location)
 	var confirm:bool = await GAME_UTIL.create_modal("Deconstruct %s?" % room_details.name, "No refunds.", room_details.img_src)
@@ -768,6 +789,23 @@ func has_negative_energy() -> bool:
 	return energy_check_pass
 # ------------------------------------------------------------------------------	
 
+
+# ------------------------------------------------------------------------------	
+func check_end_of_turn_event() -> void:
+	for item in purchased_facility_arr:
+		var room_config_data:Dictionary = room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room]	
+		var is_activated:bool = room_config_data.is_activated
+		var department_properties:Dictionary = room_config_data.department_properties
+		if department_properties.has("effects"):
+			for ref in department_properties.effects:
+				var effect:Dictionary = ROOM.return_effect(ref)
+				# call effect
+				if effect.has("end_of_turn"):
+					effect.end_of_turn.call(item.location)	
+	
+	SUBSCRIBE.purchased_facility_arr = purchased_facility_arr
+# ------------------------------------------------------------------------------	
+
 # ------------------------------------------------------------------------------	
 func range_one(room:int, include_vertical:bool, include_horizontal:bool) -> Array:
 	var vertical_neighbors := {
@@ -836,13 +874,13 @@ func range_two(room:int, include_vertical:bool, include_horizontal:bool) -> Arra
 
 func find_influenced_rooms(use_location:Dictionary, influence_data:Dictionary) -> Array:		
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	
+	var range_is_two:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.INFLUENCE_RANGE_IS_TWO)
 	if room_level_config.is_empty() or influence_data.is_empty():
 		return []
 		
 	var include_vertical:bool = true #influence_data.vertical if influence_data.has("vertical") else false
 	var include_horizontal:bool = true #influence_data.horizontal if influence_data.has("horizontal") else false			
-	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if room_level_config.influence_range == 1 else range_two(use_location.room, include_vertical, include_horizontal)
+	var neighbors:Array = range_one(use_location.room, include_vertical, include_horizontal) if !range_is_two else range_two(use_location.room, include_vertical, include_horizontal)
 	
 	return neighbors
 
@@ -888,7 +926,8 @@ func find_all_influenced_rooms(convert_to_index:bool = false) -> Dictionary:
 	
 func find_refs_of_adjuacent_rooms(use_location:Dictionary, use_room_config:Dictionary = room_config) -> Array: 
 	var room_level_config:Dictionary = use_room_config.floor[use_location.floor].ring[use_location.ring].room[use_location.room]
-	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_level_config.influence_range == 1 else range_two(use_location.room, true, true)
+	var range_is_two:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.INFLUENCE_RANGE_IS_TWO)
+	var adjacent_rooms:Array = range_one(use_location.room, true, true) if !range_is_two else range_two(use_location.room, true, true)
 	
 	var refs:Array = []
 	for room in adjacent_rooms:
@@ -899,7 +938,8 @@ func find_refs_of_adjuacent_rooms(use_location:Dictionary, use_room_config:Dicti
 
 func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Array: 
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
-	var adjacent_rooms:Array = range_one(use_location.room, true, true) if room_level_config.influence_range == 1 else range_two(use_location.room, true, true)
+	var range_is_two:bool = GAME_UTIL.is_conditional_active(CONDITIONALS.TYPE.INFLUENCE_RANGE_IS_TWO)	
+	var adjacent_rooms:Array = range_one(use_location.room, true, true) if !range_is_two else range_two(use_location.room, true, true)
 	
 
 	var link_categories:Array = []
@@ -911,6 +951,8 @@ func find_linkables_categories_of_adjuacent_rooms(use_location:Dictionary) -> Ar
 
 func get_department_refs() -> Array:
 	return [
+		ROOM.REF.CONTAINMENT_CELL,
+		
 		ROOM.REF.DEBUG_DEPARTMENT,
 		ROOM.REF.PROCUREMENT_DEPARTMENT,
 		ROOM.REF.ENGINEERING_DEPARTMENT,
@@ -926,7 +968,6 @@ func get_department_refs() -> Array:
 		ROOM.REF.THEOLOGY_DEPARTMENT,
 		ROOM.REF.MISCOMMUNICATION_DEPARTMENT,
 	]
-		 
 # ------------------------------------------------------------------------------	
 
 # ------------------------------------------------------------------------------	

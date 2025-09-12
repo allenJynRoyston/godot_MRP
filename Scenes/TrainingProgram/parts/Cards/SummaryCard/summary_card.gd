@@ -49,6 +49,9 @@ extends PanelContainer
 @onready var ContainmentContainer:VBoxContainer = $MarginContainer/VBoxContainer/ContainmentContainer
 @onready var ContainmentComponent:PanelContainer = $MarginContainer/VBoxContainer/ContainmentContainer/ContainmentComponent
 
+@onready var RoomContains:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains
+@onready var RoomContainLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains/MarginContainer/RoomContainLabel
+
 # room effect
 @onready var RoomImpact:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomImpact
 @onready var RoomImpactLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomImpact/MarginContainer/RoomImpactLabel
@@ -180,7 +183,7 @@ func on_update() -> void:
 			for ref in adjacent_rooms_refs:
 				var adjacent_room_details:Dictionary = ROOM_UTIL.return_data(ref)
 				var utility_props:Dictionary = adjacent_room_details.utility_props
-				if !utility_props.is_empty():
+				if !utility_props.is_empty() and !preview_data.department_properties.is_empty():
 					if utility_props.has("level"):
 						preview_data.department_properties.level += utility_props.level
 					if utility_props.has("metric"):
@@ -377,15 +380,16 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	# scp effect
 	if !scp_details.is_empty():		
-		var contain_string:String = "%s [b]%s[/b]: %s" % [RoomEffectLabel.text + "[color='PURPLE'][b]CONTAINS:[/b][/color]", scp_details.name, scp_details.effect.description]
-		RoomEffectLabel.text = contain_string
-		RoomEffects.show()
+		RoomContains.show()		
+		RoomContainLabel.text = "[color='PURPLE'][b]CONTAINS:[/b][/color] [b]%s[/b]" % [scp_details.name]
+	else:
+		RoomContains.hide()
 	
 	# hide all
 	if room_details.utility_props.is_empty() and room_details.department_properties.is_empty():
 		LvlTag.text = ""
 		RoomEffects.hide()
-		RoomImpact.hide()			
+		RoomImpact.hide()
 #
 	# under construction
 	if is_under_construction:
@@ -400,6 +404,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		return	
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
 func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, is_last:bool) -> String:
 	var effect_string:String = ""
 	if applies:
@@ -414,6 +419,8 @@ func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, 
 		effect_string += "\n"
 	
 	return effect_string
+# ------------------------------------------------------------------------------
+	
 # ------------------------------------------------------------------------------
 func deselect_btns() -> void:
 	for node in [ModuleComponent, ProgramComponent, ContainmentComponent]:

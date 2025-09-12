@@ -61,8 +61,10 @@ func setup_gridselect() -> void:
 		ResearchPanel.modulate.a = 1 
 		CostPanel.modulate.a = 1 
 		reveal_node(SummaryPanel, false)
+		GridSelect.deselect_all()
 	
 	GridSelect.onModeContent = func() -> void:
+		await U.set_timeout(0.2)
 		reveal_node(SummaryPanel, true)
 	
 	GridSelect.onUpdate = func(node:Control, data:Dictionary, index:int) -> void:
@@ -71,7 +73,6 @@ func setup_gridselect() -> void:
 		selected_node = node
 		U.debounce( str(self, "_update_node"), update_node )
 
-	
 	GridSelect.onUpdateEmptyNode = func(node:Control) -> void:
 		node.ref = -1
 	

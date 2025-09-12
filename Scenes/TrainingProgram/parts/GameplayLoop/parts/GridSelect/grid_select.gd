@@ -262,6 +262,12 @@ func update_grid_content(index:int = tab_index) -> void:
 # --------------------------------------------------------------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------
+func deselect_all() -> void:
+	for index in GridContent.get_child_count():
+		var node:Control = GridContent.get_child(index)
+		if "is_highlighted" in node:
+			node.is_highlighted = false
+	
 func refresh() -> void:
 	await U.tick()
 	on_grid_index_update()

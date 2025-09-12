@@ -16,27 +16,32 @@ extends PanelContainer
 @export var value:int = 0 : 
 	set(val):
 		value = val
-		on_value_update()
+		U.debounce( str(self, "_update"), update_node )
 		
 @export var title:String = ""	: 
 	set(val):
 		title = val
-		on_title_update()	
+		U.debounce( str(self, "_update"), update_node )
 		
 @export var invert_color:bool = false : 
 	set(val):
 		invert_color = val
-		on_invert_color_update()
+		U.debounce( str(self, "_update"), update_node )
+		
+@export var is_disabled:bool = false : 
+	set(val):
+		is_disabled = val
+		U.debounce( str(self, "_update"), update_node )
 		
 @export var big_numbers:bool = false : 
 	set(val):
 		big_numbers = val
-		on_big_numbers_update()		
+		U.debounce( str(self, "_update"), update_node )
 
 @export var offset_amount:int = 0: 
 	set(val):
 		offset_amount = val
-		on_offset_amount_update()
+		U.debounce( str(self, "_update"), update_node )
 
 var hint_title:String = "HINT"
 var hint_description:String = ""
@@ -51,22 +56,6 @@ func _ready() -> void:
 	U.debounce( str(self, "_update"), update_node )
 # --------------------------------------
 
-# --------------------------------------
-func on_title_update() -> void:
-	U.debounce( str(self, "_update"), update_node )
-		
-func on_offset_amount_update() -> void:
-	U.debounce( str(self, "_update"), update_node )
-
-func on_value_update() -> void:
-	U.debounce( str(self, "_update"), update_node )
-	
-func on_big_numbers_update() -> void:
-	U.debounce( str(self, "_update"), update_node )
-
-func on_invert_color_update() -> void:
-	U.debounce( str(self, "_update"), update_node )	
-# --------------------------------------
 
 # --------------------------------------
 func update_node() -> void:
@@ -74,12 +63,12 @@ func update_node() -> void:
 	ValueLabel.text = str(value)
 	TitleLabel.text = title
 	
-	title_label_settings.font_color = Color.BLACK if invert_color else Color.WHITE
+	title_label_settings.font_color = Color.BLACK if invert_color else Color.WHITE if !is_disabled else Color.RED
 	title_label_settings.outline_color = title_label_settings.font_color
 	title_label_settings.outline_color.a = 0.2
 	
 	value_label_settings.font_size = 24 if big_numbers else 16
-	value_label_settings.font_color = Color.RED if value < 0 else (Color.BLACK if invert_color else Color.WHITE)
+	value_label_settings.font_color = Color.RED if value < 0 or is_disabled else (Color.BLACK if invert_color else Color.WHITE)
 	value_label_settings.outline_color = value_label_settings.font_color
 	value_label_settings.outline_color.a = 0.2
 
