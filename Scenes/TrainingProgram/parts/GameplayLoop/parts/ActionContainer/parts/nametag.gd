@@ -158,13 +158,16 @@ func update_node() -> void:
 	use_location.room = index
 	
 	# hide/show currency icons
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
 	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location)
 	var is_department:bool = !is_room_empty and !room_details.department_props.is_empty()
 	var is_utility:bool = !is_room_empty and !room_details.utility_props.is_empty()
-	
+	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty(use_location)	
+	var scp_ref:int = -1 if is_scp_empty else room_level_config.scp_data.ref	
+
 	# empty room
 	if is_room_empty:
 		LevelPanel.hide()
@@ -188,7 +191,6 @@ func update_node() -> void:
 
 	# is_department
 	if is_department:
-		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(use_location)
 		# hide and update icons
 		LevelPanel.show()
 		ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
@@ -198,13 +200,13 @@ func update_node() -> void:
 		DownArrowIcon.icon_color = Color(1.0, 0.749, 0.2)
 		
 		# content 
-		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2)
+		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2) if is_scp_empty else Color.PURPLE
 		LevelLabel.text = str(room_level_config.department_props.level)
 		ContentMargin.set("theme_override_constants/margin_left", 0)
 
 		# update Name
 		name_label_settings.font_size = 12 
-		name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK		
+		name_label_settings.font_color = Color.RED if is_under_construction or (!is_under_construction and !is_activated) else Color.BLACK if is_scp_empty else Color.WHITE
 		name_str = room_details.shortname.substr(0, 13)
 		
 	# is utility...
