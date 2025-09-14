@@ -65,7 +65,7 @@ func update_node() -> void:
 	if room_details.is_empty(): return
 	
 	# ---------------------------------------------------------
-	if !room_level_config.department_properties.is_empty():
+	if !room_level_config.department_props.is_empty():
 		NoBonusLabel.hide()
 		EffectTextLabel.text = "[color='black'][b]%s[/b][/color]" % [room_details.name]
 	

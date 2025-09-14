@@ -162,7 +162,7 @@ func update_node() -> void:
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty(use_location)
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction(use_location)
 	var is_activated:bool = ROOM_UTIL.is_room_activated(use_location)
-	var is_department:bool = !is_room_empty and !room_details.department_properties.is_empty()
+	var is_department:bool = !is_room_empty and !room_details.department_props.is_empty()
 	var is_utility:bool = !is_room_empty and !room_details.utility_props.is_empty()
 	
 	# empty room
@@ -199,7 +199,7 @@ func update_node() -> void:
 		
 		# content 
 		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2)
-		LevelLabel.text = str(room_level_config.department_properties.level)
+		LevelLabel.text = str(room_level_config.department_props.level)
 		ContentMargin.set("theme_override_constants/margin_left", 0)
 
 		# update Name

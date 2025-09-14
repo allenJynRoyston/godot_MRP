@@ -1,10 +1,11 @@
-[gd_scene load_steps=27 format=3 uid="uid://dphmbf3c8t587"]
+[gd_scene load_steps=28 format=3 uid="uid://dphmbf3c8t587"]
 
 [ext_resource type="Script" uid="uid://dfpao071ucgcg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/action_container.gd" id="1_co4u3"]
 [ext_resource type="PackedScene" uid="uid://bokpsdt1bavug" path="res://Scenes/TrainingProgram/parts/Cards/SummaryCard/SummaryCard.tscn" id="2_ah17n"]
 [ext_resource type="PackedScene" uid="uid://dhkyb6t56c2fk" path="res://UI/Buttons/KeyBtn/KeyBtn.tscn" id="4_n6idl"]
 [ext_resource type="PackedScene" uid="uid://chcu224iunhwr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/LocationAndDirectivesContainer.tscn" id="4_xathl"]
 [ext_resource type="PackedScene" uid="uid://dxeregxb5my7c" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/EngineeringPanel/EngineeringPanel.tscn" id="6_bk83u"]
+[ext_resource type="PackedScene" uid="uid://dmgj730nihsve" path="res://Scenes/TrainingProgram/parts/Cards/SCP/ScpCard.tscn" id="6_x63m5"]
 [ext_resource type="PackedScene" uid="uid://ck4ghs6psctsy" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TopographyPanel/TopographyPanel.tscn" id="7_xathl"]
 [ext_resource type="LabelSettings" uid="uid://bnryvwswipkov" path="res://Fonts/font_2_32_white.tres" id="8_bk83u"]
 [ext_resource type="PackedScene" uid="uid://cgsv34nc422hv" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/TelemetryPanel.tscn" id="8_xathl"]
@@ -370,6 +371,7 @@ allow_hint = false
 [node name="IntelControls" parent="." instance=ExtResource("10_58xi4")]
 layout_mode = 2
 a_btn_title = "INVESTIGATE"
+a_btn_icon = 34
 c_btn_title = "OVERVIEW"
 hide_c_btn = false
 
@@ -535,6 +537,11 @@ theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 metadata/_edit_group_ = true
+
+[node name="SCPCard" parent="Summary/PanelContainer/MarginContainer" instance=ExtResource("6_x63m5")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="SummaryCard" parent="Summary/PanelContainer/MarginContainer" instance=ExtResource("2_ah17n")]
 custom_minimum_size = Vector2(250, 0)

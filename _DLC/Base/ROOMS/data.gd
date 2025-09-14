@@ -21,7 +21,7 @@ var DEBUG_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [],
 		"metric": [],
@@ -76,7 +76,7 @@ var PROCUREMENT_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [RESOURCE.CURRENCY.MONEY],
 		"metric": [],
@@ -118,7 +118,7 @@ var LOGISTICS_DEPARTMENT:Dictionary =  {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [RESOURCE.CURRENCY.MATERIAL],
 		"metric": [],
@@ -159,7 +159,7 @@ var ENGINEERING_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [RESOURCE.CURRENCY.CORE],
 		"metric": [],
@@ -200,7 +200,7 @@ var SCIENCE_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [RESOURCE.CURRENCY.SCIENCE],
 		"metric": [],
@@ -243,7 +243,7 @@ var ADMIN_DEPARTMENT:Dictionary = {
 	"required_energy": 1,
 
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [],
 		"metric": [RESOURCE.METRICS.MORALE],
@@ -285,7 +285,7 @@ var SECURITY_DEPARTMENT:Dictionary = {
 	"required_energy": 1,
 
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [],
 		"metric": [RESOURCE.METRICS.SAFETY],
@@ -325,7 +325,7 @@ var TEMPORAL_DEPARMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [],
 		"metric": [RESOURCE.METRICS.READINESS],
@@ -366,7 +366,7 @@ var ANTIMEMETICS_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
 		"currency": [],
 		"metric": [],
@@ -408,7 +408,7 @@ var THEOLOGY_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
 		"currency": [],
 		"metric": [],
@@ -449,7 +449,7 @@ var MISCOMMUNICATION_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
 		"currency": [],
 		"metric": [],
@@ -490,7 +490,7 @@ var PATAPHYSICS_DEPARTMENT:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.ADD,
 		"currency": [],
 		"metric": [],
@@ -533,7 +533,7 @@ var CONTAINMENT_CELL_A:Dictionary = {
 	"required_staffing": [],
 	"required_energy": 1,
 	
-	"department_properties": {
+	"department_props": {
 		"operator": ROOM.OPERATOR.SUBTRACT,
 		"level": 1,
 		"bonus": 0,

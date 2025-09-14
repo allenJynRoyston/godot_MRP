@@ -17,7 +17,6 @@ extends PanelContainer
 @onready var InfluenceContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence
 @onready var InfluenceLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/Influence/PanelContainer2/MarginContainer/InfluenceLabel
 
-
 @export var ref:int = -1: 
 	set(val):
 		ref = val

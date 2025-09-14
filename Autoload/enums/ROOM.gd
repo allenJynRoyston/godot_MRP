@@ -147,7 +147,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return ROOM_UTIL.ring_contains(ROOM.REF.ADMIN_DEPARTMENT, _location),
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.bonus += 3
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.bonus += 3
 			}		
 		EFFECTS.PROCUREMENT_PASSIVE_2:
 			return {		
@@ -156,8 +156,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					if RESOURCE.METRICS.READINESS not in _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.metric:
-						_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.metric.append(RESOURCE.METRICS.READINESS)
+					if RESOURCE.METRICS.READINESS not in _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.metric:
+						_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.metric.append(RESOURCE.METRICS.READINESS)
 			}					
 		# -----------------------
 		EFFECTS.ADMIN_PASSIVE_1:
@@ -165,19 +165,19 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If LEVEL is 2 or less, then this facility also %s READINESS." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
-					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level <= 2,
+					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level <= 2,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					if RESOURCE.METRICS.READINESS not in _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.metric:
-						_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.metric.append(RESOURCE.METRICS.READINESS)
+					if RESOURCE.METRICS.READINESS not in _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.metric:
+						_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.metric.append(RESOURCE.METRICS.READINESS)
 			}
 		EFFECTS.LOGISTICS_PASSIVE_1:
 			return {
 				"description":	func(operation:int = ROOM.OPERATOR.ADD) -> String:
 					return "If two different resources from ECONOMY are %s here, increase this facilities level by [b]+3[/b]." % [get_op_string(operation)],
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
-					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.size() >= 2,
+					return _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.currency.size() >= 2,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level += 3
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level += 3
 			}
 		EFFECTS.ENGINEERING_PASSIVE_1:
 			return {
@@ -187,7 +187,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var ring_config_data:Dictionary = _new_room_config.floor[_location.floor].ring[_location.ring]
-					ring_config_data.energy.available += _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					ring_config_data.energy.available += _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
 			}
 		EFFECTS.ANTIMEMETICS_PASSIVE_1:
 			return {
@@ -196,7 +196,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return ROOM_UTIL.get_departments(_location).size() == 1,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.operator = ROOM.OPERATOR.ADD
 			}						
 		EFFECTS.THEOLOGY_PASSIVE_1:
 			return {
@@ -207,7 +207,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var money:int = GAME_UTIL.resources_data[RESOURCE.CURRENCY.MONEY].amount
 					var science:int = GAME_UTIL.resources_data[RESOURCE.CURRENCY.SCIENCE].amount
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.append(RESOURCE.CURRENCY.SCIENCE if money > science else RESOURCE.CURRENCY.MONEY)
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.currency.append(RESOURCE.CURRENCY.SCIENCE if money > science else RESOURCE.CURRENCY.MONEY)
 			}
 		EFFECTS.TEMPORAL_PASSIVE_1:
 			return {
@@ -217,7 +217,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var day:int = GAME_UTIL.progress_data.day - 1
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.currency.append(RESOURCE.CURRENCY.MATERIAL if day % 2 == 0 else RESOURCE.CURRENCY.SCIENCE)
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.currency.append(RESOURCE.CURRENCY.MATERIAL if day % 2 == 0 else RESOURCE.CURRENCY.SCIENCE)
 			}
 		EFFECTS.MISCOMMUNICATION_PASSIVE_1:
 			return {
@@ -227,7 +227,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var count:int = ROOM_UTIL.ring_contains_count(ROOM.REF.MISCOMMUNICATION_DEPARTMENT, _location)
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.operator = ROOM.OPERATOR.ADD if count > 1 else ROOM.OPERATOR.SUBTRACT
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.operator = ROOM.OPERATOR.ADD if count > 1 else ROOM.OPERATOR.SUBTRACT
 			}
 		EFFECTS.PATAPHYSICS_PASSIVE_1:
 			return {
@@ -237,9 +237,9 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var departments:Array = ROOM_UTIL.get_departments(_location)
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
 					for item in departments:
-						_new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_properties.level = level
+						_new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_props.level = level
 			}
 		EFFECTS.SCIENCE_PASSIVE_1:
 			return {
@@ -249,7 +249,7 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 					# TODO CHECK FOR SCP
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level += 3,
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level += 3,
 			}			
 		EFFECTS.SECURITY_PASSIVE_1:
 			return {
@@ -261,8 +261,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
 					var departments:Array = ROOM_UTIL.get_departments(_location)
 					for item in departments:
-						if RESOURCE.METRICS.READINESS not in _new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_properties.metric:
-							_new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_properties.metric.append(RESOURCE.METRICS.READINESS)
+						if RESOURCE.METRICS.READINESS not in _new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_props.metric:
+							_new_room_config.floor[item.location.floor].ring[item.location.ring].room[item.location.room].department_props.metric.append(RESOURCE.METRICS.READINESS)
 			}					
 		# -----------------------
 		
@@ -274,8 +274,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = level * 2
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level = level * 2
 			}
 		EFFECTS.TRIPLE_ECON_OUTPUT:
 			return {
@@ -284,8 +284,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = level * 3
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level = level * 3
 			}
 		EFFECTS.HALF_ECON_OUTPUT:
 			return {
@@ -294,8 +294,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = int(round(level * 0.5))
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level = int(round(level * 0.5))
 			}
 		EFFECTS.ZERO_ECON_OUTPUT:
 			return {
@@ -304,8 +304,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = 0
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level = 0
 			}			
 		# -----------------------
 		
@@ -317,8 +317,8 @@ func return_effect(ref:EFFECTS) -> Dictionary:
 				"applies": func(_new_room_config:Dictionary, _location:Dictionary) -> bool:
 					return true,
 				"func": func(_new_room_config:Dictionary, _location:Dictionary) -> void:
-					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level
-					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_properties.level = 1
+					var level:int = _new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level
+					_new_room_config.floor[_location.floor].ring[_location.ring].room[_location.room].department_props.level = 1
 			}
 		EFFECTS.TELEPORTS:
 			return {

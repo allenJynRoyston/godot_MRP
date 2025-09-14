@@ -29,7 +29,6 @@ offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_s7ffi")
 script = ExtResource("1_7egax")
 title = "MORALE"
-is_disabled = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

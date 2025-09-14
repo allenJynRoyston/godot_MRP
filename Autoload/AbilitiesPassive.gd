@@ -47,7 +47,7 @@ func get_ability(ref:REF, lvl_required:int = 0) -> Dictionary:
 	
 	var passive_description_func:Callable = func(_ref:int, _use_location:Dictionary) -> String:
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(_use_location)
-		var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_properties.operator if !room_level_config.department_properties.is_empty() else ROOM.OPERATOR.ADD)
+		var description_string:String = ROOM.return_effect(_ref).description.call(room_level_config.department_props.operator if !room_level_config.department_props.is_empty() else ROOM.OPERATOR.ADD)
 		# strip out bbbcode
 		return regex.sub(description_string, "", true)	
 	

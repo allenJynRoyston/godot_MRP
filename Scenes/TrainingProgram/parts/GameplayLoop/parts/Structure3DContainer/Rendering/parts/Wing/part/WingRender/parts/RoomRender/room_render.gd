@@ -398,7 +398,7 @@ func update_room_data() -> void:
 	if has_scp_influence:
 		use_icon = SVGS.TYPE.CONTAIN
 	if has_room_influence and has_scp_influence:
-		use_icon = SVGS.TYPE.LAYERS
+		use_icon = SVGS.TYPE.SETTINGS
 	InfluencedSprite.texture = CACHE.fetch_svg( use_icon ) 	
 	
 	# is in preview mode

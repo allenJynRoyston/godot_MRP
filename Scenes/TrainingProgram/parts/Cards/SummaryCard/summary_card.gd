@@ -4,13 +4,14 @@ extends PanelContainer
 @onready var CardMargin:MarginContainer = $MarginContainer
 @onready var InfoContainer:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
-@onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 @onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/LvlTag
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
+@onready var SidePanel:VBoxContainer = $Control/SidePanel
+@onready var SummaryGrid:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SummaryGrid
 
 # sidepanel
-@onready var NamePanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel
-@onready var SidePanel:VBoxContainer = $Control/SidePanel
+@onready var NamePanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel
+@onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
 
 # cost
 @onready var CostPanel:PanelContainer = $Control/SidePanel/CostPanel
@@ -136,7 +137,7 @@ func _ready() -> void:
 		PreviewPanel.global_position = _node.global_position - Vector2(205, 0)
 		var effect_details:Dictionary = ROOM.return_effect(_ref_data.data.ref)
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
-		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_properties.operator, true)
+		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_props.operator, true)
 		PreviewPanel.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
 
@@ -173,6 +174,7 @@ func on_update() -> void:
 	StatusOverlay.hide()
 	PreviewPanel.hide()
 	RoomEffectLabel.text = ""
+	SummaryGrid.room_id = use_location.room
 
 	# preview data...
 	if preview_mode and preview_mode_ref != -1:
@@ -183,15 +185,15 @@ func on_update() -> void:
 			for ref in adjacent_rooms_refs:
 				var adjacent_room_details:Dictionary = ROOM_UTIL.return_data(ref)
 				var utility_props:Dictionary = adjacent_room_details.utility_props
-				if !utility_props.is_empty() and !preview_data.department_properties.is_empty():
+				if !utility_props.is_empty() and !preview_data.department_props.is_empty():
 					if utility_props.has("level"):
-						preview_data.department_properties.level += utility_props.level
+						preview_data.department_props.level += utility_props.level
 					if utility_props.has("metric"):
-						preview_data.department_properties.metric.append( utility_props.metric )
+						preview_data.department_props.metric.append( utility_props.metric )
 					if utility_props.has("currency"):
-						preview_data.department_properties.currency.append( utility_props.currency )
+						preview_data.department_props.currency.append( utility_props.currency )
 					if utility_props.has("effects"):
-						preview_data.department_properties.effects.append( utility_props.effects )
+						preview_data.department_props.effects.append( utility_props.effects )
 							
 		# shape for preview
 		fill( preview_data, {}, true )
@@ -199,12 +201,18 @@ func on_update() -> void:
 	
 	# no room, hide and end...
 	if room_details.is_empty():
-		hide()
+		infocontainer_stylebox.bg_color = Color.DARK_CYAN
+		namepanel_stylebox.bg_color = Color.DARK_CYAN	
+		NameTag.text = "EMPTY"	
+		RoomEffects.hide()
+		RoomImpact.hide()
+		DescriptionLabel.text = "Space is empty."
+		QuoteLabel.hide()
+		RoomEffectLabel.hide()
 		return
 	
 	# hide card, show modules only
 	if hide_card:		
-		show()
 		SidePanel.hide()
 		InfoContainer.hide()		
 
@@ -232,7 +240,7 @@ func on_update() -> void:
 		return
 	
 	# override and add department properties to room_details
-	room_details.department_properties = room_level_config.department_properties
+	room_details.department_props = room_level_config.department_props
 	
 	# else fill data
 	fill(room_details, scp_details, false)
@@ -244,18 +252,28 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	var is_activated:bool = true if is_preview else ROOM_UTIL.is_room_activated(use_location)
 	var can_contain:bool = ROOM_UTIL.room_can_contain(use_location)
 
-	# assign details
-	show()
+	# assign details	
 	SidePanel.show() if show_sidebar else SidePanel.hide()
 	InfoContainer.show()
+	DescriptionLabel.show()
+	QuoteLabel.show()
+	RoomEffectLabel.show()
 
 	# basics
 	DescriptionLabel.text = room_details.description
 	QuoteLabel.text = '"%s"' % room_details.quote
 	
 	# fill image
-	ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
-	
+	#if preview_mode:
+		#SummaryGrid.hide()
+		#ImageTextureRect.show()
+		#ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
+	#else:
+	SummaryGrid.preview_mode = preview_mode
+	SummaryGrid.show()
+	ImageTextureRect.hide()
+	ImageTextureRect.texture = null
+		
 	# energy
 	EnergyCostLabel.text = str(room_details.required_energy)
 	EnergyPanel.show() if room_details.required_energy > 0 else EnergyPanel.hide()
@@ -301,7 +319,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	
 	
 	# add department properties
-	if !room_details.department_properties.is_empty():		
+	if !room_details.department_props.is_empty():		
 		RoomImpact.show()
 		LvlTag.show()
 		infocontainer_stylebox.bg_color = COLORS.primary_color
@@ -311,40 +329,40 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		NameTag.text = room_details.name 
 		
 		# add operator string		
-		var department_properties: Dictionary = room_details.department_properties
-		var has_no_production: bool = department_properties.metric.is_empty() and department_properties.currency.is_empty()
-		var amount:int = department_properties.level + department_properties.bonus
+		var department_props: Dictionary = room_details.department_props
+		var has_no_production: bool = department_props.metric.is_empty() and department_props.currency.is_empty()
+		var amount:int = department_props.level + department_props.bonus
 		var metrics_string: String = ""
 		var currency_string: String = ""
 
 		# --- Metrics ---
-		if !department_properties.metric.is_empty():
+		if !department_props.metric.is_empty():
 			var combined_metrics: String = ""
-			for i in range(department_properties.metric.size()):
-				var ref = department_properties.metric[i]
+			for i in range(department_props.metric.size()):
+				var ref = department_props.metric[i]
 				var metric_details: Dictionary = RESOURCE_UTIL.return_metric(ref)
 				combined_metrics += metric_details.name
-				if i < department_properties.metric.size() - 1:
+				if i < department_props.metric.size() - 1:
 					combined_metrics += "/"
 			
-			if department_properties.operator == ROOM.OPERATOR.ADD:
+			if department_props.operator == ROOM.OPERATOR.ADD:
 				metrics_string = "[color='GREEN'][b]INCREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
-			elif department_properties.operator == ROOM.OPERATOR.SUBTRACT:
+			elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
 				metrics_string = "[color='RED'][b]DECREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
 
 		# --- Currency ---
-		if !department_properties.currency.is_empty():
+		if !department_props.currency.is_empty():
 			var combined_currency: String = ""
-			for i in range(department_properties.currency.size()):
-				var ref = department_properties.currency[i]
+			for i in range(department_props.currency.size()):
+				var ref = department_props.currency[i]
 				var currency_details: Dictionary = RESOURCE_UTIL.return_currency(ref)
 				combined_currency += currency_details.name
-				if i < department_properties.currency.size() - 1:
+				if i < department_props.currency.size() - 1:
 					combined_currency += "/"
 			
-			if department_properties.operator == ROOM.OPERATOR.ADD:
+			if department_props.operator == ROOM.OPERATOR.ADD:
 				currency_string = "[color='GREEN'][b]PRODUCES[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
-			elif department_properties.operator == ROOM.OPERATOR.SUBTRACT:
+			elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
 				currency_string = "[color='RED'][b]EXPENDS[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
 
 		# --- Combine ---
@@ -361,20 +379,20 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 
 		RoomImpactLabel.text = final_string
 
-		LvlTag.text = "LVL %s" % [room_details.department_properties.level]
+		LvlTag.text = "LVL %s" % [room_details.department_props.level]
 
 		# get effects
-		if department_properties.effects.is_empty():
+		if department_props.effects.is_empty():
 			RoomEffects.hide()
 		else:
 			RoomEffects.show()
 
 			var effect_string:String = ""
-			for index in department_properties.effects.size():
-				var effect_details:Dictionary = ROOM.return_effect(department_properties.effects[index])
+			for index in department_props.effects.size():
+				var effect_details:Dictionary = ROOM.return_effect(department_props.effects[index])
 				var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location)
-				var is_end:bool = index == department_properties.effects.size() - 1
-				effect_string += build_effect_string(effect_details, applies, department_properties.operator, is_end)
+				var is_end:bool = index == department_props.effects.size() - 1
+				effect_string += build_effect_string(effect_details, applies, department_props.operator, is_end)
 
 			RoomEffectLabel.text = effect_string
 	
@@ -386,7 +404,7 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		RoomContains.hide()
 	
 	# hide all
-	if room_details.utility_props.is_empty() and room_details.department_properties.is_empty():
+	if room_details.utility_props.is_empty() and room_details.department_props.is_empty():
 		LvlTag.text = ""
 		RoomEffects.hide()
 		RoomImpact.hide()

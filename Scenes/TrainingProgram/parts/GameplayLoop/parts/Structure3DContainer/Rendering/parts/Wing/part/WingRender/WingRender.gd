@@ -538,7 +538,7 @@ func mark_preview(room_ref:int) -> void:
 	var influenced_rooms:Dictionary
 	if !room_details.influence.is_empty():
 		# now add self
-		for room_id in ROOM_UTIL.find_influenced_rooms( current_location, room_details.influence ):
+		for room_id in ROOM_UTIL.find_neighbors( current_location.room ):
 			var actual_ref:int = ROOM_UTIL.index_to_room_lookup(room_id)
 			if actual_ref not in influenced_rooms:
 				influenced_rooms[actual_ref] = []

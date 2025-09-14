@@ -43,6 +43,7 @@ extends GameContainer
 @onready var SummaryPanel:PanelContainer = $Summary/PanelContainer
 @onready var SummaryPanelMargin:MarginContainer = $Summary/PanelContainer/MarginContainer
 @onready var SummaryCard:PanelContainer = $Summary/PanelContainer/MarginContainer/SummaryCard
+@onready var ScpCard:PanelContainer = $Summary/PanelContainer/MarginContainer/SCPCard
 
 # MODULES
 @onready var ModulesPanel:PanelContainer = $ModulesAndPrograms/PanelContainer
@@ -142,6 +143,11 @@ var current_mode:MODE = MODE.ROOT :
 	set(val):
 		current_mode = val
 		on_current_mode_update()
+
+var toggle_scp_card:bool = false : 
+	set(val):
+		toggle_scp_card = val
+		on_toggle_scp_card_update()
 
 var selected_room:int = -1
 #var telemetry_count:int = 0
@@ -1156,6 +1162,7 @@ func check_btn_states() -> void:
 	if current_location.is_empty() or room_config.is_empty() or gameplay_conditionals.is_empty():return
 	# update room details control
 	var WingRenderNode:Node3D = GBL.find_node(REFS.WING_RENDER)
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
 	var is_activated:bool = ROOM_UTIL.is_room_activated()	
 	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty()
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty()	
@@ -1180,9 +1187,14 @@ func check_btn_states() -> void:
 	var story_progress:Dictionary = GBL.active_user_profile.story_progress
 	var chapter:Dictionary = STORY.get_chapter( story_progress.on_chapter )
 	
-
 	SummaryCard.use_location = current_location
 	ModulesCard.use_location = current_location
+	ScpCard.use_location = current_location
+	ScpCard.ref = -1 if is_scp_empty else room_level_config.scp_data.ref	
+	
+	# switch back to facility card if viewing an SCP card
+	if is_scp_empty and toggle_scp_card:
+		toggle_scp_card = false
 
 	match current_mode:
 		MODE.ROOT:
@@ -1357,39 +1369,14 @@ func check_btn_states() -> void:
 				current_mode = MODE.MEDICAL
 		# -----------
 		MODE.INTEL:
+			NametagControl.show()
 			var list:Array = GAME_UTIL.get_pending_events_list()
 			var has_event_here:bool = false
-			IntelControls.a_btn_title = "INVESTIGATE ANAMOLLY" if has_event_here else "NO ANAMOLLIES"
-			IntelControls.disable_active_btn = !has_event_here
+			IntelControls.a_btn_title = "VIEW SCP" if !toggle_scp_card else "VIEW FACILITY"
+			IntelControls.disable_active_btn = is_scp_empty
 
-			IntelControls.onAction = func() -> void:				
-				IntelControls.reveal(false)
-				reveal_actionpanel_label(false)
-				reveal_actionpanel_image(false)
-				reveal_summarycard(true)
-				reveal_telemetry(false)
-				TransistionScreen.start(0.5, true)
-				await change_camera_viewpoint(CAMERA.VIEWPOINT.DRAMATIC_ZOOM)
-				
-				# get triggerable event
-				var event_ref:int = base_states.room[U.location_to_designation(current_location)].events_pending[0]
-				# remove from base_state
-				GAME_UTIL.remove_room_event_at_index(0)
-				#trigger event
-				await GAME_UTIL.run_event(event_ref)
-				change_camera_viewpoint(CAMERA.VIEWPOINT.DISTANCE)
-				
-				reveal_telemetry(true)
-				reveal_summarycard(true, false)
-				await TransistionScreen.start(0.5, true)
-				IntelControls.reveal(true)
-				
-			# logic to jump to the next anamolly
-				#current_location
-				#var list:Array = GAME_UTIL.get_pending_events_list()
-				#telemetry_count = U.min_max(telemetry_count + 1, 0, list.size() - 1, true)
-				#var next_item:Dictionary = list[telemetry_count]
-				#SUBSCRIBE.current_location = next_item.location			
+			IntelControls.onAction = func() -> void:
+				toggle_scp_card = !toggle_scp_card
 			
 			IntelControls.onCBtn = func() -> void:
 				await IntelControls.reveal(false)
@@ -1403,7 +1390,7 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.INTEL_OVERSIGHT:
-
+			NametagControl.hide()
 			IntelOverviewControls.onBack = func() -> void:
 				await IntelOverviewControls.reveal(false)
 				change_camera_to(CAMERA.TYPE.WING_SELECT)
@@ -1683,8 +1670,21 @@ func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
 	
 	if !state:
 		BlueprintComponent.end()
-		BlueprintPanel.hide()		
+		BlueprintPanel.hide()	
+			
 # --------------------------------------------------------------------------------------------------		
+
+# --------------------------------------------------------------------------------------------------		
+func on_toggle_scp_card_update() -> void:
+	if !is_node_ready():return
+	print("toggle...")
+	ScpCard.show() if toggle_scp_card else ScpCard.hide()
+	SummaryCard.hide() if toggle_scp_card else SummaryCard.show()
+
+	IntelControls.a_btn_title = "VIEW SCP" if toggle_scp_card else "VIEW FACILITY"	
+	TransistionScreen.start(0.3, true)	
+# --------------------------------------------------------------------------------------------------			
+	
 
 # --------------------------------------------------------------------------------------------------		
 var previous_lock_states:Dictionary = {}
