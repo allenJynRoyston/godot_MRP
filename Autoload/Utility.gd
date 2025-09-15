@@ -446,3 +446,96 @@ func ring_to_str(ring:int) -> String:
 		
 	return "?"
 # ---------------------------------------------
+
+# ---------------------------------------------
+func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, is_last:bool) -> String:
+	var effect_string:String = ""
+	if applies:
+		effect_string += "[color=ORANGE][b]EFFECT:[/b][/color] %s\n" % effect_details.description.call(operator)
+	else:
+		var regex = RegEx.new()
+		regex.compile("\\[.*?\\]")
+		var stripped_text:String = regex.sub(effect_details.description.call(operator), "", true)
+		effect_string += "[color=ORANGE][b](INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
+
+	if !is_last:
+		effect_string += "\n"
+	
+	return effect_string
+
+func build_utility_props_string(props:Dictionary) -> String:
+		var final_string:String = ""
+		if props.has("level"):
+			final_string += "[b][color='GREEN']ADD[/color] %s LEVEL[/b] to adjacent facilities.\n" % props.level
+		if props.has("energy"):
+			final_string += "[b][color='GREEN']ADD[/color] %s ENERGY[/b] to adjacent facilities.\n" % props.energy
+		if props.has("metric"):
+			var metric_data:Dictionary = RESOURCE_UTIL.return_metric(props.metric)
+			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to adjacent facilities.\n" % [metric_data.name]	
+		if props.has("currency"):
+			var currency_data:Dictionary = RESOURCE_UTIL.return_currency(props.currency)
+			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to adjacent facilities.\n" % [currency_data.name]
+		if props.has("effects"):
+			var effect_data:Dictionary = ROOM.return_effect(props.efdafects)
+			final_string += effect_data.description.call(ROOM.OPERATOR.ADD)
+		return final_string
+
+func build_department_prop_string(department_props:Dictionary, amount:int = 1, end_string:String = "per level") -> String:
+	# --- Metrics ---
+	var metrics_string: String = ""		
+	if !department_props.metric.is_empty():
+		var combined_metrics: String = ""
+		for i in range(department_props.metric.size()):
+			var ref = department_props.metric[i]
+			var metric_details: Dictionary = RESOURCE_UTIL.return_metric(ref)
+			combined_metrics += metric_details.name
+			if i < department_props.metric.size() - 1:
+				combined_metrics += "/"
+		
+		if department_props.operator == ROOM.OPERATOR.ADD:
+			metrics_string = "[color='GREEN'][b]INCREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
+		elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
+			metrics_string = "[color='RED'][b]DECREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
+
+	# --- Currency ---
+	var currency_string: String = ""		
+	if !department_props.currency.is_empty():
+		var combined_currency: String = ""
+		for i in range(department_props.currency.size()):
+			var ref = department_props.currency[i]
+			var currency_details: Dictionary = RESOURCE_UTIL.return_currency(ref)
+			combined_currency += currency_details.name
+			if i < department_props.currency.size() - 1:
+				combined_currency += "/"
+		
+		if department_props.operator == ROOM.OPERATOR.ADD:
+			currency_string = "[color='GREEN'][b]PRODUCE:[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
+		elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
+			currency_string = "[color='RED'][b]EXPEND:[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
+
+	# --- Combine ---
+	var final_string: String = ""
+	if !metrics_string.is_empty() and !currency_string.is_empty():
+		final_string = "%s.\n\n%s %s" % [metrics_string, currency_string, end_string]
+	elif !metrics_string.is_empty():
+		final_string = "%s." % metrics_string
+	elif !currency_string.is_empty():
+		final_string = "%s %s" % [currency_string, end_string]
+
+
+	return final_string
+
+
+func build_department_effect_string(department_props:Dictionary, use_location:Dictionary, is_preview:bool) -> String:
+	var effect_string:String = ""
+	for index in department_props.effects.size():
+		var effect_details:Dictionary = ROOM.return_effect(department_props.effects[index])
+		var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location)
+		var is_end:bool = index == department_props.effects.size() - 1
+		effect_string += U.build_effect_string(effect_details, applies, department_props.operator, is_end)	
+
+	return effect_string
+	
+func build_scp_string(scp_name:String) -> String:
+	return "[color='PURPLE'][b]CONTAINS:[/b][/color] %s" % scp_name
+# ---------------------------------------------

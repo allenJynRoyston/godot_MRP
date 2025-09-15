@@ -20,8 +20,6 @@ enum DIR {INWARD, OUTWARD}
 		room_id = val
 		U.debounce( str(self, "_update_node"), update_node )
 		
-var dir:DIR = DIR.OUTWARD 
-var dir_dict:Dictionary = {"top": false, "bottom": true, "left": false, "right": true}
 var preview_mode:bool = false
 
 func _ready() -> void:
@@ -55,50 +53,60 @@ func update_node() -> void:
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config({"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": room_id})
 	var is_department:bool = !room_level_config.department_props.is_empty()
 	var is_utility:bool = !room_level_config.utility_props.is_empty()
+	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty()
+	var can_contain:bool = ROOM_UTIL.room_can_contain()
+	var containment_color:Color = Color.PURPLE
 	var department_color:Color = Color.ORANGE
 	var utility_color:Color = Color.WHITE
-	var arrow_color:Color =  Color.WHITE if !is_department else Color.WHITE 
-	dir = DIR.INWARD if is_department else DIR.OUTWARD
+	var empty_color:Color = Color.DARK_CYAN
+
+	#----------------------------------------------
+	for node in [R0, R1, R2, R3, R4, R5, R6, R7, R8]:
+		node.color = empty_color.darkened(0.5)
+		node.get_child(0).get_child(0).icon = SVGS.TYPE.NONE
+		node.get_child(0).get_child(0).icon_color = Color.BLACK
+		node.get_child(0).get_child(0).hide()
 	
-	for item in [R0, R1, R2, R3, R4, R5, R6, R7, R8]:
-		item.color = Color.DARK_CYAN.darkened(0.5)
-		item.get_child(0).get_child(0).icon = SVGS.TYPE.NONE
-	
+	#----------------------------------------------
 	var department_rooms:Array = ROOM_UTIL.get_departments().map(func(x): return x.location.room)
 	for n in department_rooms:
-		var node:Control = get_color_node(n)
-		node.color = department_color.darkened(0.5)
+		var node:Control = get_color_node(n)				
+		var _can_contain:bool = ROOM_UTIL.room_can_contain({"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": n})		
+		var _is_scp_empty:bool = ROOM_UTIL.is_scp_empty({"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": n})
+		node.color = containment_color.darkened(0.5) if _can_contain else department_color.darkened(0.5)
 		
+		if _can_contain:
+			node.get_child(0).get_child(0).icon = SVGS.TYPE.CONTAIN if !_is_scp_empty else SVGS.TYPE.SETTINGS
+			node.get_child(0).get_child(0).icon_color = Color.WHITE
+			node.get_child(0).get_child(0).show()
+		
+	#----------------------------------------------
 	var utility_rooms:Array = ROOM_UTIL.get_utilities().map(func(x): return x.location.room)
 	for n in utility_rooms:
-		var node:Control = get_color_node(n)
-		node.color = utility_color.darkened(0.5)
+		var current_node:Control = get_color_node(n)
+		var util_dict:Dictionary = GAME_UTIL.get_room_level_config({"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": n})
+		current_node.color = utility_color.darkened(0.5)
+		current_node.get_child(0).get_child(0).show()
+		
+		if util_dict.utility_props.has("level"):
+			current_node.get_child(0).get_child(0).icon = SVGS.TYPE.PLUS
+		if util_dict.utility_props.has("energy"):
+			current_node.get_child(0).get_child(0).icon = SVGS.TYPE.ENERGY
+		if util_dict.utility_props.has("currency"):
+			var _data:Dictionary = RESOURCE_UTIL.return_currency(util_dict.utility_props.currency)
+			current_node.get_child(0).get_child(0).icon = _data.icon
+		if util_dict.utility_props.has("metric"):
+			var _data:Dictionary = RESOURCE_UTIL.return_metric(util_dict.utility_props.metric)
+			current_node.get_child(0).get_child(0).icon = _data.icon			
 
+	#----------------------------------------------
 	if is_department:		
 		var current_node:Control = get_color_node(room_id)
-		current_node.color = department_color
-		#for n in ROOM_UTIL.find_neighbors(room_id):
-			#var node:Control = get_color_node(n)
-			#var n_config:Dictionary = GAME_UTIL.get_room_level_config( {"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": n} )
-			#if !n_config.utility_props.is_empty():
-				#node.color = utility_color
-				#node.get_child(0).get_child(0).icon = SVGS.TYPE.NONE
-				#node.get_child(0).get_child(0).icon_color = Color.BLACK
-			#else:
-				#node.get_child(0).get_child(0).icon = SVGS.TYPE.NONE
-	
+		current_node.color = containment_color if can_contain else department_color 
 	elif is_utility:
 		var current_node:Control = get_color_node(room_id)
 		current_node.color = utility_color		
-		#for n in ROOM_UTIL.find_neighbors_range_1(room_id):
-			#var n_config:Dictionary = GAME_UTIL.get_room_level_config( {"floor": GAME_UTIL.current_location.floor, "ring": GAME_UTIL.current_location.ring, "room": n} )
-			#var node:Control = get_color_node(n)
-			#if !n_config.department_props.is_empty():
-				#node.get_child(0).get_child(0).show()
-				#node.get_child(0).get_child(0).icon = SVGS.TYPE.NONE
-				#node.get_child(0).get_child(0).icon_color = Color.WHITE
-	
 	else:
 		var current_node:Control = get_color_node(room_id)
-		current_node.color = Color.DARK_CYAN
+		current_node.color = empty_color
 	

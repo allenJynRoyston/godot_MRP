@@ -1,16 +1,13 @@
 extends PanelContainer
 
 @onready var TextureRectImg:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
-@onready var NameLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameLabel
-@onready var NicknameLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NicknameLabel
+@onready var NameLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer3/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameLabel
+@onready var NicknameLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer3/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NicknameLabel
 
 @onready var DescriptionContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer
 @onready var DescriptionLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/VBoxContainer/DescriptionLabel
 @onready var QuoteLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/DescriptionContainer/PanelContainer2/MarginContainer/VBoxContainer/QuoteLabel
 
-#@onready var TypeContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer
-#@onready var TypeLabel:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/TypeContainer/PanelContainer2/MarginContainer/TypeLabel
-#
 @onready var EffectContainer:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer
 @onready var EffectLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/EffectContainer/PanelContainer2/MarginContainer/EffectLabel
 
@@ -22,13 +19,13 @@ extends PanelContainer
 		ref = val
 		on_ref_update()
 
+var index:int = -1
+
 var use_location:Dictionary : 
 	set(val):
 		use_location = val
 		on_use_location_update()
 		
-var index:int = -1
-
 # ------------------------------------------------------------------------------
 func _init() -> void:
 	SUBSCRIBE.subscribe_to_scp_data(self)
@@ -63,7 +60,7 @@ func update_card() -> void:
 	
 	DescriptionLabel.text = scp_details.description.call(scp_details)
 	QuoteLabel.text = scp_details.quote.call(scp_details)
-
+	
 	EffectLabel.text = "[color=ORANGE][b]EFFECT:[/b][/color] %s" % [scp_details.effect.description if scp_details.effect.has("description") else "None"]
 	EffectContainer.show() if scp_details.effect.has("description") else EffectContainer.hide()
 # ------------------------------------------------------------------------------

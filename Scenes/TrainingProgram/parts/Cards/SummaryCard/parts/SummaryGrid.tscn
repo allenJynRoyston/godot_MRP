@@ -34,7 +34,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/R0"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +53,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/R1"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -74,7 +72,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/R3"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -99,7 +96,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/R2"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,7 +115,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/R4"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -139,7 +134,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/R6"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -164,7 +158,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/R5"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -184,7 +177,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/R7"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -204,7 +196,6 @@ layout_mode = 2
 color = Color(0.662745, 0.662745, 0.662745, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/R8"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

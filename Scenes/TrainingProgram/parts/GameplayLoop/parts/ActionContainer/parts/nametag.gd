@@ -6,6 +6,8 @@ extends Control
 @onready var ConstructionIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/ConstructionIcon
 @onready var StatusIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/StatusIcon
 @onready var NameLabel:Label = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/MarginContainer/NameLabel
+@onready var OperatorPanel:PanelContainer = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel
+@onready var OperatorIcon:Control = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel/MarginContainer/HBoxContainer/MarginContainer/OperatorIcon
 @onready var LevelPanel:PanelContainer = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/LevelPanel
 @onready var LevelLabel:Label = $ContentControl/ContentPanel/MarginContainer/HBoxContainer/LevelPanel/MarginContainer/HBoxContainer/MarginContainer/LevelLabel
 @onready var DownArrowIcon:Control = $ArrowControl/DownArrowIcon
@@ -166,6 +168,7 @@ func update_node() -> void:
 	var is_department:bool = !is_room_empty and !room_details.department_props.is_empty()
 	var is_utility:bool = !is_room_empty and !room_details.utility_props.is_empty()
 	var is_scp_empty:bool = ROOM_UTIL.is_scp_empty(use_location)	
+	var can_contain:bool = room_details.can_contain if !is_room_empty else false
 	var scp_ref:int = -1 if is_scp_empty else room_level_config.scp_data.ref	
 
 	# empty room
@@ -192,16 +195,17 @@ func update_node() -> void:
 	# is_department
 	if is_department:
 		# hide and update icons
+		OperatorPanel.hide()
 		LevelPanel.show()
 		ConstructionIcon.show() if is_under_construction else ConstructionIcon.hide()
 		StatusIcon.show() if !is_under_construction else StatusIcon.hide()
-		StatusIcon.icon = SVGS.TYPE.CONTAIN
-		StatusIcon.icon_color = Color.BLACK if is_activated else Color.DARK_RED
+		StatusIcon.icon = SVGS.TYPE.CONTAIN if can_contain else SVGS.TYPE.DOT
+		StatusIcon.icon_color = (Color.BLACK if !can_contain else Color.WHITE) if is_activated else Color.DARK_RED
 		DownArrowIcon.icon_color = Color(1.0, 0.749, 0.2)
 		
 		# content 
-		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2) if is_scp_empty else Color.PURPLE
-		LevelLabel.text = str(room_level_config.department_props.level)
+		contentpanel_stylebox.bg_color = Color(1.0, 0.749, 0.2) if !can_contain else Color.PURPLE
+		LevelLabel.text = str("Lvl ", room_level_config.department_props.level)
 		ContentMargin.set("theme_override_constants/margin_left", 0)
 
 		# update Name
@@ -212,6 +216,7 @@ func update_node() -> void:
 	# is utility...
 	if is_utility:
 		# hide and update icons
+		OperatorPanel.show()
 		ConstructionIcon.hide()
 		StatusIcon.hide()
 		LevelPanel.hide()
@@ -224,57 +229,65 @@ func update_node() -> void:
 		# update name
 		name_label_settings.font_size = 14 
 		name_label_settings.font_color =  Color.BLACK
-		ContentMargin.set("theme_override_constants/margin_left", 7)
+		ContentMargin.set("theme_override_constants/margin_left", 0)
 		
 		# update utility
 		var utility_props:Dictionary = room_details.utility_props		
 		if !utility_props.is_empty():
 			# ---------------------------
 			if utility_props.has("level"):
-				StatusIcon.icon_size = Vector2(12, 12)
-				StatusIcon.icon = SVGS.TYPE.PLUS
-				StatusIcon.show()
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.PLUS if utility_props.level >= 0 else SVGS.TYPE.MINUS
+				OperatorIcon.icon_color = Color.WHITE				
 				name_label_settings.font_color = Color.BLACK
-				name_str = str(utility_props.level)
+				name_str = str(utility_props.level, " LVL")
+
 			# ---------------------------
 			if utility_props.has("metric"):
 				var metric_details:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric)
-				StatusIcon.icon_size = Vector2(12, 12)
-				StatusIcon.icon = SVGS.TYPE.PLUS
-				StatusIcon.show()
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.PLUS
+				OperatorIcon.icon_color = Color.WHITE				
 				name_label_settings.font_color = Color.BLACK
 				name_str = metric_details.name
 			# ---------------------------
 			if utility_props.has("currency"):
 				var currency_details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
-				StatusIcon.icon_size = Vector2(12, 12)
-				StatusIcon.icon = SVGS.TYPE.PLUS
-				StatusIcon.show()
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.PLUS
+				OperatorIcon.icon_color = Color.WHITE
 				name_str = currency_details.name
 			# ---------------------------
 			if utility_props.has("currency_blacklist"):
 				var currency_details:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency_blacklist)
-				StatusIcon.icon_size = Vector2(12, 12)
-				StatusIcon.icon = SVGS.TYPE.MINUS
-				StatusIcon.icon_color = Color.RED
-				StatusIcon.show()
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.MINUS
+				OperatorIcon.icon_color = Color.RED
 				name_label_settings.font_color = Color.RED
 				name_str = currency_details.name				
 			# ---------------------------
 			if utility_props.has("metric_blacklist"):
 				var currency_details:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric_blacklist)
-				StatusIcon.icon_size = Vector2(12, 12)
-				StatusIcon.icon = SVGS.TYPE.MINUS
-				StatusIcon.icon_color = Color.RED
-				StatusIcon.show()
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.MINUS
+				OperatorIcon.icon_color = Color.RED
 				name_label_settings.font_color = Color.RED
 				name_str = currency_details.name				
 			# ---------------------------
 			if utility_props.has("effects"):
 				var effect_details:Dictionary = ROOM.return_effect(utility_props.effects)
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.PLUS
+				OperatorIcon.icon_color = Color.WHITE				
 				name_str = room_details.shortname
 				name_label_settings.font_color = Color.BLACK
 			# ---------------------------
+			if utility_props.has("energy"):	
+				OperatorIcon.icon_size = Vector2(12, 12)
+				OperatorIcon.icon = SVGS.TYPE.PLUS
+				OperatorIcon.icon_color = Color.WHITE				
+				name_str = room_details.shortname
+				name_label_settings.font_color = Color.BLACK
 	
 	# show only when focused on
 	if focus_on_current:

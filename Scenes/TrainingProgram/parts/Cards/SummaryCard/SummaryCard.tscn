@@ -48,6 +48,15 @@ outline_color = Color(1, 1, 1, 0.301961)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
+[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
+font = ExtResource("8_budmt")
+font_size = 12
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.301961)
+shadow_size = 0
+shadow_offset = Vector2(2, 2)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wi2bx"]
 bg_color = Color(0, 0, 0, 1)
 
@@ -66,15 +75,6 @@ outline_size = 2
 outline_color = Color(0, 0, 0, 0.2)
 shadow_size = 0
 shadow_color = Color(0, 0, 0, 0.235294)
-
-[sub_resource type="LabelSettings" id="LabelSettings_mee86"]
-font = ExtResource("8_budmt")
-font_size = 12
-font_color = Color(0, 0, 0, 1)
-outline_size = 2
-outline_color = Color(1, 1, 1, 0.301961)
-shadow_size = 0
-shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s65i"]
 bg_color = Color(0, 0, 0, 1)
@@ -310,7 +310,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_q31gb")
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 0
+theme_override_constants/margin_right = 3
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer"]
@@ -321,8 +321,17 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ECONOMIC REDISTRUBTION ROOM"
+text = "FACILITY NAME"
 label_settings = SubResource("LabelSettings_q31gb")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "lvl 1"
+label_settings = SubResource("LabelSettings_mee86")
+horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 3
 
@@ -405,16 +414,8 @@ label_settings = SubResource("LabelSettings_q31gb")
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "lvl 1"
-label_settings = SubResource("LabelSettings_mee86")
-horizontal_alignment = 2
-vertical_alignment = 1
-autowrap_mode = 3
-
 [node name="RoomContains" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
@@ -424,7 +425,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 0
 
 [node name="RoomContainLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains/MarginContainer"]
 layout_mode = 2
@@ -438,6 +439,7 @@ text = "[color='WHITE'][/color][b][color='GREEN']PRODUCES[/color] 1 [color='oran
 fit_content = true
 
 [node name="RoomImpact" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
@@ -447,7 +449,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 0
 
 [node name="RoomImpactLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomImpact/MarginContainer"]
 layout_mode = 2
@@ -461,6 +463,7 @@ text = "[color='WHITE'][/color][b][color='GREEN']PRODUCES[/color] 1 [color='oran
 fit_content = true
 
 [node name="RoomEffects" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
@@ -468,7 +471,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_5s65i")
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 

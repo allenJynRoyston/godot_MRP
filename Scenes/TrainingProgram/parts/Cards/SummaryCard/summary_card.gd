@@ -4,7 +4,6 @@ extends PanelContainer
 @onready var CardMargin:MarginContainer = $MarginContainer
 @onready var InfoContainer:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer
 @onready var ImageTextureRect:TextureRect = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect
-@onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/LvlTag
 @onready var ConstructionCostTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/ImageTextureRect/MarginContainer/VBoxContainer/HBoxContainer/ConstructionCostPanel/MarginContainer/HBoxContainer/ConstructionLabel
 @onready var SidePanel:VBoxContainer = $Control/SidePanel
 @onready var SummaryGrid:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/SummaryGrid
@@ -12,6 +11,7 @@ extends PanelContainer
 # sidepanel
 @onready var NamePanel:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel
 @onready var NameTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/NameTag
+@onready var LvlTag:Label = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer/LvlTag
 
 # cost
 @onready var CostPanel:PanelContainer = $Control/SidePanel/CostPanel
@@ -49,13 +49,6 @@ extends PanelContainer
 # containment
 @onready var ContainmentContainer:VBoxContainer = $MarginContainer/VBoxContainer/ContainmentContainer
 @onready var ContainmentComponent:PanelContainer = $MarginContainer/VBoxContainer/ContainmentContainer/ContainmentComponent
-
-@onready var RoomContains:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains
-@onready var RoomContainLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomContains/MarginContainer/RoomContainLabel
-
-# room effect
-@onready var RoomImpact:PanelContainer = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomImpact
-@onready var RoomImpactLabel:RichTextLabel = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomImpact/MarginContainer/RoomImpactLabel
 
 # passive list effects
 @onready var RoomEffects:Control = $MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/RoomEffects
@@ -137,7 +130,7 @@ func _ready() -> void:
 		PreviewPanel.global_position = _node.global_position - Vector2(205, 0)
 		var effect_details:Dictionary = ROOM.return_effect(_ref_data.data.ref)
 		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
-		PreviewText.text = build_effect_string(effect_details, true, room_level_config.department_props.operator, true)
+		PreviewText.text = U.build_effect_string(effect_details, true, room_level_config.department_props.operator, true)
 		PreviewPanel.size = Vector2(1, 1)
 # ------------------------------------------------------------------------------
 
@@ -168,8 +161,7 @@ func on_update() -> void:
 	if !is_node_ready() or room_config.is_empty() or use_location.is_empty():return
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(use_location)
 	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(use_location)
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()	
-		
+
 	# set defaults
 	StatusOverlay.hide()
 	PreviewPanel.hide()
@@ -204,9 +196,11 @@ func on_update() -> void:
 		infocontainer_stylebox.bg_color = Color.DARK_CYAN
 		namepanel_stylebox.bg_color = Color.DARK_CYAN	
 		NameTag.text = "EMPTY"	
-		RoomEffects.hide()
-		RoomImpact.hide()
 		DescriptionLabel.text = "Space is empty."
+		LvlTag.text = ""
+		
+		RoomEffects.hide()
+		SidePanel.hide()
 		QuoteLabel.hide()
 		RoomEffectLabel.hide()
 		return
@@ -239,36 +233,31 @@ func on_update() -> void:
 				
 		return
 	
-	# override and add department properties to room_details
-	room_details.department_props = room_level_config.department_props
-	
 	# else fill data
 	fill(room_details, scp_details, false)
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool = false) -> void:
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()		
 	var is_under_construction:bool = false if is_preview else ROOM_UTIL.is_under_construction(use_location) 
 	var is_activated:bool = true if is_preview else ROOM_UTIL.is_room_activated(use_location)
 	var can_contain:bool = ROOM_UTIL.room_can_contain(use_location)
-
+	var final_effect_string:String = ""
+	
 	# assign details	
 	SidePanel.show() if show_sidebar else SidePanel.hide()
 	InfoContainer.show()
 	DescriptionLabel.show()
 	QuoteLabel.show()
 	RoomEffectLabel.show()
+	RoomEffects.hide()
 
 	# basics
 	DescriptionLabel.text = room_details.description
 	QuoteLabel.text = '"%s"' % room_details.quote
-	
+
 	# fill image
-	#if preview_mode:
-		#SummaryGrid.hide()
-		#ImageTextureRect.show()
-		#ImageTextureRect.texture = CACHE.fetch_image(room_details.img_src) 
-	#else:
 	SummaryGrid.preview_mode = preview_mode
 	SummaryGrid.show()
 	ImageTextureRect.hide()
@@ -290,125 +279,59 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 	TempLabel.text = str(room_details.environmental.temp)
 	TempIcon.icon = SVGS.TYPE.LOW_TEMP if room_details.environmental.temp < 0 else SVGS.TYPE.HIGH_TEMP	
 	TempPanel.show() if room_details.environmental.temp != 0 else TempPanel.hide()
+
+	#------------------ IF CONTAINMENT CELL ...
+	if can_contain:
+		final_effect_string += U.build_scp_string(scp_details.name) if !scp_details.is_empty() else U.build_scp_string("None")
 	
-	if !room_details.utility_props.is_empty():
-		RoomImpact.show()
+	#------------------ IF UTILITY...
+	if !room_level_config.utility_props.is_empty():
+		# set defaults
 		RoomEffects.hide()
-		LvlTag.hide()
 		infocontainer_stylebox.bg_color = Color.WHITE
 		namepanel_stylebox.bg_color = Color.WHITE
 		
-		# update name
-		NameTag.text = "%s  (%s)" % [room_details.name, room_details.shortname]
+		# update name/level tag
+		LvlTag.text = room_details.shortname
+		LvlTag.custom_minimum_size.x = 100
 		
-		var utility_props:Dictionary = room_details.utility_props
-		var final_string:String = ""
-		if utility_props.has("level"):
-			final_string += "[b][color='GREEN']ADD[/color] %s LEVEL[/b] to effected departments.\n" % utility_props.level
-		if utility_props.has("metric"):
-			var metric_data:Dictionary = RESOURCE_UTIL.return_metric(utility_props.metric)
-			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to effected departments.\n" % [metric_data.name]	
-		if utility_props.has("currency"):
-			var currency_data:Dictionary = RESOURCE_UTIL.return_currency(utility_props.currency)
-			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to effected departments.\n" % [currency_data.name]
-		if utility_props.has("effects"):
-			var effect_data:Dictionary = ROOM.return_effect(utility_props.effects)
-			final_string += effect_data.description.call(ROOM.OPERATOR.ADD)
-	
-		RoomImpactLabel.text = str("[b][color='ORANGE']EFFECT:[/color][/b] ", final_string)
-	
-	
-	# add department properties
-	if !room_details.department_props.is_empty():		
-		RoomImpact.show()
-		LvlTag.show()
+		# build utility string
+		final_effect_string += U.build_utility_props_string(room_details.utility_props)
+
+	# ---------------- IF DEPARTMENT...
+	if !room_level_config.department_props.is_empty():
+		# set defaults
 		infocontainer_stylebox.bg_color = COLORS.primary_color
 		namepanel_stylebox.bg_color = COLORS.primary_color
+
+		# determine which department prop to use; room_level or room_detail
+		var department_props: Dictionary = room_level_config.department_props if !is_preview else room_details.department_props
+		# this is correct - use room_details for the level and room_level_config.department_props.bonus to get their real impact
+		var amount:int = room_details.department_props.level + department_props.bonus 
+
+		# add level to summary		
+		if !department_props.currency.is_empty() or !department_props.metric.is_empty():
+			if !final_effect_string.is_empty():
+				final_effect_string += "\n\n"
+			final_effect_string += U.build_department_prop_string(department_props, amount)			
+			final_effect_string += " (current level: [b]%s[/b])." % room_level_config.department_props.level
 		
-		# update name
-		NameTag.text = room_details.name 
-		
-		# add operator string		
-		var department_props: Dictionary = room_details.department_props
-		var has_no_production: bool = department_props.metric.is_empty() and department_props.currency.is_empty()
-		var amount:int = department_props.level + department_props.bonus
-		var metrics_string: String = ""
-		var currency_string: String = ""
-
-		# --- Metrics ---
-		if !department_props.metric.is_empty():
-			var combined_metrics: String = ""
-			for i in range(department_props.metric.size()):
-				var ref = department_props.metric[i]
-				var metric_details: Dictionary = RESOURCE_UTIL.return_metric(ref)
-				combined_metrics += metric_details.name
-				if i < department_props.metric.size() - 1:
-					combined_metrics += "/"
-			
-			if department_props.operator == ROOM.OPERATOR.ADD:
-				metrics_string = "[color='GREEN'][b]INCREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
-			elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
-				metrics_string = "[color='RED'][b]DECREASES[/b][/color] [b]%s[/b] by [b]%s[/b]" % [combined_metrics, amount]
-
-		# --- Currency ---
-		if !department_props.currency.is_empty():
-			var combined_currency: String = ""
-			for i in range(department_props.currency.size()):
-				var ref = department_props.currency[i]
-				var currency_details: Dictionary = RESOURCE_UTIL.return_currency(ref)
-				combined_currency += currency_details.name
-				if i < department_props.currency.size() - 1:
-					combined_currency += "/"
-			
-			if department_props.operator == ROOM.OPERATOR.ADD:
-				currency_string = "[color='GREEN'][b]PRODUCES[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
-			elif department_props.operator == ROOM.OPERATOR.SUBTRACT:
-				currency_string = "[color='RED'][b]EXPENDS[/b][/color] [b]%s %s[/b]" % [amount, combined_currency]
-
-		# --- Combine ---
-		var final_string: String = ""
-		if has_no_production:
-			final_string = "This facility has no output."
-		else:
-			if !metrics_string.is_empty() and !currency_string.is_empty():
-				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s.\n\n[color='ORANGE'][b]EFFECT:[/b][/color] %s every day." % [metrics_string, currency_string]
-			elif !metrics_string.is_empty():
-				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s." % metrics_string
-			elif !currency_string.is_empty():
-				final_string = "[color='ORANGE'][b]EFFECT:[/b][/color] %s every day." % currency_string
-
-		RoomImpactLabel.text = final_string
-
-		LvlTag.text = "LVL %s" % [room_details.department_props.level]
-
 		# get effects
-		if department_props.effects.is_empty():
-			RoomEffects.hide()
-		else:
-			RoomEffects.show()
+		if !department_props.effects.is_empty():
+			if !final_effect_string.is_empty():
+				final_effect_string += "\n\n"
+			final_effect_string += U.build_department_effect_string(department_props, use_location, is_preview)
 
-			var effect_string:String = ""
-			for index in department_props.effects.size():
-				var effect_details:Dictionary = ROOM.return_effect(department_props.effects[index])
-				var applies:bool = true if is_preview else effect_details.applies.call(room_config, use_location)
-				var is_end:bool = index == department_props.effects.size() - 1
-				effect_string += build_effect_string(effect_details, applies, department_props.operator, is_end)
+		# update level tag
+		LvlTag.text = "LVL %s" % room_level_config.department_props.level
+		LvlTag.custom_minimum_size.x = 60
+		
+	# update texts
+	NameTag.text = room_details.name
+	RoomEffectLabel.text = final_effect_string
+	RoomEffects.hide() if RoomEffectLabel.text.is_empty() else RoomEffects.show()
+	
 
-			RoomEffectLabel.text = effect_string
-	
-	# scp effect
-	if !scp_details.is_empty():		
-		RoomContains.show()		
-		RoomContainLabel.text = "[color='PURPLE'][b]CONTAINS:[/b][/color] [b]%s[/b]" % [scp_details.name]
-	else:
-		RoomContains.hide()
-	
-	# hide all
-	if room_details.utility_props.is_empty() and room_details.department_props.is_empty():
-		LvlTag.text = ""
-		RoomEffects.hide()
-		RoomImpact.hide()
-#
 	# under construction
 	if is_under_construction:
 		StatusLabel.text = "UNDER CONSTRUCTION"
@@ -420,23 +343,6 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		StatusLabel.text = "INACTIVE"
 		StatusOverlay.show()
 		return	
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-func build_effect_string(effect_details:Dictionary, applies:bool, operator:int, is_last:bool) -> String:
-	var effect_string:String = ""
-	if applies:
-		effect_string += "[color=ORANGE][b]EFFECT:[/b][/color] %s\n" % effect_details.description.call(operator)
-	else:
-		var regex = RegEx.new()
-		regex.compile("\\[.*?\\]")
-		var stripped_text:String = regex.sub(effect_details.description.call(operator), "", true)
-		effect_string += "[color=ORANGE][b]EFFECT (INACTIVE):[/b][/color] [color=SLATE_GRAY]%s[/color]\n" % stripped_text
-
-	if !is_last:
-		effect_string += "\n"
-	
-	return effect_string
 # ------------------------------------------------------------------------------
 	
 # ------------------------------------------------------------------------------

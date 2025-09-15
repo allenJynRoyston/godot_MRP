@@ -1677,11 +1677,10 @@ func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 func on_toggle_scp_card_update() -> void:
 	if !is_node_ready():return
-	print("toggle...")
 	ScpCard.show() if toggle_scp_card else ScpCard.hide()
 	SummaryCard.hide() if toggle_scp_card else SummaryCard.show()
 
-	IntelControls.a_btn_title = "VIEW SCP" if toggle_scp_card else "VIEW FACILITY"	
+	IntelControls.a_btn_title = "VIEW SCP" if !toggle_scp_card else "VIEW FACILITY"	
 	TransistionScreen.start(0.3, true)	
 # --------------------------------------------------------------------------------------------------			
 	
@@ -1767,6 +1766,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				ModulesCard.show_programs = false
 				#NametagControl.show()
 				LocationAndDirectivesContainer.reveal(true)
+				ScpCard.hide()
 				RenderingNode.set_shader_strength(0)
 				LocationAndDirectivesContainer.reveal(true)
 				GameplayNode.show_marked_objectives = false

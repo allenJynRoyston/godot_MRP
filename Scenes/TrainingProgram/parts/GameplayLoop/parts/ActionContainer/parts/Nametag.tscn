@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ckywdp1o7nc2i"]
+[gd_scene load_steps=10 format=3 uid="uid://ckywdp1o7nc2i"]
 
 [ext_resource type="Script" uid="uid://bhoimhgr7awhf" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/ActionContainer/parts/nametag.gd" id="1_or75n"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="3_o1lms"]
@@ -26,9 +26,18 @@ shadow_offset = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_rcgg0"]
 font = ExtResource("4_o1lms")
+font_size = 12
 outline_color = Color(0, 0, 0, 0.615686)
 shadow_size = 0
 shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rcgg0"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.678431)
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o1lms"]
 font = ExtResource("4_o1lms")
@@ -97,6 +106,34 @@ text = "3"
 label_settings = SubResource("LabelSettings_rcgg0")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="OperatorPanel" type="PanelContainer" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rcgg0")
+
+[node name="MarginContainer" type="MarginContainer" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+metadata/_edit_group_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 2
+
+[node name="OperatorIcon" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer/OperatorPanel/MarginContainer/HBoxContainer/MarginContainer" instance=ExtResource("3_o1lms")]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+icon = 29
+icon_color = Color(1, 1, 1, 1)
+icon_size = Vector2(15, 15)
 
 [node name="ConstructionIcon" parent="ContentControl/ContentPanel/MarginContainer/HBoxContainer" instance=ExtResource("3_o1lms")]
 visible = false

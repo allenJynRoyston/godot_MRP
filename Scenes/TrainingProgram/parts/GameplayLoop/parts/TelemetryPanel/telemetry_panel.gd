@@ -1,24 +1,29 @@
 extends SubscribeWrapper
 
-@onready var Empty:VBoxContainer = $VBoxContainer/Empty
-@onready var Stats:VBoxContainer = $VBoxContainer/Stats
-@onready var Income:VBoxContainer = $VBoxContainer/Income
+@onready var ContentContainer:VBoxContainer = $ContentContainer
+@onready var Stats:PanelContainer = $ContentContainer/Stats
+@onready var Summary:PanelContainer = $ContentContainer/Summary
 
-@onready var StatusLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Status/StatusLabel
-@onready var DamageLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Damage/DamageLabel
-@onready var EffectLabel:Label = $VBoxContainer/Stats/Content/MarginContainer/VBoxContainer2/Effect/EffectLabel
+@onready var NameLabel:Label = $ContentContainer/Header/MarginContainer/HBoxContainer/NameLabel
+@onready var StatusLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Status/StatusLabel
+@onready var DamageLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Damage/DamageLabel
+@onready var TempLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Temp/TempLabel
+@onready var PollutionLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Pollution/PollutionLabel
 
-@onready var ProductionList:VBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/Production/ProductionList
-@onready var VibeList:VBoxContainer = $VBoxContainer/Income/Content/MarginContainer/VBoxContainer/Vibes/VibeList
+@onready var SummaryLabel:RichTextLabel = $ContentContainer/Summary/MarginContainer/SummaryLabel
+
 
 @onready var Detected:Control = $Detected
 @onready var DetectedPanel:PanelContainer = $Detected/DetectedPanel
 @onready var DetectedHeader:PanelContainer = $Detected/DetectedPanel/VBoxContainer/Header
 
 @onready var detected_header_stylebox:StyleBoxFlat = DetectedHeader.get("theme_override_styles/panel").duplicate()
-@onready var new_label_settings:LabelSettings = StatusLabel.get("label_settings").duplicate()
+@onready var stats_stylebox:StyleBoxFlat = Stats.get("theme_override_styles/panel").duplicate()
 @onready var status_label_setting:LabelSettings = StatusLabel.get("label_settings").duplicate()
 @onready var damage_label_setting:LabelSettings = DamageLabel.get("label_settings").duplicate()
+@onready var temp_label_setting:LabelSettings = TempLabel.get("label_settings").duplicate()
+@onready var pollution_label_setting:LabelSettings = PollutionLabel.get("label_settings").duplicate()
+
 
 var modulate_tween:Tween
 var position_tween:Tween
@@ -35,24 +40,21 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)	
 
 func _ready() -> void:
-	Empty.hide()
-	Stats.hide()
-	Income.hide()
+	ContentContainer.hide()
 		
 	DetectedPanel.modulate.a = 0
 	DetectedHeader.set("theme_override_styles/panel", detected_header_stylebox)
+	Stats.set("theme_override_styles/panel", stats_stylebox)
 	StatusLabel.set("label_settings", status_label_setting)
-	DamageLabel.set("label_settings", damage_label_setting)
+	TempLabel.set("label_settings", temp_label_setting)
+	PollutionLabel.set("label_settings", pollution_label_setting)
 	
 func start() -> void:
 	is_active = true
 	update_node()
 	
 func end() -> void:
-	Empty.hide()
-	Stats.hide()
-	Income.hide()
-		
+	ContentContainer.hide()
 	DetectedPanel.modulate.a = 0
 	is_active = false
 # ------------------------------------------
@@ -69,24 +71,34 @@ func on_room_config_update(new_val:Dictionary = room_config) -> void:
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	U.debounce(str(self, "_update_node"), update_node)
-	
+
+
+
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or !is_active:return
+	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(current_location)
 	
+	if room_details.is_empty():
+		ContentContainer.hide()
+		return
+	ContentContainer.show()
+	
+	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(current_location)
+	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)		
+	var ring_level_config:Dictionary = GAME_UTIL.get_ring_level_config(current_location)
 	var room_pos:Vector2 = GBL.find_node(REFS.WING_RENDER).get_room_position(current_location.room) * GBL.game_resolution 
-	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config()
 	var room_base_states:Dictionary = GAME_UTIL.get_room_base_state()		
 	var is_room_empty:bool = ROOM_UTIL.is_room_empty()
 	var is_activated:bool = ROOM_UTIL.is_room_activated()
 	var is_under_construction:bool = ROOM_UTIL.is_under_construction()	
-	#var metric_list:Dictionary = ROOM_UTIL.get_room_metric_list() 	
-	#var currency_list:Dictionary = ROOM_UTIL.get_room_currency_list(-1) 
-	var effect:Dictionary = ROOM_UTIL.get_room_effect()
 	var energy_used:int = room_level_config.energy_used	
 	var damage_val:int = room_level_config.damage_val
 	
 	# set flag
 	has_event = !room_base_states.events_pending.is_empty()
+	
+	# name label
+	NameLabel.text = room_details.name
 	
 	# is activated
 	StatusLabel.text = "Anamolly detected!" if has_event else "Under construction" if is_under_construction else ("Active" if is_activated else "Inactive")
@@ -94,80 +106,57 @@ func update_node() -> void:
 	status_label_setting.outline_color = status_label_setting.font_color
 	status_label_setting.outline_color.a = 0.2
 	
+	# temp	
+	var temp_in_range:bool = ring_level_config.monitor.temp in room_details.temp_required	
+	TempLabel.text = "No issues" if temp_in_range else ("Too hot!" if ring_level_config.monitor.temp > 0 else "Too cold!")
+	temp_label_setting.font_color = Color.BLACK if temp_in_range else (Color.RED if ring_level_config.monitor.temp > 0 else Color.BLUE)
+	
+	# pollution	
+	PollutionLabel.text = "No pollution" if room_details.pollution == 0 else "Generates pollution"
+	pollution_label_setting.font_color = Color.BLACK if room_details.pollution == 0 else Color.RED
+	
 	# damage
-	DamageLabel.text = "No damage"  
+	DamageLabel.text = "No damage" if damage_val == 0 else "Damaged!"
+	damage_label_setting.font_color = Color.BLACK if damage_val == 0 else Color.RED
 	
-	# effect
-	EffectLabel.text = "No effect" if effect.is_empty() else effect.description
+	# reset text
+	var final_effect_string:String = ""
 	
-	# production list	
-	for listnode in [VibeList, ProductionList]:
-		for node in listnode.get_children():
-			node.free()
+	# -------------- UTILITY PROPS
+	if !room_level_config.is_empty() and !room_level_config.utility_props.is_empty():
+		final_effect_string += U.build_utility_props_string(room_level_config.utility_props)
+	
+	# -------------- DEPARTMENT PROPS
+	if !room_level_config.is_empty() and !room_level_config.department_props.is_empty():
+		final_effect_string += U.build_department_prop_string(room_level_config.department_props, room_level_config.department_props.level, "at end of turn")
+		# get effects
+		if !room_level_config.department_props.effects.is_empty():
+			if !final_effect_string.is_empty():
+				final_effect_string += "\n\n"
+			final_effect_string += U.build_department_effect_string(room_level_config.department_props, current_location, false)
 
-	# currencies
-	#for ref in currency_list:
-		#var item:Dictionary = currency_list[ref] 
-		#var amount:int = item.amount 
-		#var bonus_amount:int = item.bonus_amount
-		#var total_amount:int = amount + bonus_amount
-		#if total_amount != 0:
-			#var new_label:Label = Label.new()
-			#var resource_data:Dictionary = RESOURCE_UTIL.return_currency(ref)
-			#new_label.set("label_settings", new_label_settings)			
-			#new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
-			#if bonus_amount != 0:
-				#new_label.text += "(+%s BONUS)" % [bonus_amount]
-			#new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-			#ProductionList.add_child(new_label)
-	#
-	## metric 
-	#for ref in metric_list:
-		#var item:Dictionary = metric_list[ref] 
-		#var amount:int = item.amount 
-		#var bonus_amount:int = item.bonus_amount
-		#var total_amount:int = amount + bonus_amount
-		#if total_amount != 0:
-			#var new_label:Label = Label.new()
-			#var resource_data:Dictionary = RESOURCE_UTIL.return_metric(ref)
-			#new_label.set("label_settings", new_label_settings)			
-			#new_label.text = "%s%s %s" % ["-" if amount < 0 else "+", amount, resource_data.name]
-			#if bonus_amount != 0:
-				#new_label.text += "(+%s BONUS)" % [bonus_amount]
-			#new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-			#VibeList.add_child(new_label)			
-	#
-
-	# is empty production list
-	if ProductionList.get_child_count() == 0:
-		var new_label:Label = Label.new()
-		new_label.set("label_settings", new_label_settings)
-		new_label.text = "Awaiting construction" if is_under_construction else "None"
-		new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		ProductionList.add_child(new_label)
-	
-	# is empty vibe list
-	if VibeList.get_child_count() == 0:
-		var new_label:Label = Label.new()
-		new_label.set("label_settings", new_label_settings)
-		new_label.text = "Awaiting construction" if is_under_construction else "None"
-		new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		VibeList.add_child(new_label)
+	# final string 
+	SummaryLabel.text = final_effect_string
 		
 	# animate 
 	for tween in [modulate_tween, position_tween]:
 		if tween != null and tween.is_running():
 			tween.stop()
-			
+	
+	# hide/show detected
 	DetectedPanel.modulate.a = 0
 	DetectedPanel.global_position = room_pos - Vector2(0, 120 if !is_room_empty else 80)
 	
-	# show correct content
-	Empty.show() if is_room_empty else Empty.hide()
-	Stats.show() if !is_room_empty else Stats.hide()	
-	Income.hide() if (VibeList.get_child_count() == 0 and ProductionList.get_child_count() == 0) else Income.show()
-		
-	
+	# show/hide summary
+	if SummaryLabel.text.is_empty():
+		Summary.hide()
+		stats_stylebox.corner_radius_bottom_left = 5
+		stats_stylebox.corner_radius_bottom_right = 5
+	else:
+		Summary.show()
+		stats_stylebox.corner_radius_bottom_left = 0
+		stats_stylebox.corner_radius_bottom_right = 0
+
 	if has_event:		
 		U.debounce(str(self, "_show_warning"), show_warning, 0.3)
 	
