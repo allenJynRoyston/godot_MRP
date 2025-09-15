@@ -22,6 +22,12 @@ enum DIR {INWARD, OUTWARD}
 		
 var preview_mode:bool = false
 
+func _init() -> void:
+	GBL.subscribe_to_process(self)
+	
+func _exit_tree() -> void:
+	GBL.unsubscribe_to_process(self)
+
 func _ready() -> void:
 	update_node()
 

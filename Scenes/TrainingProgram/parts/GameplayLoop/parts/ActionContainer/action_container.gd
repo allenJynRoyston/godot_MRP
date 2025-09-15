@@ -63,9 +63,9 @@ extends GameContainer
 @onready var TelemetryMargin:MarginContainer = $Telemetry/PanelContainer/MarginContainer 
 @onready var TelemetryComponent:Control = $Telemetry/PanelContainer/MarginContainer/TelemetryComponent
 
-@onready var BlueprintPanel:PanelContainer = $Blueprint/PanelContainer
-@onready var BlueprintMargin:MarginContainer = $Blueprint/PanelContainer/MarginContainer
-@onready var BlueprintComponent:Control = $Blueprint/PanelContainer/MarginContainer/BlueprintComponent
+#@onready var BlueprintPanel:PanelContainer = $Blueprint/PanelContainer
+#@onready var BlueprintMargin:MarginContainer = $Blueprint/PanelContainer/MarginContainer
+#@onready var BlueprintComponent:Control = $Blueprint/PanelContainer/MarginContainer/BlueprintComponent
 #  ---------------------------------------
 
 #  ---------------------------------------
@@ -251,10 +251,10 @@ func update_control_pos(skip_animation:bool = false) -> void:
 		"hide": NotificationMargin.size.x
 	}
 	
-	control_pos[BlueprintPanel] = {
-		"show": 0,
-		"hide": BlueprintMargin.size.x
-	}
+	#control_pos[BlueprintPanel] = {
+		#"show": 0,
+		#"hide": BlueprintMargin.size.x
+	#}
 		
 	# for elements in the bottom left corner
 	control_pos[ActionPanel] = {
@@ -265,7 +265,7 @@ func update_control_pos(skip_animation:bool = false) -> void:
 	for node in [WingRootPanel]: 
 		node.position.y = control_pos[node].hide
 
-	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel, BlueprintPanel]: 
+	for node in [NotificationPanel, ActionPanel, SummaryPanel, ModulesPanel, EngineeringPanel, TopographyPanel, TelemetryPanel]: 
 		node.position.x = control_pos[node].hide
 		node.hide()
 	
@@ -599,7 +599,7 @@ func show_fabrication_options() -> void:
 	# summary card
 	SummaryCard.preview_mode = true	
 	reveal_summarycard(true, false)	
-	reveal_blueprint(false)
+	reveal_telemetry(false)
 
 	# ACTIVATE NODE	
 	add_child(ActiveMenuNode)
@@ -610,7 +610,7 @@ func show_fabrication_options() -> void:
 	await show_build_complete
 	SummaryCard.preview_mode_ref = -1
 	SummaryCard.preview_mode = false
-	reveal_blueprint(true)
+	reveal_telemetry(true)
 	await reveal_summarycard(false)
 	active_menu_is_open = false		
 # --------------------------------------------------------------------------------------------------
@@ -1369,6 +1369,7 @@ func check_btn_states() -> void:
 				current_mode = MODE.MEDICAL
 		# -----------
 		MODE.INTEL:
+			TelemetryComponent.enable_room()
 			NametagControl.show()
 			var list:Array = GAME_UTIL.get_pending_events_list()
 			var has_event_here:bool = false
@@ -1390,6 +1391,7 @@ func check_btn_states() -> void:
 				current_mode = MODE.ROOT
 		# -----------
 		MODE.INTEL_OVERSIGHT:
+			TelemetryComponent.enable_oversight()
 			NametagControl.hide()
 			IntelOverviewControls.onBack = func() -> void:
 				await IntelOverviewControls.reveal(false)
@@ -1433,7 +1435,7 @@ func check_btn_states() -> void:
 				FabricationControls.reveal(true)
 						
 			FabricationControls.onBack = func() -> void:
-				reveal_blueprint(false)
+				reveal_telemetry(false)
 				WingRenderNode.set_to_build_mode(false)	
 				await FabricationControls.reveal(false)
 				current_mode = MODE.ROOT
@@ -1659,19 +1661,19 @@ func reveal_telemetry(state:bool, duration:float = 0.3) -> void:
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
-func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
-	if !is_node_ready():return
-	
-	if state:
-		BlueprintComponent.start()
-		BlueprintPanel.show()
-	
-	await U.tween_node_property(BlueprintPanel, "position:x", control_pos[BlueprintPanel].show if state else control_pos[BlueprintPanel].hide, duration)
-	
-	if !state:
-		BlueprintComponent.end()
-		BlueprintPanel.hide()	
-			
+#func reveal_blueprint(state:bool, duration:float = 0.3) -> void:
+	#if !is_node_ready():return
+	#
+	#if state:
+		#BlueprintComponent.start()
+		#BlueprintPanel.show()
+	#
+	#await U.tween_node_property(BlueprintPanel, "position:x", control_pos[BlueprintPanel].show if state else control_pos[BlueprintPanel].hide, duration)
+	#
+	#if !state:
+		#BlueprintComponent.end()
+		#BlueprintPanel.hide()	
+			#
 # --------------------------------------------------------------------------------------------------		
 
 # --------------------------------------------------------------------------------------------------		
@@ -1726,7 +1728,6 @@ func on_fullscreen_update(state:bool) -> void:
 
 func on_camera_settings_update(new_val:Dictionary = camera_settings) -> void:
 	camera_settings = new_val
-	if !is_node_ready() or camera_settings.is_empty():return
 
 func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
@@ -1883,7 +1884,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				
 				change_camera_viewpoint(CAMERA.VIEWPOINT.OVERHEAD)
 				reveal_summarycard(true, false)
-				reveal_blueprint(true)
+				reveal_telemetry(true)
 				reveal_actionpanel_label(true, 0.4, "BLUEPRINTS")
 				reveal_actionpanel_image(true, 0.4, portrait_img_src[PORTRAIT.ENGINEER])
 			# --------------

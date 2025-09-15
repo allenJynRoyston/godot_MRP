@@ -7,16 +7,14 @@ var chapters:Array = [
 	# ----------------------------------------------------------------------------------------------
 	{
 		"story_message": [
-			"D-Class 2477, audio check confirmed. You are now active in Test Chamber 12.",
-			"This message is pre-recorded. Do not attempt to respond.",
-			"My name is Doctor Ambrose, and you have been selected for cognitive exposure to a classified anomaly.",
- 			"I understand that may sound concerning, but while you're under our observation, you are completely safe. Do not panic.",
-			"You may have also notice gaps in your memory. That is by design. It is for your safety and for ours.  Again, do not panic.  Your memory will return in time.",			
-			"First things first, you should notice a computer to your LEFT. There's a... game of sorts on it.  We just need you to engage with it.  That's it.  Easy task.",
-			"Also note that there's a terminal on your RIGHT.  It should field any questions you may have.",
-			"Now pay attention. You are securely restrained for the duration of this session. Do not attempt to remove the harness.",
- 			"Do not interfere with any equipment or attempt to disengage the system. Tampering will result in your immediate termination.",
- 			"Remain compliant. Further instructions will be provided at the conclusion of your session."
+			"Good morning, D-Class 2477.",
+			"My name is Doctor Ambrose, and you have been selected to test SCP-[REDACTED], which has taken on the form of a computer.",
+			"It's the one on your left.",
+			"We need you to interact with it.  There's an application on it called Site Director Training Program.",
+			"Your task is straightforward: learn the rules, complete the objectives, and provide input when prompted.",
+			"There is no penalty for failure. However, progression will be noted and rewarded.",
+			"Do not attempt to leave your station, tamper with the equipment, or damage anything in the room. Any such actions will be treated as a breach of protocol and you will be terminated.",
+			"That will be all, D-2477. Begin when ready."
 		],
 		"complete_by_day": 7,
 		"objectives": {
@@ -24,21 +22,12 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 1,
-						"type": TYPE.BUILDING,
-						"ref": ROOM.REF.ADMIN_DEPARTMENT
-					},
-				},				
-				{ 
-					"criteria": {
-						"action": HAVE_AT_LEAST,
-						"amount": 1,
+						"amount": 50,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.MONEY
 					},
 				},
 			],
-			# "reward_event": EVT.TYPE.SCIENCE_SETUP
 		}
 	},
 	# ----------------------------------------------------------------------------------------------
@@ -49,13 +38,12 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 10,
+						"amount": 50,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.SCIENCE
 					},
 				},
 			],
-			# "reward_event": EVT.TYPE.SELECT_STARTING_DEPARTMENTS_B
 		}
 	},
 	# ----------------------------------------------------------------------------------------------
@@ -68,32 +56,48 @@ var chapters:Array = [
 				{ 
 					"criteria": {
 						"action": HAVE_AT_LEAST,
-						"amount": 5,
+						"amount": 50,
 						"type": TYPE.CURRENCY,
 						"ref": RESOURCE.CURRENCY.MATERIAL
 					},
 				},
 			],
-		},
+		}
 	},
 	# ----------------------------------------------------------------------------------------------	
 	
 	# ----------------------------------------------------------------------------------------------
-	#{
-		#"objectives": {
-			#"complete_by_day": 14,
-			#"required":[
-				#{ 
-					#"criteria": {
-						#"action": HAVE_AT_LEAST,
-						#"amount": 5,
-						#"type": TYPE.CURRENCY,
-						#"ref": RESOURCE.CURRENCY.MATERIAL
-					#},
-				#},
-			#],
-		#},
-	#},
+	{
+		"complete_by_day": 28,
+		"objectives": {
+			"required":[
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 100,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MONEY
+					},
+				},
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 100,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.MATERIAL
+					},
+				},
+				{ 
+					"criteria": {
+						"action": HAVE_AT_LEAST,
+						"amount": 100,
+						"type": TYPE.CURRENCY,
+						"ref": RESOURCE.CURRENCY.SCIENCE
+					},
+				},
+			],
+		}
+	},
 	# ----------------------------------------------------------------------------------------------		
 
 	## ----------------------------------------------------------------------------------------------

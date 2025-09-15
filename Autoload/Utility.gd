@@ -467,8 +467,6 @@ func build_utility_props_string(props:Dictionary) -> String:
 		var final_string:String = ""
 		if props.has("level"):
 			final_string += "[b][color='GREEN']ADD[/color] %s LEVEL[/b] to adjacent facilities.\n" % props.level
-		if props.has("energy"):
-			final_string += "[b][color='GREEN']ADD[/color] %s ENERGY[/b] to adjacent facilities.\n" % props.energy
 		if props.has("metric"):
 			var metric_data:Dictionary = RESOURCE_UTIL.return_metric(props.metric)
 			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to adjacent facilities.\n" % [metric_data.name]	
@@ -476,8 +474,10 @@ func build_utility_props_string(props:Dictionary) -> String:
 			var currency_data:Dictionary = RESOURCE_UTIL.return_currency(props.currency)
 			final_string += "[b][color='GREEN']ADD[/color] %s[/b] modifier to adjacent facilities.\n" % [currency_data.name]
 		if props.has("effects"):
-			var effect_data:Dictionary = ROOM.return_effect(props.efdafects)
+			var effect_data:Dictionary = ROOM.return_effect(props.effects)
 			final_string += effect_data.description.call(ROOM.OPERATOR.ADD)
+		if props.has("energy"):
+			final_string += "[b][color='GREEN']ADD[/color] %s ENERGY[/b] to sector.\n" % props.energy
 		return final_string
 
 func build_department_prop_string(department_props:Dictionary, amount:int = 1, end_string:String = "per level") -> String:
@@ -516,11 +516,11 @@ func build_department_prop_string(department_props:Dictionary, amount:int = 1, e
 	# --- Combine ---
 	var final_string: String = ""
 	if !metrics_string.is_empty() and !currency_string.is_empty():
-		final_string = "%s.\n\n%s %s" % [metrics_string, currency_string, end_string]
+		final_string = "%s %s.\n\n%s %s." % [metrics_string, end_string, currency_string, end_string]
 	elif !metrics_string.is_empty():
-		final_string = "%s." % metrics_string
+		final_string = "%s %s." % [metrics_string, end_string]
 	elif !currency_string.is_empty():
-		final_string = "%s %s" % [currency_string, end_string]
+		final_string = "%s %s." % [currency_string, end_string]
 
 
 	return final_string

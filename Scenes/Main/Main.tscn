@@ -183,6 +183,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_nn4ar")
 script = ExtResource("1_cv8e0")
+reset_userprofile_save = true
 audio_mute = true
 skip_splash = true
 skip_intro = true
@@ -198,7 +199,7 @@ os_app_fast_load = true
 stdr_skip_titlescreen = true
 stdr_skip_loadingscreen = true
 skip_setup_progress = true
-all_resources = true
+max_energy = false
 staff_debug = true
 
 [node name="OSViewport" type="SubViewport" parent="."]

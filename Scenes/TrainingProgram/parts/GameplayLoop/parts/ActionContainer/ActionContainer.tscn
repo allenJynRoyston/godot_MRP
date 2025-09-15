@@ -465,11 +465,6 @@ layout_mode = 2
 a_btn_title = "CONTAIN HERE"
 c_btn_title = "OVERVIEW"
 
-[node name="ContainControls2" parent="." instance=ExtResource("10_58xi4")]
-layout_mode = 2
-a_btn_title = "CONTAIN HERE"
-c_btn_title = "OVERVIEW"
-
 [node name="LocationAndDirectivesContainer" parent="." instance=ExtResource("4_xathl")]
 layout_mode = 2
 
@@ -649,7 +644,9 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 
 [node name="Blueprint" type="Control" parent="."]
+visible = false
 layout_mode = 2
+metadata/_edit_group_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="Blueprint"]
 layout_mode = 1

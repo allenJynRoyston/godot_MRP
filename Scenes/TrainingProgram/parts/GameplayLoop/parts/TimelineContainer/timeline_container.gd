@@ -105,10 +105,10 @@ func on_is_showing_update(skip_animation:bool = false) -> void:
 # -----------------------------------------------	
 func on_gameplay_conditionals_update(_gameplay_conditionals:Dictionary) -> void:
 	if !is_node_ready() or _gameplay_conditionals.is_empty():return	
-	if _gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE]:
-		ListContainer.modulate.a = 1
-	else:
-		ListContainer.modulate.a = 0
+	#if _gameplay_conditionals[CONDITIONALS.TYPE.ENABLE_TIMELINE]:
+	ListContainer.modulate.a = 1
+	#else:
+	#	ListContainer.modulate.a = 0
 # -----------------------------------------------	
 
 # --------------------------------------------------------------------------------------------------

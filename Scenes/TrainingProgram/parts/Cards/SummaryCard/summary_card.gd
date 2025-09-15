@@ -178,8 +178,6 @@ func on_update() -> void:
 				var adjacent_room_details:Dictionary = ROOM_UTIL.return_data(ref)
 				var utility_props:Dictionary = adjacent_room_details.utility_props
 				if !utility_props.is_empty() and !preview_data.department_props.is_empty():
-					if utility_props.has("level"):
-						preview_data.department_props.level += utility_props.level
 					if utility_props.has("metric"):
 						preview_data.department_props.metric.append( utility_props.metric )
 					if utility_props.has("currency"):
@@ -193,8 +191,6 @@ func on_update() -> void:
 	
 	# no room, hide and end...
 	if room_details.is_empty():
-		infocontainer_stylebox.bg_color = Color.DARK_CYAN
-		namepanel_stylebox.bg_color = Color.DARK_CYAN	
 		NameTag.text = "EMPTY"	
 		DescriptionLabel.text = "Space is empty."
 		LvlTag.text = ""
@@ -285,11 +281,9 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		final_effect_string += U.build_scp_string(scp_details.name) if !scp_details.is_empty() else U.build_scp_string("None")
 	
 	#------------------ IF UTILITY...
-	if !room_level_config.utility_props.is_empty():
+	if !room_details.utility_props.is_empty():
 		# set defaults
 		RoomEffects.hide()
-		infocontainer_stylebox.bg_color = Color.WHITE
-		namepanel_stylebox.bg_color = Color.WHITE
 		
 		# update name/level tag
 		LvlTag.text = room_details.shortname
@@ -299,22 +293,20 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 		final_effect_string += U.build_utility_props_string(room_details.utility_props)
 
 	# ---------------- IF DEPARTMENT...
-	if !room_level_config.department_props.is_empty():
-		# set defaults
-		infocontainer_stylebox.bg_color = COLORS.primary_color
-		namepanel_stylebox.bg_color = COLORS.primary_color
-
+	if !room_details.department_props.is_empty():
 		# determine which department prop to use; room_level or room_detail
 		var department_props: Dictionary = room_level_config.department_props if !is_preview else room_details.department_props
 		# this is correct - use room_details for the level and room_level_config.department_props.bonus to get their real impact
 		var amount:int = room_details.department_props.level + department_props.bonus 
+		
 
 		# add level to summary		
 		if !department_props.currency.is_empty() or !department_props.metric.is_empty():
 			if !final_effect_string.is_empty():
 				final_effect_string += "\n\n"
-			final_effect_string += U.build_department_prop_string(department_props, amount)			
-			final_effect_string += " (current level: [b]%s[/b])." % room_level_config.department_props.level
+			final_effect_string += U.build_department_prop_string(department_props, amount)
+			#if !is_preview:
+				#final_effect_string += " (current level: [b]%s[/b])." % room_level_config.department_props.level
 		
 		# get effects
 		if !department_props.effects.is_empty():
@@ -323,13 +315,26 @@ func fill(room_details:Dictionary, scp_details:Dictionary = {}, is_preview:bool 
 			final_effect_string += U.build_department_effect_string(department_props, use_location, is_preview)
 
 		# update level tag
-		LvlTag.text = "LVL %s" % room_level_config.department_props.level
+		LvlTag.text = "LVL %s" % [room_level_config.department_props.level if !is_preview else room_details.department_props.level]
 		LvlTag.custom_minimum_size.x = 60
 		
 	# update texts
 	NameTag.text = room_details.name
 	RoomEffectLabel.text = final_effect_string
 	RoomEffects.hide() if RoomEffectLabel.text.is_empty() else RoomEffects.show()
+	
+	# color
+	if !room_details.department_props.is_empty():
+		infocontainer_stylebox.bg_color = COLORS.primary_color
+		namepanel_stylebox.bg_color = COLORS.primary_color
+	
+	if !room_details.utility_props.is_empty():
+		infocontainer_stylebox.bg_color = Color.WHITE
+		namepanel_stylebox.bg_color = Color.WHITE			
+	
+	if !room_details.department_props.is_empty() and !room_details.utility_props.is_empty():
+		infocontainer_stylebox.bg_color = Color.DARK_CYAN
+		namepanel_stylebox.bg_color = Color.DARK_CYAN
 	
 
 	# under construction

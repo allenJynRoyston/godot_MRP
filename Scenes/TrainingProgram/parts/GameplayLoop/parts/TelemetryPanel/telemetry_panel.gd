@@ -1,16 +1,19 @@
 extends SubscribeWrapper
+enum TYPE {SECTOR_LEVEL, ROOM_LEVEL}
 
-@onready var ContentContainer:VBoxContainer = $ContentContainer
-@onready var Stats:PanelContainer = $ContentContainer/Stats
-@onready var Summary:PanelContainer = $ContentContainer/Summary
+# roomLayer
+@onready var RoomLayer:VBoxContainer = $VBoxContainer/RoomLayer
+@onready var Stats:PanelContainer = $VBoxContainer/RoomLayer/Stats
+@onready var Summary:PanelContainer = $VBoxContainer/RoomLayer/Summary
+@onready var NameLabel:Label = $VBoxContainer/RoomLayer/Header/MarginContainer/HBoxContainer/NameLabel
+@onready var StatusLabel:Label = $VBoxContainer/RoomLayer/Stats/MarginContainer/VBoxContainer2/Status/StatusLabel
+@onready var DamageLabel:Label = $VBoxContainer/RoomLayer/Stats/MarginContainer/VBoxContainer2/Damage/DamageLabel
+@onready var TempLabel:Label = $VBoxContainer/RoomLayer/Stats/MarginContainer/VBoxContainer2/Temp/TempLabel
+@onready var PollutionLabel:Label = $VBoxContainer/RoomLayer/Stats/MarginContainer/VBoxContainer2/Pollution/PollutionLabel
+@onready var SummaryLabel:RichTextLabel = $VBoxContainer/RoomLayer/Summary/MarginContainer/SummaryLabel
 
-@onready var NameLabel:Label = $ContentContainer/Header/MarginContainer/HBoxContainer/NameLabel
-@onready var StatusLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Status/StatusLabel
-@onready var DamageLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Damage/DamageLabel
-@onready var TempLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Temp/TempLabel
-@onready var PollutionLabel:Label = $ContentContainer/Stats/MarginContainer/VBoxContainer2/Pollution/PollutionLabel
-
-@onready var SummaryLabel:RichTextLabel = $ContentContainer/Summary/MarginContainer/SummaryLabel
+# sector
+@onready var SectorLayer:VBoxContainer = $VBoxContainer/SectorLayer
 
 
 @onready var Detected:Control = $Detected
@@ -29,6 +32,7 @@ var modulate_tween:Tween
 var position_tween:Tween
 var is_active:bool = false
 var has_event:bool = false
+var type:TYPE = TYPE.ROOM_LEVEL
 
 # ------------------------------------------
 func _init() -> void:
@@ -40,7 +44,8 @@ func _exit_tree() -> void:
 	GBL.unsubscribe_to_control_input(self)	
 
 func _ready() -> void:
-	ContentContainer.hide()
+	RoomLayer.hide()
+	SectorLayer.hide()
 		
 	DetectedPanel.modulate.a = 0
 	DetectedHeader.set("theme_override_styles/panel", detected_header_stylebox)
@@ -54,7 +59,8 @@ func start() -> void:
 	update_node()
 	
 func end() -> void:
-	ContentContainer.hide()
+	RoomLayer.hide()
+	SectorLayer.hide()
 	DetectedPanel.modulate.a = 0
 	is_active = false
 # ------------------------------------------
@@ -72,16 +78,36 @@ func on_current_location_update(new_val:Dictionary = current_location) -> void:
 	current_location = new_val
 	U.debounce(str(self, "_update_node"), update_node)
 
+func enable_room() -> void:
+	type = TYPE.ROOM_LEVEL
+	U.debounce(str(self, "_update_node"), update_node)
 
+func enable_oversight() -> void:
+	type = TYPE.SECTOR_LEVEL
+	U.debounce(str(self, "_update_node"), update_node)
 
 func update_node() -> void:
 	if !is_node_ready() or current_location.is_empty() or room_config.is_empty() or !is_active:return
+	# hide/show panels
+	match type:
+		TYPE.SECTOR_LEVEL:
+			RoomLayer.hide()
+			SectorLayer.show()
+			update_sector_details()
+		TYPE.ROOM_LEVEL:
+			SectorLayer.hide()
+			update_room_details()	
+
+func update_sector_details() -> void:
+	SectorLayer.show()
+
+func update_room_details() -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(current_location)
 	
 	if room_details.is_empty():
-		ContentContainer.hide()
+		RoomLayer.hide()
 		return
-	ContentContainer.show()
+	RoomLayer.show()
 	
 	var scp_details:Dictionary = ROOM_UTIL.return_scp_data_via_location(current_location)
 	var room_level_config:Dictionary = GAME_UTIL.get_room_level_config(current_location)		
