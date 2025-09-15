@@ -1770,7 +1770,7 @@ func on_current_mode_update(skip_animation:bool = false) -> void:
 				ScpCard.hide()
 				RenderingNode.set_shader_strength(0)
 				LocationAndDirectivesContainer.reveal(true)
-				GameplayNode.show_marked_objectives = false
+				GameplayNode.show_marked_objectives = true
 				GameplayNode.show_timeline = true
 				
 				reveal_actionpanel_label(false)			

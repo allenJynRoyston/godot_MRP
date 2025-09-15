@@ -88,6 +88,7 @@ func on_items_update() -> void:
 	for item in items:
 		var list_item:Control = TimlineListItemPreload.instantiate()
 		list_item.data = item
+		print(item)
 		ListContainer.add_child(list_item)
 	
 	if items.size() > 0:

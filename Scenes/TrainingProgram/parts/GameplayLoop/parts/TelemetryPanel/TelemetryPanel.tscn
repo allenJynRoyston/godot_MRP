@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cgsv34nc422hv"]
+[gd_scene load_steps=18 format=3 uid="uid://cgsv34nc422hv"]
 
 [ext_resource type="Script" uid="uid://onao3otd6rkg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/TelemetryPanel/telemetry_panel.gd" id="1_bsouq"]
 [ext_resource type="LabelSettings" uid="uid://oew3p1gg5ddw" path="res://Fonts/font_2_16_black.tres" id="3_0vdmw"]
@@ -8,7 +8,9 @@
 [ext_resource type="FontFile" uid="uid://dlia1t71max12" path="res://Fonts/PixelOperator.ttf" id="8_c64v3"]
 [ext_resource type="StyleBox" uid="uid://deoct5txhbuc8" path="res://Styles/OrangePanel.tres" id="9_4bmg2"]
 [ext_resource type="FontFile" uid="uid://0mmjtqn03dkq" path="res://Fonts/PixelOperator-Bold.ttf" id="9_bsouq"]
+[ext_resource type="PackedScene" uid="uid://gh5hfdolakbr" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Economy/Economy.tscn" id="10_3sqrh"]
 [ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="10_7nm7q"]
+[ext_resource type="PackedScene" uid="uid://b6ltnlpexqlq8" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/Vibes.tscn" id="11_0x36u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yr4tm"]
 
@@ -39,7 +41,7 @@ shadow_size = 1
 shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bsouq"]
-bg_color = Color(1, 0.74902, 0.2, 1)
+bg_color = Color(0, 0, 0, 0.541176)
 corner_radius_top_left = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
@@ -317,18 +319,8 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Status" type="HBoxContainer" parent="VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer"]
+[node name="Economy" parent="VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer" instance=ExtResource("10_3sqrh")]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer/Status"]
+[node name="Vibes" parent="VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer" instance=ExtResource("11_0x36u")]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "MONEY:"
-label_settings = ExtResource("3_0vdmw")
-
-[node name="StatusLabel" type="Label" parent="VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer/Status"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "+10"
-label_settings = ExtResource("4_56xfk")
-horizontal_alignment = 2

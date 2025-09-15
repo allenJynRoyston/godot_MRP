@@ -49,7 +49,6 @@ func _ready() -> void:
 	stylebox_copy = RootPanel.get_theme_stylebox('panel').duplicate()		
 	content_label_settings = ContentLabel.label_settings.duplicate()
 
-
 	ContentLabel.text = "Upcoming..." if is_upcoming else ("OPTIONAL: \r%s" % content) if is_optional else content
 	IconBtn.icon = SVGS.TYPE.CLEAR if is_expired else (SVGS.TYPE.CHECKBOX if is_completed else SVGS.TYPE.EMPTY_CHECKBOX)
 	

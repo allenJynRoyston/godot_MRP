@@ -14,7 +14,8 @@ enum TYPE {SECTOR_LEVEL, ROOM_LEVEL}
 
 # sector
 @onready var SectorLayer:VBoxContainer = $VBoxContainer/SectorLayer
-
+@onready var Economy:PanelContainer = $VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer/Economy
+@onready var Vibes:PanelContainer = $VBoxContainer/SectorLayer/Stats/MarginContainer/VBoxContainer/Vibes
 
 @onready var Detected:Control = $Detected
 @onready var DetectedPanel:PanelContainer = $Detected/DetectedPanel
@@ -100,6 +101,40 @@ func update_node() -> void:
 
 func update_sector_details() -> void:
 	SectorLayer.show()
+	var curreny_count:Dictionary = {
+		RESOURCE.CURRENCY.MONEY: 0,
+		RESOURCE.CURRENCY.SCIENCE: 0,
+		RESOURCE.CURRENCY.MATERIAL: 0,
+		RESOURCE.CURRENCY.CORE: 0
+	}
+	
+	var metric_count:Dictionary = {
+		RESOURCE.METRICS.MORALE: 0,
+		RESOURCE.METRICS.SAFETY: 0,
+		RESOURCE.METRICS.READINESS: 0,
+	}
+	
+	for n in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+		var room_level_config:Dictionary = GAME_UTIL.get_room_level_config({"floor": current_location.floor, "ring": current_location.ring, "room": n})
+		if room_level_config.is_activated and !room_level_config.department_props.is_empty():
+			var department_props:Dictionary = room_level_config.department_props
+			
+
+			for ref in department_props.currency:
+				curreny_count[ref] += (department_props.level + department_props.bonus)
+			for ref in department_props.metric:
+				metric_count[ref] += (department_props.level + department_props.bonus)
+	
+	#print( curreny_count[RESOURCE.CURRENCY.MONEY] )
+	
+	Economy.money_offset = curreny_count[RESOURCE.CURRENCY.MONEY]
+	Economy.research_offset = curreny_count[RESOURCE.CURRENCY.SCIENCE]
+	Economy.material_offset = curreny_count[RESOURCE.CURRENCY.MATERIAL]
+	Economy.core_offset = curreny_count[RESOURCE.CURRENCY.CORE]
+	
+	Vibes.offset_morale = metric_count[RESOURCE.METRICS.MORALE]
+	Vibes.offset_safety = metric_count[RESOURCE.METRICS.SAFETY]
+	Vibes.offset_readiness =  metric_count[RESOURCE.METRICS.READINESS]
 
 func update_room_details() -> void:
 	var room_details:Dictionary = ROOM_UTIL.return_data_via_location(current_location)

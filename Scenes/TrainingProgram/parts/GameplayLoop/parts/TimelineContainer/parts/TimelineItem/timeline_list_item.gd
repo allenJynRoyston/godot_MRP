@@ -29,7 +29,7 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 func on_gameplay_conditionals_update(new_val:Dictionary) -> void:
 	if !is_node_ready() or new_val.is_empty():return
-	DetailsContainer.show() if new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE] else DetailsContainer.hide()
+	DetailsContainer.show() #if new_val[CONDITIONALS.TYPE.ENABLE_TIMELINE] else DetailsContainer.hide()
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
