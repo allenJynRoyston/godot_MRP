@@ -333,6 +333,7 @@ size_flags_vertical = 8
 theme_override_constants/separation = 5
 
 [node name="InfoBtn" parent="RootControls/PanelContainer/MarginContainer/HBoxContainer2/Right" instance=ExtResource("4_n6idl")]
+visible = false
 modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2

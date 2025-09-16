@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://b6ltnlpexqlq8"]
+[gd_scene load_steps=7 format=3 uid="uid://b6ltnlpexqlq8"]
 
 [ext_resource type="Script" uid="uid://s27taeqpnbaa" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/Vibes/vibes.gd" id="2_5elrf"]
 [ext_resource type="PackedScene" uid="uid://bqrsajf65ravg" path="res://Scenes/TrainingProgram/parts/GameplayLoop/parts/HeaderControl/parts/VibeItem/VibeItem.tscn" id="4_r28sf"]
-[ext_resource type="PackedScene" uid="uid://c7n7pxhkwpt0k" path="res://UI/SvgIcon/SVGIcon.tscn" id="4_smnj5"]
 [ext_resource type="LabelSettings" uid="uid://ej7wdjd75hyn" path="res://Fonts/font_2_16_white.tres" id="6_5elrf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sy6pk"]
@@ -58,7 +57,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Content/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = -5
 alignment = 1
 
 [node name="Morale" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
@@ -87,21 +86,5 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 value = 2
 title = "READINESS"
-invert_color = true
-big_numbers = true
-
-[node name="SVGIcon" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_smnj5")]
-visible = false
-layout_mode = 2
-icon = 32
-
-[node name="Draw" parent="VBoxContainer/Content/MarginContainer/HBoxContainer" instance=ExtResource("4_r28sf")]
-visible = false
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-value = 3
-title = "DRAW"
 invert_color = true
 big_numbers = true

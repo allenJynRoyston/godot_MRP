@@ -159,7 +159,7 @@ func update_room_details() -> void:
 	has_event = !room_base_states.events_pending.is_empty()
 	
 	# name label
-	NameLabel.text = room_details.name
+	NameLabel.text = room_details.shortname
 	
 	# is activated
 	StatusLabel.text = "Anamolly detected!" if has_event else "Under construction" if is_under_construction else ("Active" if is_activated else "Inactive")

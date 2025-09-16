@@ -12,9 +12,9 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.2)
+shadow_color = Color(0, 0, 0, 0.662745)
 shadow_size = 1
-shadow_offset = Vector2(1, 1)
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o1lms"]
 bg_color = Color(0.126585, 0.195218, 0.535076, 1)
@@ -22,7 +22,7 @@ corner_radius_top_left = 3
 corner_radius_bottom_left = 3
 shadow_color = Color(0, 0, 0, 0.678431)
 shadow_size = 1
-shadow_offset = Vector2(1, 1)
+shadow_offset = Vector2(3, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_rcgg0"]
 font = ExtResource("4_o1lms")
@@ -32,12 +32,12 @@ shadow_size = 0
 shadow_offset = Vector2(2, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rcgg0"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.197937, 0.197937, 0.197937, 1)
 corner_radius_top_left = 3
 corner_radius_bottom_left = 3
 shadow_color = Color(0, 0, 0, 0.678431)
 shadow_size = 1
-shadow_offset = Vector2(1, 1)
+shadow_offset = Vector2(3, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o1lms"]
 font = ExtResource("4_o1lms")

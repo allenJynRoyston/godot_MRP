@@ -45,7 +45,7 @@ custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 120
+theme_override_constants/margin_top = 130
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 

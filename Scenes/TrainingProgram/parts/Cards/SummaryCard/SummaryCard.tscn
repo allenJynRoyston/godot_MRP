@@ -327,7 +327,7 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="LvlTag" type="Label" parent="MarginContainer/VBoxContainer/InfoContainer/MarginContainer/VBoxContainer/NamePanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "lvl 1"
 label_settings = SubResource("LabelSettings_mee86")
